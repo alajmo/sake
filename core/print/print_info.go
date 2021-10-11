@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func PrintInfo(config *dao.Config) {
@@ -12,7 +12,7 @@ func PrintInfo(config *dao.Config) {
 		fmt.Printf("config: %s\n", config.Path)
 	}
 
-	fmt.Printf("mani version %s\n", dao.Version)
+	fmt.Printf("yac version %s\n", dao.Version)
 	cmd := exec.Command("git", "--version")
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {

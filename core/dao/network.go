@@ -3,7 +3,7 @@ package dao
 import (
 	"strings"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 type Network struct {

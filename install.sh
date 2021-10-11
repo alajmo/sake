@@ -28,7 +28,7 @@ fetch() {
 echo "Detected target: $target"
 
 url=$(
-    fetch https://api.github.com/repos/alajmo/mani/releases/latest |
+    fetch https://api.github.com/repos/alajmo/yac/releases/latest |
     tac | tac | grep -wo -m1 "https://.*$target.tar.gz" || true
 )
 
@@ -37,13 +37,13 @@ if ! test "$url"; then
     exit 1
 fi
 
-echo "Downloading mani..."
+echo "Downloading yac..."
 
-temp_dir=$(mktemp -dt mani.XXXXXX)
+temp_dir=$(mktemp -dt yac.XXXXXX)
 trap 'rm -rf "$temp_dir"' EXIT INT TERM
 cd "$temp_dir"
 
-if ! fetch mani.tar.gz "$url"; then
+if ! fetch yac.tar.gz "$url"; then
     echo "Could not download tarball"
     exit 1
 fi
@@ -69,12 +69,12 @@ while ! test -d "$bindir"; do
     bindir=${bindir:-$default_bin}
 done
 
-tar xzf mani.tar.gz
+tar xzf yac.tar.gz
 
 if test -w "$bindir"; then
-    mv mani "$bindir/"
+    mv yac "$bindir/"
 else
-    sudo mv mani "$bindir/"
+    sudo mv yac "$bindir/"
 fi
 
-$bindir/mani version
+$bindir/yac version

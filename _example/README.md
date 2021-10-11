@@ -1,17 +1,17 @@
 # Example
 
-A demo of mani.
+A demo of yac.
 
-![example output of mani](../res/output.gif)
+![example output of yac](../res/output.gif)
 
-The demo is based on the following mani config.
+The demo is based on the following yac config.
 
-`mani.yaml`
+`yac.yaml`
 ```yaml
 projects:
   - name: example
     path: .
-    description: A mani example
+    description: A yac example
 
   - name: pinto
     path: frontend/pinto
@@ -95,17 +95,17 @@ tasks:
         command: git log -1 --format="%cd (%cr)" -n 1 --date=format:"%d  %b %y" | sed 's/ //'
 ```
 
-Given the above `mani.yaml` we can run commands like:
+Given the above `yac.yaml` we can run commands like:
 
-Initialize mani, any sub-directory that has a `.git` inside it will be included:
+Initialize yac, any sub-directory that has a `.git` inside it will be included:
 ```bash
-$ mani init
-✓ Initialized mani repository in /home/samir/tmp
+$ yac init
+✓ Initialized yac repository in /home/samir/tmp
 ```
 
 Sync repositories (will clone any repository that is not cloned yet):
 ```bash
-$ mani sync
+$ yac sync
 pinto
 
 Cloning into '/home/samir/tmp/frontend/pinto'...
@@ -140,17 +140,17 @@ All projects synced
 
 List all projects as table or tree:
 ```bash
-$ mani list projects
+$ yac list projects
 ┌────────────────────┬────────────────┬──────────────────────────────────────────────────┐
 │ name               │ tags           │ description                                      │
 ├────────────────────┼────────────────┼──────────────────────────────────────────────────┤
-│ example            │                │ A mani example                                   │
+│ example            │                │ A yac example                                   │
 │ pinto              │ frontend, node │ A vim theme editor                               │
 │ dashgrid           │ lib, node      │ A highly customizable drag-and-drop grid         │
 │ template-generator │ cli, bash      │ A simple bash script used to manage boilerplates │
 └────────────────────┴────────────────┴──────────────────────────────────────────────────┘
 
-$ mani tree
+$ yac tree
 ┌─ frontend
 │  ├─ dashgrid
 │  └─ pinto
@@ -159,7 +159,7 @@ $ mani tree
 
 Describe a task:
 ```bash
-$ mani describe task git-daily
+$ yac describe task git-daily
 
 Name:            git-daily
 Description:     show branch, local and remote diffs, last commit and date
@@ -201,7 +201,7 @@ Commands:
 
 Run a task targeting projects with tag `node` and output results as a table:
 ```bash
-$ mani run git-status -t node --output table
+$ yac run git-status -t node --output table
 
 Name:         git-status
 Description:  show working tree status
@@ -226,7 +226,7 @@ Command:      git status
 
 Run custom `ls` command for projects with tag bash:
 ```bash
-$ mani exec 'ls' --dirs frontend
+$ yac exec 'ls' --dirs frontend
 
 pinto
 bin

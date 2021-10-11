@@ -7,8 +7,8 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func execCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -29,10 +29,10 @@ Single quote your command if you don't want the file globbing and environments v
 before the command gets executed in each directory.`,
 
 		Example: `  # List files in all projects
-  mani exec ls --all-projects
+  yac exec ls --all-projects
 
   # List all git files that have markdown suffix
-  mani exec 'git ls-files | grep -e ".md"' --all-projects`,
+  yac exec 'git ls-files | grep -e ".md"' --all-projects`,
 		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
@@ -105,9 +105,9 @@ func execute(
 	// Table Style
 	// switch config.Theme.Table {
 	// case "ascii":
-	// 	core.ManiList.Box = core.StyleBoxASCII
+	// 	core.YacList.Box = core.StyleBoxASCII
 	// default:
-	// 	core.ManiList.Box = core.StyleBoxDefault
+	// 	core.YacList.Box = core.StyleBoxDefault
 	// }
 
 	projects := config.FilterProjects(cwdFlag, allProjectsFlag, projectPathsFlag, projectsFlag, tagsFlag)

@@ -10,13 +10,13 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 var (
 	Version               = "dev"
 	DEFAULT_SHELL         = "sh -c"
-	ACCEPTABLE_FILE_NAMES = []string{"mani.yaml", "mani.yml", ".mani", ".mani.yaml", ".mani.yml", "Manifile", "Manifile.yaml", "Manifile.yml"}
+	ACCEPTABLE_FILE_NAMES = []string{"yac.yaml", "yac.yml", ".yac", ".yac.yaml", ".yac.yml", "Yacfile", "Yacfile.yaml", "Yacfile.yml"}
 )
 
 type Config struct {
@@ -180,12 +180,12 @@ func readExternalConfig(importPath string) ([]Task, []Theme, []Project, []Networ
 	return config.Tasks, themes, config.Projects, networks, nil
 }
 
-// Open mani config in editor
+// Open yac config in editor
 func (c Config) EditConfig() {
 	openEditor(c.Path, -1)
 }
 
-// Open mani config in editor and optionally go to line matching the task name
+// Open yac config in editor and optionally go to line matching the task name
 func (c Config) EditTask(taskName string) {
 	dat, err := ioutil.ReadFile(c.Path)
 	core.CheckIfError(err)
@@ -216,7 +216,7 @@ func (c Config) EditTask(taskName string) {
 	openEditor(c.Path, lineNr)
 }
 
-// Open mani config in editor and optionally go to line matching the project name
+// Open yac config in editor and optionally go to line matching the project name
 func (c Config) EditProject(projectName string) {
 	dat, err := ioutil.ReadFile(c.Path)
 	core.CheckIfError(err)
@@ -247,7 +247,7 @@ func (c Config) EditProject(projectName string) {
 	openEditor(c.Path, lineNr)
 }
 
-// Open mani config in editor and optionally go to line matching the dir name
+// Open yac config in editor and optionally go to line matching the dir name
 func (c Config) EditDir(name string) {
 	dat, err := ioutil.ReadFile(c.Path)
 	core.CheckIfError(err)
@@ -278,7 +278,7 @@ func (c Config) EditDir(name string) {
 	openEditor(c.Path, lineNr)
 }
 
-// Open mani config in editor and optionally go to line matching the network name
+// Open yac config in editor and optionally go to line matching the network name
 func (c Config) EditNetworks(networkName string) {
 	dat, err := ioutil.ReadFile(c.Path)
 	core.CheckIfError(err)

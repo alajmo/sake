@@ -2,22 +2,22 @@
 
 set -eum
 
-MANI_PATH=$(dirname $(dirname $(realpath "$0")))
-MANI_EXAMPLE_PATH="/home/samir/projects/mani/_example"
-OUTPUT_FILE="$MANI_PATH/res/output.json"
-OUTPUT_GIF="$MANI_PATH/res/output.gif"
+YAC_PATH=$(dirname $(dirname $(realpath "$0")))
+YAC_EXAMPLE_PATH="/home/samir/projects/yac/_example"
+OUTPUT_FILE="$YAC_PATH/res/output.json"
+OUTPUT_GIF="$YAC_PATH/res/output.gif"
 
 _init() {
   # cd into _example
-  cd "$MANI_EXAMPLE_PATH"
+  cd "$YAC_EXAMPLE_PATH"
 
   # remove previous artifacts
   rm "$OUTPUT_FILE" "$OUTPUT_GIF" -f
 
   # remove previously synced projects
-  paths=$(mani list projects --no-borders --no-headers --headers=path)
+  paths=$(yac list projects --no-borders --no-headers --headers=path)
   for p in ${paths[@]}; do
-    if [[ "$p" != "$MANI_EXAMPLE_PATH" ]]; then
+    if [[ "$p" != "$YAC_EXAMPLE_PATH" ]]; then
       rm "$p" -rf
     fi
   done
@@ -43,70 +43,70 @@ _simulate_commands() {
     # 1. List all projects
     _mock "# List all projects"
     sleep 2s
-    _mock "mani list projects"
+    _mock "yac list projects"
     sleep 4s
     clear
 
     # 2. Sync all repositories
     _mock "# Clone all those repositories"
     sleep 2s
-    _mock "mani sync"
+    _mock "yac sync"
     sleep 5s
     clear
     _mock "# lets run an ad-hoc command to list files in template-generator"
-    _mock "mani exec ls --projects template-generator"
+    _mock "yac exec ls --projects template-generator"
     sleep 5s
     clear
 
     # 3. List all tasks
     _mock "# List all tasks"
     sleep 2s
-    _mock "mani list tasks"
+    _mock "yac list tasks"
     sleep 4s
     clear
 
     # 4. Describe a command
     _mock "# See what git-status does"
     sleep 2s
-    _mock "mani describe tasks git-status"
+    _mock "yac describe tasks git-status"
     sleep 4s
     clear
 
     # 5. Run a command
     _mock "# Now run git-status on all projects with node tag"
     sleep 2s
-    _mock "mani run git-status --tags node --output table"
+    _mock "yac run git-status --tags node --output table"
     sleep 4s
     clear
 
     # 6. Run a command
     _mock "# Check some random git stats"
     sleep 2s
-    _mock "mani run git-daily --tags node --describe=false --output table"
+    _mock "yac run git-daily --tags node --describe=false --output table"
     sleep 4s
     clear
 
     # 7. Run command on node repositories
     _mock "# Create a branch on multiple repositories"
     sleep 2s
-    _mock "mani run git-create branch=feat/some-feature --tags node"
+    _mock "yac run git-create branch=feat/some-feature --tags node"
     sleep 4s
     clear
 
     # 8. Run command on node repositories
     _mock "# Install packages in all node repositories"
     sleep 2s
-    _mock "mani run npm-install"
+    _mock "yac run npm-install"
     sleep 6s
     clear
   '
 
-  asciinema rec -c "$CMD" --idle-time-limit 100 --title mani --quiet "$OUTPUT_FILE" &
+  asciinema rec -c "$CMD" --idle-time-limit 100 --title yac --quiet "$OUTPUT_FILE" &
   fg %1
 }
 
 _generate_gif() {
-  cd "$MANI_PATH/res"
+  cd "$YAC_PATH/res"
 
   # Convert to gif
   output_file=$(basename $OUTPUT_FILE)

@@ -16,8 +16,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"github.com/jedib0t/go-pretty/v6/table"
 
-	core "github.com/alajmo/mani/core"
-	render "github.com/alajmo/mani/core/render"
+	core "github.com/alajmo/yac/core"
+	render "github.com/alajmo/yac/core/render"
 )
 
 var (
@@ -313,12 +313,12 @@ func formatCmd(cmdString string) (string, string) {
 
 func getDefaultArguments(configPath string, entity Entity) []string {
 	// Default arguments
-	maniConfigPath := fmt.Sprintf("MANI_CONFIG_PATH=%s", configPath)
-	maniConfigDir := fmt.Sprintf("MANI_CONFIG_DIR=%s", filepath.Dir(configPath))
-	projectNameEnv := fmt.Sprintf("MANI_PROJECT_NAME=%s", entity.Name)
-	projectPathEnv := fmt.Sprintf("MANI_PROJECT_PATH=%s", entity.Path)
+	yacConfigPath := fmt.Sprintf("yac_CONFIG_PATH=%s", configPath)
+	yacConfigDir := fmt.Sprintf("yac_CONFIG_DIR=%s", filepath.Dir(configPath))
+	projectNameEnv := fmt.Sprintf("yac_PROJECT_NAME=%s", entity.Name)
+	projectPathEnv := fmt.Sprintf("yac_PROJECT_PATH=%s", entity.Path)
 
-	defaultArguments := []string{maniConfigPath, maniConfigDir, projectNameEnv, projectPathEnv}
+	defaultArguments := []string{yacConfigPath, yacConfigDir, projectNameEnv, projectPathEnv}
 
 	return defaultArguments
 }

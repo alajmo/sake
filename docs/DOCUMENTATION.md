@@ -4,7 +4,7 @@
 
 <!-- vim-markdown-toc GFM -->
 
-* [Manifest](#manifest)
+* [Yacfest](#yacfest)
   * [Projects](#projects)
     * [Name](#name)
     * [Path](#path)
@@ -30,11 +30,11 @@
 
 <!-- vim-markdown-toc -->
 
-## Manifest
+## Yacfest
 
-The `mani.yaml` config is based on two concepts: __projects__ and __commands__. __Projects__ are simply directories, which may be git repositories, in which case they have an URL attribute. __Commands__ are arbitrary shell commands that you write and then run for selected __projects__.
+The `yac.yaml` config is based on two concepts: __projects__ and __commands__. __Projects__ are simply directories, which may be git repositories, in which case they have an URL attribute. __Commands__ are arbitrary shell commands that you write and then run for selected __projects__.
 
-`mani.yaml`
+`yac.yaml`
 ```yaml
 # List of Projects
 projects:
@@ -134,7 +134,7 @@ tasks:
 
 ### Projects
 
-List of projects that mani will operate on.
+List of projects that yac will operate on.
 
 #### Name
 
@@ -157,7 +157,7 @@ projects:
 
 #### Url
 
-The URL of the project, which the `mani sync` command will use to download the repository. `mani sync` uses `git clone git@github.com:alajmo/pinto` behind the scenes. So if you want to modify the clone command, check out the [clone](#clone) property.
+The URL of the project, which the `yac sync` command will use to download the repository. `yac sync` uses `git clone git@github.com:alajmo/pinto` behind the scenes. So if you want to modify the clone command, check out the [clone](#clone) property.
 
 ```yaml
 projects:
@@ -177,7 +177,7 @@ projects:
 
 #### Clone
 
-Clone command that `mani sync` will use to clone the repository. It defaults to `git clone URL`.
+Clone command that `yac sync` will use to clone the repository. It defaults to `git clone URL`.
 
 In case you want to do modify the clone command, this is the place to do it. For instance, to only clone a single branch:
 
@@ -320,7 +320,7 @@ tasks:
 Will print:
 
 ```sh
-$ mani run example
+$ yac run example
 v2.0.0
 main
 ```
@@ -336,7 +336,7 @@ tasks:
     tags: [work]
 ```
 
-This is equivalent to running `mani run example --tags work`
+This is equivalent to running `yac run example --tags work`
 
 #### Projects
 
@@ -349,7 +349,7 @@ tasks:
     projects: [pinto]
 ```
 
-This is equivalent to running `mani run example --projects pinto`
+This is equivalent to running `yac run example --projects pinto`
 
 #### Dirs
 
@@ -362,7 +362,7 @@ tasks:
     dirs: [frontend]
 ```
 
-This is equivalent to running `mani run example --dirs frontend`
+This is equivalent to running `yac run example --dirs frontend`
 
 
 #### Output
@@ -376,7 +376,7 @@ tasks:
     command: echo 123
 ```
 
-This is equivalent to running `mani run example --output table`
+This is equivalent to running `yac run example --output table`
 
 #### Command
 
@@ -415,14 +415,14 @@ tasks:
 
 ## Environment Variables
 
-`mani` exposes some variables to each command:
+`yac` exposes some variables to each command:
 
 Global:
 
-- `MANI_CONFIG_PATH`: Absolute path of the current mani.yaml file
+- `yac_CONFIG_PATH`: Absolute path of the current yac.yaml file
 
 Project specific:
 
-- `MANI_PROJECT_NAME`: The name of the project
-- `MANI_PROJECT_URL`: The URL of the project
-- `MANI_PROJECT_PATH` The path to the project in absolute form
+- `yac_PROJECT_NAME`: The name of the project
+- `yac_PROJECT_URL`: The URL of the project
+- `yac_PROJECT_PATH` The path to the project in absolute form

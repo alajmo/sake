@@ -7,8 +7,8 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 type ListTaskFlags struct {
@@ -22,7 +22,7 @@ func PrintTasks(
 ) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	var headers []interface{}
 	for _, h := range taskFlags.Headers {
@@ -62,7 +62,7 @@ func PrintTasks(
 func PrintTaskBlock(tasks []dao.Task) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	for _, task := range tasks {
 		t.AppendRows([]table.Row{

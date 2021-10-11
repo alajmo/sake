@@ -5,7 +5,7 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 type ListTagFlags struct {
@@ -19,7 +19,7 @@ func PrintTags(
 ) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	var headers []interface{}
 	for _, h := range tagFlags.Headers {

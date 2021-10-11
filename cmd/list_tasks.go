@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func listTasksCmd(config *dao.Config, configErr *error, listFlags *print.ListFlags) *cobra.Command {
@@ -17,7 +17,7 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *print.ListFla
 		Short:   "List tasks",
 		Long:    "List tasks.",
 		Example: `  # List tasks
-  mani list tasks`,
+  yac list tasks`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			listTasks(config, args, listFlags, &taskFlags)
@@ -55,9 +55,9 @@ func listTasks(
 	// Table Style
 	// switch config.Theme.Table {
 	// case "ascii":
-	// 	core.ManiList.Box = core.StyleBoxASCII
+	// 	core.YacList.Box = core.StyleBoxASCII
 	// default:
-	// 	core.ManiList.Box = core.StyleBoxDefault
+	// 	core.YacList.Box = core.StyleBoxDefault
 	// }
 
 	tasks := config.GetTasksByNames(args)

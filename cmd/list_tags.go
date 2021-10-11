@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func listTagsCmd(config *dao.Config, configErr *error, listFlags *print.ListFlags) *cobra.Command {
@@ -18,7 +18,7 @@ func listTagsCmd(config *dao.Config, configErr *error, listFlags *print.ListFlag
 		Short:   "List tags",
 		Long:    "List tags.",
 		Example: `  # List tags
-  mani list tags`,
+  yac list tags`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			listTags(config, args, listFlags, &tagFlags, projects)
@@ -68,9 +68,9 @@ func listTags(
 	// Table Style
 	// switch config.Theme.Table {
 	// case "ascii":
-	// 	core.ManiList.Box = core.StyleBoxASCII
+	// 	core.YacList.Box = core.StyleBoxASCII
 	// default:
-	// 	core.ManiList.Box = core.StyleBoxDefault
+	// 	core.YacList.Box = core.StyleBoxDefault
 	// }
 
 	allTags := config.GetTags()

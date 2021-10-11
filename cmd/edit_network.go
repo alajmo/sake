@@ -3,21 +3,21 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func editNetwork(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "network",
-		Short: "Edit mani network",
-		Long:  `Edit mani network`,
+		Short: "Edit yac network",
+		Long:  `Edit yac network`,
 
 		Example: `  # Edit a network called server
-  mani edit network server
+  yac edit network server
 
-  # Edit network in specific mani config
-  mani edit --config path/to/mani/config`,
+  # Edit network in specific yac config
+  yac edit --config path/to/yac/config`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			runEditNetwork(args, *config)

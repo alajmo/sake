@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func describeTasksCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -17,7 +17,7 @@ func describeTasksCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Short:   "Describe tasks",
 		Long:    "Describe tasks.",
 		Example: `  # Describe tasks
-  mani describe tasks`,
+  yac describe tasks`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			describe(config, args, edit)

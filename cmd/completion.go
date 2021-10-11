@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 func completionCmd() *cobra.Command {
@@ -15,13 +15,13 @@ func completionCmd() *cobra.Command {
 		Long: `To load completions:
 Bash:
 
-  $ source <(mani completion bash)
+  $ source <(yac completion bash)
 
   # To load completions for each session, execute once:
   # Linux:
-  $ mani completion bash > /etc/bash_completion.d/mani
+  $ yac completion bash > /etc/bash_completion.d/yac
   # macOS:
-  $ mani completion bash > /usr/local/etc/bash_completion.d/mani
+  $ yac completion bash > /usr/local/etc/bash_completion.d/yac
 
 Zsh:
 
@@ -31,23 +31,23 @@ Zsh:
   $ echo "autoload -U compinit; compinit" >> ~/.zshrc
 
   # To load completions for each session, execute once:
-  $ mani completion zsh > "${fpath[1]}/_mani"
+  $ yac completion zsh > "${fpath[1]}/_yac"
 
   # You will need to start a new shell for this setup to take effect.
 
 fish:
 
-  $ mani completion fish | source
+  $ yac completion fish | source
 
   # To load completions for each session, execute once:
-  $ mani completion fish > ~/.config/fish/completions/mani.fish
+  $ yac completion fish > ~/.config/fish/completions/yac.fish
 
 PowerShell:
 
-  PS> mani completion powershell | Out-String | Invoke-Expression
+  PS> yac completion powershell | Out-String | Invoke-Expression
 
   # To load completions for every new session, run:
-  PS> mani completion powershell > mani.ps1
+  PS> yac completion powershell > yac.ps1
   # and source this file from your PowerShell profile.
 		`,
 		DisableFlagsInUseLine: true,

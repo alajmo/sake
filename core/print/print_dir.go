@@ -5,8 +5,8 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"os"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 type ListDirFlags struct {
@@ -22,7 +22,7 @@ func PrintDirs(
 ) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	var headers []interface{}
 	for _, h := range dirFlags.Headers {
@@ -62,7 +62,7 @@ func PrintDirs(
 func PrintDirBlocks(dirs []dao.Dir) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	for _, dir := range dirs {
 		t.AppendRows([]table.Row{

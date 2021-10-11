@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func listNetworksCmd(config *dao.Config, configErr *error, listFlags *print.ListFlags) *cobra.Command {
@@ -17,7 +17,7 @@ func listNetworksCmd(config *dao.Config, configErr *error, listFlags *print.List
 		Short:   "List networks",
 		Long:    "List networks",
 		Example: `  # List networks
-  mani list networks`,
+  yac list networks`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			listNetworks(config, args, listFlags, &networkFlags)
@@ -66,9 +66,9 @@ func listNetworks(
 	// Table Style
 	// switch config.Theme.Table {
 	// case "ascii":
-	// 	core.ManiList.Box = core.StyleBoxASCII
+	// 	core.YacList.Box = core.StyleBoxASCII
 	// default:
-	// 	core.ManiList.Box = core.StyleBoxDefault
+	// 	core.YacList.Box = core.StyleBoxDefault
 	// }
 
 	networksName := config.GetNetworksByName(args)

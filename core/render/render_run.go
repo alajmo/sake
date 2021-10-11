@@ -7,7 +7,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	color "github.com/logrusorgru/aurora"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 // TASK [<name>: <description>] ************>
@@ -21,9 +21,9 @@ func Render(output string, data core.TableOutput) {
 	// Table Style
 	// switch config.Theme.Table {
 	// case "ascii":
-	// 	core.ManiList.Box = core.StyleBoxASCII
+	// 	core.YacList.Box = core.StyleBoxASCII
 	// default:
-	// 	core.ManiList.Box = core.StyleBoxDefault
+	// 	core.YacList.Box = core.StyleBoxDefault
 	// }
 
 	if output == "list" || output == "" {
@@ -53,7 +53,7 @@ func printList(data core.TableOutput) {
 func printTable(output string, data core.TableOutput) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(core.ManiList)
+	t.SetStyle(core.YacList)
 
 	t.AppendHeader(data.Headers)
 

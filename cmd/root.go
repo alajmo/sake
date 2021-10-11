@@ -6,13 +6,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core/dao"
 )
 
 const (
-	appName      = "mani"
-	shortAppDesc = "mani is a tool used to manage multiple repositories"
-	longAppDesc  = `mani is a tool used to manage multiple repositories`
+	appName      = "yac"
+	shortAppDesc = "yac is a tool used to manage multiple repositories"
+	longAppDesc  = `yac is a tool used to manage multiple repositories`
 )
 
 var (
@@ -35,7 +35,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file (by default it checks current and all parent directories for mani.yaml|yml)")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file (by default it checks current and all parent directories for yac.yaml|yml)")
 
 	rootCmd.AddCommand(
 		versionCmd(),

@@ -83,7 +83,7 @@ var StyleNoBorders = table.BoxStyle{
 	PaddingRight: " ",
 }
 
-var ManiList = table.Style{
+var YacList = table.Style{
 	Name: "table",
 
 	Box: StyleBoxDefault,

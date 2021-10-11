@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func describeCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -13,10 +13,10 @@ func describeCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Short:   "Describe projects and tasks",
 		Long:    "Describe projects and tasks.",
 		Example: `  # Describe projects
-  mani describe projects
+  yac describe projects
 
   # Describe tasks
-  mani describe tasks`,
+  yac describe tasks`,
 	}
 
 	cmd.AddCommand(

@@ -10,22 +10,22 @@
 ### Building
 
 ```sh
-# Build mani for your platform target
+# Build yac for your platform target
 make build
 
-# Build mani binaries and archives for all platforms using goreleaser
+# Build yac binaries and archives for all platforms using goreleaser
 make build-all
 
-# Build mani and get an interactive docker shell with completion
+# Build yac and get an interactive docker shell with completion
 make build-exec
 
 # Standing in _example directory you can run the following to debug faster
-(cd .. && make build-and-link && cd - && ../dist/mani run multi -p template-generator)
+(cd .. && make build-and-link && cd - && ../dist/yac run multi -p template-generator)
 ```
 
 ### Releasing
 
-The following workflow is used for releasing a new `mani` version:
+The following workflow is used for releasing a new `yac` version:
 
 1. Create pull request with changes
 2. Pass all tests
@@ -41,6 +41,6 @@ The following workflow is used for releasing a new `mani` version:
 Create SVG dependency graphs using graphviz and [goda](https://github.com/loov/goda)
 
 ```
-goda graph "github.com/alajmo/mani/..." | dot -Tsvg -o res/graph.svg
-goda graph "github.com/alajmo/mani:all" | dot -Tsvg -o res/graph-full.svg
+goda graph "github.com/alajmo/yac/..." | dot -Tsvg -o res/graph.svg
+goda graph "github.com/alajmo/yac:all" | dot -Tsvg -o res/graph-full.svg
 ```

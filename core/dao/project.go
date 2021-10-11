@@ -15,7 +15,7 @@ import (
 	color "github.com/logrusorgru/aurora"
 	"github.com/theckman/yacspin"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 type Project struct {
@@ -156,7 +156,7 @@ func UpdateProjectsToGitignore(projectNames []string, gitignoreFilename string) 
 		l.PushBack(line)
 	}
 
-	const maniComment = "# mani-projects #"
+	const yacComment = "# yac-projects #"
 	var insideComment = false
 	var beginElement *list.Element
 	var endElement *list.Element
@@ -165,13 +165,13 @@ func UpdateProjectsToGitignore(projectNames []string, gitignoreFilename string) 
 	for e := l.Front(); e != nil; e = next {
 		next = e.Next()
 
-		if e.Value == maniComment && !insideComment {
+		if e.Value == yacComment && !insideComment {
 			insideComment = true
 			beginElement = e
 			continue
 		}
 
-		if e.Value == maniComment {
+		if e.Value == yacComment {
 			endElement = e
 			break
 		}
@@ -182,12 +182,12 @@ func UpdateProjectsToGitignore(projectNames []string, gitignoreFilename string) 
 	}
 
 	if beginElement == nil {
-		l.PushBack(maniComment)
+		l.PushBack(yacComment)
 		beginElement = l.Back()
 	}
 
 	if endElement == nil {
-		l.PushBack(maniComment)
+		l.PushBack(yacComment)
 	}
 
 	for _, projectName := range projectNames {

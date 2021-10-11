@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func describeNetworksCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -17,10 +17,10 @@ func describeNetworksCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Short:   "Describe networks",
 		Long:    "Describe networks.",
 		Example: `  # Describe networks
-  mani describe networks
+  yac describe networks
 
   # Describe networks that have tag frontend
-  mani describe networks --tags frontend`,
+  yac describe networks --tags frontend`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			describeNetworks(config, args, networkFlags)

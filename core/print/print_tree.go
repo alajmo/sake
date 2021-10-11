@@ -8,7 +8,7 @@ import (
 	// "github.com/jedib0t/go-pretty/v6/text"
 	// color "github.com/logrusorgru/aurora"
 
-	"github.com/alajmo/mani/core"
+	"github.com/alajmo/yac/core"
 )
 
 func PrintTree(output string, tree []core.TreeNode) {

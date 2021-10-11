@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func runCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -18,13 +18,13 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Short: "Run tasks",
 		Long: `Run tasks.
 
-The tasks are specified in a mani.yaml file along with the projects you can target.`,
+The tasks are specified in a yac.yaml file along with the projects you can target.`,
 
 		Example: `  # Run task 'pwd' for all projects
-  mani run pwd --project-all
+  yac run pwd --project-all
 
   # Checkout branch 'development' for all projects that have tag 'backend'
-  mani run checkout -t backend branch=development`,
+  yac run checkout -t backend branch=development`,
 
 		DisableFlagsInUseLine: true,
 		Args:                  cobra.MinimumNArgs(1),

@@ -3,21 +3,21 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
 )
 
 func editTask(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "task",
-		Short: "Edit mani task",
-		Long:  `Edit mani task`,
+		Short: "Edit yac task",
+		Long:  `Edit yac task`,
 
 		Example: `  # Edit a task called status
-  mani edit task status
+  yac edit task status
 
-  # Edit task in specific mani config
-  mani edit task status --config path/to/mani/config`,
+  # Edit task in specific yac config
+  yac edit task status --config path/to/yac/config`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			runEditTask(args, *config)

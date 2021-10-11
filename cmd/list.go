@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/mani/core"
-	"github.com/alajmo/mani/core/dao"
-	"github.com/alajmo/mani/core/print"
+	"github.com/alajmo/yac/core"
+	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/yac/core/print"
 )
 
 func listCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -17,10 +17,10 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Short:   "List projects, tasks and tags",
 		Long:    "List projects, tasks and tags.",
 		Example: `  # List projects
-  mani list projects
+  yac list projects
 
   # List tasks
-  mani list tasks`,
+  yac list tasks`,
 	}
 
 	cmd.AddCommand(
