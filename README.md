@@ -1,118 +1,127 @@
-[![Build Status](https://github.com/alajmo/yac/workflows/test/badge.svg)](https://github.com/alajmo/yac/actions)
-[![Release](https://img.shields.io/github/release-pre/alajmo/yac.svg)](https://github.com/alajmo/yac/releases)
+[![Build Status](https://github.com/alajmo/sake/workflows/test/badge.svg)](https://github.com/alajmo/sake/actions)
+[![Release](https://img.shields.io/github/release-pre/alajmo/sake.svg)](https://github.com/alajmo/sake/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://img.shields.io/badge/license-MIT-green)
-[![Go Report Card](https://goreportcard.com/badge/github.com/alajmo/yac)](https://goreportcard.com/report/github.com/alajmo/yac)
+[![Go Report Card](https://goreportcard.com/badge/github.com/alajmo/sake)](https://goreportcard.com/report/github.com/alajmo/sake)
 
-# Yac
+# Sake
 
-<img src="./res/logo-1.png" align="right"/>
+`sake` is a CLI tool that enables you to run commands on servers via `ssh`. Think of it like `make`, you define servers and tasks in a declarative configuration file and then run the tasks on the servers.
 
-`yac` is a CLI tool that helps you manage multiple repositories. It's useful when you are working with microservices, multi-project systems, many libraries or just a bunch of repositories and want a central place for pulling all repositories and running commands over them.
+It has many ergonomic features such as `auto-completion` of tasks, servers and tags. Additionally, it includes sub-commands to let you easily
 
-You specify repository and commands in a config file and then run the commands over all or a subset of the repositories.
+- `ssh` into servers or docker containers
+- list servers/tasks
+- create tasks that queries server info and present it in a compact table format
 
-![demo](res/output.gif)
-
-## Features
-
-- Clone multiple repositories in one command
-- Run custom or ad-hoc commands over multiple repositories
-- Flexible filtering
-- Declarative configuration
-- Portable, no dependencies
-- Supports auto-completion
+Interested in managing your git repositiories in a similar way? Checkout [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 
-* [Installation](#installation)
-  * [Building From Source](#building-from-source)
-* [Usage](#usage)
-  * [Create a New Yac Repository](#create-a-new-yac-repository)
-  * [Common Commands](#common-commands)
-  * [Documentation](#documentation)
-* [License](#license)
+- [Installation](#installation)
+  - [Building From Source](#building-from-source)
+- [Usage](#usage)
+  - [Create a New Sake Config](#create-a-new-sake-config)
+  - [Run Some Commands](#run-some-commands)
+- [Documentation](#documentation)
+- [License](#license)
 
 ## Installation
 
-`yac` is available on Linux and Mac, with partial support for Windows.
+`sake` is available on Linux and Mac.
 
-* Binaries are available on the [release](https://github.com/alajmo/yac/releases) page
+* Binaries are available on the [release](https://github.com/alajmo/sake/releases) page
 
-* via cURL (Linux & macOS)
+* via cURL
   ```sh
-  curl -sfL https://raw.githubusercontent.com/alajmo/yac/main/install.sh | sh
+  curl -sfL https://raw.githubusercontent.com/alajmo/sake/main/install.sh | sh
+  ```
+
+* via Homebrew
+  ```sh
+  brew tap alajmo/sake
+  brew install sake
   ```
 
 * Via GO install
     ```sh
-    go get -u github.com/alajmo/yac
+    go get -u github.com/alajmo/sake
     ```
 
-Auto-completion is available via `yac completion bash|zsh|fish|powershell`.
+Auto-completion is available via `sake completion bash|zsh|fish` and man page via `sake gen`.
 
 ### Building From Source
+
+Requires [go 1.18 or above](https://golang.org/doc/install).
 
 1. Clone the repo
 2. Build and run the executable
     ```sh
-    make build && ./dist/yac
+    make build && ./dist/sake
     ```
 
 ## Usage
 
-### Create a New Yac Repository
+### Create a New Sake Config
 
-Run the following command inside a directory containing your `git` repositories, to initialize a yac repo:
+Run the following command:
 
-```sh
-$ yac init
+```bash
+$ sake init
+
+Initialized sake in /tmp/sake
+- Created sake.yaml
+
+Following servers were added to sake.yaml
+
+ Server    | Host
+-----------+---------
+ localhost | 0.0.0.0
 ```
 
-This will generate two files:
+### Run Some Commands
 
-- `yac.yaml`: contains projects and custom tasks. Any sub-directory that has a `.git` inside it will be included (add the flag `--auto-discovery=false` to turn off this feature)
-- `.gitignore`: includes the projects specified in `yac.yaml` file
+```bash
+# List all servers
+$ sake list servers
 
-It can be helpful to initialize the `yac` repository as a git repository so that anyone can easily download the `yac` repository and run `yac sync` to clone all repositories and get the same project setup as you.
+ Server    | Host
+-----------+---------
+ localhost | 0.0.0.0
 
-### Common Commands
+# List all tasks
+$ sake list tasks
 
-```sh
-# Run arbitrary command (list all files for instance)
-yac exec --all-projects 'ls -alh'
+ Task | Description
+------+-------------
+ ping | Pong
 
-# List all repositories
-yac list projects
+# Run Task
+$ sake run ping --all
 
-# List repositories in a tree-like format
-yac tree
+TASK ping: Pong ************
 
-# Describe available tasks
-yac describe tasks
+0.0.0.0 | pong
 
-# Run task for projects that have the frontend tag
-yac run list-files -t frontend
+# Count number of files in each server in parallel
+$ sake exec --all --output table --parallel 'find . -type f | wc -l'
 
-# Run task for projects under a specific directory
-yac run list-files -d work/
-
-# Run task for specific project
-yac run list-files -p project-a
-
-# Open up yac.yaml in your preferred editor
-yac edit
+ Server    | Output
+-----------+--------
+ localhost | 1
 ```
-### Documentation
 
-Checkout the following to learn more about yac:
+## Documentation
 
-- [Examples](_example)
-- [Documentation](docs/DOCUMENTATION.md)
-- [List of Useful Git Commands](docs/COMMANDS.md)
-- [Project Background](docs/PROJECT-BACKGROUND.md)
+- [Examples](examples)
+- [Recipes](docs/recipes.md)
+- [Config Reference](docs/config-reference.md)
+- [Command Reference](docs/command-reference.md)
+- [Project Background](docs/project-background.md)
+- [Changelog](docs/changelog.md)
+- [sakecli.com](https://sakecli.com/)
 
 ## [License](LICENSE)
 
 The MIT License (MIT)
 
-Copyright (c) 2020-2021 Samir Alajmovic
+Copyright (c) 2022 Samir Alajmovic

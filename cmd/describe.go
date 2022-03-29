@@ -3,27 +3,26 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/sake/core/dao"
 )
 
 func describeCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Aliases: []string{"desc"},
-		Use:     "describe <projects|tasks>",
-		Short:   "Describe projects and tasks",
-		Long:    "Describe projects and tasks.",
-		Example: `  # Describe projects
-  yac describe projects
+		Use:     "describe <servers|tasks>",
+		Short:   "Describe servers and tasks",
+		Long:    "Describe servers and tasks.",
+		Example: `  # Describe servers
+  sake describe servers
 
   # Describe tasks
-  yac describe tasks`,
+  sake describe tasks`,
+		DisableAutoGenTag: true,
 	}
 
 	cmd.AddCommand(
-		describeDirsCmd(config, configErr),
-		describeProjectsCmd(config, configErr),
+		describeServersCmd(config, configErr),
 		describeTasksCmd(config, configErr),
-		describeNetworksCmd(config, configErr),
 	)
 
 	return &cmd

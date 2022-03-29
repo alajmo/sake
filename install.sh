@@ -28,7 +28,7 @@ fetch() {
 echo "Detected target: $target"
 
 url=$(
-    fetch https://api.github.com/repos/alajmo/yac/releases/latest |
+    fetch https://api.github.com/repos/alajmo/sake/releases/latest |
     tac | tac | grep -wo -m1 "https://.*$target.tar.gz" || true
 )
 
@@ -37,13 +37,13 @@ if ! test "$url"; then
     exit 1
 fi
 
-echo "Downloading yac..."
+echo "Downloading sake..."
 
-temp_dir=$(mktemp -dt yac.XXXXXX)
+temp_dir=$(mktemp -dt sake.XXXXXX)
 trap 'rm -rf "$temp_dir"' EXIT INT TERM
 cd "$temp_dir"
 
-if ! fetch yac.tar.gz "$url"; then
+if ! fetch sake.tar.gz "$url"; then
     echo "Could not download tarball"
     exit 1
 fi
@@ -69,12 +69,12 @@ while ! test -d "$bindir"; do
     bindir=${bindir:-$default_bin}
 done
 
-tar xzf yac.tar.gz
+tar xzf sake.tar.gz
 
 if test -w "$bindir"; then
-    mv yac "$bindir/"
+    mv sake "$bindir/"
 else
-    sudo mv yac "$bindir/"
+    sudo mv sake "$bindir/"
 fi
 
-$bindir/yac version
+$bindir/sake version

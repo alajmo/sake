@@ -18,3 +18,6 @@ dist
 target
 test/tmp
 release-changelog.md
+
+.netlify
+.tags

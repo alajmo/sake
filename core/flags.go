@@ -1,111 +1,67 @@
 package core
 
-import (
-	"github.com/jedib0t/go-pretty/v6/list"
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
-)
+// CMD Flags
+
+type ListFlags struct {
+	Output string
+	Theme  string
+}
+
+type ServerFlags struct {
+	Tags    []string
+	Headers []string
+	Edit    bool
+}
+
+type TagFlags struct {
+	Headers []string
+}
+
+type TaskFlags struct {
+	Headers []string
+	Edit    bool
+}
 
 type RunFlags struct {
+	// Flags
 	Edit     bool
-	Serial   bool
 	DryRun   bool
 	Describe bool
-	Cwd      bool
+	Debug    bool
 
-	AllProjects  bool
-	Projects     []string
-	ProjectPaths []string
+	// Target
+	All     bool
+	Servers []string
+	Tags    []string
+	Cwd     bool
 
-	AllDirs  bool
-	Dirs     []string
-	DirPaths []string
+	// Config
+	KnownHostsFile string
 
-	AllNetworks bool
-	Networks    []string
-	Hosts       []string
+	// Task
+	Theme  string
+	TTY    bool
+	Attach bool
+	Local  bool
 
-	Tags   []string
-	Output string
+	// Server
+	IdentityFile string
+	Password     string
+
+	// Spec
+	Parallel          bool
+	AnyErrorsFatal    bool
+	IgnoreErrors      bool
+	IgnoreUnreachable bool
+	OmitEmpty         bool
+	Output            string
 }
 
-type TableOutput struct {
-	Headers table.Row
-	Rows    []table.Row
+type SetRunFlags struct {
+	Parallel          bool
+	OmitEmpty         bool
+	Local             bool
+	AnyErrorsFatal    bool
+	IgnoreErrors      bool
+	IgnoreUnreachable bool
 }
-
-// STYLES
-
-var StyleBoxDefault = table.BoxStyle{
-	BottomLeft:       "└",
-	BottomRight:      "┘",
-	BottomSeparator:  "┴",
-	EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("┼")),
-	Left:             "│",
-	LeftSeparator:    "├",
-	MiddleHorizontal: "─",
-	MiddleSeparator:  "┼",
-	MiddleVertical:   "│",
-	PaddingLeft:      " ",
-	PaddingRight:     " ",
-	PageSeparator:    "\n",
-	Right:            "│",
-	RightSeparator:   "┤",
-	TopLeft:          "┌",
-	TopRight:         "┐",
-	TopSeparator:     "┬",
-	UnfinishedRow:    " ≈",
-}
-
-var StyleBoxASCII = table.BoxStyle{
-	BottomLeft:       "+",
-	BottomRight:      "+",
-	BottomSeparator:  "+",
-	EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("+")),
-	Left:             "|",
-	LeftSeparator:    "+",
-	MiddleHorizontal: "-",
-	MiddleSeparator:  "+",
-	MiddleVertical:   "|",
-	PaddingLeft:      " ",
-	PaddingRight:     " ",
-	PageSeparator:    "\n",
-	Right:            "|",
-	RightSeparator:   "+",
-	TopLeft:          "+",
-	TopRight:         "+",
-	TopSeparator:     "+",
-	UnfinishedRow:    " ~",
-}
-
-var StyleNoBorders = table.BoxStyle{
-	PaddingLeft:  "",
-	PaddingRight: " ",
-}
-
-var YacList = table.Style{
-	Name: "table",
-
-	Box: StyleBoxDefault,
-
-	Color: table.ColorOptions{
-		// Header: text.Colors{ text.Bold },
-	},
-
-	Format: table.FormatOptions{
-		Header: text.FormatDefault,
-		Row:    text.FormatDefault,
-		Footer: text.FormatUpper,
-	},
-
-	Options: table.Options{
-		DrawBorder:      true,
-		SeparateColumns: true,
-		SeparateFooter:  false,
-		SeparateHeader:  true,
-		SeparateRows:    false,
-	},
-}
-
-var TreeStyle list.Style
-

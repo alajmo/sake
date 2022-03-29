@@ -1,0 +1,19 @@
+# import:
+#   - ./server-2.yaml
+
+# known_hosts_file: ../known_hosts
+
+tasks:
+  upload-server:
+    desc: Upload files
+    local: true
+    cmd: rsync --recursive --verbose --archive --update ./hello.txt $SAKE_HOST:/tmp/hello.txt
+
+  sync-server-1:
+    desc: server-1 state
+    target:
+      servers: [server-1]
+    spec: table
+
+    tasks:
+      - task: upload-server

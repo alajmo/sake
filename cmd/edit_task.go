@@ -3,24 +3,29 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core"
-	"github.com/alajmo/yac/core/dao"
+	"github.com/alajmo/sake/core"
+	"github.com/alajmo/sake/core/dao"
 )
 
 func editTask(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
-		Use:   "task",
-		Short: "Edit yac task",
-		Long:  `Edit yac task`,
+		Aliases: []string{"tasks", "tsk"},
+		Use:     "task [task]",
+		Short:   "Open up sake config file in $EDITOR and go to tasks section",
+		Long:    `Open up sake config file in $EDITOR and go to tasks section.`,
+		Example: `  # Edit tasks
+  sake edit task
 
-		Example: `  # Edit a task called status
-  yac edit task status
-
-  # Edit task in specific yac config
-  yac edit task status --config path/to/yac/config`,
+  # Edit task <task>
+  sake edit task <task>`,
 		Run: func(cmd *cobra.Command, args []string) {
-			core.CheckIfError(*configErr)
-			runEditTask(args, *config)
+			err := *configErr
+			switch e := err.(type) {
+			case *core.ConfigNotFound:
+				core.CheckIfError(e)
+			default:
+				runEditTask(args, *config)
+			}
 		},
 		Args: cobra.MaximumNArgs(1),
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -28,9 +33,9 @@ func editTask(config *dao.Config, configErr *error) *cobra.Command {
 				return []string{}, cobra.ShellCompDirectiveDefault
 			}
 
-			values := config.GetTaskNames()
-			return values, cobra.ShellCompDirectiveNoFileComp
+			return config.GetTaskIDAndDesc(), cobra.ShellCompDirectiveNoFileComp
 		},
+		DisableAutoGenTag: true,
 	}
 
 	return &cmd
@@ -38,8 +43,10 @@ func editTask(config *dao.Config, configErr *error) *cobra.Command {
 
 func runEditTask(args []string, config dao.Config) {
 	if len(args) > 0 {
-		config.EditTask(args[0])
+		err := config.EditTask(args[0])
+		core.CheckIfError(err)
 	} else {
-		config.EditTask("")
+		err := config.EditTask("")
+		core.CheckIfError(err)
 	}
 }

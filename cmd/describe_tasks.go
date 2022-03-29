@@ -3,62 +3,68 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core"
-	"github.com/alajmo/yac/core/dao"
-	"github.com/alajmo/yac/core/print"
+	"github.com/alajmo/sake/core"
+	"github.com/alajmo/sake/core/dao"
+	"github.com/alajmo/sake/core/print"
 )
 
 func describeTasksCmd(config *dao.Config, configErr *error) *cobra.Command {
-	var edit bool
+	var taskFlags core.TaskFlags
 
 	cmd := cobra.Command{
-		Aliases: []string{"task", "tasks"},
-		Use:     "tasks [tasks] [flags]",
+		Aliases: []string{"task", "tsk"},
+		Use:     "tasks [tasks]",
 		Short:   "Describe tasks",
 		Long:    "Describe tasks.",
-		Example: `  # Describe tasks
-  yac describe tasks`,
+		Example: `  # Describe all tasks
+  sake describe tasks
+
+  # Describe task <task>
+  sake describe task <task>`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
-			describe(config, args, edit)
+			describe(config, args, taskFlags)
 		},
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			if *configErr != nil {
 				return []string{}, cobra.ShellCompDirectiveDefault
 			}
 
-			values := config.GetTaskNames()
+			values := config.GetTaskIDAndDesc()
 			return values, cobra.ShellCompDirectiveNoFileComp
 		},
+		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().BoolVarP(&edit, "edit", "e", false, "Edit task")
+	cmd.Flags().BoolVarP(&taskFlags.Edit, "edit", "e", false, "edit task")
 
 	return &cmd
 }
 
-func describe(config *dao.Config, args []string, editFlag bool) {
-	if editFlag {
+func describe(config *dao.Config, args []string, taskFlags core.TaskFlags) {
+	if taskFlags.Edit {
 		if len(args) > 0 {
-			config.EditTask(args[0])
+			err := config.EditTask(args[0])
+			core.CheckIfError(err)
 		} else {
-			config.EditTask("")
+			err := config.EditTask("")
+			core.CheckIfError(err)
 		}
 	} else {
-		tasks := config.GetTasksByNames(args)
+		tasks, err := config.GetTasksByIDs(args)
+		core.CheckIfError(err)
 
-		for i := range tasks {
-			var userEnv []string
-			if len(args) > 1 {
-				userEnv = args[1:]
+		if len(tasks) > 0 {
+			for i := range tasks {
+				for j := range tasks[i].Tasks {
+					envs, err := dao.ParseTaskEnv(tasks[i].Tasks[j].Envs, []string{}, []string{}, []string{})
+					core.CheckIfError(err)
+
+					tasks[i].Tasks[j].Envs = envs
+				}
 			}
 
-			tasks[i].SetEnvList(userEnv, []string{}, config.GetEnv())
-			for j := range tasks[i].Commands {
-				tasks[i].Commands[j].SetEnvList(userEnv, tasks[i].EnvList, config.GetEnv())
-			}
+			print.PrintTaskBlock(tasks)
 		}
-
-		print.PrintTaskBlock(tasks)
 	}
 }

@@ -1,0 +1,9 @@
+env:
+  VERSION: v0.1.0
+  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+
+tasks:
+  hello: echo 123
+
+  kaka:
+    cmd: hej

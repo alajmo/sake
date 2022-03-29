@@ -1,0 +1,253 @@
+# import:
+#   - ./server-1.yaml
+
+# disable_verify_host: true
+known_hosts_file: known_hosts
+
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    tags: [local]
+
+  server-1:
+    desc: hosts mealie, node-red
+    host: server-1.lan
+    tags: [remote, pi]
+    work_dir: /home
+
+  pihole:
+    desc: runs pihole
+    host: pihole.lan
+    tags: [remote, pi]
+
+env:
+  VERSION: v0.1.0
+  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+
+targets:
+  all:
+    all: true
+
+specs:
+  table:
+    output: table
+
+  text:
+    output: text
+
+  info:
+      output: table
+      parallel: true
+      ignore_errors: true
+      ignore_unreachable: true
+      any_errors_fatal: false
+
+tasks:
+  ping:
+    # spec: info
+    target: all
+    desc: ping server
+    cmd: echo pong
+
+  print-host:
+    name: Host
+    desc: print host
+    spec: info
+    target: all
+    cmd: echo $SAKE_SERVER_HOST
+
+  print-hostname:
+    name: Hostname
+    desc: print hostname
+    spec: info
+    target: all
+    cmd: hostname
+
+  print-os:
+    name: OS
+    desc: print OS
+    spec: info
+    target: all
+    cmd: |
+      os=$(lsb_release -si)
+      release=$(lsb_release -sr)
+      echo "$os $release"
+
+  print-kernel:
+    name: Kernel
+    desc: Print kernel version
+    spec: info
+    target: all
+    cmd: uname -r | awk -v FS='-' '{print $1}'
+
+  print-mem:
+    name: Memory
+    desc: print memory stats
+    spec: info
+    target: all
+    cmd: |
+      mem_tot=$(awk '$1 == "MemTotal:" { print $2 / 1024 / 1024 }' /proc/meminfo)
+      mem_tot=$(printf "%.1f" $mem_tot)
+
+      mem_free=$(awk '$1 == "MemAvailable:" { print $2 / 1024 / 1024 }' /proc/meminfo)
+      mem_free=$(printf "%.1f" $mem_free)
+      mem_used=$(echo "$mem_tot-$mem_free" | bc)
+
+      echo "$mem_used / $mem_tot Gb"
+
+  print-cpu:
+    name: CPU
+    desc: print memory stats
+    spec: info
+    target: all
+    cmd: |
+      num_cores=$(nproc --all)
+      cpu_load=$(mpstat 1 2 | awk 'END{print 100-$NF"%"}')
+      echo "$cpu_load, ($num_cores cores)"
+
+  print-disk:
+    name: Disk
+    desc: print disk usage
+    spec: info
+    target: all
+    cmd: |
+      disk=$(/usr/bin/df -BG 2>/dev/null | tail -n +2 | sort -h -k2,2 -r | awk -F " " '{print $1, $2, $3}' | head -n 1)
+
+      tot_disk=$(echo $disk | awk '{print $2}')
+      used_disk=$(echo $disk | awk '{print $3}')
+
+      echo "$used_disk / $tot_disk"
+
+  print-uptime:
+    name: Uptime
+    desc: print uptime
+    spec: info
+    target: all
+    cmd: uptime | grep -E -o "[0-9]* (day|days)"
+
+  # SSH
+  ssh-and-cmd:
+    desc: run command and ssh to server after
+    attach: true
+    cmd: ls -alh
+
+  ssh-tunnel:
+    desc: create ssh tunnel
+    tty: true
+    env:
+      local:
+      remote:
+    cmd: ssh $SAKE_SERVER_USER@$SAKER_SERVER_HOST -N -L $local:localhost:$remote
+
+  # Script
+  script:
+    desc: run local script on remote server
+    env:
+      file: ""
+    local: true
+    cmd: |
+      file=$(basename $file)
+      temp_file="$(mktemp /tmp/$file.XXXXXXXXX -u)"
+      rsync --compress --recursive --archive --update $file $SAKE_SERVER_HOST:$temp_file
+      ssh $SAKE_SERVER_USER@$SAKE_SERVER_HOST "$temp_file"
+      ssh $SAKE_SERVER_USER@$SAKE_SERVER_HOST "rm $temp_file"
+
+  # Docker
+  docker-exec:
+    desc: attach to docker container
+    spec: info
+    env:
+      NAME: mealie
+    tty: true
+    cmd: ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $NAME bash"
+
+  # Upload / Download
+  upload:
+    desc: upload file or directory
+    spec: info
+    env:
+      src: ""
+      dest: /tmp
+    local: true
+    cmd: rsync --recursive --verbose --archive --update $src $SAKE_SERVER_HOST:$dest
+
+  download:
+    desc: download file or directory
+    spec: info
+    env:
+      src: ""
+      dest: ""
+    local: true
+    cmd: rsync --recursive --verbose --archive --update $SAKE_SERVER_HOST:$src $dest
+
+  # Info
+  info:
+    desc: get remote info
+    spec: info
+    target: all
+
+    tasks:
+      - task: print-os
+      - task: print-kernel
+      - task: print-disk
+      - task: print-mem
+      - task: print-cpu
+      - task: print-uptime
+
+  # Debug
+  env:
+    desc: print all default env variables
+    spec: info
+    target:
+      servers: [server-1]
+    cmd: |
+      echo "# SERVER"
+      echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
+      echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
+      echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
+      echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
+      echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
+      echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
+      echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
+
+      echo
+      echo "# TASK"
+      echo "SAKE_TASK_ID $SAKE_TASK_ID"
+      echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
+      echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
+      echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
+
+      echo
+      echo "# CONFIG"
+      echo "SAKE_DIR $SAKE_DIR"
+      echo "SAKE_PATH $SAKE_PATH"
+      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
+      echo "SAKE_PASSWORD $SAKE_PASSWOD"
+      echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
+
+  a:
+    cmd: echo $SAKE_TASK_ID $foo
+    work_dir: /home
+    env:
+      foo: san
+
+  b:
+    spec: info
+    target:
+      servers: [server-1]
+    work_dir: ./.ssh
+    env:
+      foo: bar
+    tasks:
+      - task: a
+
+  work-dir:
+    name: Working Directory
+    desc: Change working directory
+    spec: info
+    target:
+      servers: [server-1]
+    work_dir: /.
+    cmd: ls -alh

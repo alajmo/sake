@@ -1,0 +1,70 @@
+project_name: sake
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - binary: sake
+    id: sake
+    ldflags: -s -w -X github.com/alajmo/sake/cmd.version={{ .Version }} -X github.com/alajmo/sake/cmd.commit={{ .Commit }} -X github.com/alajmo/sake/cmd.date={{ .Date }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - freebsd
+      - netbsd
+      - openbsd
+    goarch:
+      - amd64
+      - 386
+      - arm
+      - arm64
+    goarm:
+      - 7
+
+    ignore:
+      - goos: freebsd
+        goarch: arm
+      - goos: freebsd
+        goarch: arm64
+
+      - goos: openbsd
+        goarch: arm
+      - goos: openbsd
+        goarch: arm64
+
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: 386
+
+archives:
+  - id: 'sake'
+    builds: ['sake']
+    format: tar.gz
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - ./core/sake.1
+      - LICENSE
+
+brews:
+  - name: sake
+    description: "sake is a CLI tool that enables you to run commands on servers via ssh"
+    homepage: "https://sakecli.com"
+    license: "MIT"
+    tap:
+      owner: alajmo
+      name: homebrew-sake
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    folder: Formula
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: '{{ .Tag }}-next'
+
+changelog:
+  skip: true

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/alajmo/mani/cmd"
+	"github.com/alajmo/sake/cmd"
 )
 
 func main() {

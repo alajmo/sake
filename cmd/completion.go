@@ -5,23 +5,23 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core"
+	"github.com/alajmo/sake/core"
 )
 
 func completionCmd() *cobra.Command {
 	cmd := cobra.Command{
-		Use:   "completion [bash|zsh|fish|powershell]",
+		Use:   "completion [bash|zsh|fish]",
 		Short: "Generate completion script",
 		Long: `To load completions:
 Bash:
 
-  $ source <(yac completion bash)
+  $ source <(sake completion bash)
 
   # To load completions for each session, execute once:
   # Linux:
-  $ yac completion bash > /etc/bash_completion.d/yac
+  $ sake completion bash > /etc/bash_completion.d/sake
   # macOS:
-  $ yac completion bash > /usr/local/etc/bash_completion.d/yac
+  $ sake completion bash > /usr/local/etc/bash_completion.d/sake
 
 Zsh:
 
@@ -31,27 +31,18 @@ Zsh:
   $ echo "autoload -U compinit; compinit" >> ~/.zshrc
 
   # To load completions for each session, execute once:
-  $ yac completion zsh > "${fpath[1]}/_yac"
+  $ sake completion zsh > "${fpath[1]}/_sake"
 
   # You will need to start a new shell for this setup to take effect.
 
 fish:
 
-  $ yac completion fish | source
+  $ sake completion fish | source
 
   # To load completions for each session, execute once:
-  $ yac completion fish > ~/.config/fish/completions/yac.fish
-
-PowerShell:
-
-  PS> yac completion powershell | Out-String | Invoke-Expression
-
-  # To load completions for every new session, run:
-  PS> yac completion powershell > yac.ps1
-  # and source this file from your PowerShell profile.
+  $ sake completion fish > ~/.config/fish/completions/sake.fish
 		`,
-		DisableFlagsInUseLine: true,
-		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
+		ValidArgs:             []string{"bash", "zsh", "fish"},
 		Args:                  cobra.ExactValidArgs(1),
 		Run:                   generateCompletion,
 	}
@@ -69,9 +60,6 @@ func generateCompletion(cmd *cobra.Command, args []string) {
 		core.CheckIfError(err)
 	case "fish":
 		err := cmd.Root().GenFishCompletion(os.Stdout, true)
-		core.CheckIfError(err)
-	case "powershell":
-		err := cmd.Root().GenPowerShellCompletionWithDesc(os.Stdout)
 		core.CheckIfError(err)
 	}
 }

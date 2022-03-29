@@ -3,38 +3,49 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core"
-	"github.com/alajmo/yac/core/dao"
-	"github.com/alajmo/yac/core/print"
+	"github.com/alajmo/sake/core"
+	"github.com/alajmo/sake/core/dao"
 )
 
 func listCmd(config *dao.Config, configErr *error) *cobra.Command {
-	var listFlags print.ListFlags
+	var listFlags core.ListFlags
 
 	cmd := cobra.Command{
-		Aliases: []string{"l", "ls"},
-		Use:     "list <projects|tasks|tags>",
-		Short:   "List projects, tasks and tags",
-		Long:    "List projects, tasks and tags.",
-		Example: `  # List projects
-  yac list projects
+		Aliases: []string{"ls", "l"},
+		Use:     "list",
+		Short:   "List servers, tasks and tags",
+		Long:    "List servers, tasks and tags.",
+		Example: `  # List all servers
+  sake list servers
 
-  # List tasks
-  yac list tasks`,
+  # List all tasks
+  sake list tasks
+
+  # List all tags
+  sake list tags`,
+		DisableAutoGenTag: true,
 	}
 
 	cmd.AddCommand(
-		listProjectsCmd(config, configErr, &listFlags),
-		listDirsCmd(config, configErr, &listFlags),
+		listServersCmd(config, configErr, &listFlags),
 		listTasksCmd(config, configErr, &listFlags),
-		listNetworksCmd(config, configErr, &listFlags),
 		listTagsCmd(config, configErr, &listFlags),
 	)
 
-	cmd.PersistentFlags().BoolVar(&listFlags.NoHeaders, "no-headers", false, "Remove table headers")
-	cmd.PersistentFlags().BoolVar(&listFlags.NoBorders, "no-borders", false, "Remove table borders")
-	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "Output table|markdown|html")
-	err := cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	cmd.PersistentFlags().StringVar(&listFlags.Theme, "theme", "default", "set theme")
+	err := cmd.RegisterFlagCompletionFunc("theme", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
+
+		names := config.GetThemeNames()
+
+		return names, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
+
+	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "set output [table|markdown|html]")
+	err = cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}

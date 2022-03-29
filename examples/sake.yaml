@@ -1,0 +1,44 @@
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    tags: [local]
+
+# GLOBAL ENVS
+env:
+  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+
+targets:
+  all:
+    all: true
+
+specs:
+  table:
+    output: table
+
+tasks:
+  ping:
+    desc: ping server
+    target: all
+    cmd: echo pong
+
+  print-host:
+    name: Host
+    desc: print host
+    spec: table
+    target: all
+    cmd: echo $SAKE_SERVER_HOST
+
+  info:
+    desc: get remote info
+    target:
+      tags: [remote]
+    spec:
+      output: table
+      ignore_errors: true
+
+    tasks:
+      - task: ping
+      - task: print-host
+      - cmd: echo "Done"

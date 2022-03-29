@@ -3,21 +3,24 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/alajmo/yac/core"
-	"github.com/alajmo/yac/core/dao"
-	"github.com/alajmo/yac/core/print"
+	"github.com/alajmo/sake/core"
+	"github.com/alajmo/sake/core/dao"
+	"github.com/alajmo/sake/core/print"
 )
 
-func listTasksCmd(config *dao.Config, configErr *error, listFlags *print.ListFlags) *cobra.Command {
-	var taskFlags print.ListTaskFlags
+func listTasksCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
+	var taskFlags core.TaskFlags
 
 	cmd := cobra.Command{
-		Aliases: []string{"task", "tasks", "tsk", "tsks"},
-		Use:     "tasks [flags]",
+		Aliases: []string{"task", "tsk", "tsks"},
+		Use:     "tasks [tasks]",
 		Short:   "List tasks",
 		Long:    "List tasks.",
-		Example: `  # List tasks
-  yac list tasks`,
+		Example: `  # List all tasks
+  sake list tasks
+
+  # List task <task>
+  sake list task <task>`,
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			listTasks(config, args, listFlags, &taskFlags)
@@ -27,18 +30,18 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *print.ListFla
 				return []string{}, cobra.ShellCompDirectiveDefault
 			}
 
-			values := config.GetTaskNames()
-			return values, cobra.ShellCompDirectiveNoFileComp
+			return config.GetTaskIDAndDesc(), cobra.ShellCompDirectiveNoFileComp
 		},
+		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"name", "description"}, "Specify headers, defaults to name, description")
+	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"task", "description"}, "set headers. Available headers: task, description, name")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		validHeaders := []string{"name", "description"}
+		validHeaders := []string{"task", "description", "name"}
 		return validHeaders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
@@ -49,17 +52,23 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *print.ListFla
 func listTasks(
 	config *dao.Config,
 	args []string,
-	listFlags *print.ListFlags,
-	taskFlags *print.ListTaskFlags,
+	listFlags *core.ListFlags,
+	taskFlags *core.TaskFlags,
 ) {
-	// Table Style
-	// switch config.Theme.Table {
-	// case "ascii":
-	// 	core.YacList.Box = core.StyleBoxASCII
-	// default:
-	// 	core.YacList.Box = core.StyleBoxDefault
-	// }
+	tasks, err := config.GetTasksByIDs(args)
+	core.CheckIfError(err)
 
-	tasks := config.GetTasksByNames(args)
-	print.PrintTasks(tasks, *listFlags, *taskFlags)
+	theme, err := config.GetTheme(listFlags.Theme)
+	core.CheckIfError(err)
+
+	if len(tasks) > 0 {
+		options := print.PrintTableOptions{
+			Output:               listFlags.Output,
+			Theme:                *theme,
+			OmitEmpty:            false,
+			SuppressEmptyColumns: true,
+		}
+
+		print.PrintTable("", tasks, options, taskFlags.Headers, []string{})
+	}
 }
