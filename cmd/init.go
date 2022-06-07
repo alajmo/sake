@@ -14,7 +14,7 @@ func initCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "init [flags]",
 		Short: "Initialize sake in the current directory",
-		Long: "Initialize sake in the current directory.",
+		Long:  "Initialize sake in the current directory.",
 		Example: `  # Basic example
   sake init`,
 

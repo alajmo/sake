@@ -42,9 +42,9 @@ fish:
   # To load completions for each session, execute once:
   $ sake completion fish > ~/.config/fish/completions/sake.fish
 		`,
-		ValidArgs:             []string{"bash", "zsh", "fish"},
-		Args:                  cobra.ExactValidArgs(1),
-		Run:                   generateCompletion,
+		ValidArgs: []string{"bash", "zsh", "fish"},
+		Args:      cobra.ExactValidArgs(1),
+		Run:       generateCompletion,
 	}
 
 	return &cmd

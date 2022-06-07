@@ -9,9 +9,9 @@ import (
 func genCmd() *cobra.Command {
 	dir := ""
 	cmd := cobra.Command{
-		Use:                   "gen",
-		Short:                 "Generate man page",
-		Long: "Generate man page",
+		Use:   "gen",
+		Short: "Generate man page",
+		Long:  "Generate man page",
 		Run: func(cmd *cobra.Command, args []string) {
 			err := core.GenManPages(dir)
 			core.CheckIfError(err)

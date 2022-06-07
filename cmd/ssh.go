@@ -16,7 +16,7 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 		Example: `  # ssh to server
   sake ssh <server>`,
-		Args:                  cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 			ssh(args, config)

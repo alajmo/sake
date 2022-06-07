@@ -18,7 +18,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "run <task> [flags]",
 		Short: "Run tasks",
-		Long: `Run tasks specified in a sake.yaml file.`,
+		Long:  `Run tasks specified in a sake.yaml file.`,
 		Example: `  # Run task <task> for all servers
   sake run <task> --all
 
@@ -27,7 +27,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
   # Run task <task> for all servers that have tags <tag>
   sake run <task> --tags <tag>`,
-		Args:                  cobra.MinimumNArgs(1),
+		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
 
