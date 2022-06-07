@@ -46,7 +46,6 @@ archives:
     format: tar.gz
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
     files:
-      - ./core/sake.1
       - LICENSE
 
 brews:
