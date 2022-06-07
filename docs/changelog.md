@@ -2,7 +2,7 @@
 
 ## 0.1.0
 
-This is the initial release. Basic functionality is supported: running tasks over multiple remote and local machines.
+This is the initial release. Basic functionality is supported: running tasks over multiple remote servers and localhost.
 
 - Add `known_hosts_file` flag/env/config setting and `disable_verify_host` config setting
 - Add `identity`/`password` pair flag/config setting
