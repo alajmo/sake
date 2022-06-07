@@ -119,13 +119,13 @@ func (f *FileError) Error() string {
 type NoRemoteServerToAttach struct{}
 
 func (c *NoRemoteServerToAttach) Error() string {
-	return fmt.Sprintf("no remote server to ssh into")
+	return "no remote server to ssh into"
 }
 
 type NoEditorEnv struct{}
 
 func (c *NoEditorEnv) Error() string {
-	return fmt.Sprintf("no environment variable `EDITOR` found")
+	return "no environment variable `EDITOR` found"
 }
 
 func CheckIfError(err error) {

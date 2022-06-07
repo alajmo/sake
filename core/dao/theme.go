@@ -471,7 +471,6 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 						themes[i].Table.Color.Border.Footer.Attr = DefaultTable.Color.Border.Footer.Attr
 					}
 				}
-
 			}
 
 			// Header

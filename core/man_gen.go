@@ -73,17 +73,17 @@ func manPreamble(buf io.StringWriter, header *genManHeaders, cmd *cobra.Command,
 	preamble := `.TH "%s" "%s" "%s" "%s" "%s" "%s"`
 	cobra.WriteStringAndCheck(buf, fmt.Sprintf(preamble, header.Title, header.Section, header.Date, header.Version, header.Source, header.Manual))
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf("\n"))
+	cobra.WriteStringAndCheck(buf, "\n")
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".SH NAME\n"))
+	cobra.WriteStringAndCheck(buf, ".SH NAME\n")
 	cobra.WriteStringAndCheck(buf, fmt.Sprintf("%s - %s\n", header.Manual, cmd.Short))
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf("\n"))
+	cobra.WriteStringAndCheck(buf, "\n")
 
 	cobra.WriteStringAndCheck(buf, ".SH SYNOPSIS\n")
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".B sake [command] [flags]\n"))
+	cobra.WriteStringAndCheck(buf, ".B sake [command] [flags]\n")
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf("\n"))
+	cobra.WriteStringAndCheck(buf, "\n")
 
 	cobra.WriteStringAndCheck(buf, ".SH DESCRIPTION\n")
 
@@ -91,9 +91,9 @@ func manPreamble(buf io.StringWriter, header *genManHeaders, cmd *cobra.Command,
 }
 
 func manCommand(buf io.StringWriter, cmd *cobra.Command, dashedName string) {
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".TP\n"))
+	cobra.WriteStringAndCheck(buf, ".TP\n")
 	cobra.WriteStringAndCheck(buf, fmt.Sprintf(`.B %s`, cmd.UseLine()))
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf("\n"))
+	cobra.WriteStringAndCheck(buf, "\n")
 	cobra.WriteStringAndCheck(buf, fmt.Sprintf("%s\n\n", cmd.Long))
 
 	nonInheritedFlags := cmd.NonInheritedFlags()
@@ -102,9 +102,9 @@ func manCommand(buf io.StringWriter, cmd *cobra.Command, dashedName string) {
 		return
 	}
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf("\n.B Available Options:\n"))
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".RS\n"))
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".RS\n"))
+	cobra.WriteStringAndCheck(buf, "\n.B Available Options:\n")
+	cobra.WriteStringAndCheck(buf, ".RS\n")
+	cobra.WriteStringAndCheck(buf, ".RS\n")
 	if nonInheritedFlags.HasAvailableFlags() {
 		manPrintFlags(buf, nonInheritedFlags)
 	}
@@ -114,8 +114,8 @@ func manCommand(buf io.StringWriter, cmd *cobra.Command, dashedName string) {
 		cobra.WriteStringAndCheck(buf, "\n")
 	}
 
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".RE\n"))
-	cobra.WriteStringAndCheck(buf, fmt.Sprintf(".RE\n"))
+	cobra.WriteStringAndCheck(buf, ".RE\n")
+	cobra.WriteStringAndCheck(buf, ".RE\n")
 }
 
 func manPrintFlags(buf io.StringWriter, flags *pflag.FlagSet) {
@@ -203,7 +203,7 @@ func genDoc(cmd *cobra.Command, cmds ...*cobra.Command) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	md := string(out.Bytes())
+	md := out.String()
 	md = strings.Split(md, "### SEE ALSO")[0]
 	md = fmt.Sprintf("%s\n\n%s", "# Command Reference", md)
 
@@ -215,7 +215,7 @@ func genDoc(cmd *cobra.Command, cmds ...*cobra.Command) ([]byte, error) {
 				return []byte{}, err
 			}
 
-			cMd := string(cOut.Bytes())
+			cMd := cOut.String()
 			cMd = strings.Split(cMd, "### SEE ALSO")[0]
 			md += cMd
 		}
@@ -229,7 +229,7 @@ func genDoc(cmd *cobra.Command, cmds ...*cobra.Command) ([]byte, error) {
 					if err != nil {
 						return []byte{}, err
 					}
-					ccMd := string(ccOut.Bytes())
+					ccMd := ccOut.String()
 					ccMd = strings.Split(ccMd, "### SEE ALSO")[0]
 					md += ccMd
 				}

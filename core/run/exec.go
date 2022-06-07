@@ -88,7 +88,7 @@ func (run *Run) RunTask(
 		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
 		print.PrintTable("Unreachable Hosts", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
 
-		if task.Spec.IgnoreUnreachable == false {
+		if !task.Spec.IgnoreUnreachable {
 			return nil
 		}
 	}
@@ -303,16 +303,14 @@ func (run *Run) CleanupClients() {
 	signal.Notify(trap, os.Interrupt)
 	go func() {
 		for {
-			select {
-			case sig, ok := <-trap:
-				if !ok {
-					return
-				}
-				for _, c := range clients {
-					err := c.Signal(sig)
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "%v", err)
-					}
+			sig, ok := <-trap
+			if !ok {
+				return
+			}
+			for _, c := range clients {
+				err := c.Signal(sig)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "%v", err)
 				}
 			}
 		}

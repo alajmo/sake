@@ -180,7 +180,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					fmt.Println(*server.IdentityFile)
 				}
 			}
-
 		}
 
 		if serverYAML.Password != nil {

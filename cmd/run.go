@@ -126,7 +126,7 @@ func runTask(
 ) {
 	var taskIDs []string
 	var userArgs []string
-	// Seperate user arguments from task ids
+	// Separate user arguments from task ids
 	for _, arg := range args {
 		if strings.Contains(arg, "=") {
 			userArgs = append(userArgs, arg)

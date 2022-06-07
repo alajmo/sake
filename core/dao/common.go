@@ -133,11 +133,7 @@ func SelectFirstNonEmpty(workDirs ...string) string {
 }
 
 func IsNullNode(node yaml.Node) bool {
-	if node.Kind == 0 {
-		return true
-	}
-
-	return false
+	return node.Kind == 0
 }
 
 func CheckIsMappingNode(node yaml.Node) error {

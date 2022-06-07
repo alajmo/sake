@@ -268,7 +268,7 @@ func (c Config) EditTask(name string) error {
 	}
 
 	var configTmp ConfigTmp
-	err = yaml.Unmarshal([]byte(dat), &configTmp)
+	err = yaml.Unmarshal(dat, &configTmp)
 	if err != nil {
 		return err
 	}
@@ -309,7 +309,7 @@ func (c Config) EditServer(name string) error {
 	}
 
 	var configTmp ConfigTmp
-	err = yaml.Unmarshal([]byte(dat), &configTmp)
+	err = yaml.Unmarshal(dat, &configTmp)
 	if err != nil {
 		return err
 	}

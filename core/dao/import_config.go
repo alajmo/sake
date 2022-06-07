@@ -346,7 +346,6 @@ func parseConfigFile(path string, cr *ConfigResources) (ConfigYAML, error) {
 }
 
 func (c *ConfigYAML) loadResources(cr *ConfigResources) {
-
 	if c.DisableVerifyHost != nil {
 		cr.DisableVerifyHost = c.DisableVerifyHost
 	}

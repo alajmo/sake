@@ -47,7 +47,7 @@ before the command gets executed in each directory.`,
 		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().BoolVar(&runFlags.TTY, "tty", false, "replace the currenty process")
+	cmd.Flags().BoolVar(&runFlags.TTY, "tty", false, "replace the current process")
 	cmd.Flags().BoolVar(&runFlags.Attach, "attach", false, "ssh to server after command")
 	cmd.Flags().BoolVar(&runFlags.Local, "local", false, "run command on localhost")
 	cmd.Flags().BoolVar(&runFlags.DryRun, "dry-run", false, "prints the command to see what will be executed")

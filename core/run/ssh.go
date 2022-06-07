@@ -42,7 +42,6 @@ type SSHClient struct {
 	connOpened   bool
 	sessOpened   bool
 	running      bool
-	color        string
 }
 
 type Identity struct {
@@ -148,7 +147,7 @@ func (c *SSHClient) ConnectWith(dialer SSHDialFunc, disableVerifyHost bool, know
 			User:   c.User,
 			Host:   c.Host,
 			Port:   c.Port,
-			Reason: fmt.Sprintf("Already connected"),
+			Reason: "Already connected",
 		}
 	}
 
@@ -253,7 +252,6 @@ func (sc *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*s
 		return nil, err
 	}
 	return ssh.NewClient(c, chans, reqs), nil
-
 }
 
 // Close closes the underlying SSH connection and session.
@@ -330,7 +328,7 @@ func VerifyHost(knownHostsFile string, mu *sync.Mutex, host string, remote net.A
 	}
 
 	// Host not found, ask user to check if he trust the host public key
-	if askIsHostTrusted(host, key, mu) == false {
+	if !askIsHostTrusted(host, key, mu) {
 		return errors.New("you typed no, aborted!")
 	}
 
@@ -371,7 +369,6 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 }
 
 func askIsHostTrusted(host string, key ssh.PublicKey, mu *sync.Mutex) bool {
-
 	mu.Lock()
 
 	reader := bufio.NewReader(os.Stdin)
