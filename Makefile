@@ -25,7 +25,7 @@ build:
 	-a -tags netgo -o dist/${NAME} main.go
 
 build-all:
-	goreleaser --rm-dist --snapshot
+	goreleaser release --skip-publish --rm-dist --snapshot
 
 build-man:
 	go run -ldflags="-X 'github.com/alajmo/sake/cmd.buildMode=man' -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" ./main.go gen-docs
