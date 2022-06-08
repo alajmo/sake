@@ -48,7 +48,7 @@ archives:
     files:
       - LICENSE
       - src: './core/sake.1'
-        dst: sake.1
+        strip_parent: true
 
 brews:
   - name: sake
