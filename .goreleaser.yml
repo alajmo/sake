@@ -47,6 +47,8 @@ archives:
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
     files:
       - LICENSE
+      - src: './core/sake.1'
+        dst: sake.1
 
 brews:
   - name: sake

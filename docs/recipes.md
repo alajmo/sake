@@ -2,12 +2,18 @@
 
 This file contains various recipes for common tasks you might need, such as:
 
-- Upload/download files via `rsync`
-- Run command then SSH into server
-- Attach to a Docker container on a remote machine
-- Create a SSH Tunnel / Port forward
-- Run local script on a remote machine
-- Replace current process
+
+<!-- vim-markdown-toc GFM -->
+
+- [Upload File](#upload-file)
+- [Download File](#download-file)
+- [Run Command and SSH Afterwords](#run-command-and-ssh-afterwords)
+- [Create SSH Tunnel / Port Forward](#create-ssh-tunnel--port-forward)
+- [Attach to a Docker Instance on a Remote Server](#attach-to-a-docker-instance-on-a-remote-server)
+- [Run Local Script on Remote Server](#run-local-script-on-remote-server)
+- [Replace Current Process](#replace-current-process)
+
+<!-- vim-markdown-toc -->
 
 ## Upload File
 
