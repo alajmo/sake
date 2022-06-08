@@ -7,7 +7,7 @@ before:
 builds:
   - binary: sake
     id: sake
-    ldflags: -s -w -X github.com/alajmo/sake/cmd.version={{ .Version }} -X github.com/alajmo/sake/cmd.commit={{ .Commit }} -X github.com/alajmo/sake/cmd.date={{ .Date }}
+    ldflags: -s -w -X github.com/alajmo/sake/cmd.version={{ .Version }} -X github.com/alajmo/sake/cmd.commit={{ .ShortCommit }} -X github.com/alajmo/sake/cmd.date={{ .Date }}
     env:
       - CGO_ENABLED=0
     goos:
