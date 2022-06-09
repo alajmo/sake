@@ -17,6 +17,20 @@ Following servers were added to sake.yaml
  localhost | 0.0.0.0
 ```
 
+Our `sake.yaml` config file should look like this:
+
+```yaml title=sake.yaml
+servers:
+  localhost:
+    host: 0.0.0.0
+    local: true
+
+tasks:
+  ping:
+    desc: Pong
+    cmd: echo "pong"
+"```
+
 ## Run Some Commands
 
 Now let's run some commands to see everything is working as expected.
@@ -53,6 +67,7 @@ $ sake exec --all --output table --parallel 'find . -type f | wc -l'
 
 Next up:
 
-- [Some more examples](/examples)
-- [Familiarize yourself with the sake.yaml config](/config)
-- [Checkout sake commands](/commands)
+- [Simple examples](/examples)
+- [Recipes](/recipes)
+- [Config Reference](/config-reference)
+- [Command Reference](/command-reference)

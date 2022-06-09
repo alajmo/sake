@@ -1,86 +1,76 @@
 # Project Background
 
-This document contains a little bit of everything:
+> To configure servers, all you need is bash scripting, environment variables, and some know-how.
 
-- Background to `sake` and core design decisions used to develop `sake`
-- Comparisons with alternatives
+`sake` came about because I needed a simple tool to manage my servers. There's tons of software in this category, Ansible, Puppet, Chef, Salt, Sup, and probably many more. However, most of them are geared towards enterprise server management and are often not the most ergonomic. So, `sake` was born, an ergonomic CLI tool to configure servers.
 
-It's a simplified Ansible ment to work with homelabs / hobby projects where you're not really interested in reading documentation to simply configure a server.
+## Premise
 
-## Background
+The premise is you have a bunch of servers and want the following:
 
-`sake` came about because I needed a simple tool to manage multiple servers. So, the premise is, you have a bunch of servers and want the following:
-
-1. a central place for your servers, containing name, host, and a small description of the servers
-2. ability to run ad-hoc commands (perhaps `hostnamectl` to see system hostname) on 1, a subset, or all of the servers
-3. ability to run defined tasks on 1, a subset, or all of the servers
-4. ability to get an overview of 1, a subset, or all of the servers and tasks
-
-Now, there's plenty of existing software to do this, and while I've taken a lot of inspiration from them, there's some core design decision that led me to create `sake`, instead of forking or contributing to an existing solution.
+1. A central place for your servers, containing name, host, and a small description of the servers
+2. Ability to run ad-hoc commands (perhaps `hostnamectl` to see system hostname) on 1, a subset, or all of the servers
+3. Ability to run defined tasks on 1, a subset, or all of the servers
+4. Ability to get an overview of 1, a subset, or all of the servers and tasks
 
 ## Design
 
-`sake` prioritizes the following design principles:
+`sake` prioritizes simplicity and flexibility, principles that are at odds with each other at times:
 
-1. Simple - both the implementation and the UX is designed to be simple first and foremost
-2. Flexible - provide the user with the ability to shape `sake` to their user cases, instead of providing an opionated setups
+1. Simplicity - both the implementation and the UX is designed to be simple. However, this rule can be bent to some degree if the reward is substantial
+2. Flexibility - provide the user with the ability to shape `sake` to their user case, instead of providing an opinionated setup
 
-### Pillars
+With these principles in mind, I've elected not to create a complex DSL (see Terraform, Puppet, Ansible, etc.), but instead just add a few primitives and let the user leverage their existing sysadmin knowledge to create their ideal setup. This results in not forcing users to learn yet another DSL, avoiding continuous lookup of `sake` commands, and updating `sake` to get new features.
 
-`sake` prioritizes simplicity and customizability. It's not really opinionated as other alternatives are, it's up to you how you want to organize your scripts, all `sake` does is provide you with some primitives, **servers** and **tasks**, and leaves it up to the user to how they want to organize their setup.
+It does, however, push complexity onto the user, for instance, there's no built-in primitive to download files and the user must define a task to do so. It would be foolish for me to aim for feature parity with 3rd party software like rsync for downloading files (there are over 150 flags for rsync).
+In this sense, `sake` follows the Unix principle:
 
-`sake` is not about creating a complex DSL (see terraform, puppet, ansible, etc.), but instead let the user use their existing sysadm knowledge to manage servers, meaning, there should be minimal lookup of `sake` commands, etc. In reality, to setup simple servers, all you need is some bash scripting, environment variables and some knowledge, of course.
+- Write programs that do one thing and do it well - run commands on multiple servers
+- Write programs to work together - invoke other programs to do your bidding (rsync)
+- Write programs to handle text streams - output of all `sake` commands is just text
 
-`sake` doesn't include **ssh**, **scp**, etc. but leverages the users and allows the user to override such commands. For instance, if you want to use rsync to download/upload files, then you can override the default behavior to always use that. This has the added benefit of users not requiring to keep up with `sake` releases and avoid minimal patching of said services. Also because `ssh` and other softwares are established softwares. And there's so many different upload/download options available, that it would be foolish for myself to aim for feature parity, even for basic stuff as choosing a different auth protocol other than ssh.
+## Comparisons
 
-`sake` is supposed to be a thin client, all useful stuff will come in the form of bash scripts, called recipes, which the user can download and customize, meaning there's no need to keep updating `sake` for feature parity.
+A lot of the alternatives to `sake` are meant to be used in large teams, which often results in:
 
-`sake` supports easy editting of tasks as well, for instance, `sake run <task> --edit` or `sake edit task <task>`, instead of perusing a bunch of files
-
-### Comparisons
-
-A lot of the alternatives to `sake` are meant to be used in large teams with many servers, which often results in:
-
-1. Opionated and implicit file structure that the user is required to know
-2. Some of them are not daemon-less, meaning there's a background process keeping track of application state (see K8s, Chef, Puppet), which increases complexity and debuggability
-3. Lot's of boilerplate (with Ansible there's more than 8 directories/files per role that you can use to customize roles: tasks, handlers, templates, files, vars, defaults, meta, module_utils, lookup_plugins, library, etc.)
-4. Having to provide overrides for different types of machines (CentOS, Ubuntu, etc.), in Ansible, this results in ugly conditional YAML using jinja templates
+1. Opinionated and implicit file structure that the user is required to know
+2. Some of them are not daemon-less, there's a background process keeping track of application state (see Kubernetes, Chef, Puppet), which increases complexity and debuggability
+3. Lots of boilerplate (with Ansible there are more than 8 directories/files per role that you can use to customize roles: tasks, handlers, templates, files, vars, defaults, meta, module_utils, lookup_plugins, library, etc.)
 
 For DIY hobby projects, where you're only interested in:
 
 1. Connecting to a machine
 2. Installing some software
 3. Starting a service
-4. Querying some data (uptime,disk size, etc.)
+4. Querying some data (uptime, disk size, etc.)
 5. Uploading/Downloading files
 
-the alternatives are simply overkill.
+the alternatives are overkill.
 
 In terms of features, `sake` mostly resembles [Sup](https://github.com/pressly/sup), an excellent deployment tool, which `sake` has drawn inspiration from. There are however some notable differences:
 
 - `sake` has a more extensive and easy to use filtering system
 - `sake` provides both text and table output
-- `sake` provides auto-completion for servers and tasks
-- `sake` provides `ssh` and `ssh-tunnel` commands for quickly ssh'ing to a server and setting up ssh-tunnels - A task can run multiple commands (in Sup, you're left with manually invoking the Sup binary, which is by design as they want to keep as close to `make` as possible it seems)
-- You can import other `sake` configs natively (in Sup you're left with manually invoking the Sup binary)
+- `sake` has auto-completion
+- `sake` has a sub-command to easily ssh into servers
+- `sake` supports tasks
+- `sake` has native import capability (in Sup you're left with manually invoking the Sup binary, which is by design as they want to keep it as close to `make` as possible it seems)
+- `sup` is not maintained anymore
 - Better CLI ergonomics in my opinion, `sake run <task> -s server-1` versus `sup <network> <task>` (I often forget which one comes first, network or task)
-- Not maintained anymore
 
-### General UX
+### User Experience
 
-These various features make using `sake` feel more effortless:
+These features make using `sake` feel more effortless:
 
+- Single binary
 - Rich auto-completion
 - Edit the `sake` config file via the `sake edit` command, which opens up the config file in your preferred editor
-- Single binary (most alternatives require Python)
-- Pretty output when running tasks or listing servers/tasks
-- Default tags/name filtering for tasks
-- Export output as HTML/Markdown from list/run/exec commands
+- Multiple output formats (text, table, HTML, Markdown)
+- Default target filtering for tasks
 
 ## Similar Software
 
 - [Ansible](https://www.ansible.com)
 - [Chef](https://www.chef.io)
 - [Puppet](https://puppet.com)
-- [Kubernetes](https://puppet.com)
 - [Sup](https://pressly.github.io/sup)

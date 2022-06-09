@@ -1,7 +1,3 @@
-# import:
-#   - ./server-1.yaml
-
-# disable_verify_host: true
 known_hosts_file: known_hosts
 
 servers:
@@ -10,21 +6,18 @@ servers:
     host: localhost
     local: true
     tags: [local]
+    work_dir: /opt
 
   server-1:
     desc: hosts mealie, node-red
     host: server-1.lan
     tags: [remote, pi]
-    work_dir: /home
+    work_dir: /home/samir
 
   pihole:
     desc: runs pihole
     host: pihole.lan
     tags: [remote, pi]
-
-env:
-  VERSION: v0.1.0
-  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 targets:
   all:
@@ -44,12 +37,16 @@ specs:
       ignore_unreachable: true
       any_errors_fatal: false
 
+env:
+  VERSION: v0.1.0
+  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+
 tasks:
   ping:
-    # spec: info
     target: all
+    local: true
     desc: ping server
-    cmd: echo pong
+    cmd: ping $SAKE_SERVER_HOST -c 2
 
   # Info
   print-host:
@@ -195,59 +192,3 @@ tasks:
       dest: ""
     local: true
     cmd: rsync --recursive --verbose --archive --update $SAKE_SERVER_HOST:$src $dest
-
-  # Debug
-  env:
-    desc: print all default env variables
-    spec: info
-    target:
-      servers: [server-1]
-    cmd: |
-      echo "# SERVER"
-      echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
-      echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
-      echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
-      echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
-      echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
-      echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
-      echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
-
-      echo
-      echo "# TASK"
-      echo "SAKE_TASK_ID $SAKE_TASK_ID"
-      echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
-      echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
-      echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
-
-      echo
-      echo "# CONFIG"
-      echo "SAKE_DIR $SAKE_DIR"
-      echo "SAKE_PATH $SAKE_PATH"
-      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
-      echo "SAKE_PASSWORD $SAKE_PASSWOD"
-      echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
-
-  a:
-    cmd: echo $SAKE_TASK_ID $foo
-    work_dir: /home
-    env:
-      foo: san
-
-  b:
-    spec: info
-    target:
-      servers: [server-1]
-    work_dir: ./.ssh
-    env:
-      foo: bar
-    tasks:
-      - task: a
-
-  work-dir:
-    name: Working Directory
-    desc: Change working directory
-    spec: info
-    target:
-      servers: [server-1]
-    work_dir: /.
-    cmd: ls -alh

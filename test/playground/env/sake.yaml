@@ -1,0 +1,98 @@
+disable_verify_host: true
+
+servers:
+  localhost:
+    host: localhost
+    local: true
+
+  server-1:
+    host: server-1.lan
+    env:
+      foo: foo
+      hello: world
+      release: v1.0.0
+
+  pihole:
+    host: pihole.lan
+
+env:
+  foo: bar
+  hello: adios
+  cookie: monster
+
+tasks:
+  env:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      foo: xyz
+      task: local
+    cmd: |
+      echo "foo $foo"
+      echo "hello $hello"
+      echo "cookie $cookie"
+      echo "release $release"
+      echo "task $task"
+
+  env-ref:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      task: 123
+      xyz: xyz
+    cmd: |
+      echo "foo $foo"
+      echo "hello $hello"
+      echo "cookie $cookie"
+      echo "release $release"
+      echo "task $task"
+      echo "xyz $xyz"
+
+  env-complex:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      foo: xyz
+      task: local
+    tasks:
+      - task: env-ref
+
+      - task: env-ref
+        env:
+          task: remote
+
+  env-default:
+    spec:
+      output: table
+    target:
+      all: true
+    cmd: |
+      echo "# SERVER"
+      echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
+      echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
+      echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
+      echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
+      echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
+      echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
+      echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
+
+      echo
+      echo "# TASK"
+      echo "SAKE_TASK_ID $SAKE_TASK_ID"
+      echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
+      echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
+      echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
+
+      echo
+      echo "# CONFIG"
+      echo "SAKE_DIR $SAKE_DIR"
+      echo "SAKE_PATH $SAKE_PATH"
+      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
+      echo "SAKE_PASSWORD $SAKE_PASSWOD"
+      echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"

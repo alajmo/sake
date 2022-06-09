@@ -118,7 +118,7 @@ exec <command> [flags]
   -s, --servers strings           target servers by names
   -t, --tags strings              target servers by tags
       --theme string              set theme (default "default")
-      --tty                       replace the currenty process
+      --tty                       replace the current process
 ```
 
 ## init

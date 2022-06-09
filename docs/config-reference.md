@@ -7,6 +7,7 @@ The sake.yaml config is based on the following concepts:
 - **specs** are configs that alter **task** execution and output
 - **targets** are configs that provide shorthand filtering of **servers** when executing **tasks**
 - **themes** are used to modify the output of `sake` commands
+- **envs** are environment variables that can be defined globally, per server and per task
 
 **Specs**, **targets** and **themes** come with a default setting that the user can override.
 

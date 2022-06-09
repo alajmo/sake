@@ -1,0 +1,82 @@
+disable_verify_host: true
+
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    tags: [local]
+    work_dir: /tmp
+
+  server-1:
+    desc: hosts mealie, node-red
+    host: server-1.lan
+    tags: [remote, pi]
+    work_dir: /home
+
+  pihole:
+    desc: runs pihole
+    host: pihole.lan
+    tags: [remote, pi]
+
+tasks:
+  work-ref:
+    name: ref
+    work_dir: "/usr" # 3
+    cmd: pwd
+
+  work-nested:
+    name: nested
+    # work_dir: "/sys"
+    tasks:
+      - task: work-ref
+
+  work-dir-1:
+    spec:
+      output: table
+    target:
+      all: true
+    work_dir: "/home" # 2
+    tasks:
+      - task: work-ref
+
+      - task: work-ref
+        name: Override inline ref
+        work_dir: /opt
+
+      - cmd: pwd
+        name: Inline
+
+      - cmd: pwd
+        name: Override inline
+        work_dir: "/" # 1
+
+  work-dir-2:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: work-ref
+
+      - task: work-ref
+        name: Override inline ref
+        work_dir: /opt
+
+      - cmd: pwd
+        name: Inline
+
+      - cmd: pwd
+        name: Override inline
+        work_dir: "/" # 1
+
+  work-dir-3:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: work-nested
+
+      - task: work-nested
+        work_dir: /etc

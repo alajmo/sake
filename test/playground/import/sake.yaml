@@ -1,0 +1,15 @@
+disable_verify_host: true
+
+import:
+  - ./sake-1.yaml
+
+servers:
+  localhost:
+    host: localhost
+    local: true
+
+tasks:
+  ping:
+    spec: table
+    target: all
+    cmd: echo $ping

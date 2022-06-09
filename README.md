@@ -5,13 +5,17 @@
 
 # Sake
 
-`sake` is a CLI tool that enables you to run commands on servers via `ssh`. Think of it like `make`, you define servers and tasks in a declarative configuration file and then run the tasks on the servers.
+<img src="./res/logo.svg" align="right"/>
+
+`sake` is a CLI tool that enables you to run commands on servers via `ssh`. Think of it like `make`, you define servers and tasks in a config file and then run the tasks on the servers.
 
 It has many ergonomic features such as `auto-completion` of tasks, servers and tags. Additionally, it includes sub-commands to let you easily
 
 - `ssh` into servers or docker containers
 - list servers/tasks
 - create tasks that queries server info and present it in a compact table format
+
+![demo](res/output.gif)
 
 Interested in managing your git repositiories in a similar way? Checkout [mani](https://github.com/alajmo/mani)!
 
@@ -54,7 +58,7 @@ Auto-completion is available via `sake completion bash|zsh|fish` and man page vi
 Requires [go 1.18 or above](https://golang.org/doc/install).
 
 1. Clone the repo
-2. Build and run the executable
+2. Build and run the executable (for your target platform)
     ```sh
     make build && ./dist/sake
     ```
@@ -112,7 +116,7 @@ $ sake exec --all --output table --parallel 'find . -type f | wc -l'
 
 ## Documentation
 
-- [Examples](examples)
+- [Examples](docs/examples.md)
 - [Recipes](docs/recipes.md)
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)

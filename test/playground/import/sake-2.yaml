@@ -1,0 +1,21 @@
+servers:
+  pihole:
+    host: pihole.lan
+
+specs:
+  table:
+    output: table
+
+targets:
+  all:
+    all: true
+
+env:
+  foo: bar
+  ping: $(echo pong)
+
+tasks:
+  echo:
+    spec: table
+    target: all
+    cmd: echo "Hello World"

@@ -1,0 +1,37 @@
+disable_verify_host: true
+
+servers:
+  localhost:
+    host: localhost
+    local: true
+
+  server-1:
+    host: server-1.lan
+    work_dir: /home
+
+tasks:
+  ping:
+    cmd: echo pong
+
+  a:
+    task: ping
+
+  b:
+    tasks:
+      - task: a
+      - task: a
+
+  c:
+    tasks:
+      - task: b
+      - task: a
+
+  d:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: c
+      - task: c
+

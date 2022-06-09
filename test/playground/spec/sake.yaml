@@ -1,0 +1,102 @@
+disable_verify_host: true
+
+servers:
+  localhost:
+    host: localhost
+    local: true
+    tags: [reachable]
+
+  server-1:
+    host: server-1.lan
+    tags: [reachable]
+
+  unreachable:
+    host: unreachable.lan
+
+tasks:
+  ping:
+    cmd: echo pong
+
+  fatal:
+    spec:
+      output: table
+      any_errors_fatal: false
+    target:
+      tags: [reachable]
+    cmd: exit 1
+
+  fatal-true:
+    spec:
+      output: table
+      any_errors_fatal: true
+    target:
+      tags: [reachable]
+    cmd: exit 1
+
+  errors:
+    spec:
+      output: table
+      ignore_errors: false
+    target:
+      tags: [reachable]
+    tasks:
+      - cmd: echo 123
+      - cmd: exit 321
+      - cmd: echo 321
+
+  errors-true:
+    spec:
+      output: table
+      ignore_errors: true
+    target:
+      tags: [reachable]
+    tasks:
+      - cmd: echo 123
+      - cmd: exit 321
+      - cmd: echo 321
+
+  unreachable:
+    spec:
+      ignore_unreachable: false
+    target:
+      all: true
+    cmd: echo 123
+
+  unreachable-true:
+    spec:
+      ignore_unreachable: true
+    target:
+      all: true
+    cmd: echo 123
+
+  empty:
+    spec:
+      omit_empty: false
+      output: table
+    target:
+      tags: [reachable]
+    cmd: |
+      if [[ -d ".ssh" ]]
+      then
+          echo "Exists"
+      fi
+
+  empty-true:
+    spec:
+      omit_empty: true
+      output: table
+    target:
+      tags: [reachable]
+    cmd: |
+      if [[ -d ".ssh" ]]
+      then
+          echo "Exists"
+      fi
+
+  output:
+    spec:
+      output: text
+    tasks:
+      - cmd: echo "Hello world"
+      - cmd: echo "Bye world"
+      - cmd: echo "Hello again world"

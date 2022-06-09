@@ -1,0 +1,12 @@
+import:
+  - ./sake-2.yaml
+
+servers:
+  server-1:
+    host: server-1.lan
+
+tasks:
+  simple:
+    spec: table
+    target: all
+    cmd: echo $foo
