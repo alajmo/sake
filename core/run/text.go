@@ -56,7 +56,7 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 	var wg sync.WaitGroup
 	for j, cmd := range task.Tasks {
 		var client Client
-		combinedEnvs := dao.MergeEnvs(server.Envs, cmd.Envs)
+		combinedEnvs := dao.MergeEnvs(cmd.Envs, server.Envs)
 		if cmd.Local || server.Local {
 			client = run.LocalClients[server.Host]
 		} else {

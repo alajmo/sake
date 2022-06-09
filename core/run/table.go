@@ -78,7 +78,7 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 	var wg sync.WaitGroup
 
 	for j, cmd := range task.Tasks {
-		combinedEnvs := dao.MergeEnvs(server.Envs, cmd.Envs)
+		combinedEnvs := dao.MergeEnvs(cmd.Envs, server.Envs)
 		var client Client
 		if cmd.Local || server.Local {
 			client = run.LocalClients[server.Host]
