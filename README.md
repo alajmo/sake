@@ -48,7 +48,7 @@ Interested in managing your git repositiories in a similar way? Checkout [mani](
 
 * Via GO install
     ```sh
-    go get -u github.com/alajmo/sake
+    go install github.com/alajmo/sake@latest
     ```
 
 Auto-completion is available via `sake completion bash|zsh|fish` and man page via `sake gen`.
