@@ -17,7 +17,7 @@
 
 * via Go
   ```bash
-  go get -u github.com/alajmo/sake
+  go install github.com/alajmo/sake@latest
   ```
 
 ## Building From Source
