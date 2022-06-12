@@ -30,7 +30,7 @@ type SSHClient struct {
 	Name         string
 	User         string
 	Host         string
-	Port         uint8
+	Port         uint16
 	IdentityFile string
 	Password     string
 	AuthMethod   ssh.AuthMethod

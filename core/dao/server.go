@@ -19,7 +19,7 @@ type Server struct {
 	Desc         string
 	Host         string
 	User         string
-	Port         uint8
+	Port         uint16
 	Local        bool
 	Tags         []string
 	Envs         []string
@@ -36,7 +36,7 @@ type ServerYAML struct {
 	Desc         string    `yaml:"desc"`
 	Host         string    `yaml:"host"`
 	User         string    `yaml:"user"`
-	Port         uint8     `yaml:"port"`
+	Port         uint16    `yaml:"port"`
 	Local        bool      `yaml:"local"`
 	Tags         []string  `yaml:"tags"`
 	Env          yaml.Node `yaml:"env"`
