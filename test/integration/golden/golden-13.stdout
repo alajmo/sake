@@ -1,0 +1,10 @@
+
+[1m Server    [0m[2m|[0m[1m Ref  [0m[2m|[0m[1m Ref  [0m
+[2m-----------[0m[2m+[0m[2m------[0m[2m+[0m[2m------[0m
+ localhost [2m|[0m /usr [2m|[0m /etc 
+ server-1  [2m|[0m /usr [2m|[0m /etc 
+ server-2  [2m|[0m /usr [2m|[0m /etc 
+ server-3  [2m|[0m /usr [2m|[0m /etc 
+ server-4  [2m|[0m /usr [2m|[0m /etc 
+ server-5  [2m|[0m /usr [2m|[0m /etc 
+

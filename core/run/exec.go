@@ -176,10 +176,10 @@ func (run *Run) SetClients(
 			continue
 		}
 
-		var pass string
-		var err error
+		var pass *string
 		if server.Password != nil {
-			pass, err = dao.EvaluatePassword(*server.Password)
+			pw, err := dao.EvaluatePassword(*server.Password)
+			pass = &pw
 			if err != nil {
 				errConnect := &ErrConnect{
 					Name:   server.Name,
@@ -194,7 +194,7 @@ func (run *Run) SetClients(
 
 		identities = append(identities, Identity{
 			IdentityFile: server.IdentityFile,
-			Password:     &pass,
+			Password:     pass,
 		})
 	}
 

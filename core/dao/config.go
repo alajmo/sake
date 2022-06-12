@@ -152,18 +152,6 @@ func ReadConfig(configFilepath string, userConfigPath string, noColor bool) (Con
 	return config, nil
 }
 
-// Returns the config env list as a string splice in the form [key=value, key1=$(echo 123)]
-func (c ConfigYAML) ParseEnvsYAML() []string {
-	var envs []string
-	count := len(c.Env.Content)
-	for i := 0; i < count; i += 2 {
-		env := fmt.Sprintf("%v=%v", c.Env.Content[i].Value, c.Env.Content[i+1].Value)
-		envs = append(envs, env)
-	}
-
-	return envs
-}
-
 func getUserConfigFile(userConfigPath string) *string {
 	// Flag
 	if userConfigPath != "" {

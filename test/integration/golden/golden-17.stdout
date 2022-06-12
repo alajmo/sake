@@ -1,0 +1,16 @@
+
+[1m Server    [0m[2m|[0m[1m Output [0m[2m|[0m[1m Output                        [0m[2m|[0m[1m Output [0m
+[2m-----------[0m[2m+[0m[2m--------[0m[2m+[0m[2m-------------------------------[0m[2m+[0m[2m--------[0m
+ localhost [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m exit status 65                [2m|[0m        
+ server-1  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-2  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-3  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-4  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-5  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+

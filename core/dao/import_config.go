@@ -489,7 +489,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 			}
 			cr.ConfigErrors = append(cr.ConfigErrors, configError)
 		} else {
-			envs := c.ParseEnvsYAML()
+			envs := ParseNodeEnv(c.Env)
 			cr.Envs = append(cr.Envs, envs...)
 		}
 	}

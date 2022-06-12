@@ -1,0 +1,34 @@
+
+[1m Server    [0m[2m|[0m[1m Env        [0m
+[2m-----------[0m[2m+[0m[2m------------[0m
+ localhost [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+ server-1  [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+ server-2  [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+ server-3  [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+ server-4  [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+ server-5  [2m|[0m foo xyz    
+           [2m|[0m hello      
+           [2m|[0m cookie     
+           [2m|[0m release    
+           [2m|[0m task local 
+

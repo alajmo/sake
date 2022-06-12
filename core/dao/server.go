@@ -201,6 +201,7 @@ func ServerInSlice(name string, list []Server) bool {
 	return false
 }
 
+// FilterServers returns servers matching filters, it does a union select.
 func (c Config) FilterServers(
 	allServersFlag bool,
 	serversFlag []string,
@@ -227,7 +228,7 @@ func (c Config) FilterServers(
 			}
 		}
 
-		finalServers = GetUnionServers(tagServers, servers)
+		finalServers = GetUnionServers(servers, tagServers)
 	}
 
 	return finalServers, nil

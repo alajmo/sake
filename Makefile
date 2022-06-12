@@ -19,6 +19,23 @@ gofmt:
 lint:
 	golangci-lint run ./cmd/... ./core/...
 
+test:
+	go test -v ./test/integration/... -count=5 -clean
+	go test ./core/dao/***
+	go test -v ./test/integration/... -count=5 -clean
+
+unit-test:
+	go test ./core/dao/***
+
+integration-test:
+	go test -v ./test/integration/... -clean
+
+update-golden-files:
+	go test ./test/integration/... -update
+
+mock-ssh:
+	cd ./test && docker-compose up
+
 build:
 	CGO_ENABLED=0 go build \
 	-ldflags "-s -w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
@@ -42,4 +59,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint build build-all build-man build-and-link release clean
+.PHONY: tidy gofmt lint test build build-all build-man build-and-link release clean

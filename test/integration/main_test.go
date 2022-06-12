@@ -1,0 +1,143 @@
+package integration
+
+import (
+	"flag"
+	"fmt"
+	"strings"
+	"log"
+
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path"
+	"path/filepath"
+	"reflect"
+	"testing"
+
+	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/kr/pretty"
+)
+
+
+var tmpDir = "../tmp/"
+var rootDir = ""
+
+var debug = flag.Bool("debug", false, "debug")
+var update = flag.Bool("update", false, "update golden files")
+var clean = flag.Bool("clean", false, "Clean tmp directory after run")
+
+type TemplateTest struct {
+	TestName   string
+	TestCmd    string
+	Golden     string
+	Ignore     bool
+	WantErr    bool
+}
+
+func clearGolden(file string) {
+	// Guard against accidentally deleting outside directory
+	if strings.Contains(file, "golden") {
+		os.RemoveAll(file)
+	}
+}
+
+func clearTmp() {
+	files, _ := ioutil.ReadDir(".")
+	for _, f := range files {
+		filepath := path.Join(tmpDir, f.Name())
+		os.Remove(filepath)
+	}
+}
+
+func diff(expected, actual any) []string {
+	return pretty.Diff(expected, actual)
+}
+
+// This function only runs once.
+func TestMain(m *testing.M) {
+	clearTmp()
+
+	os.Exit(m.Run())
+}
+
+func Run(t *testing.T, tt TemplateTest) {
+	log.SetFlags(0)
+	// var goldenFile = filepath.Join(tmpDir, tt.Golden)
+	if _, err := os.Stat(tt.Golden); os.IsNotExist(err) {
+		err = os.WriteFile(tt.Golden, []byte{}, os.ModePerm)
+		if err != nil {
+			t.Fatalf("could not create golden file at %s: %v", tt.Golden, err)
+		}
+	}
+
+	t.Cleanup(func() {
+		if *clean {
+			clearTmp()
+		}
+	})
+
+	// Run test command
+	cmd := exec.Command("bash", "-c", tt.TestCmd)
+	// export GPG_TTY=$(tty)
+	// sockPath, found := os.LookupEnv("SSH_AUTH_SOCK")
+	cmd.Env = append(os.Environ(), "GPG_TTY=/dev/pts/32")
+	output, err := cmd.CombinedOutput()
+
+	// TEST: Check we get error if we want error
+	if (err != nil) != tt.WantErr {
+		t.Fatalf("%s\nexpected (err != nil) to be %v, but got %v. err: %v", output, tt.WantErr, err != nil, err)
+	}
+
+	if *debug {
+		fmt.Println(tt.TestCmd)
+		fmt.Println(string(output))
+	}
+
+	// Write output to tmp file which will be used to compare with golden files
+	err = ioutil.WriteFile(tt.Golden, output, 0644)
+	if err != nil {
+		t.Fatalf("could not write %s: %v", tt.Golden, err)
+	}
+
+	goldenFilePath := filepath.Join("../integration/golden", tt.Golden)
+	if *update {
+		clearGolden(goldenFilePath)
+
+		// Write stdout of test command to golden file
+		err = ioutil.WriteFile(goldenFilePath, output, os.ModePerm)
+		if err != nil {
+			t.Fatalf("could not write %s: %v", goldenFilePath, err)
+		}
+	} else {
+		actual, err := ioutil.ReadFile(tt.Golden)
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+
+		expected, err := ioutil.ReadFile(goldenFilePath)
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+
+		if !tt.Ignore && !reflect.DeepEqual(actual, expected) {
+			fmt.Println(text.FgGreen.Sprintf("EXPECTED:"))
+			fmt.Println("<---------------------")
+			fmt.Println(string(expected))
+			fmt.Println("--------------------->")
+
+			fmt.Println()
+
+			fmt.Println(text.FgRed.Sprintf("ACTUAL:"))
+			fmt.Println("<---------------------")
+			fmt.Println(string(actual))
+			fmt.Println("--------------------->")
+
+			t.Fatalf("\nfile: %v\ndiff: %v", text.FgBlue.Sprintf(goldenFilePath), diff(expected, actual))
+		}
+
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+	}
+}
+

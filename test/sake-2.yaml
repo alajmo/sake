@@ -1,0 +1,309 @@
+tasks:
+
+  #########
+  # BASIC #
+  #########
+
+  real-ping:
+    target: all
+    local: true
+    desc: ping server
+    cmd: ping $SAKE_SERVER_HOST -c 2
+
+  # Info
+  print-host:
+    name: Host
+    desc: print host
+    spec: info
+    target: all
+    cmd: echo $SAKE_SERVER_HOST
+
+  print-hostname:
+    name: Hostname
+    desc: print hostname
+    spec: info
+    target: all
+    cmd: hostname
+
+  print-os:
+    name: OS
+    desc: print OS
+    spec: info
+    target: all
+    cmd: |
+      os=$(lsb_release -si)
+      release=$(lsb_release -sr)
+      echo "$os $release"
+
+  print-kernel:
+    name: Kernel
+    desc: Print kernel version
+    spec: info
+    target: all
+    cmd: uname -r | awk -v FS='-' '{print $1}'
+
+  info:
+    desc: get remote info
+    spec: info
+    target: all
+
+    tasks:
+      - task: print-os
+      - task: print-kernel
+
+  #######
+  # ENV #
+  #######
+  env:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      foo: xyz
+      task: local
+    cmd: |
+      echo "foo $foo"
+      echo "hello $hello"
+      echo "cookie $cookie"
+      echo "release $release"
+      echo "task $task"
+
+  env-ref:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      task: 123
+      xyz: xyz
+    cmd: |
+      echo "foo $foo"
+      echo "hello $hello"
+      echo "cookie $cookie"
+      echo "release $release"
+      echo "task $task"
+      echo "xyz $xyz"
+
+  env-complex:
+    spec:
+      output: table
+    target:
+      all: true
+    env:
+      foo: xyz
+      task: local
+    tasks:
+      - task: env-ref
+
+      - task: env-ref
+        env:
+          task: remote
+
+  env-default:
+    spec:
+      output: table
+    target:
+      all: true
+    cmd: |
+      echo "# SERVER"
+      echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
+      echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
+      echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
+      echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
+      echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
+      echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
+      echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
+
+      echo
+      echo "# TASK"
+      echo "SAKE_TASK_ID $SAKE_TASK_ID"
+      echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
+      echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
+      echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
+
+      echo
+      echo "# CONFIG"
+      echo "SAKE_DIR $SAKE_DIR"
+      echo "SAKE_PATH $SAKE_PATH"
+      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
+      echo "SAKE_PASSWORD $SAKE_PASSWOD"
+      echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
+
+  ################
+  # NESTED TASKS #
+  ################
+
+  a:
+    task: ping
+
+  b:
+    tasks:
+      - task: a
+      - task: a
+
+  c:
+    tasks:
+      - task: b
+      - task: a
+
+  d:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: c
+      - task: c
+
+  #####################
+  # WORKING DIRECTORY #
+  #####################
+  work-ref:
+    name: ref
+    work_dir: "/usr" # 3
+    cmd: pwd
+
+  work-nested:
+    name: nested
+    # work_dir: "/sys"
+    tasks:
+      - task: work-ref
+
+  work-dir-1:
+    spec:
+      output: table
+    target:
+      all: true
+    work_dir: "/home" # 2
+    tasks:
+      - task: work-ref
+
+      - task: work-ref
+        name: Override inline ref
+        work_dir: /opt
+
+      - cmd: pwd
+        name: Inline
+
+      - cmd: pwd
+        name: Override inline
+        work_dir: "/" # 1
+
+  work-dir-2:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: work-ref
+
+      - task: work-ref
+        name: Override inline ref
+        work_dir: /opt
+
+      - cmd: pwd
+        name: Inline
+
+      - cmd: pwd
+        name: Override inline
+        work_dir: "/" # 1
+
+  work-dir-3:
+    spec:
+      output: table
+    target:
+      all: true
+    tasks:
+      - task: work-nested
+
+      - task: work-nested
+        work_dir: /etc
+
+  ########
+  # Spec #
+  ########
+
+  fatal:
+    spec:
+      output: table
+      any_errors_fatal: false
+    target:
+      tags: [reachable]
+    cmd: exit 1
+
+  fatal-true:
+    spec:
+      output: table
+      any_errors_fatal: true
+    target:
+      tags: [reachable]
+    cmd: exit 1
+
+  errors:
+    spec:
+      output: table
+      ignore_errors: false
+    target:
+      tags: [reachable]
+    tasks:
+      - cmd: echo 123
+      - cmd: exit 321
+      - cmd: echo 321
+
+  errors-true:
+    spec:
+      output: table
+      ignore_errors: true
+    target:
+      tags: [reachable]
+    tasks:
+      - cmd: echo 123
+      - cmd: exit 321
+      - cmd: echo 321
+
+  unreachable:
+    spec:
+      ignore_unreachable: false
+    target:
+      all: true
+    cmd: echo 123
+
+  unreachable-true:
+    spec:
+      ignore_unreachable: true
+    target:
+      all: true
+    cmd: echo 123
+
+  empty:
+    spec:
+      omit_empty: false
+      output: table
+    target:
+      tags: [reachable]
+    cmd: |
+      if [[ -d ".ssh" ]]
+      then
+          echo "Exists"
+      fi
+
+  empty-true:
+    spec:
+      omit_empty: true
+      output: table
+    target:
+      tags: [reachable]
+    cmd: |
+      if [[ -d ".ssh" ]]
+      then
+          echo "Exists"
+      fi
+
+  output:
+    spec:
+      output: table
+    tasks:
+      - cmd: echo "Hello world"
+      - cmd: echo "Bye world"
+      - cmd: echo "Hello again world"

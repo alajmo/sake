@@ -1,0 +1,130 @@
+
+[1m Server    [0m[2m|[0m[1m Env-Default                                        [0m
+[2m-----------[0m[2m+[0m[2m----------------------------------------------------[0m
+ localhost [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME localhost                         
+           [2m|[0m SAKE_SERVER_DESC localhost                         
+           [2m|[0m SAKE_SERVER_TAGS local,reachable                   
+           [2m|[0m SAKE_SERVER_HOST localhost                         
+           [2m|[0m SAKE_SERVER_USER samir                             
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL true                             
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+ server-1  [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME server-1                          
+           [2m|[0m SAKE_SERVER_DESC server-1                          
+           [2m|[0m SAKE_SERVER_TAGS remote,prod,reachable             
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.1                        
+           [2m|[0m SAKE_SERVER_USER test                              
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL false                            
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+ server-2  [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME server-2                          
+           [2m|[0m SAKE_SERVER_DESC server-2                          
+           [2m|[0m SAKE_SERVER_TAGS remote,prod,reachable             
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.2                        
+           [2m|[0m SAKE_SERVER_USER test                              
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL false                            
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+ server-3  [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME server-3                          
+           [2m|[0m SAKE_SERVER_DESC server-3                          
+           [2m|[0m SAKE_SERVER_TAGS remote,demo,reachable             
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.3                        
+           [2m|[0m SAKE_SERVER_USER test                              
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL false                            
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+ server-4  [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME server-4                          
+           [2m|[0m SAKE_SERVER_DESC server-4                          
+           [2m|[0m SAKE_SERVER_TAGS remote,demo,reachable             
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.4                        
+           [2m|[0m SAKE_SERVER_USER test                              
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL false                            
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+ server-5  [2m|[0m # SERVER                                           
+           [2m|[0m SAKE_SERVER_NAME server-5                          
+           [2m|[0m SAKE_SERVER_DESC server-5                          
+           [2m|[0m SAKE_SERVER_TAGS remote,sandbox,reachable          
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.5                        
+           [2m|[0m SAKE_SERVER_USER test                              
+           [2m|[0m SAKE_SERVER_PORT 22                                
+           [2m|[0m SAKE_SERVER_LOCAL false                            
+           [2m|[0m                                                    
+           [2m|[0m # TASK                                             
+           [2m|[0m SAKE_TASK_ID env-default                           
+           [2m|[0m SAKE_TASK_NAME                                     
+           [2m|[0m SAKE_TASK_DESC                                     
+           [2m|[0m SAKE_TASK_LOCAL false                              
+           [2m|[0m                                                    
+           [2m|[0m # CONFIG                                           
+           [2m|[0m SAKE_DIR /home/samir/projects/sake/test            
+           [2m|[0m SAKE_PATH /home/samir/projects/sake/test/sake.yaml 
+           [2m|[0m SAKE_IDENTITY_FILE                                 
+           [2m|[0m SAKE_PASSWORD                                      
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                              
+

@@ -1,0 +1,65 @@
+---
+version: "3"
+
+services:
+  server-1:
+    container_name: "server-1"
+    build: .
+    ports:
+      - "221:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.1
+
+  server-2:
+    container_name: "server-2"
+    build: .
+    ports:
+      - "222:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.2
+
+  server-3:
+    container_name: "server-3"
+    build: .
+    ports:
+      - "223:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.3
+
+  server-4:
+    container_name: "server-4"
+    build: .
+    ports:
+      - "224:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.4
+
+  server-5:
+    container_name: "server-5"
+    build: .
+    ports:
+      - "225:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.5
+
+  server-6:
+    container_name: "server-6"
+    build: .
+    ports:
+      - "226:22"
+    networks:
+        sake:
+            ipv4_address: 172.24.2.6
+
+networks:
+    sake:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: "172.24.2.0/16"

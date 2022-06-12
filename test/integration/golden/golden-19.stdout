@@ -1,0 +1,31 @@
+
+[1mUnreachable Hosts[0m
+
+[1m Server      [0m[2m|[0m[1m Host            [0m[2m|[0m[1m User  [0m[2m|[0m[1m Port [0m[2m|[0m[1m Error                                          [0m
+[2m-------------[0m[2m+[0m[2m-----------------[0m[2m+[0m[2m-------[0m[2m+[0m[2m------[0m[2m+[0m[2m------------------------------------------------[0m
+ unreachable [2m|[0m unreachable.lan [2m|[0m samir [2m|[0m 22   [2m|[0m dial tcp: lookup unreachable.lan: no such host 
+
+
+[1mTASK[0m [1munreachable-true[0m
+
+[32mlocalhost | [0m123
+
+[1mTASK[0m [1munreachable-true[0m
+
+[34m172.24.2.1 | [0m123
+
+[1mTASK[0m [1munreachable-true[0m
+
+[31m172.24.2.2 | [0m123
+
+[1mTASK[0m [1munreachable-true[0m
+
+[33m172.24.2.3 | [0m123
+
+[1mTASK[0m [1munreachable-true[0m
+
+[35m172.24.2.4 | [0m123
+
+[1mTASK[0m [1munreachable-true[0m
+
+[36m172.24.2.5 | [0m123

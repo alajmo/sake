@@ -1,0 +1,11 @@
+
+[1m Server    [0m[2m|[0m[1m Fatal-True    [0m
+[2m-----------[0m[2m+[0m[2m---------------[0m
+ localhost [2m|[0m               
+           [2m|[0m exit status 1 
+ server-1  [2m|[0m               
+ server-2  [2m|[0m               
+ server-3  [2m|[0m               
+ server-4  [2m|[0m               
+ server-5  [2m|[0m               
+

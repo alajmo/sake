@@ -1,0 +1,22 @@
+
+[1m Tag         [0m[2m|[0m[1m Server      [0m
+[2m-------------[0m[2m+[0m[2m-------------[0m
+ local       [2m|[0m localhost   
+ reachable   [2m|[0m localhost   
+             [2m|[0m server-1    
+             [2m|[0m server-2    
+             [2m|[0m server-3    
+             [2m|[0m server-4    
+             [2m|[0m server-5    
+ unreachable [2m|[0m unreachable 
+ remote      [2m|[0m server-1    
+             [2m|[0m server-2    
+             [2m|[0m server-3    
+             [2m|[0m server-4    
+             [2m|[0m server-5    
+ prod        [2m|[0m server-1    
+             [2m|[0m server-2    
+ demo        [2m|[0m server-3    
+             [2m|[0m server-4    
+ sandbox     [2m|[0m server-5    
+
