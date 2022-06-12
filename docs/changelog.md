@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+### Fixes
+
+- Use uint16 for port (#4)
+
 ## 0.1.6
 
 This is the initial release. Basic functionality is supported: running tasks over multiple remote servers and localhost.
