@@ -25,6 +25,6 @@ type ErrConnect struct {
 	Name   string
 	Host   string
 	User   string
-	Port   uint8
+	Port   uint16
 	Reason string
 }

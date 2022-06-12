@@ -400,7 +400,7 @@ func (run *Run) CheckTaskNoColor() {
 	}
 }
 
-func SSHToServer(host string, user string, port uint8, disableVerifyHost bool, knownHostFile string) error {
+func SSHToServer(host string, user string, port uint16, disableVerifyHost bool, knownHostFile string) error {
 	sshBin, err := exec.LookPath("ssh")
 	if err != nil {
 		return err
@@ -423,7 +423,7 @@ func SSHToServer(host string, user string, port uint8, disableVerifyHost bool, k
 	return nil
 }
 
-func ExecTTY(host string, user string, port uint8, cmd string, envs []string) error {
+func ExecTTY(host string, user string, port uint16, cmd string, envs []string) error {
 	execBin, err := exec.LookPath("bash")
 	if err != nil {
 		return err
