@@ -3,7 +3,6 @@ package integration
 import (
 	"testing"
 	"fmt"
-	"os"
 )
 
 var cases = []TemplateTest{
@@ -143,12 +142,6 @@ var cases = []TemplateTest{
 }
 
 func TestRunCmd(t *testing.T) {
-	// Change to ./test/tmp directory
-	err := os.Chdir(tmpDir)
-	if err != nil {
-		t.Fatalf("could not change dir: %v", err)
-	}
-
 	for i := range cases {
 		cases[i].Golden = fmt.Sprintf("golden-%d.stdout", i)
 

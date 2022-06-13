@@ -54,6 +54,18 @@ func diff(expected, actual any) []string {
 
 // This function only runs once.
 func TestMain(m *testing.M) {
+	// Create ./test/tmp if it doesn't exist
+	err := os.MkdirAll(tmpDir, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	// Change to ./test/tmp directory
+	err = os.Chdir(tmpDir)
+	if err != nil {
+		panic(err)
+	}
+
 	clearTmp()
 
 	os.Exit(m.Run())
