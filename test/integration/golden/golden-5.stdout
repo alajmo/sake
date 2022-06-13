@@ -1,11 +1,24 @@
 
-[1mUnreachable Hosts[0m
+[1mTASK[0m [1mping[0m: ping server
 
-[1m Server   [0m[2m|[0m[1m Host       [0m[2m|[0m[1m User [0m[2m|[0m[1m Port [0m[2m|[0m[1m Error                               [0m
-[2m----------[0m[2m+[0m[2m------------[0m[2m+[0m[2m------[0m[2m+[0m[2m------[0m[2m+[0m[2m-------------------------------------[0m
- server-2 [2m|[0m 172.24.2.2 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.2:22: i/o timeout 
- server-3 [2m|[0m 172.24.2.3 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.3:22: i/o timeout 
- server-5 [2m|[0m 172.24.2.5 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.5:22: i/o timeout 
- server-4 [2m|[0m 172.24.2.4 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.4:22: i/o timeout 
- server-1 [2m|[0m 172.24.2.1 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.1:22: i/o timeout 
+[32mlocalhost | [0mpong
 
+[1mTASK[0m [1mping[0m: ping server
+
+[34m172.24.2.1 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[31m172.24.2.2 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[33m172.24.2.3 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[35m172.24.2.4 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[36m172.24.2.5 | [0mpong
