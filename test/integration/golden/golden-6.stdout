@@ -1,12 +1,6 @@
 
-[1mUnreachable Hosts[0m
-
-[1m Server   [0m[2m|[0m[1m Host       [0m[2m|[0m[1m User [0m[2m|[0m[1m Port [0m[2m|[0m[1m Error                                             [0m
-[2m----------[0m[2m+[0m[2m------------[0m[2m+[0m[2m------[0m[2m+[0m[2m------[0m[2m+[0m[2m---------------------------------------------------[0m
- server-2 [2m|[0m 172.24.2.2 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.2:22: connect: no route to host 
- server-1 [2m|[0m 172.24.2.1 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.1:22: connect: no route to host 
-
-
-[1m Server [0m[2m|[0m[1m OS [0m[2m|[0m[1m Kernel [0m
-[2m--------[0m[2m+[0m[2m----[0m[2m+[0m[2m--------[0m
+[1m Server   [0m[2m|[0m[1m OS           [0m[2m|[0m[1m Kernel [0m
+[2m----------[0m[2m+[0m[2m--------------[0m[2m+[0m[2m--------[0m
+ server-1 [2m|[0m Ubuntu 21.10 [2m|[0m kernel 
+ server-2 [2m|[0m Ubuntu 21.10 [2m|[0m kernel 
 

@@ -1,11 +1,16 @@
 
-[1mUnreachable Hosts[0m
-
-[1m Server   [0m[2m|[0m[1m Host       [0m[2m|[0m[1m User [0m[2m|[0m[1m Port [0m[2m|[0m[1m Error                                             [0m
-[2m----------[0m[2m+[0m[2m------------[0m[2m+[0m[2m------[0m[2m+[0m[2m------[0m[2m+[0m[2m---------------------------------------------------[0m
- server-1 [2m|[0m 172.24.2.1 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.1:22: connect: no route to host 
- server-2 [2m|[0m 172.24.2.2 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.2:22: connect: no route to host 
- server-5 [2m|[0m 172.24.2.5 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.5:22: connect: no route to host 
- server-3 [2m|[0m 172.24.2.3 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.3:22: connect: no route to host 
- server-4 [2m|[0m 172.24.2.4 [2m|[0m test [2m|[0m 22   [2m|[0m dial tcp 172.24.2.4:22: connect: no route to host 
+[1m Server    [0m[2m|[0m[1m Output [0m[2m|[0m[1m Output                        [0m[2m|[0m[1m Output [0m
+[2m-----------[0m[2m+[0m[2m--------[0m[2m+[0m[2m-------------------------------[0m[2m+[0m[2m--------[0m
+ localhost [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m exit status 65                [2m|[0m        
+ server-1  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-2  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-3  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-4  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+ server-5  [2m|[0m 123    [2m|[0m                               [2m|[0m 321    
+           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
 
