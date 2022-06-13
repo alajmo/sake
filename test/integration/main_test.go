@@ -20,7 +20,6 @@ import (
 
 
 var tmpDir = "../tmp/"
-var rootDir = ""
 
 var debug = flag.Bool("debug", false, "debug")
 var update = flag.Bool("update", false, "update golden files")
