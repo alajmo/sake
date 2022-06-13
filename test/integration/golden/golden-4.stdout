@@ -1,0 +1,848 @@
+
+Task: ping
+Name: ping
+Desc: ping server
+Local: true
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: ping
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: ping server
+    SAKE_TASK_LOCAL: true
+Cmd: 
+    echo pong
+
+--
+
+Task: real-ping
+Name: real-ping
+Desc: ping server
+Local: true
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: real-ping
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: ping server
+    SAKE_TASK_LOCAL: true
+Cmd: 
+    ping $SAKE_SERVER_HOST -c 2
+
+--
+
+Task: print-host
+Name: Host
+Desc: print host
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: true
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: print-host
+    SAKE_TASK_NAME: Host
+    SAKE_TASK_DESC: print host
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    echo $SAKE_SERVER_HOST
+
+--
+
+Task: print-hostname
+Name: Hostname
+Desc: print hostname
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: true
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: print-hostname
+    SAKE_TASK_NAME: Hostname
+    SAKE_TASK_DESC: print hostname
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    hostname
+
+--
+
+Task: print-os
+Name: OS
+Desc: print OS
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: true
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: print-os
+    SAKE_TASK_NAME: OS
+    SAKE_TASK_DESC: print OS
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    os=$(lsb_release -si)
+    release=$(lsb_release -sr)
+    echo "$os $release"
+
+--
+
+Task: print-kernel
+Name: Kernel
+Desc: Print kernel version
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: true
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: print-kernel
+    SAKE_TASK_NAME: Kernel
+    SAKE_TASK_DESC: Print kernel version
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    echo kernel
+
+--
+
+Task: info
+Name: info
+Desc: get remote info
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: true
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: info
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: get remote info
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - OS: print OS
+    - Kernel: Print kernel version
+
+--
+
+Task: env
+Name: env
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: env
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+    foo: xyz
+    task: local
+Cmd: 
+    echo "foo $foo"
+    echo "hello $hello"
+    echo "cookie $cookie"
+    echo "release $release"
+    echo "task $task"
+
+--
+
+Task: env-ref
+Name: env-ref
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: env-ref
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+    task: 123
+    xyz: xyz
+Cmd: 
+    echo "foo $foo"
+    echo "hello $hello"
+    echo "cookie $cookie"
+    echo "release $release"
+    echo "task $task"
+    echo "xyz $xyz"
+
+--
+
+Task: env-complex
+Name: env-complex
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: env-complex
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+    foo: xyz
+    task: local
+Tasks: 
+    - env-ref
+    - env-ref
+
+--
+
+Task: env-default
+Name: env-default
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: env-default
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    echo "# SERVER"
+    echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
+    echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
+    echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
+    echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
+    echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
+    echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
+    echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
+    
+    echo
+    echo "# TASK"
+    echo "SAKE_TASK_ID $SAKE_TASK_ID"
+    echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
+    echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
+    echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
+    
+    echo
+    echo "# CONFIG"
+    echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
+    echo "SAKE_PASSWORD $SAKE_PASSWOD"
+    echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
+
+--
+
+Task: a
+Name: a
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: a
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ping: ping server
+
+--
+
+Task: b
+Name: b
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: b
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ping: ping server
+    - ping: ping server
+
+--
+
+Task: c
+Name: c
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: c
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+
+--
+
+Task: d
+Name: d
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: d
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+
+--
+
+Task: work-ref
+Name: ref
+Desc: 
+Local: false
+WorkDir: /usr
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: work-ref
+    SAKE_TASK_NAME: ref
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    pwd
+
+--
+
+Task: work-nested
+Name: nested
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: text
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: work-nested
+    SAKE_TASK_NAME: nested
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ref
+
+--
+
+Task: work-dir-1
+Name: work-dir-1
+Desc: 
+Local: false
+WorkDir: /home
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: work-dir-1
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ref
+    - Override inline ref
+    - Inline
+    - Override inline
+
+--
+
+Task: work-dir-2
+Name: work-dir-2
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: work-dir-2
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ref
+    - Override inline ref
+    - Inline
+    - Override inline
+
+--
+
+Task: work-dir-3
+Name: work-dir-3
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: work-dir-3
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - ref
+    - ref
+
+--
+
+Task: fatal
+Name: fatal
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: fatal
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    exit 1
+
+--
+
+Task: fatal-true
+Name: fatal-true
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: true
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: fatal-true
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    exit 1
+
+--
+
+Task: errors
+Name: errors
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: errors
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - cmd
+    - cmd
+    - cmd
+
+--
+
+Task: errors-true
+Name: errors-true
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: true
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: errors-true
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - cmd
+    - cmd
+    - cmd
+
+--
+
+Task: unreachable
+Name: unreachable
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: 
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: unreachable
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    echo 123
+
+--
+
+Task: unreachable-true
+Name: unreachable-true
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: true
+    Servers: 
+    Tags: 
+Spec: 
+    Output: 
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: true
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: unreachable-true
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    echo 123
+
+--
+
+Task: empty
+Name: empty
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: empty
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    if [[ -d ".ssh" ]]
+    then
+        echo "Exists"
+    fi
+
+--
+
+Task: empty-true
+Name: empty-true
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: reachable
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: true
+Env: 
+    SAKE_TASK_ID: empty-true
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Cmd: 
+    if [[ -d ".ssh" ]]
+    then
+        echo "Exists"
+    fi
+
+--
+
+Task: output
+Name: output
+Desc: 
+Local: false
+WorkDir: 
+Theme: default
+Target: 
+    All: false
+    Servers: 
+    Tags: 
+Spec: 
+    Output: table
+    Parallel: false
+    AnyErrorsFatal: false
+    IgnoreErrors: false
+    IgnoreUnreachable: false
+    OmitEmpty: false
+Env: 
+    SAKE_TASK_ID: output
+    SAKE_TASK_NAME: 
+    SAKE_TASK_DESC: 
+    SAKE_TASK_LOCAL: false
+Tasks: 
+    - cmd
+    - cmd
+    - cmd
+

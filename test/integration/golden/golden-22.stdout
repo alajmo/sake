@@ -1,0 +1,10 @@
+
+[1m Server    [0m[2m|[0m[1m Output      [0m[2m|[0m[1m Output    [0m[2m|[0m[1m Output            [0m
+[2m-----------[0m[2m+[0m[2m-------------[0m[2m+[0m[2m-----------[0m[2m+[0m[2m-------------------[0m
+ localhost [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+ server-1  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+ server-2  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+ server-3  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+ server-4  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+ server-5  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+

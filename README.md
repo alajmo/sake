@@ -7,13 +7,19 @@
 
 <img src="./res/logo.svg" align="right"/>
 
-`sake` is a CLI tool that enables you to run commands on servers via `ssh`. Think of it like `make`, you define servers and tasks in a config file and then run the tasks on the servers.
+`sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
-It has many ergonomic features such as `auto-completion` of tasks, servers and tags. Additionally, it includes sub-commands to let you easily
+This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
-- `ssh` into servers or docker containers
-- list servers/tasks
-- create tasks that queries server info and present it in a compact table format
+It has many ergonomic features:
+
+- `auto-completion` of tasks, servers and tags
+- `ssh` into servers or docker containers `sake ssh <server>`
+- list servers/tasks via `sake list servers|tasks`
+- create tasks that queries server info and present it in a compact table format `sake run <task> --output table`
+- open task/server in your preferred editor via `sake edit task <task>`
+- import other `sake.yaml` configs
+- and [many more!](docs/recipes.md)
 
 ![demo](res/output.gif)
 

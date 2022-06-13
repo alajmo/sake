@@ -1,0 +1,31 @@
+disable_verify_host: true
+
+import:
+  - ./sake-1.yaml
+
+targets:
+  all:
+    all: true
+
+  default:
+
+specs:
+  table:
+    output: table
+
+  text:
+    output: text
+
+  info:
+      output: table
+      parallel: true
+      ignore_errors: true
+      ignore_unreachable: true
+      any_errors_fatal: false
+
+tasks:
+  ping:
+    target: all
+    local: true
+    desc: ping server
+    cmd: echo pong

@@ -17,7 +17,25 @@ gofmt:
 	go fmt ./core/print/***.go
 
 lint:
-	golangci-lint run ./cmd/... ./core/...
+	golangci-lint run ./cmd/... ./core/... ./test/...
+
+test:
+	go test -v ./core/dao/***
+	cd ./test && docker-compose up -d
+	go test -v ./test/integration/... -count=5 -clean
+	cd ./test && docker-compose down
+
+unit-test:
+	go test -v ./core/dao/***
+
+integration-test:
+	go test -v ./test/integration/... -clean
+
+update-golden-files:
+	go test ./test/integration/... -update
+
+mock-ssh:
+	cd ./test && docker-compose up
 
 build:
 	CGO_ENABLED=0 go build \
@@ -42,4 +60,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint build build-all build-man build-and-link release clean
+.PHONY: tidy gofmt lint test unit-test integration-test update-golden-files mock-ssh build build-all build-man build-and-link release clean

@@ -45,7 +45,7 @@ For DIY hobby projects, where you're only interested in:
 4. Querying some data (uptime, disk size, etc.)
 5. Uploading/Downloading files
 
-the alternatives are overkill.
+the alternatives can be overkill.
 
 In terms of features, `sake` mostly resembles [Sup](https://github.com/pressly/sup), an excellent deployment tool, which `sake` has drawn inspiration from. There are however some notable differences:
 

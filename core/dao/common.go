@@ -122,8 +122,8 @@ func MergeEnvs(envs ...[]string) []string {
 }
 
 // SelectFirstNonEmpty selects first non-empty string.
-func SelectFirstNonEmpty(workDirs ...string) string {
-	for _, w := range workDirs {
+func SelectFirstNonEmpty(values ...string) string {
+	for _, w := range values {
 		if w != "" {
 			return w
 		}

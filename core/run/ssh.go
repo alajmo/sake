@@ -49,11 +49,14 @@ type Identity struct {
 	Password     *string
 }
 
-// InitAuthMethod initiates SSH authentication method.
-// if identity_file, use that file
-// if identity_file + passphrase, use that file with the passphrase
-// if passphrase, use passphrase connect
-// if nothing, attempt to use SSH Agent
+// InitAuthMethod initiates SSH authentications.
+// 1. Load keys from SSH Agent if available
+// 2. if global identity_file, use that file and return
+// 3. if global identity_file + passphrase, use that file with the passphrase and return
+// 4. [] TODO: if global passphrase, use passphrase connect and return
+// 5. if server identity_file, use that file
+// 7. if server identity_file + passphrase, use that file with the passphrase
+// 8. [] TODO: if passphrase, use passphrase connect
 func InitAuthMethod(globalIdentityFile string, globalPassword string, identities []Identity) (ssh.AuthMethod, error) {
 	var signers []ssh.Signer
 
@@ -65,14 +68,9 @@ func InitAuthMethod(globalIdentityFile string, globalPassword string, identities
 			return ssh.PublicKeys(), err
 		} else {
 			agent := agent.NewClient(sock)
-			signers, _ = agent.Signers()
+			s, _ := agent.Signers()
+			signers = append(signers, s...)
 		}
-	}
-
-	sock, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
-	if err == nil {
-		agent := agent.NewClient(sock)
-		signers, _ = agent.Signers()
 	}
 
 	// User provides global identity/password via flag/env

@@ -7,7 +7,6 @@ servers:
 
   server-1:
     host: server-1.lan
-    work_dir: /home
 
 tasks:
   ping:

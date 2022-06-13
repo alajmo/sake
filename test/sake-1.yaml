@@ -1,0 +1,54 @@
+import:
+  - ./sake-2.yaml
+
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    user: test
+    port: 22
+    local: true
+    tags: [local,reachable]
+    work_dir: /tmp
+
+  unreachable:
+    host: unreachable.lan
+    user: test
+    tags: [unreachable]
+
+  server-1:
+    desc: server-1
+    host: 172.24.2.1
+    tags: [remote,prod,reachable]
+    user: test
+    port: 22
+    password: test
+    work_dir: /home
+
+  server-2:
+    desc: server-2
+    host: 172.24.2.2
+    tags: [remote,prod,reachable]
+    user: test
+    password: test
+
+  server-3:
+    desc: server-3
+    host: 172.24.2.3
+    tags: [remote,demo,reachable]
+    user: test
+    password: test
+
+  server-4:
+    desc: server-4
+    host: 172.24.2.4
+    tags: [remote,demo,reachable]
+    user: test
+    password: test
+
+  server-5:
+    desc: server-5
+    host: 172.24.2.5
+    tags: [remote,sandbox,reachable]
+    user: test
+    password: test

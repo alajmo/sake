@@ -1,0 +1,33 @@
+
+[1m Task             [0m[2m|[0m[1m Description          [0m
+[2m------------------[0m[2m+[0m[2m----------------------[0m
+ ping             [2m|[0m ping server          
+ real-ping        [2m|[0m ping server          
+ Host             [2m|[0m print host           
+ Hostname         [2m|[0m print hostname       
+ OS               [2m|[0m print OS             
+ Kernel           [2m|[0m Print kernel version 
+ info             [2m|[0m get remote info      
+ env              [2m|[0m                      
+ env-ref          [2m|[0m                      
+ env-complex      [2m|[0m                      
+ env-default      [2m|[0m                      
+ a                [2m|[0m                      
+ b                [2m|[0m                      
+ c                [2m|[0m                      
+ d                [2m|[0m                      
+ ref              [2m|[0m                      
+ nested           [2m|[0m                      
+ work-dir-1       [2m|[0m                      
+ work-dir-2       [2m|[0m                      
+ work-dir-3       [2m|[0m                      
+ fatal            [2m|[0m                      
+ fatal-true       [2m|[0m                      
+ errors           [2m|[0m                      
+ errors-true      [2m|[0m                      
+ unreachable      [2m|[0m                      
+ unreachable-true [2m|[0m                      
+ empty            [2m|[0m                      
+ empty-true       [2m|[0m                      
+ output           [2m|[0m                      
+

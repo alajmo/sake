@@ -1,0 +1,11 @@
+
+[1m Server      [0m[2m|[0m[1m Host            [0m[2m|[0m[1m Tag                        [0m[2m|[0m[1m Description [0m
+[2m-------------[0m[2m+[0m[2m-----------------[0m[2m+[0m[2m----------------------------[0m[2m+[0m[2m-------------[0m
+ localhost   [2m|[0m localhost       [2m|[0m local, reachable           [2m|[0m localhost   
+ unreachable [2m|[0m unreachable.lan [2m|[0m unreachable                [2m|[0m             
+ server-1    [2m|[0m 172.24.2.1      [2m|[0m remote, prod, reachable    [2m|[0m server-1    
+ server-2    [2m|[0m 172.24.2.2      [2m|[0m remote, prod, reachable    [2m|[0m server-2    
+ server-3    [2m|[0m 172.24.2.3      [2m|[0m remote, demo, reachable    [2m|[0m server-3    
+ server-4    [2m|[0m 172.24.2.4      [2m|[0m remote, demo, reachable    [2m|[0m server-4    
+ server-5    [2m|[0m 172.24.2.5      [2m|[0m remote, sandbox, reachable [2m|[0m server-5    
+

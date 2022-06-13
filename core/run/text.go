@@ -180,11 +180,7 @@ func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) {
 		prefixPart2 = text.Bold.Sprintf(prefixName)
 	}
 
-	width, _, err := term.GetSize(0)
-	// Simply don't use width if there's an error
-	if err != nil {
-		panic(err)
-	}
+	width, _, _ := term.GetSize(0)
 
 	if prefixPart1 != "" {
 		header = fmt.Sprintf("%s %s", prefixPart1, prefixPart2)
