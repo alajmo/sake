@@ -159,7 +159,7 @@ Env:
     SAKE_TASK_DESC: Print kernel version
     SAKE_TASK_LOCAL: false
 Cmd: 
-    uname -r | awk -v FS='-' '{print $1}'
+    echo kernel
 
 --
 
@@ -329,8 +329,6 @@ Cmd:
     
     echo
     echo "# CONFIG"
-    echo "SAKE_DIR $SAKE_DIR"
-    echo "SAKE_PATH $SAKE_PATH"
     echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
     echo "SAKE_PASSWORD $SAKE_PASSWOD"
     echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"

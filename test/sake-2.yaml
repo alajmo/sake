@@ -40,7 +40,7 @@ tasks:
     desc: Print kernel version
     spec: info
     target: all
-    cmd: uname -r | awk -v FS='-' '{print $1}'
+    cmd: echo kernel
 
   info:
     desc: get remote info
@@ -124,8 +124,6 @@ tasks:
 
       echo
       echo "# CONFIG"
-      echo "SAKE_DIR $SAKE_DIR"
-      echo "SAKE_PATH $SAKE_PATH"
       echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
       echo "SAKE_PASSWORD $SAKE_PASSWOD"
       echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
