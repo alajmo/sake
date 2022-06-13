@@ -6,7 +6,7 @@
            [2m|[0m SAKE_SERVER_DESC localhost                         
            [2m|[0m SAKE_SERVER_TAGS local,reachable                   
            [2m|[0m SAKE_SERVER_HOST localhost                         
-           [2m|[0m SAKE_SERVER_USER samir                             
+           [2m|[0m SAKE_SERVER_USER test                              
            [2m|[0m SAKE_SERVER_PORT 22                                
            [2m|[0m SAKE_SERVER_LOCAL true                             
            [2m|[0m                                                    

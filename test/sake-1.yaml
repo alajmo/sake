@@ -5,12 +5,15 @@ servers:
   localhost:
     desc: localhost
     host: localhost
+    user: test
+    port: 22
     local: true
     tags: [local,reachable]
     work_dir: /tmp
 
   unreachable:
     host: unreachable.lan
+    user: test
     tags: [unreachable]
 
   server-1:
@@ -18,6 +21,7 @@ servers:
     host: 172.24.2.1
     tags: [remote,prod,reachable]
     user: test
+    port: 22
     password: test
     work_dir: /home
 
