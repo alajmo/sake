@@ -20,13 +20,13 @@ lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...
 
 test:
-	go test ./core/dao/***
+	go test -v ./core/dao/***
 	cd ./test && docker-compose up -d
 	go test -v ./test/integration/... -count=5 -clean
 	cd ./test && docker-compose down
 
 unit-test:
-	go test ./core/dao/***
+	go test -v ./core/dao/***
 
 integration-test:
 	go test -v ./test/integration/... -clean
