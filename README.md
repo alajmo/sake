@@ -15,7 +15,9 @@
 
 <br>
 
+<div align="center">
 <img src="./res/logo.svg" width="100" height="100" align="center"/>
+</div>
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
