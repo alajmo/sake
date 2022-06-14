@@ -1,3 +1,5 @@
+<h1 align="center"><code>just</code></h1>
+
 [![Build Status](https://github.com/alajmo/sake/workflows/test/badge.svg)](https://github.com/alajmo/sake/actions)
 [![Release](https://img.shields.io/github/release-pre/alajmo/sake.svg)](https://github.com/alajmo/sake/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://img.shields.io/badge/license-MIT-green)
@@ -5,7 +7,7 @@
 
 # Sake
 
-<img src="./res/logo.svg" align="right"/>
+<img src="./res/logo.svg" width="30" align="right"/>
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
@@ -16,7 +18,7 @@ It has many ergonomic features:
 - `auto-completion` of tasks, servers and tags
 - `ssh` into servers or docker containers `sake ssh <server>`
 - list servers/tasks via `sake list servers|tasks`
-- create tasks that queries server info and present it in a compact table format `sake run <task> --output table`
+- present task output in a compact table format `sake run <task> --output table`
 - open task/server in your preferred editor via `sake edit task <task>`
 - import other `sake.yaml` configs
 - and [many more!](docs/recipes.md)
