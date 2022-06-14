@@ -1,5 +1,3 @@
-<h1 align="center"><code>sake</code></h1>
-
 <div align="center">
   <a href="https://github.com/alajmo/sake/releases">
     <img src="https://img.shields.io/github/release-pre/alajmo/sake.svg" alt="version">
@@ -12,12 +10,15 @@
   <a href="https://img.shields.io/badge/license-MIT-green">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="build status">
   </a>
+</div>
+
+<h1 align="center"><code>sake</code></h1>
 
 <br>
 
-<div align="center">
 <img src="./res/logo.svg" width="100" height="100" align="center"/>
-</div>
+
+<br>
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
