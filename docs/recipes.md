@@ -122,7 +122,7 @@ The list sub-command will list servers, tasks, and tags in a table, HTML, or Mar
 
 - **Servers**: To list servers run `sake list servers [--tags=<tag>] [server]`
 
-  ```
+  ```bash
   $ sake list servers --tags remote
 
    Server    | Host         | Tag        | Description
@@ -133,7 +133,7 @@ The list sub-command will list servers, tasks, and tags in a table, HTML, or Mar
 
 - **Tasks**: To list tasks run `sake list tasks [task]`
 
-  ```
+  ```bash
   $ sake list tasks
 
    Task        | Description
@@ -148,7 +148,7 @@ The list sub-command will list servers, tasks, and tags in a table, HTML, or Mar
 
 - **Tags**: To list tags run `sake list tags [tag]`
 
-  ```
+  ```bash
   $ sake list tags
 
    Tag    | Server
@@ -166,7 +166,7 @@ The describe sub-command describes servers and tasks.
 
 - **Servers**: To describe all servers run `sake describe servers [--tags=<tag>] [server]`
 
-  ```
+  ```bash
   $ sake describe server pihole
 
   Name: pihole
@@ -189,7 +189,7 @@ The describe sub-command describes servers and tasks.
 
 - **Tasks**: To describe all tasks run `sake describe tasks [task]`
 
-  ```
+  ```bash
   $ sake describe task info
 
   Task: info
