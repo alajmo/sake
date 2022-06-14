@@ -32,22 +32,22 @@ _simulate_commands() {
     sleep 1s
 
     _mock "# Ping all hosts one by one"
-    sleep 1s
+    sleep 0.5s
     _mock "sake run ping --tags remote"
-    sleep 2s
+    sleep 1.3s
     clear
 
     _mock "# Ping all hosts in parallel"
-    sleep 1s
+    sleep 0.5s
     _mock "sake run ping --tags remote --parallel"
-    sleep 2s
+    sleep 1.3s
     clear
 
-    sleep 1s
+    sleep 0.5s
     _mock "# Query servers for some stats"
     sleep 1s
     _mock "sake run info --all --output table"
-    sleep 4s
+    sleep 2s
     clear
   '
 

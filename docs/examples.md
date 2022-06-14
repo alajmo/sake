@@ -2,6 +2,10 @@
 
 This is an example of how you can use `sake` for localhost. If you wish to run commands against remote servers via `ssh`, add your own remote servers.
 
+- [Simple Example](#simple-example)
+- [Advanced Example](#advanced-example)
+- [Real World Example](#real-world-example)
+
 ## Simple Example
 
 ```yaml title=sake.yaml
@@ -238,4 +242,17 @@ And run `sake run overview`:
  Server    | Date                   | Pwd  | Host      | Hostname | OS             | Kernel | Uptime
 -----------+------------------------+------+-----------+----------+----------------+--------+--------
  localhost | 2022-06-09T10:02:10UTC | /tmp | localhost | HAL-9000 | Debian testing | 5.16.0 | 9 days
+```
+
+## Real World Example
+
+This is an example of how I setup and manage my various Raspberry Pi's.
+
+Create the following files:
+
+```bash
+.
+├── sake.yaml
+├── common.yaml
+└── tasks.yaml
 ```

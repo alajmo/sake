@@ -1,29 +1,43 @@
-[![Build Status](https://github.com/alajmo/sake/workflows/test/badge.svg)](https://github.com/alajmo/sake/actions)
-[![Release](https://img.shields.io/github/release-pre/alajmo/sake.svg)](https://github.com/alajmo/sake/releases)
-[![License](https://img.shields.io/badge/license-MIT-green)](https://img.shields.io/badge/license-MIT-green)
-[![Go Report Card](https://goreportcard.com/badge/github.com/alajmo/sake)](https://goreportcard.com/report/github.com/alajmo/sake)
+<h1 align="center"><code>sake</code></h1>
 
-# Sake
+<div align="center">
+  <a href="https://github.com/alajmo/sake/releases">
+    <img src="https://img.shields.io/github/release-pre/alajmo/sake.svg" alt="version">
+  </a>
 
-<img src="./res/logo.svg" align="right"/>
+  <a href="https://github.com/alajmo/sake/actions">
+    <img src="https://github.com/alajmo/sake/workflows/build/badge.svg" alt="build status">
+  </a>
+
+  <a href="https://img.shields.io/badge/license-MIT-green">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="license">
+  </a>
+
+  <a href="https://goreportcard.com/report/github.com/alajmo/sake">
+    <img src="https://goreportcard.com/badge/github.com/alajmo/sake" alt="Go Report Card">
+  </a>
+
+</div>
+
+<br>
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
 This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
-It has many ergonomic features:
+`sake` has tons of features:
 
-- `auto-completion` of tasks, servers and tags
-- `ssh` into servers or docker containers `sake ssh <server>`
+- auto-completion of tasks, servers and tags
+- SSH into servers or docker containers `sake ssh <server>`
 - list servers/tasks via `sake list servers|tasks`
-- create tasks that queries server info and present it in a compact table format `sake run <task> --output table`
-- open task/server in your preferred editor via `sake edit task <task>`
+- present task output in a compact table format `sake run <task> --output table`
+- open task/server in your preferred editor `sake edit task <task>`
 - import other `sake.yaml` configs
 - and [many more!](docs/recipes.md)
 
 ![demo](res/output.gif)
 
-Interested in managing your git repositiories in a similar way? Checkout [mani](https://github.com/alajmo/mani)!
+Interested in managing your git repositiories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 
@@ -64,9 +78,12 @@ Auto-completion is available via `sake completion bash|zsh|fish` and man page vi
 Requires [go 1.18 or above](https://golang.org/doc/install).
 
 1. Clone the repo
-2. Build and run the executable (for your target platform)
+2. Build and run the executable
     ```sh
     make build && ./dist/sake
+
+    # To build for all target platforms run (requires goreleaser CLI)
+    make build-all
     ```
 
 ## Usage
@@ -119,6 +136,10 @@ $ sake exec --all --output table --parallel 'find . -type f | wc -l'
 -----------+--------
  localhost | 1
 ```
+
+### What's Next
+
+Check out the [examples page](/docs/examples.md) for more advanced examples and the [recipes page](/docs/recipes.md) for a list of useful recipes.
 
 ## Documentation
 
