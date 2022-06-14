@@ -6,7 +6,7 @@
   </a>
 
   <a href="https://github.com/alajmo/sake/actions">
-    <img src="https://github.com/alajmo/sake/workflows/Build/badge.svg" alt="build status">
+    <img src="https://github.com/alajmo/sake/workflows/build/badge.svg" alt="build status">
   </a>
 
   <a href="https://img.shields.io/badge/license-MIT-green">
@@ -50,8 +50,6 @@ Interested in managing your git repositiories in a similar way? Checkout [mani](
 - [License](#license)
 
 ## Installation
-
-[![Packaging status](https://repology.org/badge/vertical-allrepos/sake.svg)](https://repology.org/project/sake/versions)
 
 `sake` is available on Linux and Mac.
 

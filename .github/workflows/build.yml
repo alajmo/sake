@@ -1,8 +1,8 @@
-name: test
+name: build
 
 on:
   push:
-    branches: [main, dev, ci]
+    branches: [main, dev, ci, docs]
   pull_request:
     branches: [main]
 
