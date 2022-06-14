@@ -37,7 +37,7 @@ This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
 ![demo](res/output.gif)
 
-Interested in managing your git repositiories in a similar way? Checkout [mani](https://github.com/alajmo/mani)!
+Interested in managing your git repositiories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 
@@ -78,9 +78,12 @@ Auto-completion is available via `sake completion bash|zsh|fish` and man page vi
 Requires [go 1.18 or above](https://golang.org/doc/install).
 
 1. Clone the repo
-2. Build and run the executable (for your target platform)
+2. Build and run the executable
     ```sh
     make build && ./dist/sake
+
+    # To build for all target platforms run (requires goreleaser CLI)
+    make build-all
     ```
 
 ## Usage
