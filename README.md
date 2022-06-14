@@ -10,8 +10,13 @@
   </a>
 
   <a href="https://img.shields.io/badge/license-MIT-green">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="build status">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="license">
   </a>
+
+  <a href="https://goreportcard.com/report/github.com/alajmo/sake">
+    <img src="https://goreportcard.com/badge/github.com/alajmo/sake" alt="Go Report Card">
+  </a>
+
 </div>
 
 <br>
