@@ -25,7 +25,7 @@
 
 This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
-`sake` has many ergonomic features:
+`sake` has tons of features:
 
 - auto-completion of tasks, servers and tags
 - SSH into servers or docker containers `sake ssh <server>`
