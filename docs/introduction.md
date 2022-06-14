@@ -6,7 +6,7 @@ slug: /
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
-`sake` has many ergonomic features:
+`sake` has tons of features:
 
 - auto-completion of tasks, servers and tags
 - SSH into servers or docker containers `sake ssh <server>`
