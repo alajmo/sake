@@ -25,13 +25,13 @@
 
 This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
-It has many ergonomic features:
+`sake` has many ergonomic features:
 
-- `auto-completion` of tasks, servers and tags
-- `ssh` into servers or docker containers `sake ssh <server>`
+- auto-completion of tasks, servers and tags
+- SSH into servers or docker containers `sake ssh <server>`
 - list servers/tasks via `sake list servers|tasks`
 - present task output in a compact table format `sake run <task> --output table`
-- open task/server in your preferred editor via `sake edit task <task>`
+- open task/server in your preferred editor `sake edit task <task>`
 - import other `sake.yaml` configs
 - and [many more!](docs/recipes.md)
 
@@ -133,6 +133,10 @@ $ sake exec --all --output table --parallel 'find . -type f | wc -l'
 -----------+--------
  localhost | 1
 ```
+
+### What's Next
+
+Check out the [examples](/docs/examples.md) page for more advanced examples and the [recipes](/docs/recipes.md) page for a list of useful recipes.
 
 ## Documentation
 
