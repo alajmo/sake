@@ -239,3 +239,6 @@ And run `sake run overview`:
 -----------+------------------------+------+-----------+----------+----------------+--------+--------
  localhost | 2022-06-09T10:02:10UTC | /tmp | localhost | HAL-9000 | Debian testing | 5.16.0 | 9 days
 ```
+
+## Docker Compose Example
+

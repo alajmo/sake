@@ -139,7 +139,7 @@ $ sake exec --all --output table --parallel 'find . -type f | wc -l'
 
 ### What's Next
 
-Check out the [examples](/docs/examples.md) page for more advanced examples and the [recipes](/docs/recipes.md) page for a list of useful recipes.
+Check out the [examples page](/docs/examples.md) for more advanced examples and the [recipes page](/docs/recipes.md) for a list of useful recipes.
 
 ## Documentation
 

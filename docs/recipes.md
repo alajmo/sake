@@ -1,9 +1,13 @@
 # Recipes
 
- A list of useful recipes.
+A list of useful recipes.
 
 - [Upload File](#upload-file)
 - [Download File](#download-file)
+- [SSH to Server Using `sake`](#ssh-to-server-using-sake)
+- [List Servers, Tasks and Tags](#list-servers-tasks-and-tags)
+- [Describe Servers and Tasks](#describe-servers-and-tasks)
+- [Edit a Config, Task or Server via `sake`](#edit-a-config-task-or-server-via-sake)
 - [Run Command and SSH Afterwords](#run-command-and-ssh-afterwords)
 - [Create SSH Tunnel / Port Forward](#create-ssh-tunnel--port-forward)
 - [Attach to a Docker Instance on a Remote Server](#attach-to-a-docker-instance-on-a-remote-server)
@@ -20,6 +24,12 @@
 - [Disable Verify Host](#disable-verify-host)
 - [Change known_hosts Path](#change-known_hosts-path)
 - [List Default Variables](#list-default-variables)
+- [Change Default Behavior of `sake`](#change-default-behavior-of-sake)
+- [Invoke `sake` From Any Directory](#invoke-sake-from-any-directory)
+- [Import a Default User Config for Any `sake` Project](#import-a-default-user-config-for-any-sake-project)
+- [What's the Difference Between TTY, Attach and Local?](#whats-the-difference-between-tty-attach-and-local)
+- [Disable Colors](#disable-colors)
+- [Performing a Dry Run](#performing-a-dry-run)
 - [Modify Theme](#modify-theme)
 
 ## Upload File
@@ -101,6 +111,121 @@ $ sake run download --server <server> SRC=/some/file DEST=/some/file
 ```
 
 Note that rsync is required both on the client and remote machine.
+
+## SSH to Server Using `sake`
+
+You can SSH to any server via `sake ssh <server>`.
+
+## List Servers, Tasks and Tags
+
+The list sub-command will list servers, tasks, and tags in a table, HTML, or Markdown format.
+
+- **Servers**: To list servers run `sake list servers [--tags=<tag>] [server]`
+
+  ```
+  $ sake list servers --tags remote
+
+   Server    | Host         | Tag        | Description
+  -----------+--------------+------------+------------------------
+   server-1  | server-1.lan | remote, pi | hosts mealie, node-red
+   pihole    | pihole.lan   | remote, pi | runs pihole
+  ```
+
+- **Tasks**: To list tasks run `sake list tasks [task]`
+
+  ```
+  $ sake list tasks
+
+   Task        | Description
+  -------------+-------------------------------------
+   ping        | ping server
+   Host        | print host
+   Hostname    | print hostname
+   OS          | print OS
+   Kernel      | Print kernel version
+  ```
+
+
+- **Tags**: To list tags run `sake list tags [tag]`
+
+  ```
+  $ sake list tags
+
+   Tag    | Server
+  --------+-----------
+   local  | localhost
+   remote | server-1
+          | pihole
+   pi     | server-1
+          | pihole
+  ```
+
+## Describe Servers and Tasks
+
+The describe sub-command describes servers and tasks.
+
+- **Servers**: To describe all servers run `sake describe servers [--tags=<tag>] [server]`
+
+  ```
+  $ sake describe server pihole
+
+  Name: pihole
+  User: samir
+  Host: pihole.lan
+  Port: 22
+  Local: false
+  WorkDir:
+  Desc: runs pihole
+  Tags: remote, pi
+  Env:
+      SAKE_SERVER_NAME: pihole
+      SAKE_SERVER_DESC: runs pihole
+      SAKE_SERVER_TAGS: remote,pi
+      SAKE_SERVER_HOST: pihole.lan
+      SAKE_SERVER_USER: samir
+      SAKE_SERVER_PORT: 22
+      SAKE_SERVER_LOCAL: false
+  ```
+
+- **Tasks**: To describe all tasks run `sake describe tasks [task]`
+
+  ```
+  $ sake describe task info
+
+  Task: info
+  Name: info
+  Desc: get remote info
+  Local: false
+  WorkDir:
+  Theme: default
+  Target:
+      All: true
+      Servers:
+      Tags:
+  Spec:
+      Output: table
+      Parallel: true
+      AnyErrorsFatal: false
+      IgnoreErrors: true
+      IgnoreUnreachable: true
+      OmitEmpty: false
+  Env:
+      SAKE_TASK_ID: info
+      SAKE_TASK_NAME:
+      SAKE_TASK_DESC: get remote info
+      SAKE_TASK_LOCAL: false
+  Tasks:
+      - OS: print OS
+      - Kernel: Print kernel version
+      - Disk: print disk usage
+      - Memory: print memory stats
+      - CPU: print memory stats
+      - Uptime: print uptime
+  ```
+
+## Edit a Config, Task or Server via `sake`
+
+You can open up your preferred editor and edit a `sake` config directly via `sake edit [task|server] [name]`. For this to work, the `EDITOR` environment variable must be set.
 
 ## Run Command and SSH Afterwords
 
@@ -604,6 +729,54 @@ $ sake run env -s server-1
           | SAKE_PASSWORD
           | SAKE_KNOWN_HOSTS_FILE
 ```
+
+## Change Default Behavior of `sake`
+
+`sake` comes with default definitions for `specs`, `targets` and `themes` (see [config reference](config-reference) for their default values). This means when you run `sake list servers` or `sake run <task>` without specifying any spec/target/theme on the command line or in the config, it will use the default definition for those primitives.
+To override the default config, we can define a spec/target/theme that has the name `default`:
+
+For instance, let's target all servers by default:
+
+```yaml
+targets:
+ default:
+   all: true
+```
+
+Now when you run `sake run <task>`, it will target all servers by default.
+
+## Invoke `sake` From Any Directory
+
+When you invoke a `sake` command it will check the current directory and all parent directories for the following files: `sake.yaml`, `sake.yml`, `.sake.yaml`, `.sake.yml`. If you wish to invoke `sake` from any directory, you can:
+
+- set the environment variable to `SAKE_CONFIG=/path/to/my/config`, or
+- specify a runtime flag `sake list servers --config /path/to/my/config`
+
+## Import a Default User Config for Any `sake` Project
+
+By default `sake` will attempt to load a config file (if it exists) from your default config directory:
+
+- Linux: `$XDG_CONFIG_HOME/sake/config.yaml` or `$HOME/.config/sake/config.yaml` if `$XDG_CONFIG_HOME` is not set.
+- Darwin: `$HOME/Library/Application/sake/config.yaml`
+
+You can override this location by:
+
+- setting the environment variable to `SAKE_USER_CONFIG=/path/to/my/config`, or
+- specifying a runtime flag `sake list servers --user-config /path/to/my/config`
+
+## What's the Difference Between TTY, Attach and Local?
+
+- When specifying `tty: true` in a task config, the calling executable will be replaced by the command invoked by the task. This is useful when you require `tty`, for instance if you want to SSH and then attach to a running Docker container
+- If `attach: true` is set in a task config, then after running all the commands, `sake` will SSH into the first remote server
+- Setting `local: true` means the task will be executed on localhost, this can be useful for tasks that upload files via `rsync` for instance
+
+## Disable Colors
+
+To disable colors from `sake`, either add the flag `--no-color` or set the environment variable `NO_COLOR`.
+
+## Performing a Dry Run
+
+If you wish to perform a dry run you can do so by adding the flag `--dry-run`. It will then only print out the task for each server.
 
 ## Modify Theme
 
