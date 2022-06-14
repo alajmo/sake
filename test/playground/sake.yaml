@@ -133,10 +133,10 @@ tasks:
     tasks:
       - task: print-os
       - task: print-kernel
-      - task: print-disk
-      - task: print-mem
-      - task: print-cpu
-      - task: print-uptime
+      # - task: print-disk
+      # - task: print-mem
+      # - task: print-cpu
+      # - task: print-uptime
 
   # SSH
   ssh-and-cmd:
