@@ -51,6 +51,8 @@ Interested in managing your git repositiories in a similar way? Checkout [mani](
 
 ## Installation
 
+[![Packaging status](https://repology.org/badge/vertical-allrepos/sake.svg)](https://repology.org/project/sake/versions)
+
 `sake` is available on Linux and Mac.
 
 * Binaries are available on the [release](https://github.com/alajmo/sake/releases) page
