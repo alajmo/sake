@@ -1,13 +1,21 @@
-<h1 align="center"><code>just</code></h1>
+<h1 align="center"><code>sake</code></h1>
 
-[![Build Status](https://github.com/alajmo/sake/workflows/test/badge.svg)](https://github.com/alajmo/sake/actions)
-[![Release](https://img.shields.io/github/release-pre/alajmo/sake.svg)](https://github.com/alajmo/sake/releases)
-[![License](https://img.shields.io/badge/license-MIT-green)](https://img.shields.io/badge/license-MIT-green)
-[![Go Report Card](https://goreportcard.com/badge/github.com/alajmo/sake)](https://goreportcard.com/report/github.com/alajmo/sake)
+<div align="center">
+  <a href="https://github.com/alajmo/sake/releases">
+    <img src="https://img.shields.io/github/release-pre/alajmo/sake.svg" alt="version">
+  </a>
 
-# Sake
+  <a href="https://github.com/alajmo/sake/actions">
+    <img src="https://github.com/alajmo/sake/workflows/Build/badge.svg" alt="build status">
+  </a>
 
-<img src="./res/logo.svg" width="60" height="60" align="right"/>
+  <a href="https://img.shields.io/badge/license-MIT-green">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="build status">
+  </a>
+
+<br>
+
+<img src="./res/logo.svg" width="100" height="100" align="center"/>
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
 
