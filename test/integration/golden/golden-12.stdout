@@ -10,4 +10,11 @@ WantErr: false
  localhost | /usr | /opt                | /tmp       | /               
  server-1  | /usr | /opt                | /home/test | /               
  server-2  | /usr | /opt                | /home/test | /               
+ server-3  | /usr | /opt                | /home/test | /               
+ server-4  | /usr | /opt                | /home/test | /               
+ server-5  | /usr | /opt                | /home/test | /               
+ server-6  | /usr | /opt                | /home/test | /               
+ server-7  | /usr | /opt                | /home/test | /               
+ server-8  | /usr | /opt                | /home/test | /               
+ server-9  | /usr | /opt                | /home/test | /               
 

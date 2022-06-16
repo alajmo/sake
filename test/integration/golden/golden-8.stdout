@@ -25,4 +25,46 @@ WantErr: false
            | release    | release     
            | task local | task remote 
            | xyz xyz    | xyz xyz     
+ server-3  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-4  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-5  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-6  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-7  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-8  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-9  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
 

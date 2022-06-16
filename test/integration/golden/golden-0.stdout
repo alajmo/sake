@@ -11,9 +11,30 @@ WantErr: false
  reachable   | localhost   
              | server-1    
              | server-2    
+             | server-3    
+             | server-4    
+             | server-5    
+             | server-6    
+             | server-7    
+             | server-8    
+             | server-9    
  unreachable | unreachable 
  remote      | server-1    
              | server-2    
+             | server-3    
+             | server-4    
+             | server-5    
+             | server-6    
+             | server-7    
+             | server-8    
+             | server-9    
  prod        | server-1    
              | server-2    
+ demo        | server-3    
+             | server-4    
+             | server-7    
+             | server-8    
+             | server-9    
+ sandbox     | server-5    
+             | server-6    
 

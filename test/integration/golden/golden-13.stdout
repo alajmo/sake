@@ -10,4 +10,11 @@ WantErr: false
  localhost | /usr | /etc 
  server-1  | /usr | /etc 
  server-2  | /usr | /etc 
+ server-3  | /usr | /etc 
+ server-4  | /usr | /etc 
+ server-5  | /usr | /etc 
+ server-6  | /usr | /etc 
+ server-7  | /usr | /etc 
+ server-8  | /usr | /etc 
+ server-9  | /usr | /etc 
 
