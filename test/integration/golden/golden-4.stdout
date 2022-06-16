@@ -136,9 +136,7 @@ Env:
     SAKE_TASK_DESC: print OS
     SAKE_TASK_LOCAL: false
 Cmd: 
-    os=$(lsb_release -si)
-    release=$(lsb_release -sr)
-    echo "$os $release"
+    echo OS
 
 --
 
