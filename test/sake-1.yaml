@@ -37,7 +37,6 @@ servers:
     host: 172.24.2.4
     tags: [remote,demo,reachable]
     user: test
-    identity_file: keys/id_ed25519_rfc
     password: test
 
   server-4:
