@@ -2,13 +2,13 @@
 
 ## sake
 
-sake is a CLI tool that enables you to run commands on servers via ssh
+sake is a command runner for local and remote hosts
 
 ### Synopsis
 
-sake is a CLI tool that enables you to run commands on servers via ssh.
+sake is a command runner for local and remote hosts.
 
-Think of it like make, you define servers and tasks in a declarative configuration file and then run the tasks on the servers.
+You define servers and tasks in a sake.yaml config file and then run the tasks on the servers.
 
 
 ### Options

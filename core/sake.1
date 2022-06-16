@@ -1,14 +1,14 @@
-.TH "SAKE" "1" "2022-06-08T10:00:45CEST" "v0.1.4" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-06-16T22:59:22CEST" "v0.1.7" "Sake Manual" "sake"
 .SH NAME
-sake - sake is a CLI tool that enables you to run commands on servers via ssh
+sake - sake is a command runner for local and remote hosts
 
 .SH SYNOPSIS
 .B sake [command] [flags]
 
 .SH DESCRIPTION
-sake is a CLI tool that enables you to run commands on servers via ssh.
+sake is a command runner for local and remote hosts.
 
-Think of it like make, you define servers and tasks in a declarative configuration file and then run the tasks on the servers.
+You define servers and tasks in a sake.yaml config file and then run the tasks on the servers.
 
 
 .SH OPTIONS
@@ -304,8 +304,6 @@ The sake.yaml config is based on the following concepts:
 \fBtargets\fR are configs that provide shorthand filtering of \fBservers\fR when executing tasks
 .IP "\(bu" 2
 \fBthemes\fR are used to modify the output of \fBsake\fR commands
-.IP "" 0
-\fBenvs\fR are environment variables that can be defined globally, per server and per task
 .IP "" 0
 .RE
 
