@@ -21,6 +21,7 @@ lint:
 
 test:
 	go test -v ./core/dao/***
+	cd ./test && docker-compose build
 	cd ./test && docker-compose up -d
 	sleep 10
 	go test -v ./test/integration/... -count=5 -clean
