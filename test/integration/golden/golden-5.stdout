@@ -5,20 +5,28 @@
 
 [1mTASK[0m [1mping[0m: ping server
 
-[34m172.24.2.1 | [0mpong
+[34m172.24.2.2 | [0mpong
 
 [1mTASK[0m [1mping[0m: ping server
 
-[31m172.24.2.2 | [0mpong
+[31m172.24.2.3 | [0mpong
 
 [1mTASK[0m [1mping[0m: ping server
 
-[33m172.24.2.3 | [0mpong
+[33m172.24.2.4 | [0mpong
 
 [1mTASK[0m [1mping[0m: ping server
 
-[35m172.24.2.4 | [0mpong
+[35m172.24.2.5 | [0mpong
 
 [1mTASK[0m [1mping[0m: ping server
 
-[36m172.24.2.5 | [0mpong
+[36m172.24.2.6 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[32m172.24.2.7 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[34m2001:3984:3989::10 | [0mpong

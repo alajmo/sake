@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Support ipv6 hosts
+- Fix identity_file when set via config (#7)
+
 ## 0.1.7
 
 ### Fixes

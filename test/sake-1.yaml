@@ -18,7 +18,7 @@ servers:
 
   server-1:
     desc: server-1
-    host: 172.24.2.1
+    host: 172.24.2.2
     tags: [remote,prod,reachable]
     user: test
     port: 22
@@ -27,28 +27,42 @@ servers:
 
   server-2:
     desc: server-2
-    host: 172.24.2.2
+    host: 172.24.2.3
     tags: [remote,prod,reachable]
     user: test
     password: test
 
   server-3:
     desc: server-3
-    host: 172.24.2.3
+    host: 172.24.2.4
     tags: [remote,demo,reachable]
     user: test
     password: test
 
   server-4:
     desc: server-4
-    host: 172.24.2.4
+    host: 172.24.2.5
     tags: [remote,demo,reachable]
     user: test
     password: test
 
   server-5:
     desc: server-5
-    host: 172.24.2.5
+    host: 172.24.2.6
     tags: [remote,sandbox,reachable]
+    user: test
+    password: test
+
+  server-6:
+    desc: server-6
+    host: 172.24.2.7
+    tags: [remote,sandbox,reachable]
+    user: test
+    password: test
+
+  server-7:
+    desc: server-7
+    host: 2001:3984:3989::10
+    tags: [remote,demo,reachable]
     user: test
     password: test
