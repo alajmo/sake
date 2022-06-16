@@ -6,7 +6,9 @@ services:
     container_name: "server-1"
     build: .
     ports:
-      - "221:22"
+      - "222:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.2
@@ -15,7 +17,9 @@ services:
     container_name: "server-2"
     build: .
     ports:
-      - "222:22"
+      - "223:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.3
@@ -24,7 +28,9 @@ services:
     container_name: "server-3"
     build: .
     ports:
-      - "223:22"
+      - "224:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.4
@@ -33,7 +39,9 @@ services:
     container_name: "server-4"
     build: .
     ports:
-      - "224:22"
+      - "225:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.5
@@ -42,7 +50,9 @@ services:
     container_name: "server-5"
     build: .
     ports:
-      - "225:22"
+      - "226:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.6
@@ -51,7 +61,9 @@ services:
     container_name: "server-6"
     build: .
     ports:
-      - "226:22"
+      - "227:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.7
@@ -60,7 +72,31 @@ services:
     container_name: "server-7"
     build: .
     ports:
-      - "227:22"
+      - "228:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
+    networks:
+      sake:
+        ipv4_address: 172.24.2.8
+
+  server-8:
+    container_name: "server-8"
+    build: .
+    ports:
+      - "229:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
+    networks:
+      sake:
+        ipv4_address: 172.24.2.9
+
+  server-9:
+    container_name: "server-9"
+    build: .
+    ports:
+      - "230:22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv6_address: 2001:3984:3989::10

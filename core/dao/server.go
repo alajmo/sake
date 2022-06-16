@@ -177,7 +177,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					// Relative filepath
 					identityFile := filepath.Join(c.Dir, *serverYAML.IdentityFile)
 					server.IdentityFile = &identityFile
-					fmt.Println(*server.IdentityFile)
 				}
 			}
 		}

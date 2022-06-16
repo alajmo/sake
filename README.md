@@ -17,6 +17,9 @@
     <img src="https://goreportcard.com/badge/github.com/alajmo/sake" alt="Go Report Card">
   </a>
 
+  <a href="https://pkg.go.dev/github.com/alajmo/sake">
+    <img src="https://pkg.go.dev/badge/github.com/alajmo/sake.svg" alt="reference">
+  </a>
 </div>
 
 <br>

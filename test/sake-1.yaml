@@ -22,46 +22,64 @@ servers:
     tags: [remote,prod,reachable]
     user: test
     port: 22
-    password: test
-    work_dir: /home
+    # work_dir: /home/test
+    identity_file: keys/id_ed25519_pem
+    password: testing
 
   server-2:
     desc: server-2
     host: 172.24.2.3
     tags: [remote,prod,reachable]
     user: test
-    password: test
+    identity_file: keys/id_ed25519_pem_no
 
   server-3:
     desc: server-3
     host: 172.24.2.4
     tags: [remote,demo,reachable]
     user: test
-    password: test
+    identity_file: keys/id_ed25519_rfc
+    password: testing
 
   server-4:
     desc: server-4
     host: 172.24.2.5
     tags: [remote,demo,reachable]
     user: test
-    password: test
+    identity_file: keys/id_ed25519_rfc_no
 
   server-5:
     desc: server-5
     host: 172.24.2.6
     tags: [remote,sandbox,reachable]
     user: test
-    password: test
+    identity_file: keys/id_rsa_pem
+    password: testing
 
   server-6:
     desc: server-6
     host: 172.24.2.7
     tags: [remote,sandbox,reachable]
     user: test
-    password: test
+    identity_file: keys/id_rsa_pem_no
 
   server-7:
     desc: server-7
+    host: 172.24.2.8
+    tags: [remote,demo,reachable]
+    user: test
+    identity_file: keys/id_rsa_rfc
+    password: testing
+
+  server-8:
+    desc: server-8
+    host: 172.24.2.9
+    tags: [remote,demo,reachable]
+    user: test
+    identity_file: keys/id_rsa_rfc_no
+
+  server-9:
+    desc: server-9
     host: 2001:3984:3989::10
     tags: [remote,demo,reachable]
     user: test
