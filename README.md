@@ -153,6 +153,7 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Project Background](docs/project-background.md)
 - [Changelog](docs/changelog.md)
 - [sakecli.com](https://sakecli.com/)
+- [Contributing](docs/contributing.md)
 
 ## [License](LICENSE)
 

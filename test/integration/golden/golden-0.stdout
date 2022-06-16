@@ -10,6 +10,8 @@
              [2m|[0m server-5    
              [2m|[0m server-6    
              [2m|[0m server-7    
+             [2m|[0m server-8    
+             [2m|[0m server-9    
  unreachable [2m|[0m unreachable 
  remote      [2m|[0m server-1    
              [2m|[0m server-2    
@@ -18,11 +20,15 @@
              [2m|[0m server-5    
              [2m|[0m server-6    
              [2m|[0m server-7    
+             [2m|[0m server-8    
+             [2m|[0m server-9    
  prod        [2m|[0m server-1    
              [2m|[0m server-2    
  demo        [2m|[0m server-3    
              [2m|[0m server-4    
              [2m|[0m server-7    
+             [2m|[0m server-8    
+             [2m|[0m server-9    
  sandbox     [2m|[0m server-5    
              [2m|[0m server-6    
 

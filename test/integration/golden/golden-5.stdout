@@ -29,4 +29,12 @@
 
 [1mTASK[0m [1mping[0m: ping server
 
-[34m2001:3984:3989::10 | [0mpong
+[34m172.24.2.8 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[31m172.24.2.9 | [0mpong
+
+[1mTASK[0m [1mping[0m: ping server
+
+[33m2001:3984:3989::10 | [0mpong

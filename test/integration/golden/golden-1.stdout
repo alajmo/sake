@@ -9,5 +9,7 @@
  server-4    [2m|[0m 172.24.2.5         [2m|[0m remote, demo, reachable    [2m|[0m server-4    
  server-5    [2m|[0m 172.24.2.6         [2m|[0m remote, sandbox, reachable [2m|[0m server-5    
  server-6    [2m|[0m 172.24.2.7         [2m|[0m remote, sandbox, reachable [2m|[0m server-6    
- server-7    [2m|[0m 2001:3984:3989::10 [2m|[0m remote, demo, reachable    [2m|[0m server-7    
+ server-7    [2m|[0m 172.24.2.8         [2m|[0m remote, demo, reachable    [2m|[0m server-7    
+ server-8    [2m|[0m 172.24.2.9         [2m|[0m remote, demo, reachable    [2m|[0m server-8    
+ server-9    [2m|[0m 2001:3984:3989::10 [2m|[0m remote, demo, reachable    [2m|[0m server-9    
 

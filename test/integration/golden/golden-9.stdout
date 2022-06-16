@@ -138,6 +138,44 @@
            [2m|[0m SAKE_SERVER_NAME server-7                 
            [2m|[0m SAKE_SERVER_DESC server-7                 
            [2m|[0m SAKE_SERVER_TAGS remote,demo,reachable    
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.8               
+           [2m|[0m SAKE_SERVER_USER test                     
+           [2m|[0m SAKE_SERVER_PORT 22                       
+           [2m|[0m SAKE_SERVER_LOCAL false                   
+           [2m|[0m                                           
+           [2m|[0m # TASK                                    
+           [2m|[0m SAKE_TASK_ID env-default                  
+           [2m|[0m SAKE_TASK_NAME                            
+           [2m|[0m SAKE_TASK_DESC                            
+           [2m|[0m SAKE_TASK_LOCAL false                     
+           [2m|[0m                                           
+           [2m|[0m # CONFIG                                  
+           [2m|[0m SAKE_IDENTITY_FILE                        
+           [2m|[0m SAKE_PASSWORD                             
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                     
+ server-8  [2m|[0m # SERVER                                  
+           [2m|[0m SAKE_SERVER_NAME server-8                 
+           [2m|[0m SAKE_SERVER_DESC server-8                 
+           [2m|[0m SAKE_SERVER_TAGS remote,demo,reachable    
+           [2m|[0m SAKE_SERVER_HOST 172.24.2.9               
+           [2m|[0m SAKE_SERVER_USER test                     
+           [2m|[0m SAKE_SERVER_PORT 22                       
+           [2m|[0m SAKE_SERVER_LOCAL false                   
+           [2m|[0m                                           
+           [2m|[0m # TASK                                    
+           [2m|[0m SAKE_TASK_ID env-default                  
+           [2m|[0m SAKE_TASK_NAME                            
+           [2m|[0m SAKE_TASK_DESC                            
+           [2m|[0m SAKE_TASK_LOCAL false                     
+           [2m|[0m                                           
+           [2m|[0m # CONFIG                                  
+           [2m|[0m SAKE_IDENTITY_FILE                        
+           [2m|[0m SAKE_PASSWORD                             
+           [2m|[0m SAKE_KNOWN_HOSTS_FILE                     
+ server-9  [2m|[0m # SERVER                                  
+           [2m|[0m SAKE_SERVER_NAME server-9                 
+           [2m|[0m SAKE_SERVER_DESC server-9                 
+           [2m|[0m SAKE_SERVER_TAGS remote,demo,reachable    
            [2m|[0m SAKE_SERVER_HOST 2001:3984:3989::10       
            [2m|[0m SAKE_SERVER_USER test                     
            [2m|[0m SAKE_SERVER_PORT 22                       

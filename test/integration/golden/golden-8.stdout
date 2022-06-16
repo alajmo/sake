@@ -49,4 +49,16 @@
            [2m|[0m release    [2m|[0m release     
            [2m|[0m task local [2m|[0m task remote 
            [2m|[0m xyz xyz    [2m|[0m xyz xyz     
+ server-8  [2m|[0m foo xyz    [2m|[0m foo xyz     
+           [2m|[0m hello      [2m|[0m hello       
+           [2m|[0m cookie     [2m|[0m cookie      
+           [2m|[0m release    [2m|[0m release     
+           [2m|[0m task local [2m|[0m task remote 
+           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
+ server-9  [2m|[0m foo xyz    [2m|[0m foo xyz     
+           [2m|[0m hello      [2m|[0m hello       
+           [2m|[0m cookie     [2m|[0m cookie      
+           [2m|[0m release    [2m|[0m release     
+           [2m|[0m task local [2m|[0m task remote 
+           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
 
