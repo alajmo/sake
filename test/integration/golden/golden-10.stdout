@@ -9,4 +9,5 @@ WantErr: false
 -----------+------+------+------+------+------+------
  localhost | pong | pong | pong | pong | pong | pong 
  server-1  | pong | pong | pong | pong | pong | pong 
+ server-2  | pong | pong | pong | pong | pong | pong 
 

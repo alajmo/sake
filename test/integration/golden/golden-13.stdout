@@ -9,4 +9,5 @@ WantErr: false
 -----------+------+------
  localhost | /usr | /etc 
  server-1  | /usr | /etc 
+ server-2  | /usr | /etc 
 

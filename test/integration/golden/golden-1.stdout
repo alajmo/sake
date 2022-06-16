@@ -10,4 +10,5 @@ WantErr: false
  localhost   | localhost       | local, reachable        | localhost   
  unreachable | unreachable.lan | unreachable             |             
  server-1    | 172.24.2.2      | remote, prod, reachable | server-1    
+ server-2    | 172.24.2.3      | remote, prod, reachable | server-2    
 

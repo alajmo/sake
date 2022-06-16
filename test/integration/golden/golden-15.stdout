@@ -10,4 +10,5 @@ WantErr: false
  localhost |               
            | exit status 1 
  server-1  |               
+ server-2  |               
 

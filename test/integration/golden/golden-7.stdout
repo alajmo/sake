@@ -17,4 +17,9 @@ WantErr: false
            | cookie     
            | release    
            | task local 
+ server-2  | foo xyz    
+           | hello      
+           | cookie     
+           | release    
+           | task local 
 

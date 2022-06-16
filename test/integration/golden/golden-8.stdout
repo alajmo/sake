@@ -19,4 +19,10 @@ WantErr: false
            | release    | release     
            | task local | task remote 
            | xyz xyz    | xyz xyz     
+ server-2  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
 

@@ -6,23 +6,23 @@ services:
     container_name: "server-1"
     build: .
     ports:
-      - "222:22"
+      - "22"
     volumes:
       - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.2
 
-  # server-2:
-  #   container_name: "server-2"
-  #   build: .
-  #   ports:
-  #     - "223:22"
-  #   volumes:
-  #     - ./authorized_keys:/home/test/.ssh/authorized_keys
-  #   networks:
-  #     sake:
-  #       ipv4_address: 172.24.2.3
+  server-2:
+    container_name: "server-2"
+    build: .
+    ports:
+      - "22"
+    volumes:
+      - ./authorized_keys:/home/test/.ssh/authorized_keys
+    networks:
+      sake:
+        ipv4_address: 172.24.2.3
 
   # server-3:
   #   container_name: "server-3"

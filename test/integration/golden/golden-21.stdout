@@ -8,4 +8,5 @@ WantErr: false
  Server   | Empty-True 
 ----------+------------
  server-1 | Exists     
+ server-2 | Exists     
 

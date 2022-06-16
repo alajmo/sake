@@ -60,3 +60,22 @@ Env:
     SAKE_SERVER_PORT: 22
     SAKE_SERVER_LOCAL: false
 
+--
+
+Name: server-2
+User: test
+Host: 172.24.2.3
+Port: 22
+Local: false
+WorkDir: 
+Desc: server-2
+Tags: remote, prod, reachable
+Env: 
+    SAKE_SERVER_NAME: server-2
+    SAKE_SERVER_DESC: server-2
+    SAKE_SERVER_TAGS: remote,prod,reachable
+    SAKE_SERVER_HOST: 172.24.2.3
+    SAKE_SERVER_USER: test
+    SAKE_SERVER_PORT: 22
+    SAKE_SERVER_LOCAL: false
+

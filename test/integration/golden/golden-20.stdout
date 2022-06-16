@@ -9,4 +9,5 @@ WantErr: false
 -----------+--------
  localhost |        
  server-1  | Exists 
+ server-2  | Exists 
 

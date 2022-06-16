@@ -9,4 +9,5 @@ WantErr: false
 -----------+------+---------------------+------------+-----------------
  localhost | /usr | /opt                | /tmp       | /               
  server-1  | /usr | /opt                | /home/test | /               
+ server-2  | /usr | /opt                | /home/test | /               
 

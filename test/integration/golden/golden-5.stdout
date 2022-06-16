@@ -12,3 +12,7 @@ localhost | pong
 TASK ping: ping server
 
 172.24.2.2 | pong
+
+TASK ping: ping server
+
+172.24.2.3 | pong

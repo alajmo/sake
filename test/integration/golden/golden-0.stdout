@@ -10,7 +10,10 @@ WantErr: false
  local       | localhost   
  reachable   | localhost   
              | server-1    
+             | server-2    
  unreachable | unreachable 
  remote      | server-1    
+             | server-2    
  prod        | server-1    
+             | server-2    
 

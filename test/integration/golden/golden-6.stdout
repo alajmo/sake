@@ -8,4 +8,5 @@ WantErr: false
  Server   | OS | Kernel 
 ----------+----+--------
  server-1 | OS | kernel 
+ server-2 | OS | kernel 
 

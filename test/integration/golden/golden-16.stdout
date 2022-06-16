@@ -11,4 +11,6 @@ WantErr: false
            |        | exit status 65                |        
  server-1  | 123    |                               |        
            |        | Process exited with status 65 |        
+ server-2  | 123    |                               |        
+           |        | Process exited with status 65 |        
 

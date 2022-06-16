@@ -19,3 +19,7 @@ localhost | 123
 TASK unreachable-true
 
 172.24.2.2 | 123
+
+TASK unreachable-true
+
+172.24.2.3 | 123

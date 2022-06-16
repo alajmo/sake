@@ -11,4 +11,6 @@ WantErr: false
            | exit status 1                
  server-1  |                              
            | Process exited with status 1 
+ server-2  |                              
+           | Process exited with status 1 
 

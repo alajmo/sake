@@ -45,4 +45,23 @@ WantErr: false
            | SAKE_IDENTITY_FILE                     
            | SAKE_PASSWORD                          
            | SAKE_KNOWN_HOSTS_FILE                  
+ server-2  | # SERVER                               
+           | SAKE_SERVER_NAME server-2              
+           | SAKE_SERVER_DESC server-2              
+           | SAKE_SERVER_TAGS remote,prod,reachable 
+           | SAKE_SERVER_HOST 172.24.2.3            
+           | SAKE_SERVER_USER test                  
+           | SAKE_SERVER_PORT 22                    
+           | SAKE_SERVER_LOCAL false                
+           |                                        
+           | # TASK                                 
+           | SAKE_TASK_ID env-default               
+           | SAKE_TASK_NAME                         
+           | SAKE_TASK_DESC                         
+           | SAKE_TASK_LOCAL false                  
+           |                                        
+           | # CONFIG                               
+           | SAKE_IDENTITY_FILE                     
+           | SAKE_PASSWORD                          
+           | SAKE_KNOWN_HOSTS_FILE                  
 

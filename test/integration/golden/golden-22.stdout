@@ -9,4 +9,5 @@ WantErr: false
 -----------+-------------+-----------+-------------------
  localhost | Hello world | Bye world | Hello again world 
  server-1  | Hello world | Bye world | Hello again world 
+ server-2  | Hello world | Bye world | Hello again world 
 
