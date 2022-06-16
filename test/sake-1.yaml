@@ -23,7 +23,8 @@ servers:
     user: test
     port: 22
     # work_dir: /home/test
-    password: test
+    identity_file: keys/id_ed25519_pem
+    password: testing
 
   server-2:
     desc: server-2
