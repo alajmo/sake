@@ -2,17 +2,17 @@ FROM ubuntu:21.10
 
 RUN apt-get update && apt-get install openssh-server sudo -y
 
-RUN mkdir -p /home/test/.ssh && \
-  touch /home/test/.ssh/authorized_keys && \
-  useradd -d /home/test test && \
-  usermod -aG sudo test && \
-  chown -R test:test /home/test/ && \
-  chown test:test /home/test && \
-  chmod 700 /home/test/.ssh && \
-  chmod 644 /home/test/.ssh/authorized_keys && \
-  sudo chsh -s /bin/bash test
+RUN useradd --user-group --system --create-home --no-log-init test
 
 RUN echo 'test:test' | chpasswd
+
+USER test
+
+RUN mkdir /home/test/.ssh && touch /home/test/.ssh
+
+COPY ./authorized_keys /home/test/.ssh/authorized_keys
+
+USER root
 
 RUN service ssh start
 

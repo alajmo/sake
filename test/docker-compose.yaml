@@ -6,9 +6,9 @@ services:
     container_name: "server-1"
     build: .
     ports:
-      - "22"
-    volumes:
-      - ./authorized_keys:/home/test/.ssh/authorized_keys
+      - "222:22"
+    # volumes:
+    #   - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
       sake:
         ipv4_address: 172.24.2.2
@@ -17,7 +17,7 @@ services:
     container_name: "server-2"
     build: .
     ports:
-      - "22"
+      - "223:22"
     volumes:
       - ./authorized_keys:/home/test/.ssh/authorized_keys
     networks:
@@ -28,7 +28,7 @@ services:
   #   container_name: "server-3"
   #   build: .
   #   ports:
-  #     - "224:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -39,7 +39,7 @@ services:
   #   container_name: "server-4"
   #   build: .
   #   ports:
-  #     - "225:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -50,7 +50,7 @@ services:
   #   container_name: "server-5"
   #   build: .
   #   ports:
-  #     - "226:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -61,7 +61,7 @@ services:
   #   container_name: "server-6"
   #   build: .
   #   ports:
-  #     - "227:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -72,7 +72,7 @@ services:
   #   container_name: "server-7"
   #   build: .
   #   ports:
-  #     - "228:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -83,7 +83,7 @@ services:
   #   container_name: "server-8"
   #   build: .
   #   ports:
-  #     - "229:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
@@ -94,7 +94,7 @@ services:
   #   container_name: "server-9"
   #   build: .
   #   ports:
-  #     - "230:22"
+  #     - "22"
   #   volumes:
   #     - ./authorized_keys:/home/test/.ssh/authorized_keys
   #   networks:
