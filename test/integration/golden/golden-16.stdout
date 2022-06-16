@@ -1,24 +1,30 @@
+Index: 16
+Name: ignore_errors false
+Cmd: go run ../../main.go run errors -t reachable
+WantErr: false
 
-[1m Server    [0m[2m|[0m[1m Output [0m[2m|[0m[1m Output                        [0m[2m|[0m[1m Output [0m
-[2m-----------[0m[2m+[0m[2m--------[0m[2m+[0m[2m-------------------------------[0m[2m+[0m[2m--------[0m
- localhost [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m exit status 65                [2m|[0m        
- server-1  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-2  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-3  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-4  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-5  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-6  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-7  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-8  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
- server-9  [2m|[0m 123    [2m|[0m                               [2m|[0m        
-           [2m|[0m        [2m|[0m Process exited with status 65 [2m|[0m        
+---
+
+ Server    | Output | Output                        | Output 
+-----------+--------+-------------------------------+--------
+ localhost | 123    |                               |        
+           |        | exit status 65                |        
+ server-1  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-2  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-3  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-4  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-5  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-6  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-7  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-8  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-9  | 123    |                               |        
+           |        | Process exited with status 65 |        
 

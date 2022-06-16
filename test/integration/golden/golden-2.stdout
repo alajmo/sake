@@ -1,3 +1,9 @@
+Index: 2
+Name: Describe servers
+Cmd: go run ../../main.go describe servers
+WantErr: false
+
+---
 
 Name: localhost
 User: test

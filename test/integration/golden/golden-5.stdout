@@ -1,40 +1,46 @@
+Index: 5
+Name: Ping all servers
+Cmd: go run ../../main.go run ping -t reachable
+WantErr: false
 
-[1mTASK[0m [1mping[0m: ping server
+---
 
-[32mlocalhost | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+localhost | pong
 
-[34m172.24.2.2 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.2 | pong
 
-[31m172.24.2.3 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.3 | pong
 
-[33m172.24.2.4 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.4 | pong
 
-[35m172.24.2.5 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.5 | pong
 
-[36m172.24.2.6 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.6 | pong
 
-[32m172.24.2.7 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.7 | pong
 
-[34m172.24.2.8 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.8 | pong
 
-[31m172.24.2.9 | [0mpong
+TASK ping: ping server
 
-[1mTASK[0m [1mping[0m: ping server
+172.24.2.9 | pong
 
-[33m2001:3984:3989::10 | [0mpong
+TASK ping: ping server
+
+2001:3984:3989::10 | pong

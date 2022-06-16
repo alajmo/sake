@@ -1,14 +1,20 @@
+Index: 22
+Name: output
+Cmd: go run ../../main.go run output -t reachable
+WantErr: false
 
-[1m Server    [0m[2m|[0m[1m Output      [0m[2m|[0m[1m Output    [0m[2m|[0m[1m Output            [0m
-[2m-----------[0m[2m+[0m[2m-------------[0m[2m+[0m[2m-----------[0m[2m+[0m[2m-------------------[0m
- localhost [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-1  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-2  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-3  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-4  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-5  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-6  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-7  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-8  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
- server-9  [2m|[0m Hello world [2m|[0m Bye world [2m|[0m Hello again world 
+---
+
+ Server    | Output      | Output    | Output            
+-----------+-------------+-----------+-------------------
+ localhost | Hello world | Bye world | Hello again world 
+ server-1  | Hello world | Bye world | Hello again world 
+ server-2  | Hello world | Bye world | Hello again world 
+ server-3  | Hello world | Bye world | Hello again world 
+ server-4  | Hello world | Bye world | Hello again world 
+ server-5  | Hello world | Bye world | Hello again world 
+ server-6  | Hello world | Bye world | Hello again world 
+ server-7  | Hello world | Bye world | Hello again world 
+ server-8  | Hello world | Bye world | Hello again world 
+ server-9  | Hello world | Bye world | Hello again world 
 

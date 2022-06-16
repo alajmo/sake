@@ -1,40 +1,46 @@
+Index: 23
+Name: Run exec command
+Cmd: go run ../../main.go exec 'echo 123' -t reachable
+WantErr: false
 
-[1mTASK[0m [1mCommand[0m
+---
 
-[32mlocalhost | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+localhost | 123
 
-[34m172.24.2.2 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.2 | 123
 
-[31m172.24.2.3 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.3 | 123
 
-[33m172.24.2.4 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.4 | 123
 
-[35m172.24.2.5 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.5 | 123
 
-[36m172.24.2.6 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.6 | 123
 
-[32m172.24.2.7 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.7 | 123
 
-[34m172.24.2.8 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.8 | 123
 
-[31m172.24.2.9 | [0m123
+TASK Command
 
-[1mTASK[0m [1mCommand[0m
+172.24.2.9 | 123
 
-[33m2001:3984:3989::10 | [0m123
+TASK Command
+
+2001:3984:3989::10 | 123

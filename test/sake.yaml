@@ -3,6 +3,9 @@ disable_verify_host: true
 import:
   - ./sake-1.yaml
 
+env:
+  NO_COLOR: true
+
 targets:
   all:
     all: true
