@@ -17,44 +17,4 @@ WantErr: false
            | cookie     
            | release    
            | task local 
- server-2  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-3  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-4  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-5  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-6  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-7  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-8  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-9  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
 

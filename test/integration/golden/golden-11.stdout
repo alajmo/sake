@@ -9,12 +9,4 @@ WantErr: false
 -----------+-------+---------------------+--------+-----------------
  localhost | /home | /opt                | /home  | /               
  server-1  | /home | /opt                | /home  | /               
- server-2  | /home | /opt                | /home  | /               
- server-3  | /home | /opt                | /home  | /               
- server-4  | /home | /opt                | /home  | /               
- server-5  | /home | /opt                | /home  | /               
- server-6  | /home | /opt                | /home  | /               
- server-7  | /home | /opt                | /home  | /               
- server-8  | /home | /opt                | /home  | /               
- server-9  | /home | /opt                | /home  | /               
 

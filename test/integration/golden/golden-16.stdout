@@ -11,20 +11,4 @@ WantErr: false
            |        | exit status 65                |        
  server-1  | 123    |                               |        
            |        | Process exited with status 65 |        
- server-2  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-3  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-4  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-5  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-6  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-7  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-8  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-9  | 123    |                               |        
-           |        | Process exited with status 65 |        
 

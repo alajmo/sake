@@ -8,12 +8,4 @@ WantErr: false
  Server   | Empty-True 
 ----------+------------
  server-1 | Exists     
- server-2 | Exists     
- server-3 | Exists     
- server-4 | Exists     
- server-5 | Exists     
- server-6 | Exists     
- server-7 | Exists     
- server-8 | Exists     
- server-9 | Exists     
 

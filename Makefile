@@ -24,11 +24,6 @@ test:
 	cd ./test && docker-compose build
 	cd ./test && docker-compose up -d
 	sleep 5
-	docker ps
-	pwd
-	echo 123
-	tree test
-	docker exec server-1 /usr/bin/cat /home/test/.ssh/authorized_keys
 	go test -v ./test/integration/... -count=1 -clean
 	cd ./test && docker-compose down
 

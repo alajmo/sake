@@ -26,61 +26,61 @@ servers:
     identity_file: keys/id_ed25519_pem
     password: testing
 
-  server-2:
-    desc: server-2
-    host: 172.24.2.3
-    tags: [remote,prod,reachable]
-    user: test
-    password: test
+  # server-2:
+  #   desc: server-2
+  #   host: 172.24.2.3
+  #   tags: [remote,prod,reachable]
+  #   user: test
+  #   password: test
 
-  server-3:
-    desc: server-3
-    host: 172.24.2.4
-    tags: [remote,demo,reachable]
-    user: test
-    password: test
+  # server-3:
+  #   desc: server-3
+  #   host: 172.24.2.4
+  #   tags: [remote,demo,reachable]
+  #   user: test
+  #   password: test
 
-  server-4:
-    desc: server-4
-    host: 172.24.2.5
-    tags: [remote,demo,reachable]
-    user: test
-    password: test
+  # server-4:
+  #   desc: server-4
+  #   host: 172.24.2.5
+  #   tags: [remote,demo,reachable]
+  #   user: test
+  #   password: test
 
-  server-5:
-    desc: server-5
-    host: 172.24.2.6
-    tags: [remote,sandbox,reachable]
-    user: test
-    password: test
+  # server-5:
+  #   desc: server-5
+  #   host: 172.24.2.6
+  #   tags: [remote,sandbox,reachable]
+  #   user: test
+  #   password: test
 
-  server-6:
-    desc: server-6
-    host: 172.24.2.7
-    tags: [remote,sandbox,reachable]
-    user: test
-    password: test
+  # server-6:
+  #   desc: server-6
+  #   host: 172.24.2.7
+  #   tags: [remote,sandbox,reachable]
+  #   user: test
+  #   password: test
 
-  server-7:
-    desc: server-7
-    host: 172.24.2.8
-    tags: [remote,demo,reachable]
-    user: test
-    password: test
+  # server-7:
+  #   desc: server-7
+  #   host: 172.24.2.8
+  #   tags: [remote,demo,reachable]
+  #   user: test
+  #   password: test
 
-  server-8:
-    desc: server-8
-    host: 172.24.2.9
-    tags: [remote,demo,reachable]
-    user: test
-    password: test
+  # server-8:
+  #   desc: server-8
+  #   host: 172.24.2.9
+  #   tags: [remote,demo,reachable]
+  #   user: test
+  #   password: test
 
-  server-9:
-    desc: server-9
-    host: 2001:3984:3989::10
-    tags: [remote,demo,reachable]
-    user: test
-    password: test
+  # server-9:
+  #   desc: server-9
+  #   host: 2001:3984:3989::10
+  #   tags: [remote,demo,reachable]
+  #   user: test
+  #   password: test
 
 
 # import:
