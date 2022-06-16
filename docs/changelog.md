@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Support ipv6 hosts
+- Support ipv6 hosts (#13)
 - Fix identity_file when set via config (#7)
 
 ## 0.1.7
