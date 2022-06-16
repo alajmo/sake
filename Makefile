@@ -24,7 +24,11 @@ test:
 	cd ./test && docker-compose build
 	cd ./test && docker-compose up -d
 	sleep 10
-	go test -v ./test/integration/... -count=5 -clean
+	docker ps
+	pwd
+	echo 123
+	tree test
+	go test -v ./test/integration/... -count=1 -clean
 	cd ./test && docker-compose down
 
 unit-test:
