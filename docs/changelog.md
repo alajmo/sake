@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## 0.1.8
 
 ### Fixes
