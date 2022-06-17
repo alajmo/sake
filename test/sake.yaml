@@ -29,6 +29,5 @@ specs:
 tasks:
   ping:
     target: all
-    local: true
     desc: ping server
     cmd: echo pong

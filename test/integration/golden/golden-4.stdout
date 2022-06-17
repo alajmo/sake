@@ -8,7 +8,7 @@ WantErr: false
 Task: ping
 Name: ping
 Desc: ping server
-Local: true
+Local: false
 WorkDir: 
 Theme: default
 Target: 
@@ -26,7 +26,7 @@ Env:
     SAKE_TASK_ID: ping
     SAKE_TASK_NAME: 
     SAKE_TASK_DESC: ping server
-    SAKE_TASK_LOCAL: true
+    SAKE_TASK_LOCAL: false
 Cmd: 
     echo pong
 
