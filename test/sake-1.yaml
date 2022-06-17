@@ -20,7 +20,7 @@ servers:
     host: 172.24.2.2
     tags: [remote,prod,reachable]
     user: test
-    # work_dir: /home/test
+    work_dir: /home/test
     identity_file: keys/id_ed25519_pem
     password: testing
 

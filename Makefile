@@ -46,14 +46,14 @@ build:
 build-all:
 	goreleaser release --skip-publish --rm-dist --snapshot
 
-build-man:
-	go run -ldflags="-X 'github.com/alajmo/sake/cmd.buildMode=man' -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" ./main.go gen-docs
-
 build-and-link:
 	go build \
 		-ldflags "-w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
 		-a -tags netgo -o dist/${NAME} main.go
 	cp ./dist/sake ~/.local/bin/sake
+
+gen-man:
+	go run -ldflags="-X 'github.com/alajmo/sake/cmd.buildMode=man' -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" ./main.go gen-docs
 
 release:
 	git tag ${VERSION} && git push origin ${VERSION}
@@ -61,4 +61,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint test unit-test integration-test update-golden-files mock-ssh build build-all build-man build-and-link release clean
+.PHONY: tidy gofmt lint test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean

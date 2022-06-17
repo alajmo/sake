@@ -18,7 +18,7 @@ make build
 make build-all
 
 # Generate Manpage
-build-man
+make gen-man
 ```
 
 ## Developing
@@ -42,7 +42,7 @@ go run ../main.go run ping -a
 The following workflow is used for releasing a new `sake` version:
 
 1. Create pull request with changes
-2. Generate manpage `make build-man`
+2. Generate manpage `make gen-man`
 3. Pass all tests
 4. Squash-merge to main with descriptive commit message
 5. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`

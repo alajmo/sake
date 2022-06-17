@@ -48,7 +48,7 @@ User: test
 Host: 172.24.2.2
 Port: 22
 Local: false
-WorkDir: 
+WorkDir: /home/test
 Desc: server-1
 Tags: remote, prod, reachable
 Env: 
