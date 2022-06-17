@@ -6,7 +6,6 @@ labels: 'bug'
 assignees: ''
 ---
 
-- [ ] I have read through the manual page (`sake --help` and `man sake`)
 - [ ] I have the latest version of sake
 - [ ] I have searched through the existing issues
 

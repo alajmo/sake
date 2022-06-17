@@ -6,7 +6,6 @@ labels: 'bug'
 assignees: ''
 ---
 
-- [ ] I have read through the manual page (`sake --help` and `man sake`)
 - [ ] I have the latest version of sake
 - [ ] I have searched through the existing issues
 
@@ -29,11 +28,7 @@ assignees: ''
 
 - Key Type:
   - [ ] rsa
-  - [ ] dsa
-  - [ ] ecdsa
-  - [ ] ecdsa-sk
   - [ ] ed25519
-  - [ ] ed25519-sk
   - [ ] other
 
 - Key Format:
