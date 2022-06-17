@@ -1,6 +1,6 @@
 ---
-name: Bug report
-about: Report an connection to host bug
+name: Auth Bug report
+about: Report an connection to server bug
 title: ''
 labels: 'bug'
 assignees: ''
