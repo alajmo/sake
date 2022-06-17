@@ -39,19 +39,30 @@ The user credentials are:
 
 The public keys are then mounted to `/home/test/.ssh/authorized_keys` via the local file `test/authorized_keys` by using Docker volume.
 
-
-Stand in the tests/keys directory and run these twice (once for encrypted and once for unencrypted). For the unencrypted keys, add suffix `_no`.
+Stand in the keys directory and run the following commands:
 
 ```bash
-# Encrypted + RSA + RFC -> id_rsa_rfc
-ssh-keygen -t rsa
+# Encrypted + RSA + RFC
+ssh-keygen -t rsa -f id_rsa_rfc -C "test@test.test" -N "testing"
 
-# Encrypted + RSA + PEM -> id_rsa_pem
-ssh-keygen -t rsa -m PEM
+# Encrypted + RSA + PEM
+ssh-keygen -t rsa -f id_rsa_pem -C "test@test.test" -N "testing" -m PEM
 
-# Encrypted + ed25519 + RFC -> id_ed25519_rfc
-ssh-keygen -t ed25519
+# Encrypted + ed25519 + RFC
+ssh-keygen -t ed25519 -f id_ed25519_rfc -C "test@test.test" -N "testing"
 
-# Encrypted + ed25519 + PEM -> id_ed25519_pem
-ssh-keygen -t ed25519 -m PEM
+# Encrypted + ed25519 + PEM
+ssh-keygen -t ed25519 -f id_ed25519_pem -C "test@test.test" -N "testing" -m PEM
+
+# Unencrypted + RSA + RFC
+ssh-keygen -t rsa -f id_rsa_rfc_no -C "test@test.test" -N ""
+
+# Unencrypted + RSA + PEM
+ssh-keygen -t rsa -f id_rsa_pem_no -C "test@test.test" -N "" -m PEM
+
+# Unencrypted + ed25519 + RFC
+ssh-keygen -t ed25519 -f id_ed25519_rfc_no -C "test@test.test" -N ""
+
+# Unencrypted + ed25519 + PEM
+ssh-keygen -t ed25519 -f id_ed25519_pem_no -C "test@test.test" -N "" -m PEM
 ```
