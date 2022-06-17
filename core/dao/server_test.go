@@ -1,19 +1,18 @@
 package dao
 
 import (
-    "testing"
+	"testing"
 )
 
-
 func TestFilterServers(t *testing.T) {
-	s1 := Server { Name: "s1", Tags: []string{"t1", "t2"} }
-	s2 := Server { Name: "s2", Tags: []string{"t3" } }
-	s3 := Server { Name: "s3", Tags: []string{"t2", "t3"} }
-	s4 := Server { Name: "s4", Tags: []string{"t8"} }
-	s5 := Server { Name: "s5", Tags: []string{"t1", "t2"} }
+	s1 := Server{Name: "s1", Tags: []string{"t1", "t2"}}
+	s2 := Server{Name: "s2", Tags: []string{"t3"}}
+	s3 := Server{Name: "s3", Tags: []string{"t2", "t3"}}
+	s4 := Server{Name: "s4", Tags: []string{"t8"}}
+	s5 := Server{Name: "s5", Tags: []string{"t1", "t2"}}
 
-	c := Config {
-		Servers: []Server {s1, s2, s3, s4, s5},
+	c := Config{
+		Servers: []Server{s1, s2, s3, s4, s5},
 	}
 
 	ss, err := c.FilterServers(false, []string{"s1", "s2"}, []string{"t1"})
@@ -62,14 +61,14 @@ func TestFilterServers(t *testing.T) {
 }
 
 func TestGetServersByTags(t *testing.T) {
-	s1 := Server { Name: "s1", Tags: []string{"t1", "t2"} }
-	s2 := Server { Name: "s2", Tags: []string{"t3" } }
-	s3 := Server { Name: "s3", Tags: []string{"t2", "t3"} }
-	s4 := Server { Name: "s4", Tags: []string{"t8"} }
-	s5 := Server { Name: "s5", Tags: []string{"t1"} }
+	s1 := Server{Name: "s1", Tags: []string{"t1", "t2"}}
+	s2 := Server{Name: "s2", Tags: []string{"t3"}}
+	s3 := Server{Name: "s3", Tags: []string{"t2", "t3"}}
+	s4 := Server{Name: "s4", Tags: []string{"t8"}}
+	s5 := Server{Name: "s5", Tags: []string{"t1"}}
 
-	c := Config {
-		Servers: []Server {s1, s2, s3, s4, s5},
+	c := Config{
+		Servers: []Server{s1, s2, s3, s4, s5},
 	}
 
 	ss, err := c.GetServersByTags([]string{"t1"})
@@ -98,16 +97,15 @@ func TestGetServersByTags(t *testing.T) {
 	}
 }
 
-
 func TestGetTagAssocations(t *testing.T) {
-	s1 := Server { Name: "s1", Tags: []string{"t1", "t2"} }
-	s2 := Server { Name: "s2", Tags: []string{"t3" } }
-	s3 := Server { Name: "s3", Tags: []string{"t2", "t3"} }
-	s4 := Server { Name: "s4", Tags: []string{"t8"} }
-	s5 := Server { Name: "s5", Tags: []string{"t1"} }
+	s1 := Server{Name: "s1", Tags: []string{"t1", "t2"}}
+	s2 := Server{Name: "s2", Tags: []string{"t3"}}
+	s3 := Server{Name: "s3", Tags: []string{"t2", "t3"}}
+	s4 := Server{Name: "s4", Tags: []string{"t8"}}
+	s5 := Server{Name: "s5", Tags: []string{"t1"}}
 
-	c := Config {
-		Servers: []Server {s1, s2, s3, s4, s5},
+	c := Config{
+		Servers: []Server{s1, s2, s3, s4, s5},
 	}
 
 	ss, err := c.GetTagAssocations([]string{"t1"})
@@ -116,7 +114,7 @@ func TestGetTagAssocations(t *testing.T) {
 	}
 
 	wanted := Tag{
-		Name: "t1",
+		Name:    "t1",
 		Servers: []string{"s1", "s5"},
 	}
 	if !Equal(ss[0].Servers, wanted.Servers) {
@@ -127,13 +125,13 @@ func TestGetTagAssocations(t *testing.T) {
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func Equal(a, b []string) bool {
-    if len(a) != len(b) {
-        return false
-    }
-    for i, v := range a {
-        if v != b[i] {
-            return false
-        }
-    }
-    return true
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }

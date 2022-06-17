@@ -1,40 +1,70 @@
+Index: 8
+Name: Reference Envs
+Cmd: go run ../../main.go run env-complex -t reachable
+WantErr: false
 
-[1m Server    [0m[2m|[0m[1m Env-Ref    [0m[2m|[0m[1m Env-Ref     [0m
-[2m-----------[0m[2m+[0m[2m------------[0m[2m+[0m[2m-------------[0m
- localhost [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
- server-1  [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
- server-2  [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
- server-3  [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
- server-4  [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
- server-5  [2m|[0m foo xyz    [2m|[0m foo xyz     
-           [2m|[0m hello      [2m|[0m hello       
-           [2m|[0m cookie     [2m|[0m cookie      
-           [2m|[0m release    [2m|[0m release     
-           [2m|[0m task local [2m|[0m task remote 
-           [2m|[0m xyz xyz    [2m|[0m xyz xyz     
+---
+
+ Server    | Env-Ref    | Env-Ref     
+-----------+------------+-------------
+ localhost | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-1  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-2  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-3  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-4  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-5  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-6  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-7  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-8  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
+ server-9  | foo xyz    | foo xyz     
+           | hello      | hello       
+           | cookie     | cookie      
+           | release    | release     
+           | task local | task remote 
+           | xyz xyz    | xyz xyz     
 

@@ -1,22 +1,40 @@
+Index: 0
+Name: List tags
+Cmd: go run ../../main.go list tags
+WantErr: false
 
-[1m Tag         [0m[2m|[0m[1m Server      [0m
-[2m-------------[0m[2m+[0m[2m-------------[0m
- local       [2m|[0m localhost   
- reachable   [2m|[0m localhost   
-             [2m|[0m server-1    
-             [2m|[0m server-2    
-             [2m|[0m server-3    
-             [2m|[0m server-4    
-             [2m|[0m server-5    
- unreachable [2m|[0m unreachable 
- remote      [2m|[0m server-1    
-             [2m|[0m server-2    
-             [2m|[0m server-3    
-             [2m|[0m server-4    
-             [2m|[0m server-5    
- prod        [2m|[0m server-1    
-             [2m|[0m server-2    
- demo        [2m|[0m server-3    
-             [2m|[0m server-4    
- sandbox     [2m|[0m server-5    
+---
+
+ Tag         | Server      
+-------------+-------------
+ local       | localhost   
+ reachable   | localhost   
+             | server-1    
+             | server-2    
+             | server-3    
+             | server-4    
+             | server-5    
+             | server-6    
+             | server-7    
+             | server-8    
+             | server-9    
+ unreachable | unreachable 
+ remote      | server-1    
+             | server-2    
+             | server-3    
+             | server-4    
+             | server-5    
+             | server-6    
+             | server-7    
+             | server-8    
+             | server-9    
+ prod        | server-1    
+             | server-2    
+ demo        | server-3    
+             | server-4    
+             | server-7    
+             | server-8    
+             | server-9    
+ sandbox     | server-5    
+             | server-6    
 

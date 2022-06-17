@@ -31,6 +31,17 @@ type TemplateTest struct {
 	Golden     string
 	Ignore     bool
 	WantErr    bool
+	Index	   int
+}
+
+func (tt TemplateTest) GoldenOutput(output []byte) []byte {
+	out := string(output)
+	golden := fmt.Sprintf(
+		"Index: %d\nName: %s\nCmd: %s\nWantErr: %t\n\n---\n%s",
+		tt.Index, tt.TestName, tt.TestCmd, tt.WantErr, out,
+	)
+
+	return []byte(golden)
 }
 
 func clearGolden(file string) {
@@ -105,7 +116,7 @@ func Run(t *testing.T, tt TemplateTest) {
 	}
 
 	// Write output to tmp file which will be used to compare with golden files
-	err = ioutil.WriteFile(tt.Golden, output, 0644)
+	err = ioutil.WriteFile(tt.Golden, tt.GoldenOutput(output), 0644)
 	if err != nil {
 		t.Fatalf("could not write %s: %v", tt.Golden, err)
 	}
@@ -115,7 +126,7 @@ func Run(t *testing.T, tt TemplateTest) {
 		clearGolden(goldenFilePath)
 
 		// Write stdout of test command to golden file
-		err = ioutil.WriteFile(goldenFilePath, output, os.ModePerm)
+		err = ioutil.WriteFile(goldenFilePath, tt.GoldenOutput(output), os.ModePerm)
 		if err != nil {
 			t.Fatalf("could not write %s: %v", goldenFilePath, err)
 		}

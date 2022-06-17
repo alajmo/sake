@@ -270,9 +270,9 @@ Then run:
 $ sake run ssh-tunnel --server <server> LOCAL=8000 REMOTE=LOCAL=8000
 ```
 
-## Attach to a Docker Instance on a Remote Server
+## Attach to a Docker Container on a Remote Server
 
-If you have a bunch of Docker containers running on a remote server, you can easily ssh into the remote server and attach to the Docker instance.
+If you have a bunch of Docker containers running on a remote server, you can easily SSH into a remote server and attach to a Docker container.
 
 ```yaml
 docker-exec:
@@ -289,7 +289,7 @@ Then you can run:
 $ sake run docker-exec --server <server> NAME=<container-name>
 ```
 
-## Run Local Script on Remote Server
+## Run a Local Script on a Remote Server
 
 Sometimes you have bash script that you want to run on the remote server and after it's done, remove it.
 We can do that by defining the following script:

@@ -31,9 +31,7 @@ tasks:
     spec: info
     target: all
     cmd: |
-      os=$(lsb_release -si)
-      release=$(lsb_release -sr)
-      echo "$os $release"
+      echo OS
 
   print-kernel:
     name: Kernel

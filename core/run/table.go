@@ -89,7 +89,7 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 		var cmdString string
 		if cmd.WorkDir != "" {
 			cmdString = fmt.Sprintf("cd %s; %s", cmd.WorkDir, cmd.Cmd)
-		} else if server.WorkDir != "" {
+		} else if server.WorkDir != "" && !cmd.Local {
 			cmdString = fmt.Sprintf("cd %s; %s", server.WorkDir, cmd.Cmd)
 		} else {
 			cmdString = cmd.Cmd

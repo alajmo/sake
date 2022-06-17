@@ -1,7 +1,7 @@
 package dao
 
 import (
-    "testing"
+	"testing"
 
 	"gopkg.in/yaml.v3"
 )

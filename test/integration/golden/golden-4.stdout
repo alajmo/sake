@@ -1,8 +1,14 @@
+Index: 4
+Name: Describe tasks
+Cmd: go run ../../main.go describe tasks
+WantErr: false
+
+---
 
 Task: ping
 Name: ping
 Desc: ping server
-Local: true
+Local: false
 WorkDir: 
 Theme: default
 Target: 
@@ -20,7 +26,7 @@ Env:
     SAKE_TASK_ID: ping
     SAKE_TASK_NAME: 
     SAKE_TASK_DESC: ping server
-    SAKE_TASK_LOCAL: true
+    SAKE_TASK_LOCAL: false
 Cmd: 
     echo pong
 
@@ -130,9 +136,7 @@ Env:
     SAKE_TASK_DESC: print OS
     SAKE_TASK_LOCAL: false
 Cmd: 
-    os=$(lsb_release -si)
-    release=$(lsb_release -sr)
-    echo "$os $release"
+    echo OS
 
 --
 

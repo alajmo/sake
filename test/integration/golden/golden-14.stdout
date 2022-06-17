@@ -1,16 +1,30 @@
+Index: 14
+Name: fatal false
+Cmd: go run ../../main.go run fatal -t reachable
+WantErr: false
 
-[1m Server    [0m[2m|[0m[1m Fatal                        [0m
-[2m-----------[0m[2m+[0m[2m------------------------------[0m
- localhost [2m|[0m                              
-           [2m|[0m exit status 1                
- server-1  [2m|[0m                              
-           [2m|[0m Process exited with status 1 
- server-2  [2m|[0m                              
-           [2m|[0m Process exited with status 1 
- server-3  [2m|[0m                              
-           [2m|[0m Process exited with status 1 
- server-4  [2m|[0m                              
-           [2m|[0m Process exited with status 1 
- server-5  [2m|[0m                              
-           [2m|[0m Process exited with status 1 
+---
+
+ Server    | Fatal                        
+-----------+------------------------------
+ localhost |                              
+           | exit status 1                
+ server-1  |                              
+           | Process exited with status 1 
+ server-2  |                              
+           | Process exited with status 1 
+ server-3  |                              
+           | Process exited with status 1 
+ server-4  |                              
+           | Process exited with status 1 
+ server-5  |                              
+           | Process exited with status 1 
+ server-6  |                              
+           | Process exited with status 1 
+ server-7  |                              
+           | Process exited with status 1 
+ server-8  |                              
+           | Process exited with status 1 
+ server-9  |                              
+           | Process exited with status 1 
 

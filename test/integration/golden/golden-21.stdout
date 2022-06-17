@@ -1,4 +1,19 @@
+Index: 21
+Name: omit_empty true
+Cmd: go run ../../main.go run empty-true -t reachable
+WantErr: false
 
-[1m Server [0m[2m|[0m[1m Empty-True [0m
-[2m--------[0m[2m+[0m[2m------------[0m
+---
+
+ Server   | Empty-True 
+----------+------------
+ server-1 | Exists     
+ server-2 | Exists     
+ server-3 | Exists     
+ server-4 | Exists     
+ server-5 | Exists     
+ server-6 | Exists     
+ server-7 | Exists     
+ server-8 | Exists     
+ server-9 | Exists     
 

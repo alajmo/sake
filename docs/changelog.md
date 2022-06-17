@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.8
+
+### Fixes
+
+- Support ipv6 hosts (#13)
+- Fix identity_file when set via config (#7)
+- Don't apply work_dir when running local tasks
+
 ## 0.1.7
 
 ### Fixes

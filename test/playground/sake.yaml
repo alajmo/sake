@@ -44,9 +44,8 @@ env:
 tasks:
   ping:
     target: all
-    local: true
     desc: ping server
-    cmd: ping $SAKE_SERVER_HOST -c 2
+    cmd: echo pong
 
   # Info
   print-host:

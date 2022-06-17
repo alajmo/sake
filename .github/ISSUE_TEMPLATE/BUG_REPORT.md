@@ -1,22 +1,35 @@
-<!-- ISSUES NOT FOLLOWING THIS TEMPLATE WILL BE CLOSED AND DELETED -->
+---
+name: Bug report
+about: Report a bug
+title: ''
+labels: 'bug'
+assignees: ''
+---
 
-<!-- Check all that apply [x] -->
-
-- [ ] I have read through the manual page (`sake --help`)
+- [ ] I have read through the manual page (`sake --help` and `man sake`)
 - [ ] I have the latest version of sake
 - [ ] I have searched through the existing issues
 
 ## Info
 
 - OS
-    - [ ] Linux
-    - [ ] Mac OS X
-    - [ ] Windows
-    - [ ] Etc.
+  - [ ] Linux
+  - [ ] Mac OS X
+  - [ ] Windows
+  - [ ] other
 
 - Shell
-    - [ ] bash
-    - [ ] zsh
-    - [ ] fish
+  - [ ] Bash
+  - [ ] Zsh
+  - [ ] Fish
+  - [ ] Powershell
+  - [ ] other
+
+<!-- run `sake --version` -->
+- Version:
 
 ## Problem / Steps to reproduce
+
+<!-- Provide server and task definitions -->
+
+<!-- How do you invoke the `sake` CLI -->

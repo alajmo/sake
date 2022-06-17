@@ -17,6 +17,9 @@
     <img src="https://goreportcard.com/badge/github.com/alajmo/sake" alt="Go Report Card">
   </a>
 
+  <a href="https://pkg.go.dev/github.com/alajmo/sake">
+    <img src="https://pkg.go.dev/badge/github.com/alajmo/sake.svg" alt="reference">
+  </a>
 </div>
 
 <br>
@@ -150,6 +153,7 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Project Background](docs/project-background.md)
 - [Changelog](docs/changelog.md)
 - [sakecli.com](https://sakecli.com/)
+- [Contributing](docs/contributing.md)
 
 ## [License](LICENSE)
 

@@ -1,10 +1,20 @@
+Index: 12
+Name: Work Dir 2
+Cmd: go run ../../main.go run work-dir-2 -t reachable
+WantErr: false
 
-[1m Server    [0m[2m|[0m[1m Ref  [0m[2m|[0m[1m Override Inline Ref [0m[2m|[0m[1m Inline       [0m[2m|[0m[1m Override Inline [0m
-[2m-----------[0m[2m+[0m[2m------[0m[2m+[0m[2m---------------------[0m[2m+[0m[2m--------------[0m[2m+[0m[2m-----------------[0m
- localhost [2m|[0m /usr [2m|[0m /opt                [2m|[0m /tmp         [2m|[0m /               
- server-1  [2m|[0m /usr [2m|[0m /opt                [2m|[0m /home        [2m|[0m /               
- server-2  [2m|[0m /usr [2m|[0m /opt                [2m|[0m /home/ubuntu [2m|[0m /               
- server-3  [2m|[0m /usr [2m|[0m /opt                [2m|[0m /home/ubuntu [2m|[0m /               
- server-4  [2m|[0m /usr [2m|[0m /opt                [2m|[0m /home/ubuntu [2m|[0m /               
- server-5  [2m|[0m /usr [2m|[0m /opt                [2m|[0m /home/ubuntu [2m|[0m /               
+---
+
+ Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
+-----------+------+---------------------+------------+-----------------
+ localhost | /usr | /opt                | /tmp       | /               
+ server-1  | /usr | /opt                | /home/test | /               
+ server-2  | /usr | /opt                | /home/test | /               
+ server-3  | /usr | /opt                | /home/test | /               
+ server-4  | /usr | /opt                | /home/test | /               
+ server-5  | /usr | /opt                | /home/test | /               
+ server-6  | /usr | /opt                | /home/test | /               
+ server-7  | /usr | /opt                | /home/test | /               
+ server-8  | /usr | /opt                | /home/test | /               
+ server-9  | /usr | /opt                | /home/test | /               
 
