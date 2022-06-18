@@ -2,6 +2,7 @@
 
 A list of useful recipes.
 
+- [Validate Config](#validate-config)
 - [Upload File](#upload-file)
 - [Download File](#download-file)
 - [SSH to Server Using `sake`](#ssh-to-server-using-sake)
@@ -10,8 +11,8 @@ A list of useful recipes.
 - [Edit a Config, Task or Server via `sake`](#edit-a-config-task-or-server-via-sake)
 - [Run Command and SSH Afterwords](#run-command-and-ssh-afterwords)
 - [Create SSH Tunnel / Port Forward](#create-ssh-tunnel--port-forward)
-- [Attach to a Docker Instance on a Remote Server](#attach-to-a-docker-instance-on-a-remote-server)
-- [Run Local Script on Remote Server](#run-local-script-on-remote-server)
+- [Attach to a Docker Container on a Remote Server](#attach-to-a-docker-container-on-a-remote-server)
+- [Run a Local Script on a Remote Server](#run-a-local-script-on-a-remote-server)
 - [Replace Current Process](#replace-current-process)
 - [Run Server Tasks in Parallel](#run-server-tasks-in-parallel)
 - [Aborting on the First Error](#aborting-on-the-first-error)
@@ -31,6 +32,14 @@ A list of useful recipes.
 - [Disable Colors](#disable-colors)
 - [Performing a Dry Run](#performing-a-dry-run)
 - [Modify Theme](#modify-theme)
+
+## Validate Config
+
+To check for syntax errors and invalid configurations run:
+
+```bash
+$ sake check
+```
 
 ## Upload File
 

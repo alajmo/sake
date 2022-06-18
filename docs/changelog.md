@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add sub-command `check` to check for configuration errors
+
 ## 0.1.8
 
 ### Fixes
