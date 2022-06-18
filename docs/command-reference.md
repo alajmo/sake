@@ -20,6 +20,31 @@ You define servers and tasks in a sake.yaml config file and then run the tasks o
   -u, --user-config string   specify user config
 ```
 
+## check
+
+Validate config
+
+### Synopsis
+
+Validate config.
+
+```
+check [flags]
+```
+
+### Examples
+
+```
+  # Validate config
+  sake check
+```
+
+### Options
+
+```
+  -h, --help   help for check
+```
+
 ## run
 
 Run tasks

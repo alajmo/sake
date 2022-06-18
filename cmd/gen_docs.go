@@ -22,6 +22,7 @@ func genDocsCmd(longAppDesc string) *cobra.Command {
 				version,
 				date,
 				rootCmd,
+				checkCmd(&config, &configErr),
 				runCmd(&config, &configErr),
 				execCmd(&config, &configErr),
 				initCmd(),
