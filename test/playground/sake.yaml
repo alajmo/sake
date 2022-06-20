@@ -10,12 +10,13 @@ servers:
 
   server-1:
     desc: hosts mealie, node-red
-    host: 172.24.2.2
+    # host: server-1.lan
+    host: 192.168.1.125
     tags: [remote, pi]
     work_dir: /home/samir
 
   pihole:
-    host: 172.24.2.3
+    desc: runs pihole
     host: pihole.lan
     tags: [remote, pi]
 
@@ -198,3 +199,7 @@ tasks:
       dest: ""
     local: true
     cmd: rsync --recursive --verbose --archive --update $SAKE_SERVER_HOST:$src $dest
+
+  hej:
+    # work_dir:
+    cmd: pwd

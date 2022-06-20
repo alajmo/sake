@@ -328,6 +328,8 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 	// Get host key hostKeyCallback
 	hostKeyCallback, err := knownhosts.New(knownFile)
 
+	fmt.Println(err)
+
 	if err != nil {
 		return false, err
 	}
@@ -390,6 +392,11 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 
 	addresses := []string{r}
 
+	// If it's a hostname, then add the resolved IP as well
+	// For instance, user specifies:
+	// host: server-1.lan
+	// Then the complete line in known_hosts will be:
+	// x.x.x.x,server-1.lan
 	if hostNormalized != remoteNormalized {
 		h, _, err := net.SplitHostPort(host)
 		if err != nil {
@@ -411,7 +418,7 @@ func Line(addresses []string, key ssh.PublicKey) string {
 		trimmed = append(trimmed, a)
 	}
 
-	return strings.Join(trimmed, " ") + " " + serialize(key)
+	return strings.Join(trimmed, ",") + " " + serialize(key)
 }
 
 func serialize(k ssh.PublicKey) string {
