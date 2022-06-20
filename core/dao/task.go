@@ -154,6 +154,12 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			//   cmd: echo 123
 			err := c.Tasks.Content[i+1].Decode(taskYAML)
 
+			if err != nil {
+				for _, yerr := range err.(*yaml.TypeError).Errors {
+					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
+				}
+			}
+
 			// Check that only 1 one 3 is defined (cmd, task, tasks)
 			numDefined := 0
 			if taskYAML.Cmd != "" {
@@ -167,12 +173,6 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			}
 			if numDefined > 1 {
 				taskErrors[j].Errors = append(taskErrors[j].Errors, &core.TaskMultipleDef{Name: c.Tasks.Content[i].Value})
-			}
-
-			if err != nil {
-				for _, yerr := range err.(*yaml.TypeError).Errors {
-					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
-				}
 			}
 
 			if numDefined > 1 || err != nil {
@@ -279,15 +279,26 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			task.TaskRefs = append(task.TaskRefs, tr)
 		} else if len(taskYAML.Tasks) > 0 {
 			// Tasks References
-			for i := range taskYAML.Tasks {
+			for k := range taskYAML.Tasks {
 				tr := TaskRef{
-					Name:    taskYAML.Tasks[i].Name,
-					Desc:    taskYAML.Tasks[i].Desc,
-					Cmd:     taskYAML.Tasks[i].Cmd,
-					WorkDir: taskYAML.Tasks[i].WorkDir,
-					Local:   taskYAML.Tasks[i].Local,
-					Task:    taskYAML.Tasks[i].Task,
-					Envs:    ParseNodeEnv(taskYAML.Tasks[i].Env),
+					Name:    taskYAML.Tasks[k].Name,
+					Desc:    taskYAML.Tasks[k].Desc,
+					WorkDir: taskYAML.Tasks[k].WorkDir,
+					Local:   taskYAML.Tasks[k].Local,
+					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
+				}
+
+				// Check that only cmd or task is defined
+				if taskYAML.Tasks[k].Cmd != "" && taskYAML.Tasks[k].Task != "" {
+					taskErrors[j].Errors = append(taskErrors[j].Errors, &core.TaskRefMultipleDef{Name: c.Tasks.Content[i].Value})
+					continue
+				} else if taskYAML.Tasks[k].Cmd != "" {
+					tr.Cmd = taskYAML.Tasks[k].Cmd
+				} else if taskYAML.Tasks[k].Task != "" {
+					tr.Task = taskYAML.Tasks[k].Task
+				} else {
+					taskErrors[j].Errors = append(taskErrors[j].Errors, &core.NoTaskRefDefined{Name: c.Tasks.Content[i].Value})
+					continue
 				}
 
 				task.TaskRefs = append(task.TaskRefs, tr)

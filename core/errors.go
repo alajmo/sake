@@ -68,6 +68,22 @@ func (c *TaskMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for task `%s`: cmd, task, tasks", c.Name)
 }
 
+type TaskRefMultipleDef struct {
+	Name string
+}
+
+func (c *TaskRefMultipleDef) Error() string {
+	return fmt.Sprintf("found `task` and `cmd` definition for sub tasks in task `%s`", c.Name)
+}
+
+type NoTaskRefDefined struct {
+	Name string
+}
+
+func (c *NoTaskRefDefined) Error() string {
+	return fmt.Sprintf("found no `task` or `cmd` definition for sub-task in task `%s`", c.Name)
+}
+
 type ThemeNotFound struct {
 	Name string
 }
