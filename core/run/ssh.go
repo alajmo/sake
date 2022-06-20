@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"encoding/base64"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -371,6 +372,7 @@ func askIsHostTrusted(host string, key ssh.PublicKey, mu *sync.Mutex) bool {
 	return strings.ToLower(strings.TrimSpace(a)) == "yes" || strings.ToLower(strings.TrimSpace(a)) == "y"
 }
 
+// TODO: Refactor this
 func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile string) (err error) {
 	f, err := os.OpenFile(knownFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
 	if err != nil {
@@ -381,15 +383,39 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 
 	remoteNormalized := knownhosts.Normalize(remote.String())
 	hostNormalized := knownhosts.Normalize(host)
-	addresses := []string{remoteNormalized}
-
-	if hostNormalized != remoteNormalized {
-		addresses = append(addresses, hostNormalized)
+	r, _, err := net.SplitHostPort(remote.String())
+	if err != nil {
+		return err
 	}
 
-	_, err = f.WriteString(knownhosts.Line(addresses, key) + "\n")
+	addresses := []string{r}
+
+	if hostNormalized != remoteNormalized {
+		h, _, err := net.SplitHostPort(host)
+		if err != nil {
+			return err
+		}
+		addresses = append(addresses, h)
+	}
+
+	// Note: knownhosts.Line will append square brackets [] to IP6 addresses
+	line := Line(addresses, key)
+	_, err = f.WriteString(line + "\n")
 
 	return err
+}
+
+func Line(addresses []string, key ssh.PublicKey) string {
+	var trimmed []string
+	for _, a := range addresses {
+		trimmed = append(trimmed, a)
+	}
+
+	return strings.Join(trimmed, " ") + " " + serialize(key)
+}
+
+func serialize(k ssh.PublicKey) string {
+	return k.Type() + " " + base64.StdEncoding.EncodeToString(k.Marshal())
 }
 
 // Process all ENVs into a string of form

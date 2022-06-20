@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixes
+
+- Fix issue where ipv6 was not added correctly to known_hosts (brackets without ip)
+
 ### Features
 
 - Add sub-command `check` to check for configuration errors

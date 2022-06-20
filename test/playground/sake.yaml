@@ -10,14 +10,21 @@ servers:
 
   server-1:
     desc: hosts mealie, node-red
-    host: server-1.lan
+    host: 172.24.2.2
     tags: [remote, pi]
     work_dir: /home/samir
 
   pihole:
-    desc: runs pihole
+    host: 172.24.2.3
     host: pihole.lan
     tags: [remote, pi]
+
+  ip6:
+    desc: server-9
+    host: 2001:3984:3989::10
+    tags: [remote,reachable]
+    user: test
+    password: test
 
 targets:
   all:
