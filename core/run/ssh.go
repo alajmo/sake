@@ -328,8 +328,6 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 	// Get host key hostKeyCallback
 	hostKeyCallback, err := knownhosts.New(knownFile)
 
-	fmt.Println(err)
-
 	if err != nil {
 		return false, err
 	}
