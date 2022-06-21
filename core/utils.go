@@ -117,7 +117,6 @@ func AnyToString(s any) string {
 	case bool:
 		v = strconv.FormatBool(s)
 	case string:
-		// fmt.Println(s)
 		v = s
 	default:
 		return ""

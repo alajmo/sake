@@ -46,7 +46,9 @@ func (run *Run) Text(dryRun bool) error {
 				return err
 			default:
 				if run.Task.Spec.AnyErrorsFatal && err != nil {
-					return err
+					// The error is printed for each server in method RunTextCmd.
+					// We just return early so other tasks are not executed.
+					return nil
 				}
 			}
 		}
