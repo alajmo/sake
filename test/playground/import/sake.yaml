@@ -18,19 +18,6 @@ themes:
 tasks:
   ping:
     desc: kaka
-    # spec: table
+    spec: table
     target: all
-    # cmd: echo $ping
-    cmd: pwd
-
-  pings:
-    desc: kaka
-    # spec: table
-    target: all
-    # cmd: echo $ping
-    tasks:
-      - cmd: echo 123
-        name: kaka
-        desc: hej
-      - cmd: echo 321
-        desc: kaka
+    cmd: echo $ping
