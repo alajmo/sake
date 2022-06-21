@@ -144,6 +144,14 @@ func (c *NoEditorEnv) Error() string {
 	return "no environment variable `EDITOR` found"
 }
 
+type TemplateParseError struct {
+	Msg string
+}
+
+func (f *TemplateParseError) Error() string {
+	return fmt.Sprintf("failed to parse %s", f.Msg)
+}
+
 func CheckIfError(err error) {
 	if err != nil {
 		Exit(err)

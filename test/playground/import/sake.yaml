@@ -1,15 +1,37 @@
 disable_verify_host: true
 
 import:
-  - ./sake-1.yaml
+  - ./imports/sake-1.yaml
 
 servers:
   localhost:
     host: localhost
     local: true
 
+themes:
+  default:
+    text:
+      prefix: true
+      header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
+      # header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
+      header_filler: "*"
+
 tasks:
   ping:
-    spec: table
+    desc: kaka
+    # spec: table
     target: all
-    cmd: echo $ping
+    # cmd: echo $ping
+    cmd: pwd
+
+  pings:
+    desc: kaka
+    # spec: table
+    target: all
+    # cmd: echo $ping
+    tasks:
+      - cmd: echo 123
+        name: kaka
+        desc: hej
+      - cmd: echo 321
+        desc: kaka

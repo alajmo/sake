@@ -137,8 +137,11 @@ func (run *Run) RunTask(
 
 		print.PrintTable("", data.Rows, options, data.Headers[0:1], data.Headers[1:])
 	default:
-		run.Text(runFlags.DryRun)
+		err := run.Text(runFlags.DryRun)
 		run.CleanupClients()
+		if err != nil {
+			return err
+		}
 	}
 
 	if runFlags.Attach || task.Attach {

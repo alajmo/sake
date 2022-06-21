@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"strconv"
 )
 
 const ANSI = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
@@ -103,6 +104,26 @@ func StringsToErrors(str []string) []error {
 	}
 
 	return errs
+}
+
+func AnyToString(s any) string {
+	var v string
+
+	switch s := s.(type) {
+	case nil:
+		v = ""
+	case int:
+		v = strconv.Itoa(s)
+	case bool:
+		v = strconv.FormatBool(s)
+	case string:
+		// fmt.Println(s)
+		v = s
+	default:
+		return ""
+	}
+
+	return v
 }
 
 func DebugPrint(data any) {

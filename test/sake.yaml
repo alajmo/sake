@@ -10,8 +10,6 @@ targets:
   all:
     all: true
 
-  default:
-
 specs:
   table:
     output: table

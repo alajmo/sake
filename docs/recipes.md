@@ -797,10 +797,9 @@ themes:
   advanced:
     text:
       prefix: true
-      header: true
-      header_prefix: TASK
-      header_char: "-"
-      colors: [red,green,blue]
+      prefix_colors: [red,green,blue]
+      header: "TASK"
+      header_filler: "-"
 
     table:
       style: connected-light

@@ -72,9 +72,8 @@ type Table struct {
 type Text struct {
 	Prefix       bool     `yaml:"prefix"`
 	PrefixColors []string `yaml:"prefix_colors"`
-	Header       bool     `yaml:"header"`
-	HeaderChar   string   `yaml:"header_char"`
-	HeaderPrefix string   `yaml:"header_prefix"`
+	Header       string   `yaml:"header"`
+	HeaderFiller string   `yaml:"header_filler"`
 }
 
 type Theme struct {
@@ -158,9 +157,8 @@ var StyleBoxASCII = table.BoxStyle{
 var DefaultText = Text{
 	Prefix:       true,
 	PrefixColors: []string{"green", "blue", "red", "yellow", "magenta", "cyan"},
-	Header:       true,
-	HeaderPrefix: "TASK",
-	HeaderChar:   "*",
+	Header:       `{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}`,
+	HeaderFiller:   "*",
 }
 
 var DefaultTable = Table{
