@@ -158,7 +158,7 @@ var DefaultText = Text{
 	Prefix:       true,
 	PrefixColors: []string{"green", "blue", "red", "yellow", "magenta", "cyan"},
 	Header:       `{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}`,
-	HeaderFiller:   "*",
+	HeaderFiller: "*",
 }
 
 var DefaultTable = Table{

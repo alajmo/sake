@@ -5,6 +5,7 @@
 ### Fixes
 
 - Fix issue where ipv6 was not added correctly to known_hosts (brackets without ip)
+- Fix TTY in sub-tasks
 - Only task or cmd allowed in inline `tasks` definition
 
 ### Changes

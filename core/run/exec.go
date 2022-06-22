@@ -33,6 +33,7 @@ type TaskContext struct {
 	cIndex int
 	client Client
 	dryRun bool
+	tty    bool
 
 	desc     string
 	name     string
@@ -111,17 +112,6 @@ func (run *Run) RunTask(
 	// Describe task
 	if runFlags.Describe {
 		print.PrintTaskBlock([]dao.Task{*task})
-	}
-
-	if runFlags.TTY || task.TTY {
-		server, err := dao.GetFirstRemoteServer(servers)
-		if err != nil {
-			return err
-		}
-
-		envs := dao.MergeEnvs(userArgs, run.Task.Envs, server.Envs, configEnv)
-
-		return ExecTTY(server.Host, server.User, server.Port, task.Cmd, envs)
 	}
 
 	switch task.Spec.Output {
@@ -372,6 +362,11 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		run.Task.Spec.IgnoreUnreachable = runFlags.IgnoreUnreachable
 	}
 
+	// If tty flag is set to true, then update task
+	if setRunFlags.TTY {
+		run.Task.TTY = runFlags.TTY
+	}
+
 	// Update sub-commands
 	for j := range run.Task.Tasks {
 		// Set debug mode
@@ -379,7 +374,7 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 			run.Task.Tasks[j].Cmd = "set -x;" + run.Task.Tasks[j].Cmd
 		}
 
-		// If local flag is set to true, then cmd will run locally, however, commands will retain their value
+		// If local flag is set to true, then cmd will run locally instead of on remote server
 		if setRunFlags.Local {
 			run.Task.Tasks[j].Local = runFlags.Local
 		}
@@ -426,7 +421,7 @@ func SSHToServer(host string, user string, port uint16, disableVerifyHost bool, 
 	return nil
 }
 
-func ExecTTY(host string, user string, port uint16, cmd string, envs []string) error {
+func ExecTTY(cmd string, envs []string) error {
 	execBin, err := exec.LookPath("bash")
 	if err != nil {
 		return err

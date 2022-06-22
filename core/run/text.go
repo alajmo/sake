@@ -2,16 +2,16 @@ package run
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
-	"golang.org/x/term"
+	"github.com/jedib0t/go-pretty/v6/text"
 	"golang.org/x/exp/slices"
+	"golang.org/x/term"
 	"io"
 	"os"
 	"strings"
 	"sync"
 	"text/template"
-	"bytes"
-	"github.com/jedib0t/go-pretty/v6/text"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
@@ -95,6 +95,7 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 			desc:     cmd.Desc,
 			name:     cmd.Name,
 			numTasks: numTasks,
+			tty:      cmd.TTY,
 		}
 
 		err := RunTextCmd(args, task.Theme.Text, prefix, task.Spec.Parallel, &wg)
@@ -126,6 +127,10 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 	if t.dryRun {
 		printCmd(prefix, t.cmd)
 		return nil
+	}
+
+	if t.tty {
+		return ExecTTY(t.cmd, t.env)
 	}
 
 	err := t.client.Run(t.env, t.cmd)
@@ -182,13 +187,13 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 func HeaderTemplate(header string, data HeaderData) (string, error) {
 	tmpl, err := template.New("header.tmpl").Parse(header)
 	if err != nil {
-		return "", &core.TemplateParseError {Msg: err.Error()}
+		return "", &core.TemplateParseError{Msg: err.Error()}
 	}
 
 	buf := &bytes.Buffer{}
 	err = tmpl.Execute(buf, data)
 	if err != nil {
-		return "", &core.TemplateParseError {Msg: err.Error()}
+		return "", &core.TemplateParseError{Msg: err.Error()}
 	}
 
 	s := buf.String()
@@ -197,10 +202,10 @@ func HeaderTemplate(header string, data HeaderData) (string, error) {
 }
 
 type HeaderData struct {
-	Name      string
-	Desc      string
-	Index     int
-	NumTasks  int
+	Name     string
+	Desc     string
+	Index    int
+	NumTasks int
 }
 
 func (h HeaderData) Style(s any, args ...string) string {
@@ -225,10 +230,10 @@ func (h HeaderData) Style(s any, args ...string) string {
 }
 
 func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) error {
-	data := HeaderData {
-		Name: name,
-		Desc: desc,
-		Index: i + 1,
+	data := HeaderData{
+		Name:     name,
+		Desc:     desc,
+		Index:    i + 1,
 		NumTasks: numTasks,
 	}
 	header, err := HeaderTemplate(ts.Header, data)

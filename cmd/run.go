@@ -34,6 +34,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 			// This is necessary since cobra doesn't support pointers for bools
 			// (that would allow us to use nil as default value)
 			setRunFlags.Local = cmd.Flags().Changed("local")
+			setRunFlags.TTY = cmd.Flags().Changed("tty")
 			setRunFlags.Parallel = cmd.Flags().Changed("parallel")
 			setRunFlags.OmitEmpty = cmd.Flags().Changed("omit-empty")
 			setRunFlags.AnyErrorsFatal = cmd.Flags().Changed("any-errors-fatal")

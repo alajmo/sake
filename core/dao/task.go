@@ -17,6 +17,7 @@ type TaskCmd struct {
 	WorkDir string
 	Cmd     string
 	Local   bool
+	TTY     bool
 	Envs    []string
 }
 
@@ -27,6 +28,7 @@ type TaskRef struct {
 	WorkDir string
 	Task    string
 	Local   *bool
+	TTY     *bool
 	Envs    []string
 }
 
@@ -37,6 +39,7 @@ type TaskRefYAML struct {
 	Cmd     string    `yaml:"cmd"`
 	Task    string    `yaml:"task"`
 	Local   *bool     `yaml:"local"`
+	TTY     *bool     `yaml:"tty"`
 	Env     yaml.Node `yaml:"env"`
 }
 
@@ -285,6 +288,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 					Desc:    taskYAML.Tasks[k].Desc,
 					WorkDir: taskYAML.Tasks[k].WorkDir,
 					Local:   taskYAML.Tasks[k].Local,
+					TTY:     taskYAML.Tasks[k].TTY,
 					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
 				}
 
