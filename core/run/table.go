@@ -102,6 +102,7 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 			dryRun: dryRun,
 			env:    combinedEnvs,
 			cmd:    cmdString,
+			tty:    cmd.TTY,
 		}
 
 		err := RunTableCmd(tableCmd, data, dataMutex, &wg)
@@ -116,15 +117,16 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 }
 
 func RunTableCmd(t TaskContext, data dao.TableOutput, dataMutex *sync.RWMutex, wg *sync.WaitGroup) error {
-	combinedEnvs := dao.MergeEnvs([]string{}, t.env)
-	// combinedEnvs := dao.MergeEnvs(t.client.GetEnv(), t.env)
-
 	if t.dryRun {
 		data.Rows[t.rIndex].Columns[t.cIndex] = t.cmd
 		return nil
 	}
 
-	err := t.client.Run(combinedEnvs, t.cmd)
+	if t.tty {
+		return ExecTTY(t.cmd, t.env)
+	}
+
+	err := t.client.Run(t.env, t.cmd)
 	if err != nil {
 		return err
 	}

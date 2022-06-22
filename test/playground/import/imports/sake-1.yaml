@@ -10,3 +10,9 @@ tasks:
     spec: table
     target: all
     cmd: echo $foo
+
+  ping:
+    desc: kaka
+    spec: table
+    target: all
+    cmd: echo $ping

@@ -8,6 +8,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -103,6 +104,25 @@ func StringsToErrors(str []string) []error {
 	}
 
 	return errs
+}
+
+func AnyToString(s any) string {
+	var v string
+
+	switch s := s.(type) {
+	case nil:
+		v = ""
+	case int:
+		v = strconv.Itoa(s)
+	case bool:
+		v = strconv.FormatBool(s)
+	case string:
+		v = s
+	default:
+		return ""
+	}
+
+	return v
 }
 
 func DebugPrint(data any) {

@@ -19,3 +19,10 @@ tasks:
     spec: table
     target: all
     cmd: echo "Hello World"
+
+  pwd:
+    work_dir: ../../../
+    cmd: pwd
+
+  script:
+    cmd: ./script.sh

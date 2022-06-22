@@ -4,6 +4,7 @@ package run
 
 import (
 	"bufio"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -13,7 +14,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"encoding/base64"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -412,9 +412,7 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 
 func Line(addresses []string, key ssh.PublicKey) string {
 	var trimmed []string
-	for _, a := range addresses {
-		trimmed = append(trimmed, a)
-	}
+	trimmed = append(trimmed, addresses...)
 
 	return strings.Join(trimmed, ",") + " " + serialize(key)
 }

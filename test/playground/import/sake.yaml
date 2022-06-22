@@ -1,15 +1,21 @@
 disable_verify_host: true
 
 import:
-  - ./sake-1.yaml
+  - ./imports/sake-1.yaml
 
 servers:
   localhost:
     host: localhost
     local: true
 
+themes:
+  default:
+    text:
+      prefix: true
+
 tasks:
   ping:
+    desc: kaka
     spec: table
     target: all
     cmd: echo $ping

@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2022-06-18T10:23:23CEST" "v0.1.8" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-06-21T14:24:16CEST" "v0.1.8" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a command runner for local and remote hosts
 
@@ -388,14 +388,16 @@ Below is a config file detailing all of the available options and their defaults
        # Available options: green, blue, red, yellow, magenta, cyan
        prefix_colors: ["green", "blue", "red", "yellow", "magenta", "cyan"]
 
-       # Add a header before each server [optional]
-       header: true
+       # Customize (via Go templating) the task header that is printed before each task when output is set to text [optional]
+       # Available variables: `.Name`, `.Desc`, `.Index`, `.NumTasks`
+       # Available methods: `.Style`, which takes in 1 or more parameters, first is the string to be styled, and the rest are styling options
+       # Available styling options:
+       #   Colors (prefix with `fg_` for foreground, and `bg_` for background): black, red, green, yellow, blue, magenta, cyan, white, hi_black, hi_red, hi_green, hi_yellow, hi_blue, hi_magenta, hi_cyan, hi_white
+       #   Attributes: normal, bold, faint, italic, underline crossed_out
+       header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
 
-       # String value that appears before the server name in the header [optional]
-       header_prefix: "TASK"
-
-       # Fill remaining spaces with a character after the prefix [optional]
-       header_char: "*"
+       # Fill remaining spaces with a character after the header, if set to empty string, no filler characters will be displayed [optional]
+       header_filler: "*"
 
      # Table options [optional]
      table:

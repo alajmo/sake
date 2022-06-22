@@ -13,7 +13,7 @@ func checkCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "check",
 		Short: "Validate config",
-		Long: `Validate config.`,
+		Long:  `Validate config.`,
 		Example: `  # Validate config
   sake check`,
 		Args: cobra.NoArgs,

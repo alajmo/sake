@@ -161,8 +161,8 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 	}
 
 	// Process tasks:
-	// Expand references (targets, specs, themes, tasks)
-	// Check for cyclic dependencies for tasks
+	//  - Expand references (targets, specs, themes, tasks)
+	//  - Check for cyclic dependencies for tasks
 	taskCycles := []TaskLink{}
 	for i := range cr.Tasks {
 		if cr.Tasks[i].ThemeRef != "" {
@@ -200,6 +200,7 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 				WorkDir: cr.Tasks[i].WorkDir,
 				Cmd:     cr.Tasks[i].Cmd,
 				Local:   cr.Tasks[i].Local,
+				TTY:     cr.Tasks[i].TTY,
 				Envs:    cr.Tasks[i].Envs,
 			}
 			cr.Tasks[i].Tasks = append(cr.Tasks[i].Tasks, taskCmd)

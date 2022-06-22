@@ -5,6 +5,30 @@
 ### Fixes
 
 - Fix issue where ipv6 was not added correctly to known_hosts (brackets without ip)
+- Fix TTY in sub-tasks
+- Only task or cmd allowed in inline `tasks` definition
+
+### Changes
+
+- [BREAKING CHANGE]: Updated prefix handling in text output, now supports golang templating
+  - Old config:
+  ```yaml
+  themes:
+    default:
+      text:
+        header: true
+        header_prefix: "TASK"
+        header_char: "*"
+  ```
+
+  - New config:
+  ```yaml
+  themes:
+    default:
+      text:
+        header: '{{ .Style "TASK" "bold" }} {{ .Name }}'
+        header_filler: "*"
+  ```
 
 ### Features
 

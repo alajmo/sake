@@ -3,13 +3,14 @@ module github.com/alajmo/sake
 go 1.18
 
 require (
-	github.com/jedib0t/go-pretty/v6 v6.3.2
+	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/kr/pretty v0.2.1
-	github.com/spf13/cobra v1.4.0
+	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/theckman/yacspin v0.13.12
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c
+	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
+	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
 	gopkg.in/yaml.v3 v3.0.1
 )

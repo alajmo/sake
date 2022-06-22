@@ -2,21 +2,23 @@ package run
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"github.com/jedib0t/go-pretty/v6/text"
+	"golang.org/x/exp/slices"
 	"golang.org/x/term"
 	"io"
 	"os"
 	"strings"
 	"sync"
-
-	"github.com/jedib0t/go-pretty/v6/text"
+	"text/template"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 	"github.com/alajmo/sake/core/print"
 )
 
-func (run *Run) Text(dryRun bool) {
+func (run *Run) Text(dryRun bool) error {
 	servers := run.Servers
 	prefixMaxLen := calcMaxPrefixLength(run.LocalClients)
 
@@ -37,13 +39,24 @@ func (run *Run) Text(dryRun bool) {
 				return err
 			}(i, &wg)
 
-			if run.Task.Spec.AnyErrorsFatal && err != nil {
-				break
+			switch err.(type) {
+			case *template.ExecError:
+				return err
+			case *core.TemplateParseError:
+				return err
+			default:
+				if run.Task.Spec.AnyErrorsFatal && err != nil {
+					// The error is printed for each server in method RunTextCmd.
+					// We just return early so other tasks are not executed.
+					return nil
+				}
 			}
 		}
 	}
 
 	wg.Wait()
+
+	return nil
 }
 
 func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
@@ -82,11 +95,19 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 			desc:     cmd.Desc,
 			name:     cmd.Name,
 			numTasks: numTasks,
+			tty:      cmd.TTY,
 		}
 
 		err := RunTextCmd(args, task.Theme.Text, prefix, task.Spec.Parallel, &wg)
-		if err != nil && !task.Spec.IgnoreErrors {
+		switch err.(type) {
+		case *template.ExecError:
 			return err
+		case *core.TemplateParseError:
+			return err
+		default:
+			if err != nil && !task.Spec.IgnoreErrors {
+				return err
+			}
 		}
 	}
 
@@ -96,13 +117,20 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 }
 
 func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool, wg *sync.WaitGroup) error {
-	if textStyle.Header && !parallel {
-		printHeader(t.cIndex, t.numTasks, t.name, t.desc, textStyle)
+	if textStyle.Header != "" && !parallel {
+		err := printHeader(t.cIndex, t.numTasks, t.name, t.desc, textStyle)
+		if err != nil {
+			return err
+		}
 	}
 
 	if t.dryRun {
 		printCmd(prefix, t.cmd)
 		return nil
+	}
+
+	if t.tty {
+		return ExecTTY(t.cmd, t.env)
 	}
 
 	err := t.client.Run(t.env, t.cmd)
@@ -156,45 +184,74 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 	return nil
 }
 
-func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) {
-	var header string
-
-	var prefixName string
-	if name == "" {
-		prefixName = "Command"
-	} else {
-		prefixName = name
+func HeaderTemplate(header string, data HeaderData) (string, error) {
+	tmpl, err := template.New("header.tmpl").Parse(header)
+	if err != nil {
+		return "", &core.TemplateParseError{Msg: err.Error()}
 	}
 
-	var prefixPart1 string
-	if numTasks > 1 {
-		prefixPart1 = fmt.Sprintf("%s (%d/%d)", text.Bold.Sprintf(ts.HeaderPrefix), i+1, numTasks)
-	} else {
-		prefixPart1 = text.Bold.Sprintf(ts.HeaderPrefix)
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, data)
+	if err != nil {
+		return "", &core.TemplateParseError{Msg: err.Error()}
 	}
 
-	var prefixPart2 string
-	if desc != "" {
-		prefixPart2 = fmt.Sprintf("%s: %s", text.Bold.Sprintf(prefixName), desc)
-	} else {
-		prefixPart2 = text.Bold.Sprintf(prefixName)
+	s := buf.String()
+
+	return s, nil
+}
+
+type HeaderData struct {
+	Name     string
+	Desc     string
+	Index    int
+	NumTasks int
+}
+
+func (h HeaderData) Style(s any, args ...string) string {
+	v := core.AnyToString(s)
+	colors := text.Colors{}
+
+	for _, k := range args {
+		switch {
+		case strings.Contains(k, "fg_"):
+			fg := print.GetFg(strings.TrimPrefix(k, "fg_"))
+			colors = append(colors, *fg)
+		case strings.Contains(k, "bg_"):
+			bg := print.GetBg(strings.TrimPrefix(k, "bg_"))
+			colors = append(colors, *bg)
+		case slices.Contains([]string{"normal", "bold", "faint", "italic", "underline", "crossed_out"}, k):
+			attr := print.GetAttr(k)
+			colors = append(colors, *attr)
+		}
+	}
+
+	return colors.Sprintf(v)
+}
+
+func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) error {
+	data := HeaderData{
+		Name:     name,
+		Desc:     desc,
+		Index:    i + 1,
+		NumTasks: numTasks,
+	}
+	header, err := HeaderTemplate(ts.Header, data)
+	if err != nil {
+		return err
 	}
 
 	width, _, _ := term.GetSize(0)
-
-	if prefixPart1 != "" {
-		header = fmt.Sprintf("%s %s", prefixPart1, prefixPart2)
-	} else {
-		header = prefixPart2
-	}
 	headerLength := len(core.Strip(header))
-
-	if width > 0 && ts.HeaderChar != "" {
-		header = fmt.Sprintf("\n%s %s\n", header, strings.Repeat(ts.HeaderChar, width-headerLength-1))
+	if width > 0 && ts.HeaderFiller != "" {
+		header = fmt.Sprintf("\n%s%s\n", header, strings.Repeat(ts.HeaderFiller, width-headerLength-1))
 	} else {
 		header = fmt.Sprintf("\n%s\n", header)
 	}
+
 	fmt.Println(header)
+
+	return nil
 }
 
 func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, parallel bool) string {
@@ -211,7 +268,7 @@ func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, paralle
 		prefixColor = print.GetFg(textStyle.PrefixColors[i%len(textStyle.PrefixColors)])
 	}
 
-	if (!textStyle.Header || parallel) && len(prefix) < prefixMaxLen { // Left padding.
+	if (textStyle.Header == "" || parallel) && len(prefix) < prefixMaxLen { // Left padding.
 		prefixString := prefix + strings.Repeat(" ", prefixMaxLen-prefixLen) + " | "
 		if prefixColor != nil {
 			prefix = prefixColor.Sprintf(prefixString)

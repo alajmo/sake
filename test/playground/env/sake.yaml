@@ -6,14 +6,14 @@ servers:
     local: true
 
   server-1:
-    host: server-1.lan
+    host: 172.24.2.2
     env:
       foo: foo
       hello: world
       release: v1.0.0
 
   pihole:
-    host: pihole.lan
+    host: 172.24.2.3
 
 env:
   foo: bar

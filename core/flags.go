@@ -61,6 +61,7 @@ type SetRunFlags struct {
 	Parallel          bool
 	OmitEmpty         bool
 	Local             bool
+	TTY               bool
 	AnyErrorsFatal    bool
 	IgnoreErrors      bool
 	IgnoreUnreachable bool

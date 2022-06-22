@@ -5,42 +5,42 @@ WantErr: false
 
 ---
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 localhost | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.2 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.3 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.4 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.5 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.6 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.7 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.8 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 172.24.2.9 | pong
 
-TASK ping: ping server
+TASK [ping: ping server] 
 
 2001:3984:3989::10 | pong

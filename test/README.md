@@ -2,7 +2,7 @@
 
 `sake` relies on unit tests and integration tests. The integration tests require `docker` to run, since we need to mock SSH connections somehow, and this is the easiest ways to go about it, without creating mock interfaces. The integration tests uses `golden` files to verify the output of `sake` commands.
 
-The Docker Compose files has multiple servers with withdoc
+The Docker Compose files has multiple servers with different auths (pem, rfc, ed, rsa, encrypted, unencrypted, etc.) and ip addresses (ipv4/6).
 
 ## Unit Tests
 

@@ -64,6 +64,11 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				local = *tn.TaskRefs[i].Local
 			}
 
+			tty := task.TTY
+			if tn.TaskRefs[i].TTY != nil {
+				tty = *tn.TaskRefs[i].TTY
+			}
+
 			envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs)
 
 			workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir)
@@ -76,6 +81,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				Cmd:     tn.TaskRefs[i].Cmd,
 				Envs:    envs,
 				Local:   local,
+				TTY:     tty,
 			}
 			task.Tasks = append(task.Tasks, childTask)
 		} else {
@@ -113,6 +119,11 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					local = *tn.TaskRefs[i].Local
 				}
 
+				tty := childTask.TTY
+				if tn.TaskRefs[i].TTY != nil {
+					tty = *tn.TaskRefs[i].TTY
+				}
+
 				envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs, childTask.Envs)
 
 				// The child task default envs like SAKE_TASK_ID should take precedence
@@ -128,6 +139,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					Cmd:     childTask.Cmd,
 					Envs:    envs,
 					Local:   local,
+					TTY:     tty,
 				}
 				task.Tasks = append(task.Tasks, t)
 			} else {

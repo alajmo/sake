@@ -10,14 +10,13 @@ servers:
 
   server-1:
     desc: hosts mealie, node-red
-    # host: server-1.lan
-    host: 192.168.1.125
+    host: 172.24.2.2
     tags: [remote, pi]
     work_dir: /home/samir
 
   pihole:
     desc: runs pihole
-    host: pihole.lan
+    host: 172.24.2.3
     tags: [remote, pi]
 
   ip6:
@@ -173,13 +172,13 @@ tasks:
       ssh $SAKE_SERVER_USER@$SAKE_SERVER_HOST "rm $temp_file"
 
   # Docker
-  docker-exec:
-    desc: attach to docker container
-    spec: info
-    env:
-      NAME: mealie
-    tty: true
-    cmd: ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $NAME bash"
+  # docker-exec:
+  #   desc: attach to docker container
+  #   spec: info
+  #   env:
+  #     NAME: mealie
+  #   tty: true
+  #   cmd: ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $NAME bash"
 
   # Upload / Download
   upload:
@@ -200,6 +199,16 @@ tasks:
     local: true
     cmd: rsync --recursive --verbose --archive --update $SAKE_SERVER_HOST:$src $dest
 
-  hej:
-    # work_dir:
-    cmd: pwd
+  docker-exec:
+    desc: attach to docker container
+    env:
+      NAME: ""
+    tty: true
+    cmd: ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $NAME bash"
+
+  attach-mealie:
+    desc: attach to mealie
+    env:
+      NAME: "mealie"
+    task: docker-exec
+
