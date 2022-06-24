@@ -10,17 +10,20 @@ import (
 	"github.com/alajmo/sake/core"
 )
 
+// This is the struct that is added to the Task.Tasks in import_task.go
 type TaskCmd struct {
 	ID      string
 	Name    string
 	Desc    string
 	WorkDir string
+	RootDir string
 	Cmd     string
 	Local   bool
 	TTY     bool
 	Envs    []string
 }
 
+// This is the struct that is added to the Task.TaskRefs
 type TaskRef struct {
 	Name    string
 	Desc    string
@@ -32,6 +35,7 @@ type TaskRef struct {
 	Envs    []string
 }
 
+// This is the struct that will be unmarsheld from YAML
 type TaskRefYAML struct {
 	Name    string    `yaml:"name"`
 	Desc    string    `yaml:"desc"`

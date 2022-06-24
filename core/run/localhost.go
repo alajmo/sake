@@ -25,7 +25,7 @@ func (c *LocalhostClient) Connect(_ bool, _ string, mu *sync.Mutex) *ErrConnect 
 }
 
 // func (c *LocalhostClient) Run(envs string, cmdStr string) error {
-func (c *LocalhostClient) Run(env []string, cmdStr string) error {
+func (c *LocalhostClient) Run(env []string, workDir string, cmdStr string) error {
 	var err error
 
 	if c.running {
@@ -36,6 +36,7 @@ func (c *LocalhostClient) Run(env []string, cmdStr string) error {
 
 	cmd := exec.Command("bash", "-c", cmdStr)
 	cmd.Env = append(userEnv, env...)
+	cmd.Dir = workDir
 	c.cmd = cmd
 
 	c.stdout, err = cmd.StdoutPipe()

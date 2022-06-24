@@ -183,7 +183,7 @@ func (c *SSHClient) ConnectWith(dialer SSHDialFunc, disableVerifyHost bool, know
 }
 
 // Run runs a command remotely on c.host.
-func (c *SSHClient) Run(env []string, cmdStr string) error {
+func (c *SSHClient) Run(env []string, workDir string, cmdStr string) error {
 	if c.running {
 		return fmt.Errorf("Session already running")
 	}
@@ -213,8 +213,15 @@ func (c *SSHClient) Run(env []string, cmdStr string) error {
 
 	exportedEnv := AsExport(env)
 
+	var cmdString string
+	if workDir != "" {
+		cmdString = fmt.Sprintf("cd %s; %s %s", workDir, exportedEnv, cmdStr)
+	} else {
+		cmdString = fmt.Sprintf("%s %s", exportedEnv, cmdStr)
+	}
+
 	// Start the remote command.
-	if err := sess.Start(exportedEnv + cmdStr); err != nil {
+	if err := sess.Start(cmdString); err != nil {
 		return err
 	}
 

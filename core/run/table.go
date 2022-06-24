@@ -86,23 +86,17 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 			client = run.RemoteClients[server.Host]
 		}
 
-		var cmdString string
-		if cmd.WorkDir != "" {
-			cmdString = fmt.Sprintf("cd %s; %s", cmd.WorkDir, cmd.Cmd)
-		} else if server.WorkDir != "" && !cmd.Local {
-			cmdString = fmt.Sprintf("cd %s; %s", server.WorkDir, cmd.Cmd)
-		} else {
-			cmdString = cmd.Cmd
-		}
+		workDir := getWorkDir(cmd, server)
 
 		tableCmd := TaskContext{
-			rIndex: rIndex,
-			cIndex: j + 1,
-			client: client,
-			dryRun: dryRun,
-			env:    combinedEnvs,
-			cmd:    cmdString,
-			tty:    cmd.TTY,
+			rIndex:  rIndex,
+			cIndex:  j + 1,
+			client:  client,
+			dryRun:  dryRun,
+			env:     combinedEnvs,
+			workDir: workDir,
+			cmd:     cmd.Cmd,
+			tty:     cmd.TTY,
 		}
 
 		err := RunTableCmd(tableCmd, data, dataMutex, &wg)
@@ -126,7 +120,7 @@ func RunTableCmd(t TaskContext, data dao.TableOutput, dataMutex *sync.RWMutex, w
 		return ExecTTY(t.cmd, t.env)
 	}
 
-	err := t.client.Run(t.env, t.cmd)
+	err := t.client.Run(t.env, t.workDir, t.cmd)
 	if err != nil {
 		return err
 	}

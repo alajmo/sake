@@ -2,6 +2,7 @@ package dao
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 )
@@ -56,6 +57,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 
 		if tn.TaskRefs[i].Cmd != "" {
 			// name: <name> <-- task
+			// cmd: echo 123
 			// tasks:
 			//   - cmd: <cmd> <-- tn.TaskRefs[i].Cmd
 
@@ -77,6 +79,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				ID:      tn.TaskRefs[i].Task,
 				Name:    tn.TaskRefs[i].Name,
 				Desc:    tn.TaskRefs[i].Desc,
+				RootDir: filepath.Dir(task.context),
 				WorkDir: workDir,
 				Cmd:     tn.TaskRefs[i].Cmd,
 				Envs:    envs,
@@ -135,6 +138,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					ID:      childTask.ID,
 					Name:    name,
 					Desc:    childTask.Desc,
+					RootDir: filepath.Dir(task.context),
 					WorkDir: workDir,
 					Cmd:     childTask.Cmd,
 					Envs:    envs,

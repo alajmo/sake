@@ -38,6 +38,7 @@ type TaskContext struct {
 	desc     string
 	name     string
 	env      []string
+	workDir  string
 	cmd      string
 	numTasks int
 }
@@ -483,4 +484,24 @@ func getGlobalIdentity(runFlags *core.RunFlags) (string, string) {
 	}
 
 	return identityFile, password
+}
+
+func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
+	if cmd.Local {
+		rootDir := os.ExpandEnv(cmd.RootDir)
+		workDir := os.ExpandEnv(cmd.WorkDir)
+		if filepath.IsAbs(workDir) {
+			return workDir
+		} else {
+			return filepath.Join(rootDir, workDir)
+		}
+	} else if cmd.WorkDir != "" {
+		// server
+		return cmd.WorkDir
+	} else if server.WorkDir != "" {
+		// server
+		return server.WorkDir
+	}
+
+	return ""
 }

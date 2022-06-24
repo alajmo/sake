@@ -8,7 +8,7 @@ import (
 
 type Client interface {
 	Connect(bool, string, *sync.Mutex) *ErrConnect
-	Run([]string, string) error
+	Run([]string, string, string) error
 	Wait() error
 	Close() error
 	Prefix() string
