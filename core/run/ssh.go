@@ -215,9 +215,9 @@ func (c *SSHClient) Run(env []string, workDir string, cmdStr string) error {
 
 	var cmdString string
 	if workDir != "" {
-		cmdString = fmt.Sprintf("cd %s; %s; %s", workDir, exportedEnv, cmdStr)
-	} else {
 		cmdString = fmt.Sprintf("cd %s; %s %s", workDir, exportedEnv, cmdStr)
+	} else {
+		cmdString = fmt.Sprintf("%s %s", exportedEnv, cmdStr)
 	}
 
 	// Start the remote command.
