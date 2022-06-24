@@ -76,22 +76,15 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 			client = run.RemoteClients[server.Host]
 		}
 
-		var cmdString string
-		if cmd.WorkDir != "" {
-			cmdString = fmt.Sprintf("cd %s; %s", cmd.WorkDir, cmd.Cmd)
-		} else if server.WorkDir != "" && !cmd.Local {
-			cmdString = fmt.Sprintf("cd %s; %s", server.WorkDir, cmd.Cmd)
-		} else {
-			cmdString = cmd.Cmd
-		}
-
+		workDir := getWorkDir(cmd, server)
 		args := TaskContext{
 			rIndex:   rIndex,
 			cIndex:   j,
 			client:   client,
 			dryRun:   dryRun,
 			env:      combinedEnvs,
-			cmd:      cmdString,
+			workDir:  workDir,
+			cmd:      cmd.Cmd,
 			desc:     cmd.Desc,
 			name:     cmd.Name,
 			numTasks: numTasks,
@@ -133,7 +126,7 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 		return ExecTTY(t.cmd, t.env)
 	}
 
-	err := t.client.Run(t.env, t.cmd)
+	err := t.client.Run(t.env, t.workDir, t.cmd)
 	if err != nil {
 		return err
 	}
