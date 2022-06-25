@@ -217,7 +217,7 @@ func (c *SSHClient) Run(env []string, workDir string, shell string, cmdStr strin
 	if workDir != "" {
 		cmdString = fmt.Sprintf("cd %s; %s", workDir, exportedEnv)
 	} else {
-		cmdString = fmt.Sprintf("%s", exportedEnv)
+		cmdString = exportedEnv
 	}
 
 	if shell != "" {

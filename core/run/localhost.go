@@ -2,12 +2,12 @@ package run
 
 import (
 	"fmt"
+	"github.com/alajmo/sake/core/dao"
 	"io"
 	"os"
 	"os/exec"
-	"sync"
 	"strings"
-	"github.com/alajmo/sake/core/dao"
+	"sync"
 )
 
 // Client is a wrapper over the SSH connection/sessions.

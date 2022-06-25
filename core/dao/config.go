@@ -18,7 +18,7 @@ import (
 var (
 	ACCEPTABLE_FILE_NAMES = []string{"sake.yaml", "sake.yml", ".sake.yaml", ".sake.yml"}
 
-	DEFAULT_SHELL         = "bash -c"
+	DEFAULT_SHELL = "bash -c"
 
 	DEFAULT_THEME = Theme{
 		Name:  "default",
@@ -47,7 +47,7 @@ var (
 type Config struct {
 	DisableVerifyHost bool
 	KnownHostsFile    string
-	Shell			  string
+	Shell             string
 	Envs              []string
 	Themes            []Theme
 	Specs             []Spec
@@ -66,7 +66,7 @@ type ConfigYAML struct {
 	// Intermediate
 	DisableVerifyHost *bool     `yaml:"disable_verify_host"`
 	KnownHostsFile    *string   `yaml:"known_hosts_file"`
-	Shell			  string    `yaml:"shell"`
+	Shell             string    `yaml:"shell"`
 	Import            yaml.Node `yaml:"import"`
 	Env               yaml.Node `yaml:"env"`
 	Themes            yaml.Node `yaml:"themes"`

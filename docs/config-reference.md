@@ -27,7 +27,7 @@ disable_verify_host: false
 known_hosts_file: $HOME/.ssh/known_hosts
 
 # Shell used for commands [optional]
-# If you use any other program than bash, zsh, sh, node, and python
+# If you use any other program than bash, zsh, sh, node, or python
 # then you have to provide the command flag if you want the command-line string evaluted
 # For instance: bash -c
 shell: bash
@@ -370,6 +370,9 @@ tasks:
     # Set default working directory for task [optional]
     work_dir: ""
 
+    # Shell used for commands [optional]
+    shell: bash
+
     # Each task can only define:
     # - a single cmd
     # - or a single task reference
@@ -389,6 +392,7 @@ tasks:
       - name: inline-command
         cmd: echo "Hello World"
         work_dir: /tmp
+        shell: bash
         env:
           foo: bar
 

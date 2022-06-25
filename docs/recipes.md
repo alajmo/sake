@@ -589,7 +589,7 @@ $ sake run output --all --output markdown
 
 ## Change Shell
 
-You can change the default `shell` for tasks by setting the `shell` property in the global scope, server section and the task section (nested tasks/commands included).
+You can change the default `shell` for tasks by setting the `shell` property in the global scope, server section or the task section (nested tasks/commands included).
 
 The order of precedence is as follows:
 
@@ -599,6 +599,8 @@ The order of precedence is as follows:
 4. server
 5. global
 6. default which is "bash" for Linux, "powershell" for windows, and "zsh" for MacOS.
+
+For remote servers, the default shell is remote users default shell.
 
 ```yaml
 
