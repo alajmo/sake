@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
 
@@ -73,6 +74,7 @@ func (run *Run) Table(dryRun bool) dao.TableOutput {
 }
 
 func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMutex *sync.RWMutex) error {
+	config := run.Config
 	task := run.Task
 	server := run.Servers[rIndex]
 	var wg sync.WaitGroup
@@ -86,8 +88,9 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 			client = run.RemoteClients[server.Host]
 		}
 
+		shell := dao.SelectFirstNonEmpty(cmd.Shell, server.Shell, config.Shell)
+		shell = core.FormatShell(shell)
 		workDir := getWorkDir(cmd, server)
-
 		tableCmd := TaskContext{
 			rIndex:  rIndex,
 			cIndex:  j + 1,
@@ -95,6 +98,7 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 			dryRun:  dryRun,
 			env:     combinedEnvs,
 			workDir: workDir,
+			shell:   shell,
 			cmd:     cmd.Cmd,
 			tty:     cmd.TTY,
 		}
@@ -120,7 +124,7 @@ func RunTableCmd(t TaskContext, data dao.TableOutput, dataMutex *sync.RWMutex, w
 		return ExecTTY(t.cmd, t.env)
 	}
 
-	err := t.client.Run(t.env, t.workDir, t.cmd)
+	err := t.client.Run(t.env, t.workDir, t.shell, t.cmd)
 	if err != nil {
 		return err
 	}

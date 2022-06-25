@@ -13,6 +13,7 @@ builds:
     goos:
       - darwin
       - linux
+      - windows
       - freebsd
       - netbsd
       - openbsd
@@ -40,10 +41,18 @@ builds:
       - goos: darwin
         goarch: 386
 
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+
 archives:
   - id: 'sake'
     builds: ['sake']
     format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
     files:
       - LICENSE

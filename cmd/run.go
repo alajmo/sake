@@ -58,7 +58,6 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd.Flags().BoolVar(&runFlags.Local, "local", false, "run task on localhost")
 	cmd.Flags().BoolVar(&runFlags.Describe, "describe", false, "print task information")
 	cmd.Flags().BoolVar(&runFlags.DryRun, "dry-run", false, "print the task to see what will be executed")
-	cmd.Flags().BoolVar(&runFlags.Debug, "debug", false, "enable debug mode")
 	cmd.Flags().BoolVar(&runFlags.AnyErrorsFatal, "any-errors-fatal", false, "stop task execution on all servers on error")
 	cmd.Flags().BoolVar(&runFlags.IgnoreErrors, "ignore-errors", false, "continue task execution on errors")
 	cmd.Flags().BoolVar(&runFlags.IgnoreUnreachable, "ignore-unreachable", false, "ignore unreachable hosts")

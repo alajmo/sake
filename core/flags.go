@@ -27,7 +27,6 @@ type RunFlags struct {
 	Edit     bool
 	DryRun   bool
 	Describe bool
-	Debug    bool
 
 	// Target
 	All     bool

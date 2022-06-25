@@ -60,6 +60,7 @@ func (run *Run) Text(dryRun bool) error {
 }
 
 func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
+	config := run.Config
 	task := run.Task
 	server := run.Servers[rIndex]
 	prefix := getPrefixer(run.LocalClients[server.Host], rIndex, prefixMaxLen, task.Theme.Text, task.Spec.Parallel)
@@ -76,6 +77,8 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 			client = run.RemoteClients[server.Host]
 		}
 
+		shell := dao.SelectFirstNonEmpty(cmd.Shell, server.Shell, config.Shell)
+		shell = core.FormatShell(shell)
 		workDir := getWorkDir(cmd, server)
 		args := TaskContext{
 			rIndex:   rIndex,
@@ -84,6 +87,7 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 			dryRun:   dryRun,
 			env:      combinedEnvs,
 			workDir:  workDir,
+			shell:    shell,
 			cmd:      cmd.Cmd,
 			desc:     cmd.Desc,
 			name:     cmd.Name,
@@ -126,7 +130,7 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 		return ExecTTY(t.cmd, t.env)
 	}
 
-	err := t.client.Run(t.env, t.workDir, t.cmd)
+	err := t.client.Run(t.env, t.workDir, t.shell, t.cmd)
 	if err != nil {
 		return err
 	}

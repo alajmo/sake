@@ -39,6 +39,7 @@ type TaskContext struct {
 	name     string
 	env      []string
 	workDir  string
+	shell    string
 	cmd      string
 	numTasks int
 }
@@ -370,11 +371,6 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 
 	// Update sub-commands
 	for j := range run.Task.Tasks {
-		// Set debug mode
-		if runFlags.Debug {
-			run.Task.Tasks[j].Cmd = "set -x;" + run.Task.Tasks[j].Cmd
-		}
-
 		// If local flag is set to true, then cmd will run locally instead of on remote server
 		if setRunFlags.Local {
 			run.Task.Tasks[j].Local = runFlags.Local

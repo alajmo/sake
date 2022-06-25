@@ -41,8 +41,16 @@ fish:
 
   # To load completions for each session, execute once:
   $ sake completion fish > ~/.config/fish/completions/sake.fish
+
+PowerShell:
+
+  PS> mani completion powershell | Out-String | Invoke-Expression
+
+  # To load completions for every new session, run:
+  PS> mani completion powershell > mani.ps1
+  # and source this file from your PowerShell profile.
 		`,
-		ValidArgs: []string{"bash", "zsh", "fish"},
+		ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
 		Args:      cobra.ExactValidArgs(1),
 		Run:       generateCompletion,
 	}
@@ -60,6 +68,9 @@ func generateCompletion(cmd *cobra.Command, args []string) {
 		core.CheckIfError(err)
 	case "fish":
 		err := cmd.Root().GenFishCompletion(os.Stdout, true)
+		core.CheckIfError(err)
+	case "powershell":
+		err := cmd.Root().GenPowerShellCompletionWithDesc(os.Stdout)
 		core.CheckIfError(err)
 	}
 }
