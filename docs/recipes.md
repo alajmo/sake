@@ -598,9 +598,9 @@ The order of precedence is as follows:
 3. referenced task
 4. server
 5. global
-6. default which is "bash" for Linux, "powershell" for windows, and "zsh" for MacOS.
+6. default which is `bash` for Linux, `powershell` for windows, and `zsh` for MacOS.
 
-For remote servers, the default shell is remote users default shell.
+For remote servers, the default shell is the users default shell.
 
 ```yaml
 

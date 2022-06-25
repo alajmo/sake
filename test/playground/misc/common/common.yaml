@@ -1,0 +1,20 @@
+tasks:
+  # ping:
+  #   cmd: |
+  #     pong="pong"
+  #     echo $pong
+
+  ping:
+    cmd: |
+      ls -alh
+      echo $SHELL
+
+  upload:
+    desc: upload file or directory
+    env:
+      SRC: ""
+      DEST: ""
+    local: true
+    cmd: |
+      # should show /misc/roles
+      pwd
