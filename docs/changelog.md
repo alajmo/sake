@@ -29,10 +29,13 @@
         header: '{{ .Style "TASK" "bold" }} {{ .Name }}'
         header_filler: "*"
   ```
+- WorkDir is now relative to the calling task for local commands, previously it was to the users `cwd`
+- Remove debug flag
 
 ### Features
 
 - Add sub-command `check` to check for configuration errors
+- Add `shell` property to override the default shell
 
 ## 0.1.8
 

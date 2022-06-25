@@ -21,6 +21,7 @@ func PrintServerBlocks(servers []dao.Server) {
 		fmt.Printf("Host: %s\n", server.Host)
 		fmt.Printf("Port: %d\n", server.Port)
 		fmt.Printf("Local: %t\n", server.Local)
+		fmt.Printf("Shell: %s\n", server.Shell)
 		fmt.Printf("WorkDir: %s\n", server.WorkDir)
 		fmt.Printf("Desc: %s\n", server.Desc)
 
@@ -52,6 +53,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 		fmt.Printf("Name: %s\n", task.Name)
 		fmt.Printf("Desc: %s\n", task.Desc)
 		fmt.Printf("Local: %t\n", task.Local)
+		fmt.Printf("Shell: %s\n", task.Shell)
 		fmt.Printf("WorkDir: %s\n", task.WorkDir)
 		fmt.Printf("Theme: %s\n", task.Theme.Name)
 		fmt.Printf("Target: \n")

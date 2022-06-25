@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/spf13/cobra"
 
@@ -44,6 +45,14 @@ func Execute() {
 }
 
 func init() {
+	if runtime.GOOS == "windows" {
+		dao.DEFAULT_SHELL = "pwsh -NoProfile -command"
+	}
+
+	if runtime.GOOS == "darwin" {
+		dao.DEFAULT_SHELL = "zsh -c"
+	}
+
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVarP(&configFilepath, "config", "c", "", "specify config")

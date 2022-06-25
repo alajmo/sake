@@ -9,6 +9,7 @@ Task: ping
 Name: ping
 Desc: ping server
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -36,6 +37,7 @@ Task: real-ping
 Name: real-ping
 Desc: ping server
 Local: true
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -63,6 +65,7 @@ Task: print-host
 Name: Host
 Desc: print host
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -90,6 +93,7 @@ Task: print-hostname
 Name: Hostname
 Desc: print hostname
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -117,6 +121,7 @@ Task: print-os
 Name: OS
 Desc: print OS
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -144,6 +149,7 @@ Task: print-kernel
 Name: Kernel
 Desc: Print kernel version
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -171,6 +177,7 @@ Task: info
 Name: info
 Desc: get remote info
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -199,6 +206,7 @@ Task: env
 Name: env
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -232,6 +240,7 @@ Task: env-ref
 Name: env-ref
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -266,6 +275,7 @@ Task: env-complex
 Name: env-complex
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -296,6 +306,7 @@ Task: env-default
 Name: env-default
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -343,6 +354,7 @@ Task: a
 Name: a
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -370,6 +382,7 @@ Task: b
 Name: b
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -398,6 +411,7 @@ Task: c
 Name: c
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -427,6 +441,7 @@ Task: d
 Name: d
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -459,6 +474,7 @@ Task: work-ref
 Name: ref
 Desc: 
 Local: false
+Shell: 
 WorkDir: /usr
 Theme: default
 Target: 
@@ -486,6 +502,7 @@ Task: work-nested
 Name: nested
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -513,6 +530,7 @@ Task: work-dir-1
 Name: work-dir-1
 Desc: 
 Local: false
+Shell: 
 WorkDir: /home
 Theme: default
 Target: 
@@ -543,6 +561,7 @@ Task: work-dir-2
 Name: work-dir-2
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -573,6 +592,7 @@ Task: work-dir-3
 Name: work-dir-3
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -601,6 +621,7 @@ Task: fatal
 Name: fatal
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -628,6 +649,7 @@ Task: fatal-true
 Name: fatal-true
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -655,6 +677,7 @@ Task: errors
 Name: errors
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -684,6 +707,7 @@ Task: errors-true
 Name: errors-true
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -713,6 +737,7 @@ Task: unreachable
 Name: unreachable
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -740,6 +765,7 @@ Task: unreachable-true
 Name: unreachable-true
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -767,6 +793,7 @@ Task: empty
 Name: empty
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -797,6 +824,7 @@ Task: empty-true
 Name: empty-true
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 
@@ -827,6 +855,7 @@ Task: output
 Name: output
 Desc: 
 Local: false
+Shell: 
 WorkDir: 
 Theme: default
 Target: 

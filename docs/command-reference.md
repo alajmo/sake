@@ -76,7 +76,6 @@ run <task> [flags]
   -a, --all                       target all servers
       --any-errors-fatal          stop task execution on all servers on error
       --attach                    ssh to server after command
-      --debug                     enable debug mode
       --describe                  print task information
       --dry-run                   print the task to see what will be executed
   -e, --edit                      edit task
@@ -128,7 +127,6 @@ exec <command> [flags]
   -a, --all                       target all servers
       --any-errors-fatal          stop task execution on all servers on error
       --attach                    ssh to server after command
-      --debug                     enable debug mode
       --dry-run                   prints the command to see what will be executed
   -h, --help                      help for exec
   -i, --identity-file string      set identity file for all servers

@@ -32,6 +32,7 @@ func (i *Import) GetContextLine() int {
 type ConfigResources struct {
 	DisableVerifyHost *bool
 	KnownHostsFile    *string
+	Shell             string
 	Imports           []Import
 	Themes            []Theme
 	Specs             []Spec
@@ -200,6 +201,7 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 				WorkDir: cr.Tasks[i].WorkDir,
 				Cmd:     cr.Tasks[i].Cmd,
 				Local:   cr.Tasks[i].Local,
+				Shell:   cr.Tasks[i].Shell,
 				TTY:     cr.Tasks[i].TTY,
 				Envs:    cr.Tasks[i].Envs,
 			}
@@ -231,6 +233,10 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 		config.DisableVerifyHost = false
 	} else {
 		config.DisableVerifyHost = *cr.DisableVerifyHost
+	}
+
+	if cr.Shell != "" {
+		config.Shell = cr.Shell
 	}
 
 	if cr.KnownHostsFile == nil {
@@ -347,6 +353,10 @@ func parseConfigFile(path string, cr *ConfigResources) (ConfigYAML, error) {
 }
 
 func (c *ConfigYAML) loadResources(cr *ConfigResources) {
+	if c.Shell != "" {
+		cr.Shell = c.Shell
+	}
+
 	if c.DisableVerifyHost != nil {
 		cr.DisableVerifyHost = c.DisableVerifyHost
 	}

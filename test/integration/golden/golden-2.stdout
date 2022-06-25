@@ -10,6 +10,7 @@ User: test
 Host: localhost
 Port: 22
 Local: true
+Shell: 
 WorkDir: /tmp
 Desc: localhost
 Tags: local, reachable
@@ -29,6 +30,7 @@ User: test
 Host: unreachable.lan
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: 
 Tags: unreachable
@@ -48,6 +50,7 @@ User: test
 Host: 172.24.2.2
 Port: 22
 Local: false
+Shell: 
 WorkDir: /home/test
 Desc: server-1
 Tags: remote, prod, reachable
@@ -67,6 +70,7 @@ User: test
 Host: 172.24.2.3
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-2
 Tags: remote, prod, reachable
@@ -86,6 +90,7 @@ User: test
 Host: 172.24.2.4
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-3
 Tags: remote, demo, reachable
@@ -105,6 +110,7 @@ User: test
 Host: 172.24.2.5
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-4
 Tags: remote, demo, reachable
@@ -124,6 +130,7 @@ User: test
 Host: 172.24.2.6
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-5
 Tags: remote, sandbox, reachable
@@ -143,6 +150,7 @@ User: test
 Host: 172.24.2.7
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-6
 Tags: remote, sandbox, reachable
@@ -162,6 +170,7 @@ User: test
 Host: 172.24.2.8
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-7
 Tags: remote, demo, reachable
@@ -181,6 +190,7 @@ User: test
 Host: 172.24.2.9
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-8
 Tags: remote, demo, reachable
@@ -200,6 +210,7 @@ User: test
 Host: 2001:3984:3989::10
 Port: 22
 Local: false
+Shell: 
 WorkDir: 
 Desc: server-9
 Tags: remote, demo, reachable

@@ -16,6 +16,7 @@ type TaskCmd struct {
 	Name    string
 	Desc    string
 	WorkDir string
+	Shell   string
 	RootDir string
 	Cmd     string
 	Local   bool
@@ -29,22 +30,11 @@ type TaskRef struct {
 	Desc    string
 	Cmd     string
 	WorkDir string
+	Shell   string
 	Task    string
 	Local   *bool
 	TTY     *bool
 	Envs    []string
-}
-
-// This is the struct that will be unmarsheld from YAML
-type TaskRefYAML struct {
-	Name    string    `yaml:"name"`
-	Desc    string    `yaml:"desc"`
-	WorkDir string    `yaml:"work_dir"`
-	Cmd     string    `yaml:"cmd"`
-	Task    string    `yaml:"task"`
-	Local   *bool     `yaml:"local"`
-	TTY     *bool     `yaml:"tty"`
-	Env     yaml.Node `yaml:"env"`
 }
 
 type Task struct {
@@ -55,6 +45,7 @@ type Task struct {
 	Local   bool
 	Attach  bool
 	WorkDir string
+	Shell   string
 	Envs    []string
 	Cmd     string
 	Tasks   []TaskCmd
@@ -78,6 +69,7 @@ type TaskYAML struct {
 	TTY     bool          `yaml:"tty"`
 	Attach  bool          `yaml:"attach"`
 	WorkDir string        `yaml:"work_dir"`
+	Shell   string        `yaml:"shell"`
 	Cmd     string        `yaml:"cmd"`
 	Task    string        `yaml:"task"`
 	Tasks   []TaskRefYAML `yaml:"tasks"`
@@ -85,6 +77,19 @@ type TaskYAML struct {
 	Spec    yaml.Node     `yaml:"spec"`
 	Target  yaml.Node     `yaml:"target"`
 	Theme   yaml.Node     `yaml:"theme"`
+}
+
+// This is the struct that will be unmarsheld from YAML
+type TaskRefYAML struct {
+	Name    string    `yaml:"name"`
+	Desc    string    `yaml:"desc"`
+	WorkDir string    `yaml:"work_dir"`
+	Shell   string    `yaml:"shell"`
+	Cmd     string    `yaml:"cmd"`
+	Task    string    `yaml:"task"`
+	Local   *bool     `yaml:"local"`
+	TTY     *bool     `yaml:"tty"`
+	Env     yaml.Node `yaml:"env"`
 }
 
 func (t Task) GetValue(key string, _ int) string {
@@ -196,6 +201,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 		task.TTY = taskYAML.TTY
 		task.Local = taskYAML.Local
 		task.WorkDir = taskYAML.WorkDir
+		task.Shell = taskYAML.Shell
 		task.Attach = taskYAML.Attach
 
 		defaultEnvs := []string{
@@ -291,6 +297,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 					Name:    taskYAML.Tasks[k].Name,
 					Desc:    taskYAML.Tasks[k].Desc,
 					WorkDir: taskYAML.Tasks[k].WorkDir,
+					Shell:   taskYAML.Tasks[k].Shell,
 					Local:   taskYAML.Tasks[k].Local,
 					TTY:     taskYAML.Tasks[k].TTY,
 					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),

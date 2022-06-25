@@ -74,6 +74,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 			envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs)
 
 			workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir)
+			shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell)
 
 			childTask := TaskCmd{
 				ID:      tn.TaskRefs[i].Task,
@@ -81,6 +82,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				Desc:    tn.TaskRefs[i].Desc,
 				RootDir: filepath.Dir(task.context),
 				WorkDir: workDir,
+				Shell:   shell,
 				Cmd:     tn.TaskRefs[i].Cmd,
 				Envs:    envs,
 				Local:   local,
@@ -133,6 +135,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				envs = MergeEnvs(childTask.GetDefaultEnvs(), envs)
 
 				workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir, childTask.WorkDir)
+				shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell, childTask.Shell)
 
 				t := TaskCmd{
 					ID:      childTask.ID,
@@ -140,6 +143,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					Desc:    childTask.Desc,
 					RootDir: filepath.Dir(task.context),
 					WorkDir: workDir,
+					Shell:   shell,
 					Cmd:     childTask.Cmd,
 					Envs:    envs,
 					Local:   local,
@@ -180,6 +184,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					tnn.TaskRefs = append(tnn.TaskRefs, k)
 					tnn.TaskRefs[j].Envs = MergeEnvs(tn.TaskRefs[i].Envs, tnn.TaskRefs[j].Envs, childTask.Envs)
 					tnn.TaskRefs[j].WorkDir = SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, tnn.TaskRefs[j].WorkDir, childTask.WorkDir)
+					tnn.TaskRefs[j].Shell = SelectFirstNonEmpty(tn.TaskRefs[i].Shell, tnn.TaskRefs[j].Shell, childTask.Shell)
 				}
 
 				dfsTask(task, &tnn, tm, cycles, cr)

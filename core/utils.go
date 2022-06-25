@@ -92,6 +92,27 @@ func GetAbsolutePath(configDir string, path string, name string) (string, error)
 	return path, nil
 }
 
+// FormatShell returns the shell program and associated command flag
+func FormatShell(shell string) string {
+	s := strings.Split(shell, " ")
+
+	if len(s) > 1 { // User provides correct flag, bash -c, /bin/bash -c, /bin/sh -c
+		return shell
+	} else if strings.Contains(shell, "bash") { // bash, /bin/bash
+		return shell + " -c"
+	} else if strings.Contains(shell, "zsh") { // zsh, /bin/zsh
+		return shell + " -c"
+	} else if strings.Contains(shell, "sh") { // sh, /bin/sh
+		return shell + " -c"
+	} else if strings.Contains(shell, "node") { // node, /bin/node
+		return shell + " -e"
+	} else if strings.Contains(shell, "python") { // python, /bin/python
+		return shell + " -c"
+	}
+
+	return shell
+}
+
 // Used when creating pointers to literal. Useful when you want set/unset attributes.
 func Ptr[T any](t T) *T {
 	return &t

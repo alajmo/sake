@@ -1,0 +1,29 @@
+disable_verify_host: true
+
+import:
+  - ./roles/tasks.yaml
+  - ./common/common.yaml
+
+# shell: node
+
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    tags: [local]
+    work_dir: /opt
+
+  pihole:
+    desc: runs pihole
+    tags: [remote, pi]
+    host: 172.24.2.2
+    user: test
+    identity_file: ../../keys/id_ed25519_pem
+    password: testing
+
+  server-1:
+    desc: hosts mealie, node-red
+    host: 172.24.2.3
+    tags: [remote, pi]
+    work_dir: /home/samir

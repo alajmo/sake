@@ -586,6 +586,51 @@ $ sake run output --all --output markdown
 | server-1 | Hello world | Bye world | Hello again world |
 ```
 
+
+## Change Shell
+
+You can change the default `shell` for tasks by setting the `shell` property in the global scope, server section or the task section (nested tasks/commands included).
+
+The order of precedence is as follows:
+
+1. task list
+2. task
+3. referenced task
+4. server
+5. global
+6. default which is `bash` for Linux, `powershell` for windows, and `zsh` for MacOS.
+
+For remote servers, the default shell is the users default shell.
+
+```yaml
+
+shell: bash # 5
+
+servers:
+  localhost:
+    host: localhost
+    shell: bash # 4
+    local: true
+
+tasks:
+  work-ref:
+    name: pwd
+    shell: bash # 3
+    cmd: pwd
+
+  work-dir:
+    shell: bash # 2
+    tasks:
+      - task: work-ref
+
+      - cmd: pwd
+        name: pwd
+
+      - cmd: pwd
+        name: pwd
+        shell: bash # 1
+```
+
 ## Change Working Directory
 
 You can change the default `work_dir` in the server section and the task section (nested tasks/commands included).

@@ -23,6 +23,7 @@ type Server struct {
 	Local        bool
 	Tags         []string
 	Envs         []string
+	Shell        string
 	WorkDir      string
 	IdentityFile *string
 	Password     *string
@@ -40,6 +41,7 @@ type ServerYAML struct {
 	Local        bool      `yaml:"local"`
 	Tags         []string  `yaml:"tags"`
 	Env          yaml.Node `yaml:"env"`
+	Shell        string    `yaml:"shell"`
 	WorkDir      string    `yaml:"work_dir"`
 	IdentityFile *string   `yaml:"identity_file"`
 	Password     *string   `yaml:"password"`
@@ -152,6 +154,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		server.Port = serverYAML.Port
 		server.Local = serverYAML.Local
 		server.Tags = serverYAML.Tags
+		server.Shell = serverYAML.Shell
 		server.WorkDir = serverYAML.WorkDir
 		server.Envs = append(envs, defaultEnvs...)
 

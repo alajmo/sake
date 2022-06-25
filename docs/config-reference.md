@@ -26,6 +26,12 @@ disable_verify_host: false
 # Set known_hosts_file path. Default is users ssh home directory [optional]
 known_hosts_file: $HOME/.ssh/known_hosts
 
+# Shell used for commands [optional]
+# If you use any other program than bash, zsh, sh, node, or python
+# then you have to provide the command flag if you want the command-line string evaluted
+# For instance: bash -c
+shell: bash
+
 # List of Servers
 servers:
   # Server name [required]
@@ -41,6 +47,9 @@ servers:
 
     # Port for ssh [optional]
     port: 22
+
+    # Shell used for commands [optional]
+    shell: bash
 
     # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
     identity_file: ./id_rsa
@@ -361,6 +370,9 @@ tasks:
     # Set default working directory for task [optional]
     work_dir: ""
 
+    # Shell used for commands [optional]
+    shell: bash
+
     # Each task can only define:
     # - a single cmd
     # - or a single task reference
@@ -380,6 +392,7 @@ tasks:
       - name: inline-command
         cmd: echo "Hello World"
         work_dir: /tmp
+        shell: bash
         env:
           foo: bar
 

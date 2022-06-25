@@ -2,9 +2,11 @@ package run
 
 import (
 	"fmt"
+	"github.com/alajmo/sake/core/dao"
 	"io"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 )
 
@@ -24,8 +26,7 @@ func (c *LocalhostClient) Connect(_ bool, _ string, mu *sync.Mutex) *ErrConnect 
 	return nil
 }
 
-// func (c *LocalhostClient) Run(envs string, cmdStr string) error {
-func (c *LocalhostClient) Run(env []string, workDir string, cmdStr string) error {
+func (c *LocalhostClient) Run(env []string, workDir string, shell string, cmdStr string) error {
 	var err error
 
 	if c.running {
@@ -34,7 +35,15 @@ func (c *LocalhostClient) Run(env []string, workDir string, cmdStr string) error
 
 	userEnv := os.Environ()
 
-	cmd := exec.Command("bash", "-c", cmdStr)
+	if shell == "" {
+		shell = dao.DEFAULT_SHELL
+	}
+
+	args := strings.SplitN(shell, " ", 2)
+	shellProgram := args[0]
+	shellFlag := append(args[1:], cmdStr)
+
+	cmd := exec.Command(shellProgram, shellFlag...)
 	cmd.Env = append(userEnv, env...)
 	cmd.Dir = workDir
 	c.cmd = cmd

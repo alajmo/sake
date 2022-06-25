@@ -1,0 +1,13 @@
+tasks:
+  setup-pihole:
+    target:
+      servers: [pihole]
+    tasks:
+      - task: upload-pihole-files
+      - task: ping
+
+  upload-pihole-files:
+    env:
+      SRC: hello.txt
+      DEST: /home/samir/hello.txt
+    task: upload
