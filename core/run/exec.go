@@ -445,11 +445,20 @@ func getGlobalIdentity(runFlags *core.RunFlags) (string, string) {
 func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
 	if cmd.Local || server.Local {
 		rootDir := os.ExpandEnv(cmd.RootDir)
-		workDir := os.ExpandEnv(cmd.WorkDir)
-		if filepath.IsAbs(workDir) {
-			return workDir
-		} else {
-			return filepath.Join(rootDir, workDir)
+		if cmd.WorkDir != "" {
+			workDir := os.ExpandEnv(cmd.WorkDir)
+			if filepath.IsAbs(workDir) {
+				return workDir
+			} else {
+				return filepath.Join(rootDir, workDir)
+			}
+		} else if server.WorkDir != "" {
+			workDir := os.ExpandEnv(server.WorkDir)
+			if filepath.IsAbs(workDir) {
+				return workDir
+			} else {
+				return filepath.Join(rootDir, workDir)
+			}
 		}
 	} else if cmd.WorkDir != "" {
 		// server
