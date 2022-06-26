@@ -135,129 +135,136 @@ themes:
           server:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           user:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           host:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           port:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           local:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           tag:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           desc:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           task:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           output:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
         row:
           server:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           user:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           host:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           port:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           local:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           tag:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
           desc:
             fg:
-            # bg:
-            align: left
-            attr: normal
+            bg:
+            align:
+            attr:
 
           task:
             fg:
-            # bg:
-            align: left
-            attr: normal
+            bg:
+            align:
+            attr:
 
           output:
             fg:
             bg:
-            align: left
-            attr: normal
+            align:
+            attr:
 
         border:
           header:
             fg:
             bg:
+            align:
+            attr:
 
           row:
             fg:
             bg:
+            align:
+            attr:
 
           row_alt:
             fg:
             bg:
+            align:
+            attr:
 
           footer:
             fg:
             bg:
-
+            align:
+            attr:
 
 # List of Specs [optional]
 specs:

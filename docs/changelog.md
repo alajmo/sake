@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.1
+
+### Fixes
+
+- Small fix for WorkDir being related to calling file when server is local
+
 ## 0.10.0
 
 ### Fixes

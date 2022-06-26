@@ -198,6 +198,7 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 				ID:      cr.Tasks[i].ID,
 				Name:    cr.Tasks[i].Name,
 				Desc:    cr.Tasks[i].Desc,
+				RootDir: filepath.Dir(cr.Tasks[i].context),
 				WorkDir: cr.Tasks[i].WorkDir,
 				Cmd:     cr.Tasks[i].Cmd,
 				Local:   cr.Tasks[i].Local,

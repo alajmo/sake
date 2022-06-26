@@ -443,7 +443,7 @@ func getGlobalIdentity(runFlags *core.RunFlags) (string, string) {
 }
 
 func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
-	if cmd.Local {
+	if cmd.Local || server.Local {
 		rootDir := os.ExpandEnv(cmd.RootDir)
 		workDir := os.ExpandEnv(cmd.WorkDir)
 		if filepath.IsAbs(workDir) {
