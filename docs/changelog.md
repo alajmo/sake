@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Fix local WorkDir when it's not set
+
 ## 0.10.1
 
 ### Fixes

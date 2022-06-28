@@ -459,12 +459,14 @@ func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
 			} else {
 				return filepath.Join(rootDir, workDir)
 			}
+		} else {
+			return rootDir
 		}
 	} else if cmd.WorkDir != "" {
-		// server
+		// task work_dir
 		return cmd.WorkDir
 	} else if server.WorkDir != "" {
-		// server
+		// server work_dir
 		return server.WorkDir
 	}
 
