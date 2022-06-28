@@ -77,4 +77,4 @@ else
     sudo mv sake "$bindir/"
 fi
 
-$bindir/sake version
+$bindir/sake --version
