@@ -270,7 +270,7 @@ ssh-tunnel:
   env:
     LOCAL:
     REMOTE:
-  cmd: ssh $SAKE_SERVER_USER@$SAKER_SERVER_HOST -N -L $LOCAL:localhost:$REMOTE
+  cmd: ssh $SAKE_SERVER_USER@$SAKE_SERVER_HOST -N -L $LOCAL:localhost:$REMOTE
 ```
 
 Then run:
