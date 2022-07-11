@@ -63,7 +63,7 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 	config := run.Config
 	task := run.Task
 	server := run.Servers[rIndex]
-	prefix := getPrefixer(run.LocalClients[server.Host], rIndex, prefixMaxLen, task.Theme.Text, task.Spec.Parallel)
+	prefix := getPrefixer(run.LocalClients[server.Name], rIndex, prefixMaxLen, task.Theme.Text, task.Spec.Parallel)
 
 	numTasks := len(task.Tasks)
 
@@ -72,9 +72,9 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 		var client Client
 		combinedEnvs := dao.MergeEnvs(cmd.Envs, server.Envs)
 		if cmd.Local || server.Local {
-			client = run.LocalClients[server.Host]
+			client = run.LocalClients[server.Name]
 		} else {
-			client = run.RemoteClients[server.Host]
+			client = run.RemoteClients[server.Name]
 		}
 
 		shell := dao.SelectFirstNonEmpty(cmd.Shell, server.Shell, config.Shell)

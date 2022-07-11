@@ -12,6 +12,7 @@ import (
 
 // Client is a wrapper over the SSH connection/sessions.
 type LocalhostClient struct {
+	Name string
 	User string
 	Host string
 
@@ -112,6 +113,6 @@ func (c *LocalhostClient) Signal(sig os.Signal) error {
 	return c.cmd.Process.Signal(sig)
 }
 
-func (c *LocalhostClient) GetHost() string {
-	return c.Host
+func (c *LocalhostClient) GetName() string {
+	return c.Name
 }

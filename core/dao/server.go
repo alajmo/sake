@@ -236,17 +236,6 @@ func (c Config) FilterServers(
 	return finalServers, nil
 }
 
-func (c Config) GetServerHosts() []string {
-	hosts := []string{}
-	for _, server := range c.Servers {
-		if server.Host != "" {
-			hosts = append(hosts, server.Host)
-		}
-	}
-
-	return hosts
-}
-
 func (c Config) GetServer(name string) (*Server, error) {
 	for _, server := range c.Servers {
 		if name == server.Name {

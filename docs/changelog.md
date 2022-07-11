@@ -5,6 +5,7 @@
 ### Fixes
 
 - Fix local WorkDir when it's not set
+- Allow duplicate hosts
 
 ## 0.10.1
 

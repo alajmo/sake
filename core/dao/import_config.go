@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/alajmo/sake/core"
@@ -252,14 +251,11 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 		config.KnownHostsFile = *cr.KnownHostsFile
 	}
 
-	// Check duplicate hosts
-	hostErr := checkDuplicateHosts(config.Servers)
-
 	// Check duplicate imports
 	importErr := checkDuplicateImports(cr.Imports)
 
 	// Concat errors
-	errString := concatErrors(hostErr, importErr, cr, &importCycles, &taskCycles)
+	errString := concatErrors(importErr, cr, &importCycles, &taskCycles)
 
 	if errString != "" {
 		return config, &core.ConfigErr{Msg: errString}
@@ -268,8 +264,8 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 	return config, nil
 }
 
-func concatErrors(hostErr string, importErr string, cr ConfigResources, importCycles *[]NodeLink, taskCycles *[]TaskLink) string {
-	errString := fmt.Sprintf("%s%s", hostErr, importErr)
+func concatErrors(importErr string, cr ConfigResources, importCycles *[]NodeLink, taskCycles *[]TaskLink) string {
+	errString := importErr
 
 	if len(*importCycles) > 0 {
 		err := &FoundCyclicDependency{Cycles: *importCycles}
@@ -615,47 +611,6 @@ func dfsImport(n *Node, m map[string]*Node, cycles *[]NodeLink, cr *ConfigResour
 type FoundDuplicateHosts struct {
 	host    string
 	servers []string
-}
-
-func (c *FoundDuplicateHosts) Error() string {
-	var msg string
-
-	var errPrefix = text.FgRed.Sprintf("error")
-	var ptrPrefix = text.FgBlue.Sprintf("-->")
-	msg = fmt.Sprintf("%s: %s`%s`%s\n  %s", errPrefix, "found duplicate host ", c.host, " for the following servers", ptrPrefix)
-	msg += fmt.Sprintf(" %s\n", c.servers[0])
-	for i, s := range c.servers[1:] {
-		if i < len(c.servers[1:])-1 {
-			msg += fmt.Sprintf("      %s\n", s)
-		} else {
-			msg += fmt.Sprintf("      %s", s)
-		}
-	}
-
-	return msg
-}
-
-func checkDuplicateHosts(servers []Server) string {
-	hostServer := make(map[string][]string)
-	for _, s := range servers {
-		hostServer[s.Host] = append(hostServer[s.Host], s.Name)
-	}
-
-	keys := make([]string, 0, len(hostServer))
-	for k := range hostServer {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	var configErr string
-	for _, k := range keys {
-		if len(hostServer[k]) > 1 {
-			err := &FoundDuplicateHosts{host: k, servers: hostServer[k]}
-			configErr = fmt.Sprintf("%s%s\n\n", configErr, err.Error())
-		}
-	}
-
-	return configErr
 }
 
 type FoundDuplicateImports struct {

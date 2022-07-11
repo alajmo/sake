@@ -83,9 +83,9 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 		combinedEnvs := dao.MergeEnvs(cmd.Envs, server.Envs)
 		var client Client
 		if cmd.Local || server.Local {
-			client = run.LocalClients[server.Host]
+			client = run.LocalClients[server.Name]
 		} else {
-			client = run.RemoteClients[server.Host]
+			client = run.RemoteClients[server.Name]
 		}
 
 		shell := dao.SelectFirstNonEmpty(cmd.Shell, server.Shell, config.Shell)

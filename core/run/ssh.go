@@ -307,8 +307,8 @@ func (c *SSHClient) Signal(sig os.Signal) error {
 	}
 }
 
-func (c *SSHClient) GetHost() string {
-	return c.Host
+func (c *SSHClient) GetName() string {
+	return c.Name
 }
 
 // VerifyHost validates that the host is found in known_hosts file
