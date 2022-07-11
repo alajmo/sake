@@ -102,7 +102,7 @@ func (run *Run) RunTask(
 			continue
 		}
 
-		_, reachable := run.RemoteClients[server.Host]
+		_, reachable := run.RemoteClients[server.Name]
 		if reachable {
 			reachableServers = append(reachableServers, server)
 		}
@@ -201,6 +201,7 @@ func (run *Run) SetClients(
 		defer wg.Done()
 
 		local := &LocalhostClient{
+			Name: server.Name,
 			User: server.User,
 			Host: server.Host,
 		}
@@ -270,9 +271,9 @@ func (run *Run) SetClients(
 	for client := range clientCh {
 		switch client.(type) {
 		case *SSHClient:
-			remoteClients[client.GetHost()] = client
+			remoteClients[client.GetName()] = client
 		case *LocalhostClient:
-			localCLients[client.GetHost()] = client
+			localCLients[client.GetName()] = client
 		}
 	}
 

@@ -18,7 +18,7 @@ type Client interface {
 	Stderr() io.Reader
 	Stdout() io.Reader
 	Signal(os.Signal) error
-	GetHost() string
+	GetName() string
 }
 
 type ErrConnect struct {
