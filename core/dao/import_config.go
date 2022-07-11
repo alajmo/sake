@@ -608,11 +608,6 @@ func dfsImport(n *Node, m map[string]*Node, cycles *[]NodeLink, cr *ConfigResour
 	n.Visited = true
 }
 
-type FoundDuplicateHosts struct {
-	host    string
-	servers []string
-}
-
 type FoundDuplicateImports struct {
 	imports []string
 }
