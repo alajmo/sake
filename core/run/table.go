@@ -7,12 +7,14 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"os/exec"
+	"golang.org/x/crypto/ssh"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
 
-func (run *Run) Table(dryRun bool) dao.TableOutput {
+func (run *Run) Table(dryRun bool) (dao.TableOutput, error) {
 	task := run.Task
 	servers := run.Servers
 
@@ -51,7 +53,7 @@ func (run *Run) Table(dryRun bool) dao.TableOutput {
 		if task.Spec.Parallel {
 			go func(i int, wg *sync.WaitGroup) {
 				defer wg.Done()
-				// TODO
+				// TODO: Handle errors for parallel work flow as well
 				_ = run.TableWork(i, dryRun, data, &dataMutex)
 			}(i, &wg)
 		} else {
@@ -62,15 +64,23 @@ func (run *Run) Table(dryRun bool) dao.TableOutput {
 				return err
 			}(i, &wg)
 
-			if run.Task.Spec.AnyErrorsFatal && err != nil {
-				break
+			if err != nil && run.Task.Spec.AnyErrorsFatal {
+				// Return proper exit code for failed tasks
+				switch err.(type) {
+				case *ssh.ExitError:
+					return data, &core.ExecError{Err: err, ExitCode: err.(*ssh.ExitError).ExitStatus()}
+				case *exec.ExitError:
+					return data, &core.ExecError{Err: err, ExitCode: err.(*exec.ExitError).ExitCode()}
+				default:
+					return data, err
+				}
 			}
 		}
 
 	}
 	wg.Wait()
 
-	return data
+	return data, nil
 }
 
 func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMutex *sync.RWMutex) error {
@@ -104,7 +114,7 @@ func (run *Run) TableWork(rIndex int, dryRun bool, data dao.TableOutput, dataMut
 		}
 
 		err := RunTableCmd(tableCmd, data, dataMutex, &wg)
-		if err != nil && !task.Spec.IgnoreErrors {
+		if !task.Spec.IgnoreErrors && err != nil {
 			return err
 		}
 	}

@@ -7,8 +7,10 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 	"golang.org/x/exp/slices"
 	"golang.org/x/term"
+	"golang.org/x/crypto/ssh"
 	"io"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
 	"text/template"
@@ -39,16 +41,24 @@ func (run *Run) Text(dryRun bool) error {
 				return err
 			}(i, &wg)
 
-			switch err.(type) {
-			case *template.ExecError:
-				return err
-			case *core.TemplateParseError:
-				return err
-			default:
-				if run.Task.Spec.AnyErrorsFatal && err != nil {
-					// The error is printed for each server in method RunTextCmd.
-					// We just return early so other tasks are not executed.
-					return nil
+			if err != nil {
+				switch err.(type) {
+				case *template.ExecError:
+					return err
+				case *core.TemplateParseError:
+					return err
+				default:
+					if run.Task.Spec.AnyErrorsFatal {
+						// Return proper exit code for failed tasks
+						switch err.(type) {
+						case *ssh.ExitError:
+							return &core.ExecError{Err: err, ExitCode: err.(*ssh.ExitError).ExitStatus()}
+						case *exec.ExitError:
+							return &core.ExecError{Err: err, ExitCode: err.(*exec.ExitError).ExitCode()}
+						default:
+							return err
+						}
+					}
 				}
 			}
 		}
@@ -102,7 +112,7 @@ func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool) error {
 		case *core.TemplateParseError:
 			return err
 		default:
-			if err != nil && !task.Spec.IgnoreErrors {
+			if !task.Spec.IgnoreErrors && err != nil {
 				return err
 			}
 		}

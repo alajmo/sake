@@ -90,7 +90,7 @@ func (run *Run) RunTask(
 		print.PrintTable("Unreachable Hosts", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
 
 		if !task.Spec.IgnoreUnreachable {
-			return nil
+			return &core.ExecError{Err: err, ExitCode: 4}
 		}
 	}
 
@@ -119,16 +119,19 @@ func (run *Run) RunTask(
 		spinner := core.GetSpinner()
 		spinner.Start(" Running", 500)
 
-		data := run.Table(runFlags.DryRun)
+		data, err := run.Table(runFlags.DryRun)
 		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
 		run.CleanupClients()
-
 		spinner.Stop()
-
 		print.PrintTable("", data.Rows, options, data.Headers[0:1], data.Headers[1:])
+
+		if err != nil {
+			return err
+		}
 	default:
 		err := run.Text(runFlags.DryRun)
 		run.CleanupClients()
+
 		if err != nil {
 			return err
 		}

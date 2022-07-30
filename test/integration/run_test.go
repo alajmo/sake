@@ -95,7 +95,7 @@ var cases = []TemplateTest{
 	{
 		TestName:   "fatal true",
 		TestCmd: "go run ../../main.go run fatal-true -t reachable",
-		WantErr: false,
+		WantErr: true,
 	},
 	{
 		TestName:   "ignore_errors false",
@@ -110,7 +110,7 @@ var cases = []TemplateTest{
 	{
 		TestName:   "unreachable false",
 		TestCmd: "go run ../../main.go run unreachable -a",
-		WantErr: false,
+		WantErr: true,
 	},
 	{
 		TestName:   "unreachable true",

@@ -152,6 +152,15 @@ func (f *TemplateParseError) Error() string {
 	return fmt.Sprintf("failed to parse %s", f.Msg)
 }
 
+type ExecError struct {
+	Err error
+	ExitCode int
+}
+
+func (e *ExecError) Error() string {
+	return ""
+}
+
 func CheckIfError(err error) {
 	if err != nil {
 		Exit(err)
@@ -164,6 +173,9 @@ func Exit(err error) {
 		// Errors are already mapped with `error:` prefix
 		fmt.Fprintf(os.Stderr, "%v", err)
 		os.Exit(1)
+	case *ExecError:
+		// Don't print anything when there's a ExecError: server execution failed
+		os.Exit(err.(*ExecError).ExitCode)
 	default:
 		fmt.Fprintf(os.Stderr, "%s: %v\n", text.FgRed.Sprintf("error"), err)
 		os.Exit(1)
