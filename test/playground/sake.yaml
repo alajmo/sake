@@ -58,6 +58,10 @@ env:
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
+  exit:
+    local: true
+    cmd: exit 3
+
   ping:
     target: all
     desc: ping server

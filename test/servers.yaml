@@ -1,5 +1,5 @@
 import:
-  - ./sake-2.yaml
+  - ./tasks.yaml
 
 servers:
   localhost:

@@ -1,4 +1,4 @@
-FROM ubuntu:21.10
+FROM ubuntu:latest
 
 RUN apt-get update && apt-get install openssh-server sudo -y
 

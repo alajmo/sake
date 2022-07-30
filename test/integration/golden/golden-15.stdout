@@ -1,7 +1,7 @@
 Index: 15
 Name: fatal true
 Cmd: go run ../../main.go run fatal-true -t reachable
-WantErr: false
+WantErr: true
 
 ---
 
@@ -19,3 +19,4 @@ WantErr: false
  server-8  |               
  server-9  |               
 
+exit status 1

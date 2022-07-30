@@ -1,7 +1,7 @@
 Index: 18
 Name: unreachable false
 Cmd: go run ../../main.go run unreachable -a
-WantErr: false
+WantErr: true
 
 ---
 
@@ -11,3 +11,4 @@ Unreachable Hosts
 -------------+-----------------+------+------+------------------------------------------------
  unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
 
+exit status 4

@@ -2,10 +2,13 @@
 
 ## Unreleased
 
+## 0.10.2
+
 ### Fixes
 
-- Fix local WorkDir when it's not set
 - Allow duplicate hosts
+- Fix correct exit code on remote/local task errors (#27)
+- Fix local WorkDir when it's not explicitly set
 
 ## 0.10.1
 
