@@ -53,7 +53,7 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, error) {
 		if task.Spec.Parallel {
 			go func(i int, wg *sync.WaitGroup) {
 				defer wg.Done()
-				// TODO: Handle errors for parallel work flow as well
+				// TODO: Handle errors when running tasks in parallel
 				_ = run.TableWork(i, dryRun, data, &dataMutex)
 			}(i, &wg)
 		} else {

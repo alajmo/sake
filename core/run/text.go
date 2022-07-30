@@ -31,7 +31,7 @@ func (run *Run) Text(dryRun bool) error {
 		if run.Task.Spec.Parallel {
 			go func(i int, wg *sync.WaitGroup) {
 				defer wg.Done()
-				// TODO
+				// TODO: Handle errors when running tasks in parallel
 				_ = run.TextWork(i, prefixMaxLen, dryRun)
 			}(i, &wg)
 		} else {
