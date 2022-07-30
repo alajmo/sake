@@ -50,11 +50,11 @@ func (run *Run) Text(dryRun bool) error {
 				default:
 					if run.Task.Spec.AnyErrorsFatal {
 						// Return proper exit code for failed tasks
-						switch err.(type) {
+						switch err := err.(type) {
 						case *ssh.ExitError:
-							return &core.ExecError{Err: err, ExitCode: err.(*ssh.ExitError).ExitStatus()}
+							return &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
 						case *exec.ExitError:
-							return &core.ExecError{Err: err, ExitCode: err.(*exec.ExitError).ExitCode()}
+							return &core.ExecError{Err: err, ExitCode: err.ExitCode()}
 						default:
 							return err
 						}

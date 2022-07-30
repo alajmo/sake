@@ -66,11 +66,11 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, error) {
 
 			if err != nil && run.Task.Spec.AnyErrorsFatal {
 				// Return proper exit code for failed tasks
-				switch err.(type) {
+				switch err := err.(type) {
 				case *ssh.ExitError:
-					return data, &core.ExecError{Err: err, ExitCode: err.(*ssh.ExitError).ExitStatus()}
+					return data, &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
 				case *exec.ExitError:
-					return data, &core.ExecError{Err: err, ExitCode: err.(*exec.ExitError).ExitCode()}
+					return data, &core.ExecError{Err: err, ExitCode: err.ExitCode()}
 				default:
 					return data, err
 				}
