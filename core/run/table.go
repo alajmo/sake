@@ -2,13 +2,13 @@ package run
 
 import (
 	"fmt"
+	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
-	"os/exec"
-	"golang.org/x/crypto/ssh"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"

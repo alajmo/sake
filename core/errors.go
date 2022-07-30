@@ -153,7 +153,7 @@ func (f *TemplateParseError) Error() string {
 }
 
 type ExecError struct {
-	Err error
+	Err      error
 	ExitCode int
 }
 

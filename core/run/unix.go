@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 package run
@@ -46,4 +47,3 @@ func ExecTTY(cmd string, envs []string) error {
 
 	return nil
 }
-
