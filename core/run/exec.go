@@ -5,7 +5,6 @@ import (
 	"golang.org/x/crypto/ssh"
 	"os"
 	"os/signal"
-	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -161,45 +160,6 @@ func (run *Run) SetClients(
 	clientCh chan Client,
 	errCh chan ErrConnect,
 ) ([]ErrConnect, error) {
-	globalIdentityFile, globalPassword := getGlobalIdentity(runFlags)
-
-	// Iterate through servers and create a singleton AuthMethod, which is used for
-	// connecting to all hosts using a identity key. Servers which only use a password
-	// are not included here and are handled separately.
-	var identities []Identity
-	for _, server := range run.Servers {
-		if server.Local {
-			continue
-		}
-
-		var pass *string
-		if server.Password != nil {
-			pw, err := dao.EvaluatePassword(*server.Password)
-			pass = &pw
-			if err != nil {
-				errConnect := &ErrConnect{
-					Name:   server.Name,
-					User:   server.User,
-					Host:   server.Host,
-					Port:   server.Port,
-					Reason: err.Error(),
-				}
-				return []ErrConnect{*errConnect}, nil
-			}
-		}
-
-		identities = append(identities, Identity{
-			IdentityFile: server.IdentityFile,
-			Password:     pass,
-		})
-	}
-
-	// VerifyHost
-	authMethod, err := InitAuthMethod(globalIdentityFile, globalPassword, identities)
-	if err != nil {
-		return []ErrConnect{}, err
-	}
-
 	createLocalClient := func(server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
 
@@ -212,9 +172,10 @@ func (run *Run) SetClients(
 		clientCh <- local
 	}
 
-	createRemoteClient := func(server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createRemoteClient := func(authMethod ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
 
+		// PASSWORD ONLY?
 		var auth ssh.AuthMethod
 		if server.IdentityFile == nil && server.Password != nil {
 			// Password only logic
@@ -255,13 +216,44 @@ func (run *Run) SetClients(
 
 	var wg sync.WaitGroup
 	var mu sync.Mutex
+
+	agentSigners, err := GetSSHAgentSigners()
+	if err != nil {
+		return []ErrConnect{}, err
+	}
+
+	globalSigner, err := GetGlobalIdentitySigner(runFlags)
+	if err != nil {
+		return []ErrConnect{}, err
+	}
+
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
 
 		if !server.Local {
 			wg.Add(1)
-			go createRemoteClient(server, &wg, &mu)
+
+			var signers []ssh.Signer
+			identitySigner, err := GetIdentitySigner(server)
+			if err != nil {
+				fmt.Println(123)
+				return []ErrConnect{*err}, nil
+			}
+
+			if globalSigner != nil {
+				signers = append(signers, globalSigner)
+			}
+			if identitySigner != nil {
+				signers = append(signers, identitySigner)
+			}
+			if agentSigners != nil {
+				signers = append(signers, agentSigners...)
+			}
+
+			authMethod := ssh.PublicKeys(signers...)
+
+			go createRemoteClient(authMethod, server, &wg, &mu)
 		}
 	}
 	wg.Wait()
@@ -410,40 +402,6 @@ func (run *Run) setKnownHostsFile(knownHostsFileFlag string) error {
 	}
 
 	return nil
-}
-
-func getGlobalIdentity(runFlags *core.RunFlags) (string, string) {
-	var identityFile string
-	var password string
-
-	if runFlags.IdentityFile != "" {
-		identityFile = runFlags.IdentityFile
-	} else {
-		value, found := os.LookupEnv("SAKE_IDENTITY_FILE")
-		if found {
-			if strings.HasPrefix(value, "~/") {
-				usr, err := user.Current()
-				if err != nil {
-					panic(err)
-				}
-				dir := usr.HomeDir
-				identityFile = filepath.Join(dir, value[2:])
-			} else {
-				identityFile = value
-			}
-		}
-	}
-
-	if runFlags.Password != "" {
-		password = runFlags.Password
-	} else {
-		value, found := os.LookupEnv("SAKE_PASSWORD")
-		if found {
-			password = value
-		}
-	}
-
-	return identityFile, password
 }
 
 func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {

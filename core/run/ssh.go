@@ -9,15 +9,20 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os/user"
 	"net"
 	"os"
 	"strings"
 	"sync"
 	"time"
+	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/knownhosts"
+
+	"github.com/alajmo/sake/core"
+	"github.com/alajmo/sake/core/dao"
 )
 
 var ResetColor = "\033[0m"
@@ -50,82 +55,143 @@ type Identity struct {
 	Password     *string
 }
 
-// InitAuthMethod initiates SSH authentications.
-// 1. Load keys from SSH Agent if available
-// 2. if global identity_file, use that file and return
-// 3. if global identity_file + passphrase, use that file with the passphrase and return
-// 4. [] TODO: if global passphrase, use passphrase connect and return
-// 5. if server identity_file, use that file
-// 7. if server identity_file + passphrase, use that file with the passphrase
-// 8. [] TODO: if passphrase, use passphrase connect
-func InitAuthMethod(globalIdentityFile string, globalPassword string, identities []Identity) (ssh.AuthMethod, error) {
-	var signers []ssh.Signer
-
+func GetSSHAgentSigners() ([]ssh.Signer, error) {
 	// Load keys from SSH Agent if it's running
 	sockPath, found := os.LookupEnv("SSH_AUTH_SOCK")
 	if found {
 		sock, err := net.Dial("unix", sockPath)
 		if err != nil {
-			return ssh.PublicKeys(), err
+			return []ssh.Signer{}, err
 		} else {
 			agent := agent.NewClient(sock)
-			s, _ := agent.Signers()
-			signers = append(signers, s...)
+			s, err := agent.Signers()
+			return s, err
+		}
+	}
+
+	return []ssh.Signer{}, nil
+}
+
+func GetGlobalIdentitySigner(runFlags *core.RunFlags) (ssh.Signer, error) {
+	var identityFile string
+	var password string
+
+	if runFlags.IdentityFile != "" {
+		identityFile = runFlags.IdentityFile
+	} else {
+		value, found := os.LookupEnv("SAKE_IDENTITY_FILE")
+		if found {
+			if strings.HasPrefix(value, "~/") {
+				usr, err := user.Current()
+				if err != nil {
+					panic(err)
+				}
+				dir := usr.HomeDir
+				identityFile = filepath.Join(dir, value[2:])
+			} else {
+				identityFile = value
+			}
+		}
+	}
+
+	if runFlags.Password != "" {
+		password = runFlags.Password
+	} else {
+		value, found := os.LookupEnv("SAKE_PASSWORD")
+		if found {
+			password = value
 		}
 	}
 
 	// User provides global identity/password via flag/env
-	if globalIdentityFile != "" {
-		data, err := ioutil.ReadFile(globalIdentityFile)
+	if identityFile != "" {
+		data, err := ioutil.ReadFile(identityFile)
 		if err != nil {
-			return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", globalIdentityFile, err)
+			return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
 		}
 
-		if globalPassword != "" {
-			signer, err := ssh.ParsePrivateKeyWithPassphrase(data, []byte(globalPassword))
+		if password != "" {
+			signer, err := ssh.ParsePrivateKeyWithPassphrase(data, []byte(password))
 			if err != nil {
-				return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", globalIdentityFile, err)
+				return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
 			}
 
-			return ssh.PublicKeys(signer), nil
+			return signer, nil
 		} else {
 			signer, err := ssh.ParsePrivateKey(data)
 			if err != nil {
-				return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", globalIdentityFile, err)
+				return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
 			}
 
-			return ssh.PublicKeys(signer), nil
+			return signer, nil
 		}
 	}
 
-	// User provides identity/passphrase via config
-	for _, identity := range identities {
-		var signer ssh.Signer
+	return nil, nil
+}
 
-		if identity.IdentityFile != nil {
-			// Identity IdentityFile
-			data, err := ioutil.ReadFile(*identity.IdentityFile)
+func GetIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
+	var pass *string
+	if server.Password != nil {
+		pw, err := dao.EvaluatePassword(*server.Password)
+		pass = &pw
+		if err != nil {
+			errConnect := &ErrConnect{
+				Name:   server.Name,
+				User:   server.User,
+				Host:   server.Host,
+				Port:   server.Port,
+				Reason: err.Error(),
+			}
+			return nil, errConnect
+		}
+	}
+
+	var signer ssh.Signer
+	if server.IdentityFile != nil {
+		// Identity IdentityFile
+		data, err := ioutil.ReadFile(*server.IdentityFile)
+		if err != nil {
+			errConnect := &ErrConnect{
+				Name:   server.Name,
+				User:   server.User,
+				Host:   server.Host,
+				Port:   server.Port,
+				Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+			}
+			return nil, errConnect
+		}
+
+		if pass != nil {
+			signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
 			if err != nil {
-				return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", *identity.IdentityFile, err)
-			}
-
-			if identity.Password != nil {
-				signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*identity.Password))
-				if err != nil {
-					return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", *identity.IdentityFile, err)
+				errConnect := &ErrConnect{
+					Name:   server.Name,
+					User:   server.User,
+					Host:   server.Host,
+					Port:   server.Port,
+					Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
 				}
-			} else {
-				signer, err = ssh.ParsePrivateKey(data)
-				if err != nil {
-					return ssh.PublicKeys(), fmt.Errorf("failed to parse `%s`\n  %w", *identity.IdentityFile, err)
-				}
+				return nil, errConnect
 			}
-
-			signers = append(signers, signer)
+		} else {
+			signer, err = ssh.ParsePrivateKey(data)
+			if err != nil {
+				errConnect := &ErrConnect{
+					Name:   server.Name,
+					User:   server.User,
+					Host:   server.Host,
+					Port:   server.Port,
+					Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+				}
+				return nil, errConnect
+			}
 		}
+
+		return signer, nil
 	}
 
-	return ssh.PublicKeys(signers...), nil
+	return nil, nil
 }
 
 // SSHDialFunc can dial an ssh server and return a client
