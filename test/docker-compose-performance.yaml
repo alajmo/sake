@@ -1,0 +1,97 @@
+---
+version: "3.9"
+
+services:
+  server-1:
+    container_name: "server-1"
+    build: .
+    ports:
+      - "222:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.2
+
+  server-2:
+    container_name: "server-2"
+    build: .
+    ports:
+      - "223:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.3
+
+  server-3:
+    container_name: "server-3"
+    build: .
+    ports:
+      - "224:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.4
+
+  server-4:
+    container_name: "server-4"
+    build: .
+    ports:
+      - "225:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.5
+
+  server-5:
+    container_name: "server-5"
+    build: .
+    ports:
+      - "226:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.6
+
+  server-6:
+    container_name: "server-6"
+    build: .
+    ports:
+      - "227:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.7
+
+  server-7:
+    container_name: "server-7"
+    build: .
+    ports:
+      - "228:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.8
+
+  server-8:
+    container_name: "server-8"
+    build: .
+    ports:
+      - "229:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.9
+
+  server-9:
+    container_name: "server-9"
+    build: .
+    ports:
+      - "230:22"
+    networks:
+      sake:
+        ipv6_address: 2001:3984:3989::10
+
+networks:
+  sake:
+    name: sake
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.2.0/16
+          gateway: 172.24.2.1
+
+        - subnet: 2001:3984:3989::/64
+          gateway: 2001:3984:3989::1

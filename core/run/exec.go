@@ -175,7 +175,7 @@ func (run *Run) SetClients(
 	createRemoteClient := func(authMethod ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
 
-		// PASSWORD ONLY?
+		// TODO: Did i already evalute the password?
 		var auth ssh.AuthMethod
 		if server.IdentityFile == nil && server.Password != nil {
 			// Password only logic
@@ -228,6 +228,12 @@ func (run *Run) SetClients(
 	}
 
 	for _, server := range run.Servers {
+	}
+
+	// Loop through servers and find the identity file, then create a hashmap with string -> signer
+	// Loop through servers and fetch the signer from the previous hashmap and connect
+
+	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
 
@@ -237,7 +243,6 @@ func (run *Run) SetClients(
 			var signers []ssh.Signer
 			identitySigner, err := GetIdentitySigner(server)
 			if err != nil {
-				fmt.Println(123)
 				return []ErrConnect{*err}, nil
 			}
 

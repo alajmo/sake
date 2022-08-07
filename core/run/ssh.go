@@ -163,6 +163,7 @@ func GetIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
 		}
 
 		if pass != nil {
+			// Password protected key
 			signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
 			if err != nil {
 				errConnect := &ErrConnect{
@@ -175,6 +176,7 @@ func GetIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
 				return nil, errConnect
 			}
 		} else {
+			// Unprotected key
 			signer, err = ssh.ParsePrivateKey(data)
 			if err != nil {
 				errConnect := &ErrConnect{
