@@ -9,20 +9,21 @@ servers:
     work_dir: /opt
 
   server-1:
-    desc: hosts mealie, node-red
+    desc: misc server hosting
     host: 172.24.2.2
     tags: [remote, pi]
-    work_dir: /home/samir
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
 
   pihole-1:
-    desc: runs pihole
+    desc: pihole server
     host: 172.24.2.3
     tags: [remote, pi, pihole]
     user: test
     identity_file: ../keys/id_ed25519_pem_no
 
   pihole-2:
-    desc: runs pihole
+    desc: pihole server duplicate
     host: 172.24.2.3
     tags: [remote, pi, pihole]
     user: test

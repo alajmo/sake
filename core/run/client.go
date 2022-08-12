@@ -28,3 +28,7 @@ type ErrConnect struct {
 	Port   uint16
 	Reason string
 }
+
+func (e *ErrConnect) Error() string {
+	return ""
+}
