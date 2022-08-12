@@ -1,0 +1,741 @@
+disable_verify_host: true
+
+servers:
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    tags: [local]
+    work_dir: /opt
+
+  server-1:
+    desc: misc server hosting
+    host: 172.24.2.2
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-2:
+    desc: misc server hosting
+    host: 172.24.2.3
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-3:
+    desc: misc server hosting
+    host: 172.24.2.4
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-4:
+    desc: misc server hosting
+    host: 172.24.2.5
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_rsa_pem_no
+
+  server-5:
+    desc: misc server hosting
+    host: 172.24.2.6
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-6:
+    desc: misc server hosting
+    host: 172.24.2.7
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-7:
+    desc: misc server hosting
+    host: 172.24.2.8
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-8:
+    desc: misc server hosting
+    host: 172.24.2.9
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-9:
+    desc: misc server hosting
+    host: 172.24.2.10
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-10:
+    desc: misc server hosting
+    host: 172.24.2.11
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-11:
+    desc: misc server hosting
+    host: 172.24.2.12
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-12:
+    desc: misc server hosting
+    host: 172.24.2.13
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-13:
+    desc: misc server hosting
+    host: 172.24.2.14
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-14:
+    desc: misc server hosting
+    host: 172.24.2.15
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-15:
+    desc: misc server hosting
+    host: 172.24.2.16
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-16:
+    desc: misc server hosting
+    host: 172.24.2.17
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-17:
+    desc: misc server hosting
+    host: 172.24.2.18
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-18:
+    desc: misc server hosting
+    host: 172.24.2.19
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-19:
+    desc: misc server hosting
+    host: 172.24.2.20
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-20:
+    desc: misc server hosting
+    host: 172.24.2.21
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-21:
+    desc: misc server hosting
+    host: 172.24.2.22
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-22:
+    desc: misc server hosting
+    host: 172.24.2.23
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-23:
+    desc: misc server hosting
+    host: 172.24.2.24
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-24:
+    desc: misc server hosting
+    host: 172.24.2.25
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-25:
+    desc: misc server hosting
+    host: 172.24.2.26
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-26:
+    desc: misc server hosting
+    host: 172.24.2.27
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-27:
+    desc: misc server hosting
+    host: 172.24.2.28
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-28:
+    desc: misc server hosting
+    host: 172.24.2.29
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-29:
+    desc: misc server hosting
+    host: 172.24.2.30
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-30:
+    desc: misc server hosting
+    host: 172.24.2.31
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-31:
+    desc: misc server hosting
+    host: 172.24.2.32
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-32:
+    desc: misc server hosting
+    host: 172.24.2.33
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-33:
+    desc: misc server hosting
+    host: 172.24.2.34
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-34:
+    desc: misc server hosting
+    host: 172.24.2.35
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-35:
+    desc: misc server hosting
+    host: 172.24.2.36
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-36:
+    desc: misc server hosting
+    host: 172.24.2.37
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-37:
+    desc: misc server hosting
+    host: 172.24.2.38
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-38:
+    desc: misc server hosting
+    host: 172.24.2.39
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-39:
+    desc: misc server hosting
+    host: 172.24.2.40
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-40:
+    desc: misc server hosting
+    host: 172.24.2.41
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-41:
+    desc: misc server hosting
+    host: 172.24.2.42
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-42:
+    desc: misc server hosting
+    host: 172.24.2.43
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-43:
+    desc: misc server hosting
+    host: 172.24.2.44
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-44:
+    desc: misc server hosting
+    host: 172.24.2.45
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-45:
+    desc: misc server hosting
+    host: 172.24.2.46
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-46:
+    desc: misc server hosting
+    host: 172.24.2.47
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-47:
+    desc: misc server hosting
+    host: 172.24.2.48
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-48:
+    desc: misc server hosting
+    host: 172.24.2.49
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-49:
+    desc: misc server hosting
+    host: 172.24.2.50
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-50:
+    desc: misc server hosting
+    host: 172.24.2.51
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-51:
+    desc: misc server hosting
+    host: 172.24.2.52
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-52:
+    desc: misc server hosting
+    host: 172.24.2.53
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-53:
+    desc: misc server hosting
+    host: 172.24.2.54
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-54:
+    desc: misc server hosting
+    host: 172.24.2.55
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-55:
+    desc: misc server hosting
+    host: 172.24.2.56
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-56:
+    desc: misc server hosting
+    host: 172.24.2.57
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-57:
+    desc: misc server hosting
+    host: 172.24.2.58
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-58:
+    desc: misc server hosting
+    host: 172.24.2.59
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-59:
+    desc: misc server hosting
+    host: 172.24.2.60
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-60:
+    desc: misc server hosting
+    host: 172.24.2.61
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-61:
+    desc: misc server hosting
+    host: 172.24.2.62
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-62:
+    desc: misc server hosting
+    host: 172.24.2.63
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-63:
+    desc: misc server hosting
+    host: 172.24.2.64
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-64:
+    desc: misc server hosting
+    host: 172.24.2.65
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-65:
+    desc: misc server hosting
+    host: 172.24.2.66
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-66:
+    desc: misc server hosting
+    host: 172.24.2.67
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-67:
+    desc: misc server hosting
+    host: 172.24.2.68
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-68:
+    desc: misc server hosting
+    host: 172.24.2.69
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-69:
+    desc: misc server hosting
+    host: 172.24.2.70
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-70:
+    desc: misc server hosting
+    host: 172.24.2.71
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-71:
+    desc: misc server hosting
+    host: 172.24.2.72
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-72:
+    desc: misc server hosting
+    host: 172.24.2.73
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-73:
+    desc: misc server hosting
+    host: 172.24.2.74
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-74:
+    desc: misc server hosting
+    host: 172.24.2.75
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-75:
+    desc: misc server hosting
+    host: 172.24.2.76
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-76:
+    desc: misc server hosting
+    host: 172.24.2.77
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-77:
+    desc: misc server hosting
+    host: 172.24.2.78
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-78:
+    desc: misc server hosting
+    host: 172.24.2.79
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-79:
+    desc: misc server hosting
+    host: 172.24.2.80
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-80:
+    desc: misc server hosting
+    host: 172.24.2.81
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-81:
+    desc: misc server hosting
+    host: 172.24.2.82
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-82:
+    desc: misc server hosting
+    host: 172.24.2.83
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-83:
+    desc: misc server hosting
+    host: 172.24.2.84
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-84:
+    desc: misc server hosting
+    host: 172.24.2.85
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-85:
+    desc: misc server hosting
+    host: 172.24.2.86
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-86:
+    desc: misc server hosting
+    host: 172.24.2.87
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-87:
+    desc: misc server hosting
+    host: 172.24.2.88
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-88:
+    desc: misc server hosting
+    host: 172.24.2.89
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-89:
+    desc: misc server hosting
+    host: 172.24.2.90
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-90:
+    desc: misc server hosting
+    host: 172.24.2.91
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-91:
+    desc: misc server hosting
+    host: 172.24.2.92
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-92:
+    desc: misc server hosting
+    host: 172.24.2.93
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-93:
+    desc: misc server hosting
+    host: 172.24.2.94
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-94:
+    desc: misc server hosting
+    host: 172.24.2.95
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-95:
+    desc: misc server hosting
+    host: 172.24.2.96
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-96:
+    desc: misc server hosting
+    host: 172.24.2.97
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-97:
+    desc: misc server hosting
+    host: 172.24.2.98
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-98:
+    desc: misc server hosting
+    host: 172.24.2.99
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-99:
+    desc: misc server hosting
+    host: 172.24.2.100
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+  server-100:
+    desc: misc server hosting
+    host: 172.24.2.101
+    tags: [remote, pi]
+    user: test
+    identity_file: ../../keys/id_ed25519_pem_no
+
+targets:
+  all:
+    all: true
+
+specs:
+  table:
+    output: table
+
+  text:
+    output: text
+
+  info:
+    output: table
+    parallel: true
+    ignore_errors: true
+    ignore_unreachable: true
+    any_errors_fatal: false
+
+env:
+  VERSION: v0.1.0
+  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+
+tasks:
+  exit:
+    local: true
+    cmd: exit 3
+
+  ping:
+    target: all
+    desc: ping server
+    cmd: echo pong

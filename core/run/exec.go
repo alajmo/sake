@@ -204,11 +204,6 @@ func (run *Run) SetClients(
 		return []ErrConnect{}, err
 	}
 
-	// Loop through servers and find the identity file,
-	// then create a hashmap with string -> signer
-	// Loop through servers and fetch the signer from the previous hashmap and connect
-
-	// TODO: Check errors
 	identities := make(map[string]ssh.Signer)
 	passwordAuthMethods := make(map[string]ssh.AuthMethod)
 	for _, server := range run.Servers {
@@ -242,7 +237,6 @@ func (run *Run) SetClients(
 		}
 	}
 
-	// TODO: Check errors
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)

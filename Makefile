@@ -37,6 +37,9 @@ update-golden-files:
 mock-ssh:
 	cd ./test && docker-compose up
 
+mock-performance-ssh:
+	cd ./test && docker-compose -f docker-compose-performance.yaml up
+
 build:
 	CGO_ENABLED=0 go build \
 	-ldflags "-s -w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \

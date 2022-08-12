@@ -12,7 +12,8 @@ servers:
     desc: misc server hosting
     host: 172.24.2.2
     tags: [remote, pi]
-    work_dir: /home/samir
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
 
   pihole-1:
     desc: pihole server
