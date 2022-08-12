@@ -9,13 +9,13 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"os/user"
 	"net"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
-	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -39,7 +39,7 @@ type SSHClient struct {
 	Port         uint16
 	IdentityFile string
 	Password     string
-	AuthMethod   ssh.AuthMethod
+	AuthMethod   []ssh.AuthMethod
 
 	connString   string
 	remoteStdin  io.WriteCloser
@@ -130,70 +130,97 @@ func GetGlobalIdentitySigner(runFlags *core.RunFlags) (ssh.Signer, error) {
 	return nil, nil
 }
 
-func GetIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
-	var pass *string
-	if server.Password != nil {
-		pw, err := dao.EvaluatePassword(*server.Password)
-		pass = &pw
-		if err != nil {
-			errConnect := &ErrConnect{
-				Name:   server.Name,
-				User:   server.User,
-				Host:   server.Host,
-				Port:   server.Port,
-				Reason: err.Error(),
-			}
-			return nil, errConnect
+func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, *ErrConnect) {
+	password, err := dao.EvaluatePassword(*server.Password)
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: err.Error(),
 		}
+
+		return nil, errConnect
 	}
 
+	return ssh.Password(password), nil
+}
+
+// Password protected key
+func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
 	var signer ssh.Signer
-	if server.IdentityFile != nil {
-		// Identity IdentityFile
-		data, err := ioutil.ReadFile(*server.IdentityFile)
-		if err != nil {
-			errConnect := &ErrConnect{
-				Name:   server.Name,
-				User:   server.User,
-				Host:   server.Host,
-				Port:   server.Port,
-				Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-			}
-			return nil, errConnect
-		}
 
-		if pass != nil {
-			// Password protected key
-			signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
-			if err != nil {
-				errConnect := &ErrConnect{
-					Name:   server.Name,
-					User:   server.User,
-					Host:   server.Host,
-					Port:   server.Port,
-					Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-				}
-				return nil, errConnect
-			}
-		} else {
-			// Unprotected key
-			signer, err = ssh.ParsePrivateKey(data)
-			if err != nil {
-				errConnect := &ErrConnect{
-					Name:   server.Name,
-					User:   server.User,
-					Host:   server.Host,
-					Port:   server.Port,
-					Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-				}
-				return nil, errConnect
-			}
+	data, err := ioutil.ReadFile(*server.IdentityFile)
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
 		}
-
-		return signer, nil
+		return nil, errConnect
 	}
 
-	return nil, nil
+	var pass *string
+	pw, err := dao.EvaluatePassword(*server.Password)
+	pass = &pw
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: err.Error(),
+		}
+		return nil, errConnect
+	}
+
+	signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+		}
+		return nil, errConnect
+	}
+
+	return signer, nil
+}
+
+// Unprotected key
+func GetIdentity(server dao.Server) (ssh.Signer, *ErrConnect) {
+	var signer ssh.Signer
+
+	data, err := ioutil.ReadFile(*server.IdentityFile)
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+		}
+		return nil, errConnect
+	}
+
+	signer, err = ssh.ParsePrivateKey(data)
+	if err != nil {
+		errConnect := &ErrConnect{
+			Name:   server.Name,
+			User:   server.User,
+			Host:   server.Host,
+			Port:   server.Port,
+			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+		}
+		return nil, errConnect
+	}
+
+	return signer, nil
 }
 
 // SSHDialFunc can dial an ssh server and return a client
@@ -222,9 +249,10 @@ func (c *SSHClient) ConnectWith(dialer SSHDialFunc, disableVerifyHost bool, know
 
 	config := &ssh.ClientConfig{
 		User: c.User,
-		Auth: []ssh.AuthMethod{
-			c.AuthMethod,
-		},
+		Auth: c.AuthMethod,
+		// Auth: []ssh.AuthMethod{
+		// 	c.AuthMethod,
+		// },
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
 			if !disableVerifyHost {
 				return VerifyHost(knownHostsFile, mu, hostname, remote, key)

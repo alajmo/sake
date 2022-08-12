@@ -27,6 +27,7 @@ type Server struct {
 	WorkDir      string
 	IdentityFile *string
 	Password     *string
+	AuthMethod   string
 
 	context     string // config path
 	contextLine int    // defined at
@@ -45,6 +46,7 @@ type ServerYAML struct {
 	WorkDir      string    `yaml:"work_dir"`
 	IdentityFile *string   `yaml:"identity_file"`
 	Password     *string   `yaml:"password"`
+	AuthMethod   string    `yaml:"-"`
 }
 
 func (s Server) GetValue(key string, _ int) string {
@@ -186,6 +188,16 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 
 		if serverYAML.Password != nil {
 			server.Password = serverYAML.Password
+		}
+
+		if server.IdentityFile != nil && server.Password != nil {
+			server.AuthMethod = "password-key"
+		} else if server.IdentityFile != nil {
+			server.AuthMethod = "key"
+		} else if server.Password != nil {
+			server.AuthMethod = "password"
+		} else {
+			server.AuthMethod = "none"
 		}
 
 		servers = append(servers, *server)

@@ -32,4 +32,3 @@ type ErrConnect struct {
 func (e *ErrConnect) Error() string {
 	return ""
 }
-

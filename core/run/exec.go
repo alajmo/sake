@@ -172,38 +172,15 @@ func (run *Run) SetClients(
 		clientCh <- local
 	}
 
-	createRemoteClient := func(authMethod ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createRemoteClient := func(authMethod []ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
-
-		// TODO: Did i already evalute the password?
-		var auth ssh.AuthMethod
-		if server.IdentityFile == nil && server.Password != nil {
-			// Password only logic
-			password, err := dao.EvaluatePassword(*server.Password)
-			if err != nil {
-				errConnect := &ErrConnect{
-					Name:   server.Name,
-					User:   server.User,
-					Host:   server.Host,
-					Port:   server.Port,
-					Reason: err.Error(),
-				}
-				errCh <- *errConnect
-			}
-
-			passwordAuth := ssh.Password(password)
-			auth = passwordAuth
-		} else {
-			// Identity key logic
-			auth = authMethod
-		}
 
 		remote := &SSHClient{
 			Name:       server.Name,
 			User:       server.User,
 			Host:       server.Host,
 			Port:       server.Port,
-			AuthMethod: auth,
+			AuthMethod: authMethod,
 		}
 
 		if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
@@ -227,12 +204,45 @@ func (run *Run) SetClients(
 		return []ErrConnect{}, err
 	}
 
-	for _, server := range run.Servers {
-	}
-
-	// Loop through servers and find the identity file, then create a hashmap with string -> signer
+	// Loop through servers and find the identity file,
+	// then create a hashmap with string -> signer
 	// Loop through servers and fetch the signer from the previous hashmap and connect
 
+	// TODO: Check errors
+	identities := make(map[string]ssh.Signer)
+	passwordAuthMethods := make(map[string]ssh.AuthMethod)
+	for _, server := range run.Servers {
+		if server.AuthMethod == "password-key" {
+			_, found := identities[*server.IdentityFile]
+			if !found {
+				signer, err := GetPassworIdentitySigner(server)
+				if err != nil {
+					return []ErrConnect{*err}, nil
+				}
+				identities[*server.IdentityFile] = signer
+			}
+		} else if server.AuthMethod == "key" {
+			_, found := identities[*server.IdentityFile]
+			if !found {
+				signer, err := GetIdentity(server)
+				if err != nil {
+					return []ErrConnect{*err}, nil
+				}
+				identities[*server.IdentityFile] = signer
+			}
+		} else if server.AuthMethod == "password" {
+			_, found := passwordAuthMethods[*server.Password]
+			if !found {
+				passAuthMethod, err := GetPasswordAuth(server)
+				if err != nil {
+					return []ErrConnect{*err}, nil
+				}
+				passwordAuthMethods[*server.Password] = passAuthMethod
+			}
+		}
+	}
+
+	// TODO: Check errors
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
@@ -240,25 +250,26 @@ func (run *Run) SetClients(
 		if !server.Local {
 			wg.Add(1)
 
+			var authMethods []ssh.AuthMethod
 			var signers []ssh.Signer
-			identitySigner, err := GetIdentitySigner(server)
-			if err != nil {
-				return []ErrConnect{*err}, nil
-			}
 
 			if globalSigner != nil {
 				signers = append(signers, globalSigner)
-			}
-			if identitySigner != nil {
+			} else if server.AuthMethod == "password" {
+				pwAuth := passwordAuthMethods[*server.Password]
+				authMethods = append(authMethods, pwAuth)
+			} else if server.AuthMethod == "key" || server.AuthMethod == "password-key" {
+				identitySigner := identities[*server.IdentityFile]
 				signers = append(signers, identitySigner)
-			}
-			if agentSigners != nil {
+			} else if agentSigners != nil {
 				signers = append(signers, agentSigners...)
 			}
 
-			authMethod := ssh.PublicKeys(signers...)
+			if len(signers) > 0 {
+				authMethods = append(authMethods, ssh.PublicKeys(signers...))
+			}
 
-			go createRemoteClient(authMethod, server, &wg, &mu)
+			go createRemoteClient(authMethods, server, &wg, &mu)
 		}
 	}
 	wg.Wait()
