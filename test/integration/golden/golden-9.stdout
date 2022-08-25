@@ -51,7 +51,7 @@ WantErr: false
            | SAKE_SERVER_TAGS remote,prod,reachable    
            | SAKE_SERVER_HOST 172.24.2.3               
            | SAKE_SERVER_USER test                     
-           | SAKE_SERVER_PORT 22                       
+           | SAKE_SERVER_PORT 33                       
            | SAKE_SERVER_LOCAL false                   
            |                                           
            | # TASK                                    

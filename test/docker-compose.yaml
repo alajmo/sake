@@ -15,10 +15,15 @@ services:
     container_name: "server-2"
     build: .
     ports:
-      - "223:22"
+      - "223:33"
     networks:
       sake:
         ipv4_address: 172.24.2.3
+    entrypoint:
+      - /usr/sbin/sshd
+      - -D
+      - -p
+      - "33"
 
   server-3:
     container_name: "server-3"
@@ -82,6 +87,20 @@ services:
     networks:
       sake:
         ipv6_address: 2001:3984:3989::10
+
+  server-10:
+    container_name: "server-10"
+    build: .
+    ports:
+      - "231:33"
+    networks:
+      sake:
+        ipv6_address: 2001:3984:3989::11
+    entrypoint:
+      - /usr/sbin/sshd
+      - -D
+      - -p
+      - "33"
 
 networks:
   sake:

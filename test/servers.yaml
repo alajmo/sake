@@ -27,6 +27,7 @@ servers:
   server-2:
     desc: server-2
     host: 172.24.2.3
+    port: 33
     tags: [remote,prod,reachable]
     user: test
     identity_file: keys/id_ed25519_pem_no

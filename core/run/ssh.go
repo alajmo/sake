@@ -17,6 +17,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kevinburke/ssh_config"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/knownhosts"
@@ -438,10 +439,12 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 	hostKeyCallback, err := knownhosts.New(knownFile)
 
 	if err != nil {
+		// TODO: if known_hosts malformed, return error to user
+		fmt.Println(err)
 		return false, err
 	}
 
-	// check if host already exists
+	// TODO: For some reason hashed ip6 with port 22 does not work, all other combinations work
 	err = hostKeyCallback(host, remote, key)
 
 	// Known host already exists
@@ -481,7 +484,6 @@ func askIsHostTrusted(host string, key ssh.PublicKey, mu *sync.Mutex) bool {
 	return strings.ToLower(strings.TrimSpace(a)) == "yes" || strings.ToLower(strings.TrimSpace(a)) == "y"
 }
 
-// TODO: Refactor this
 func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile string) (err error) {
 	f, err := os.OpenFile(knownFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
 	if err != nil {
@@ -490,40 +492,45 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 
 	defer f.Close()
 
-	remoteNormalized := knownhosts.Normalize(remote.String())
-	hostNormalized := knownhosts.Normalize(host)
-	r, _, err := net.SplitHostPort(remote.String())
-	if err != nil {
-		return err
-	}
-
-	addresses := []string{r}
-
-	// If it's a hostname, then add the resolved IP as well
-	// For instance, user specifies:
-	// host: server-1.lan
-	// Then the complete line in known_hosts will be:
-	// x.x.x.x,server-1.lan
-	if hostNormalized != remoteNormalized {
-		h, _, err := net.SplitHostPort(host)
-		if err != nil {
-			return err
-		}
-		addresses = append(addresses, h)
-	}
-
-	// Note: knownhosts.Line will append square brackets [] to IP6 addresses
-	line := Line(addresses, key)
+	line := Line(host, key)
 	_, err = f.WriteString(line + "\n")
 
 	return err
 }
 
-func Line(addresses []string, key ssh.PublicKey) string {
-	var trimmed []string
-	trimmed = append(trimmed, addresses...)
+// TODO: Replace this method with known_hosts Line method when they fix
+// the issue with ip6 formats.
+// Supported Host formats:
+//   172.24.2.3
+//   172.24.2.3:333 # custom port
+//   2001:3984:3989::10
+//   [2001:3984:3989::10]:333 # custom port
+func Line(address string, key ssh.PublicKey) string {
+	host, port, err := net.SplitHostPort(address)
+	if err != nil {
+		host = address
+		port = "22"
+	}
 
-	return strings.Join(trimmed, ",") + " " + serialize(key)
+	if port != "22" {
+		if strings.Contains(host, ":") {
+			// ip6
+			host = "[" + host + "]" + ":" + port
+		} else {
+			// ip4
+			host = host + ":" + port
+		}
+	}
+
+	var entry string
+	hash := ssh_config.Get(host, "HashKnownHosts")
+	if hash == "yes" {
+		entry = knownhosts.HashHostname(host)
+	} else {
+		entry = host
+	}
+
+	return entry + " " + serialize(key)
 }
 
 func serialize(k ssh.PublicKey) string {
