@@ -498,8 +498,7 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 	return err
 }
 
-// TODO: Replace this method with known_hosts Line method when they fix
-// the issue with ip6 formats.
+// TODO: Replace this method with known_hosts Line method when issue with ip6 formats is fixed.
 // Supported Host formats:
 //   172.24.2.3
 //   172.24.2.3:333 # custom port
