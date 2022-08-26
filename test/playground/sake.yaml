@@ -1,4 +1,5 @@
 known_hosts_file: known_hosts
+# disable_verify_host: true
 
 servers:
   localhost:
@@ -8,33 +9,61 @@ servers:
     tags: [local]
     work_dir: /opt
 
+  pi:
+    host: pihole.lan
+    tags: [remote, pi]
+
   server-1:
-    desc: misc server hosting
+    desc: server-1
     host: 172.24.2.2
     tags: [remote, pi]
     user: test
     identity_file: ../keys/id_ed25519_pem_no
 
-  pihole-1:
-    desc: pihole server
+  server-2:
+    desc: server-2
     host: 172.24.2.3
+    port: 33
+    tags: [remote, pi]
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+
+  server-3:
+    desc: server-3
+    host: 172.24.2.4
     tags: [remote, pi, pihole]
     user: test
     identity_file: ../keys/id_ed25519_pem_no
 
-  pihole-2:
-    desc: pihole server duplicate
-    host: 172.24.2.3
+  server-4:
+    desc: server-4
+    host: 172.24.2.4
     tags: [remote, pi, pihole]
     user: test
     identity_file: ../keys/id_ed25519_pem_no
 
-  ip6:
-    desc: server-9
+  ip6-1:
+    desc: ip6-1
     host: 2001:3984:3989::10
     tags: [remote, reachable]
     user: test
     password: test
+
+  ip6-2:
+    desc: ip6-2
+    host: 2001:3984:3989::11
+    port: 33
+    tags: [remote, reachable]
+    user: test
+    password: test
+
+  resolve:
+    desc: misc server hosting
+    host: resolve
+    tags: [remote, pi]
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+
 
 targets:
   all:
@@ -66,7 +95,7 @@ tasks:
   ping:
     target: all
     desc: ping server
-    cmd: echo pong
+    cmd: echo $SAKE_SERVER_NAME
 
   # Info
   print-host:

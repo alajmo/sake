@@ -16,8 +16,6 @@ USER root
 
 RUN service ssh start
 
-EXPOSE 22
-
 WORKDIR /home/test
 
 CMD [ "/usr/sbin/sshd", "-D" ]

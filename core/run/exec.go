@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/kevinburke/ssh_config"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
@@ -55,6 +56,11 @@ func (run *Run) RunTask(
 	}
 
 	configEnv, err := dao.EvaluateEnv(run.Config.Envs)
+	if err != nil {
+		return err
+	}
+
+	err = run.ParseServers()
 	if err != nil {
 		return err
 	}
@@ -325,6 +331,27 @@ func (run *Run) CleanupClients() {
 			remote.Close()
 		}
 	}
+}
+
+// ParseServers resolves host and port in users ssh config
+func (run *Run) ParseServers() error {
+	for i := range run.Servers {
+		host := ssh_config.Get(run.Servers[i].Host, "HostName")
+		port := ssh_config.Get(run.Servers[i].Host, "Port")
+
+		if host != "" {
+			run.Servers[i].Host = host
+		}
+		if port != "22" {
+			p, err := strconv.ParseInt(port, 10, 16)
+			if err != nil {
+				return err
+			}
+			run.Servers[i].Port = uint16(p)
+		}
+	}
+
+	return nil
 }
 
 func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) error {
