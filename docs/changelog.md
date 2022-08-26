@@ -2,7 +2,7 @@
 
 ## 0.10.3
 
-## Fixes
+### Fixes
 
 - Previously known_hosts didn't work correctly when specifying port other than 22
 - Fix authentication failures [https://github.com/alajmo/sake/pull/30]
