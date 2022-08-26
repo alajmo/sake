@@ -440,7 +440,7 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 
 	if err != nil {
 		// TODO: if known_hosts malformed, return error to user
-        // Need to check type of error, for instance: illegal base64 data at input byte 0
+		// Need to check type of error, for instance: illegal base64 data at input byte 0
 		return false, err
 	}
 
