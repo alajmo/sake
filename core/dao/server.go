@@ -18,6 +18,7 @@ type Server struct {
 	Name         string
 	Desc         string
 	Host         string
+	Bastion      string
 	User         string
 	Port         uint16
 	Local        bool
@@ -37,6 +38,7 @@ type ServerYAML struct {
 	Name         string    `yaml:"-"`
 	Desc         string    `yaml:"desc"`
 	Host         string    `yaml:"host"`
+	Bastion      string    `yaml:"bastion"`
 	User         string    `yaml:"user"`
 	Port         uint16    `yaml:"port"`
 	Local        bool      `yaml:"local"`
@@ -55,6 +57,8 @@ func (s Server) GetValue(key string, _ int) string {
 		return s.Name
 	case "Host", "host":
 		return s.Host
+	case "Bastion", "bastion":
+		return s.Bastion
 	case "User", "user":
 		return s.User
 	case "Port", "port":
@@ -144,6 +148,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc),
 			fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")),
 			fmt.Sprintf("SAKE_SERVER_HOST=%s", serverYAML.Host),
+			fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion),
 			fmt.Sprintf("SAKE_SERVER_USER=%s", serverYAML.User),
 			fmt.Sprintf("SAKE_SERVER_PORT=%d", serverYAML.Port),
 			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
@@ -152,6 +157,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		server.Name = serverYAML.Name
 		server.Desc = serverYAML.Desc
 		server.Host = serverYAML.Host
+		server.Bastion = serverYAML.Bastion
 		server.User = serverYAML.User
 		server.Port = serverYAML.Port
 		server.Local = serverYAML.Local

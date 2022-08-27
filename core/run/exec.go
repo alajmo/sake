@@ -189,9 +189,28 @@ func (run *Run) SetClients(
 			AuthMethod: authMethod,
 		}
 
-		if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
-			errCh <- *err
-			return
+		var bastion *SSHClient
+		if server.Bastion != "" {
+			bastion = &SSHClient{
+				Host:       server.Bastion,
+				User:       server.User,
+				Port:       server.Port,
+				AuthMethod: authMethod,
+			}
+			if err := bastion.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+				errCh <- *err
+				return
+			}
+
+			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, bastion.DialThrough); err != nil {
+				errCh <- *err
+				return
+			}
+		} else {
+			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+				errCh <- *err
+				return
+			}
 		}
 
 		clientCh <- remote

@@ -2,6 +2,15 @@
 version: "3.9"
 
 services:
+  bastion:
+    container_name: "bastion"
+    build: .
+    ports:
+      - "221:22"
+    networks:
+      sake:
+        ipv4_address: 172.24.2.99
+
   server-1:
     container_name: "server-1"
     build: .

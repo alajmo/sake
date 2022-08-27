@@ -9,13 +9,10 @@ servers:
     tags: [local]
     work_dir: /opt
 
-  pi:
-    host: pihole.lan
-    tags: [remote, pi]
-
   server-1:
     desc: server-1
     host: 172.24.2.2
+    bastion: 172.24.2.99
     tags: [remote, pi]
     user: test
     identity_file: ../keys/id_ed25519_pem_no
@@ -56,14 +53,6 @@ servers:
     tags: [remote, reachable]
     user: test
     password: test
-
-  resolve:
-    desc: misc server hosting
-    host: resolve
-    tags: [remote, pi]
-    user: test
-    identity_file: ../keys/id_ed25519_pem_no
-
 
 targets:
   all:
