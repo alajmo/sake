@@ -156,7 +156,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
 		}
 
-		// TODO: user, bastion, port
 		server.Name = serverYAML.Name
 		server.Desc = serverYAML.Desc
 		server.Host = serverYAML.Host

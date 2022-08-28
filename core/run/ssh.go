@@ -544,7 +544,7 @@ func AsExport(env []string) string {
 	return exports
 }
 
-// DialThrough will create a new connection from the ssh server sc is connected to. DialThrough is an SSHDialer.
+// DialThrough will create a new connection from the ssh server c is connected to. DialThrough is an SSHDialer.
 func (c *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error) {
 	conn, err := c.conn.Dial(net, addr)
 	if err != nil {
