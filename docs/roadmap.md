@@ -1,6 +1,6 @@
 # Roadmap
 
-`sake` is under active development. Before v1.0.0, I want to finish the following tasks:
+`sake` is under active development. Before **v1.0.0**, I want to finish the following tasks:
 
 - [ ] Improve servers
   - [x] Resolve hostnames from ssh_config
@@ -27,4 +27,4 @@
   - [ ] Abort if certain env variables are not present (required envs)
   - [ ] Add --step mode flag or config setting to prompt before executing a task
 
-After v1.0.0, focus will be directed to implementing a `tui` for `sake`.
+After **v1.0.0**, focus will be directed to implementing a `tui` for `sake`.
