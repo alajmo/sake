@@ -1,6 +1,6 @@
 # Roadmap
 
-`sake` is under active development. Before **v1.0.0**, I want to finish the following tasks:
+`sake` is under active development. Before **v1.0.0**, I want to finish the following tasks, some miscellaneous fixes and improve code documentation:
 
 - [ ] Improve servers
   - [x] Resolve hostnames from ssh_config
@@ -8,6 +8,10 @@
   - [ ] Define multiple hosts without creating individual servers
   - [ ] Dynamically fetch hosts
   - [ ] Regex filtering of servers
+
+- [ ] Improve output
+  - Add new table format output (tasks in 1st column, output in 2nd, one table per server)
+  - Add new format output (tasks in column, project output in row)
 
 - [ ] Improve tasks
   - [ ] Return correct error exit codes when running tasks
@@ -26,5 +30,8 @@
   - [ ] Log task execution to a file
   - [ ] Abort if certain env variables are not present (required envs)
   - [ ] Add --step mode flag or config setting to prompt before executing a task
+  - [ ] Add yaml to command mapper
 
-After **v1.0.0**, focus will be directed to implementing a `tui` for `sake`.
+## Future
+
+After **v1.0.0**, focus will be directed to implementing a `tui` for `sake`. The idea is to create something similar to `k9s`, where you have can peruse your servers, tasks, and tags via a `tui`, and execute tasks for selected servers, ssh into servers, etc.
