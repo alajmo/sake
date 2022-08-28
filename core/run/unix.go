@@ -5,26 +5,35 @@ package run
 
 import (
 	"fmt"
+	"github.com/alajmo/sake/core/dao"
 	"golang.org/x/sys/unix"
 	"os"
 	"os/exec"
 )
 
-func SSHToServer(host string, user string, port uint16, disableVerifyHost bool, knownHostFile string) error {
+// func SSHToServer(host string, user string, port uint16, bastion string, disableVerifyHost bool, knownHostFile string) error {
+func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string) error {
 	sshBin, err := exec.LookPath("ssh")
 	if err != nil {
 		return err
 	}
 
-	sshConnStr := fmt.Sprintf("%s@%s", user, host)
-	portStr := fmt.Sprintf("-p %d", port)
+	sshConnStr := fmt.Sprintf("%s@%s", server.User, server.Host)
+	portStr := fmt.Sprintf("-p %d", server.Port)
 
-	if !disableVerifyHost {
-		knownHostFileStr := fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile)
-		err = unix.Exec(sshBin, []string{"ssh", "-t", sshConnStr, portStr, knownHostFileStr}, os.Environ())
+	args := []string{"ssh", "-t", sshConnStr, portStr}
+	if disableVerifyHost {
+		args = append(args, "-o StrictHostKeyChecking=no")
 	} else {
-		err = unix.Exec(sshBin, []string{"ssh", "-t", sshConnStr, portStr, "-o StrictHostKeyChecking=no"}, os.Environ())
+		args = append(args, fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile))
 	}
+
+	if server.BastionHost != "" {
+		jumphost := fmt.Sprintf("%s@%s:%d", server.BastionUser, server.BastionHost, server.BastionPort)
+		args = append(args, fmt.Sprintf("-J %s", jumphost))
+	}
+
+	err = unix.Exec(sshBin, args, os.Environ())
 
 	if err != nil {
 		return err

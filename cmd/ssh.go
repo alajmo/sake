@@ -37,7 +37,11 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 func ssh(args []string, config *dao.Config) {
 	server, err := config.GetServer(args[0])
 	core.CheckIfError(err)
+	servers := []dao.Server{*server}
 
-	err = run.SSHToServer(server.Host, server.User, server.Port, config.DisableVerifyHost, config.KnownHostsFile)
+	err = run.ParseServers(&servers)
+	core.CheckIfError(err)
+
+	err = run.SSHToServer(*server, config.DisableVerifyHost, config.KnownHostsFile)
 	core.CheckIfError(err)
 }
