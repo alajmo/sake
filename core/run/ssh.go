@@ -205,6 +205,19 @@ func (c *SSHClient) Stdout() io.Reader {
 	return c.remoteStdout
 }
 
+// DialThrough will create a new connection from the ssh server c is connected to. DialThrough is an SSHDialer.
+func (c *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error) {
+	conn, err := c.conn.Dial(net, addr)
+	if err != nil {
+		return nil, err
+	}
+	client, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
+	if err != nil {
+		return nil, err
+	}
+	return ssh.NewClient(client, chans, reqs), nil
+}
+
 func (c *SSHClient) Prefix() string {
 	return c.Host
 }
@@ -542,17 +555,4 @@ func AsExport(env []string) string {
 	}
 
 	return exports
-}
-
-// DialThrough will create a new connection from the ssh server c is connected to. DialThrough is an SSHDialer.
-func (c *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error) {
-	conn, err := c.conn.Dial(net, addr)
-	if err != nil {
-		return nil, err
-	}
-	client, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
-	if err != nil {
-		return nil, err
-	}
-	return ssh.NewClient(client, chans, reqs), nil
 }
