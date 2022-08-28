@@ -18,7 +18,9 @@ type Server struct {
 	Name         string
 	Desc         string
 	Host         string
-	Bastion      string
+	BastionHost  string
+	BastionUser  string
+	BastionPort  uint16
 	User         string
 	Port         uint16
 	Local        bool
@@ -58,7 +60,7 @@ func (s Server) GetValue(key string, _ int) string {
 	case "Host", "host":
 		return s.Host
 	case "Bastion", "bastion":
-		return s.Bastion
+		return s.BastionHost
 	case "User", "user":
 		return s.User
 	case "Port", "port":
@@ -154,10 +156,10 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
 		}
 
+		// TODO: user, bastion, port
 		server.Name = serverYAML.Name
 		server.Desc = serverYAML.Desc
 		server.Host = serverYAML.Host
-		server.Bastion = serverYAML.Bastion
 		server.User = serverYAML.User
 		server.Port = serverYAML.Port
 		server.Local = serverYAML.Local
@@ -165,6 +167,18 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		server.Shell = serverYAML.Shell
 		server.WorkDir = serverYAML.WorkDir
 		server.Envs = append(envs, defaultEnvs...)
+
+		if serverYAML.Bastion != "" {
+			bastionUser, bastionHost, bastionPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
+			if err != nil {
+				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+				continue
+			}
+
+			server.BastionUser = bastionUser
+			server.BastionHost = bastionHost
+			server.BastionPort = bastionPort
+		}
 
 		if serverYAML.IdentityFile != nil {
 			identityFile := os.ExpandEnv(*serverYAML.IdentityFile)

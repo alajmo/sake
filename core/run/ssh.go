@@ -1,7 +1,5 @@
 package run
 
-// Source: https://github.com/pressly/sup/blob/be6dff41589b713547415b72660885dd7a045f8f/sup.go
-
 import (
 	"bufio"
 	"encoding/base64"
@@ -547,14 +545,14 @@ func AsExport(env []string) string {
 }
 
 // DialThrough will create a new connection from the ssh server sc is connected to. DialThrough is an SSHDialer.
-func (sc *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error) {
-	conn, err := sc.conn.Dial(net, addr)
+func (c *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error) {
+	conn, err := c.conn.Dial(net, addr)
 	if err != nil {
 		return nil, err
 	}
-	c, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
+	client, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
 	if err != nil {
 		return nil, err
 	}
-	return ssh.NewClient(c, chans, reqs), nil
+	return ssh.NewClient(client, chans, reqs), nil
 }

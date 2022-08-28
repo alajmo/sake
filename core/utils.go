@@ -151,3 +151,42 @@ func DebugPrint(data any) {
 	fmt.Print(string(s))
 	fmt.Println()
 }
+
+// Parse host, for instance : user@hostname
+func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (string, string, uint16, error) {
+	var user string
+	host := hostname
+	var port uint16
+
+	// Remove extra "ssh://" schema
+	if len(host) > 6 && host[:6] == "ssh://" {
+		host = host[6:]
+	}
+
+	// Split by the last "@", since there may be an "@" in the username
+	if at := strings.LastIndex(host, "@"); at != -1 {
+		user = host[:at]
+		host = host[at+1:]
+	} else {
+		user = defaultUser
+	}
+
+	if strings.Contains(host, "/") {
+		return "", "", 22, fmt.Errorf("unexpected slash in the host %s", hostname)
+	}
+
+	if strings.Contains(hostname, ":") {
+		lastInd := strings.LastIndex(host, ":")
+		p, err := strconv.ParseInt(host[lastInd+1:], 0, 16)
+		if err != nil {
+			return "", "", 22, err
+		}
+		port = uint16(p)
+
+		host = host[:lastInd]
+	} else {
+		port = defaultPort
+	}
+
+	return user, host, port, nil
+}

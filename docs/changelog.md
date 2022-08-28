@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+### Features
+
+- Support Bastion/jump host
+
 ## 0.10.3
 
 ### Fixes
