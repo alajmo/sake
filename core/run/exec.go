@@ -357,25 +357,10 @@ func (run *Run) CleanupClients() {
 // ParseServers resolves host, port, proxyjump in users ssh config
 func (run *Run) ParseServers() error {
 	for i := range run.Servers {
-		host := ssh_config.Get(run.Servers[i].Host, "HostName")
-		if host != "" {
-			run.Servers[i].Host = host
-		}
-
-		port := ssh_config.Get(run.Servers[i].Host, "Port")
-		if port != "22" {
-			p, err := strconv.ParseInt(port, 10, 16)
-			if err != nil {
-				return err
-			}
-			run.Servers[i].Port = uint16(p)
-		}
-
 		// Bastion resolve:
 		//  1. proxyjump alias
 		//	2. proxyjump
 		//	3. bastion alias
-
 		if proxyJump := ssh_config.Get(run.Servers[i].Host, "ProxyJump"); proxyJump != "" {
 			if hostName := ssh_config.Get(proxyJump, "HostName"); hostName != "" {
 				// 1. proxyjump alias
@@ -386,7 +371,7 @@ func (run *Run) ParseServers() error {
 					run.Servers[i].BastionUser = run.Servers[i].User
 				}
 
-				port = ssh_config.Get(proxyJump, "Port")
+				port := ssh_config.Get(proxyJump, "Port")
 				if port != "" {
 					p, err := strconv.ParseInt(port, 10, 16)
 					if err != nil {
@@ -419,7 +404,7 @@ func (run *Run) ParseServers() error {
 				run.Servers[i].BastionUser = run.Servers[i].User
 			}
 
-			port = ssh_config.Get(run.Servers[i].BastionHost, "Port")
+			port := ssh_config.Get(run.Servers[i].BastionHost, "Port")
 			if port != "" {
 				p, err := strconv.ParseInt(port, 10, 16)
 				if err != nil {
@@ -431,6 +416,20 @@ func (run *Run) ParseServers() error {
 			}
 
 			run.Servers[i].BastionHost = bastionHost
+		}
+
+		host := ssh_config.Get(run.Servers[i].Host, "HostName")
+		if host != "" {
+			run.Servers[i].Host = host
+		}
+
+		port := ssh_config.Get(run.Servers[i].Host, "Port")
+		if port != "22" {
+			p, err := strconv.ParseInt(port, 10, 16)
+			if err != nil {
+				return err
+			}
+			run.Servers[i].Port = uint16(p)
 		}
 	}
 
