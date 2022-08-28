@@ -151,6 +151,7 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)
 - [Project Background](docs/project-background.md)
+- [Roadmap](docs/roadmap.md)
 - [Changelog](docs/changelog.md)
 - [Contributing](docs/contributing.md)
 
