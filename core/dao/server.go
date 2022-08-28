@@ -175,8 +175,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				continue
 			}
 
-			server.BastionUser = bastionUser
 			server.BastionHost = bastionHost
+			server.BastionUser = bastionUser
 			server.BastionPort = bastionPort
 		}
 

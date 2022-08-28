@@ -354,7 +354,7 @@ func (run *Run) CleanupClients() {
 	}
 }
 
-// ParseServers resolves host and port in users ssh config
+// ParseServers resolves host, port, proxyjump in users ssh config
 func (run *Run) ParseServers() error {
 	for i := range run.Servers {
 		host := ssh_config.Get(run.Servers[i].Host, "HostName")
@@ -371,23 +371,22 @@ func (run *Run) ParseServers() error {
 			run.Servers[i].Port = uint16(p)
 		}
 
-		if ssh_config.Get(run.Servers[i].Host, "ProxyJump") != "" {
-			// Bastion defined as ProxyJump in ssh config
+		// Bastion resolve:
+		//  1. proxyjump alias
+		//	2. proxyjump
+		//	3. bastion alias
 
-			bastion := ssh_config.Get(run.Servers[i].Host, "ProxyJump")
-			bastionHost := ssh_config.Get(bastion, "HostName")
-			// In-case bastion is an alias
-			if bastionHost != "" {
-				// User
-				user := ssh_config.Get(bastion, "User")
+		if proxyJump := ssh_config.Get(run.Servers[i].Host, "ProxyJump"); proxyJump != "" {
+			if hostName := ssh_config.Get(proxyJump, "HostName"); hostName != "" {
+				// 1. proxyjump alias
+				user := ssh_config.Get(proxyJump, "User")
 				if user != "" {
 					run.Servers[i].BastionUser = user
 				} else {
 					run.Servers[i].BastionUser = run.Servers[i].User
 				}
 
-				// Port
-				port = ssh_config.Get(bastion, "Port")
+				port = ssh_config.Get(proxyJump, "Port")
 				if port != "" {
 					p, err := strconv.ParseInt(port, 10, 16)
 					if err != nil {
@@ -398,16 +397,21 @@ func (run *Run) ParseServers() error {
 					run.Servers[i].BastionPort = run.Servers[i].Port
 				}
 
-				// Host
-				// host = bastionHost
+				run.Servers[i].BastionHost = hostName
+			} else {
+				// 2. proxyjump
+				user, host, port, err := core.ParseHostName(proxyJump, run.Servers[i].User, run.Servers[i].Port)
+				if err != nil {
+					return err
+				}
+
+				run.Servers[i].BastionUser = user
+				run.Servers[i].BastionPort = port
+				run.Servers[i].BastionHost = host
 			}
-		} else if ssh_config.Get(run.Servers[i].BastionHost, "HostName") != "" {
-			// Bastion defined via bastion attribute
+		} else if bastionHost := ssh_config.Get(run.Servers[i].BastionHost, "HostName"); bastionHost != "" {
+			// 3. bastion alias
 
-			// Host
-			bastionHost := ssh_config.Get(run.Servers[i].BastionHost, "HostName")
-
-			// User
 			user := ssh_config.Get(run.Servers[i].BastionHost, "User")
 			if user != "" {
 				run.Servers[i].BastionUser = user
@@ -415,7 +419,6 @@ func (run *Run) ParseServers() error {
 				run.Servers[i].BastionUser = run.Servers[i].User
 			}
 
-			// Port
 			port = ssh_config.Get(run.Servers[i].BastionHost, "Port")
 			if port != "" {
 				p, err := strconv.ParseInt(port, 10, 16)
@@ -428,19 +431,7 @@ func (run *Run) ParseServers() error {
 			}
 
 			run.Servers[i].BastionHost = bastionHost
-		} else if run.Servers[i].BastionHost != "" {
-			bastion := ssh_config.Get(run.Servers[i].Host, "ProxyJump")
-
-			user, host, port, err := core.ParseHostName(bastion, run.Servers[i].User, run.Servers[i].Port)
-			if err != nil {
-				return err
-			}
-
-			run.Servers[i].BastionUser = user
-			run.Servers[i].BastionPort = port
-			run.Servers[i].BastionHost = host
 		}
-
 	}
 
 	return nil
