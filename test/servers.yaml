@@ -18,6 +18,7 @@ servers:
   server-1:
     desc: server-1
     host: 172.24.2.2
+    bastion: test@172.24.2.99:22
     tags: [remote,prod,reachable]
     user: test
     work_dir: /home/test
