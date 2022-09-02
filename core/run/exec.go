@@ -325,14 +325,13 @@ func (run *Run) SetClients(
 		}
 	}
 
-	// Return on error
+	run.LocalClients = localCLients
+	run.RemoteClients = remoteClients
+
 	var unreachable []ErrConnect
 	for err := range errCh {
 		unreachable = append(unreachable, err)
 	}
-
-	run.LocalClients = localCLients
-	run.RemoteClients = remoteClients
 
 	return unreachable, nil
 }

@@ -9,6 +9,15 @@ servers:
     work_dir: /opt
     tags: [local]
 
+  many:
+    desc: many hosts
+    hosts:
+      - 172.24.2.2
+      - 172.24.2.2
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi]
+
   server-1:
     desc: server-1
     host: 172.24.2.2

@@ -150,9 +150,9 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Recipes](docs/recipes.md)
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)
-- [Project Background](docs/project-background.md)
-- [Roadmap](docs/roadmap.md)
 - [Changelog](docs/changelog.md)
+- [Roadmap](docs/roadmap.md)
+- [Project Background](docs/project-background.md)
 - [Contributing](docs/contributing.md)
 
 ## [License](LICENSE)

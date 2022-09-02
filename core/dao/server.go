@@ -40,6 +40,8 @@ type ServerYAML struct {
 	Name         string    `yaml:"-"`
 	Desc         string    `yaml:"desc"`
 	Host         string    `yaml:"host"`
+	Hosts        []string  `yaml:"hosts"`
+	Inventory    string    `yaml:"inventory"`
 	Bastion      string    `yaml:"bastion"`
 	User         string    `yaml:"user"`
 	Port         uint16    `yaml:"port"`
@@ -50,7 +52,6 @@ type ServerYAML struct {
 	WorkDir      string    `yaml:"work_dir"`
 	IdentityFile *string   `yaml:"identity_file"`
 	Password     *string   `yaml:"password"`
-	AuthMethod   string    `yaml:"-"`
 }
 
 func (s Server) GetValue(key string, _ int) string {
@@ -149,14 +150,16 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			fmt.Sprintf("SAKE_SERVER_NAME=%s", serverYAML.Name),
 			fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc),
 			fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")),
-			fmt.Sprintf("SAKE_SERVER_HOST=%s", serverYAML.Host),
 			fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion),
 			fmt.Sprintf("SAKE_SERVER_USER=%s", serverYAML.User),
 			fmt.Sprintf("SAKE_SERVER_PORT=%d", serverYAML.Port),
 			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
 		}
 
-		server.Name = serverYAML.Name
+		// Move to per server host
+		// fmt.Sprintf("SAKE_SERVER_HOST=%s", serverYAML.Host),
+
+		// server.Name = serverYAML.Name
 		server.Desc = serverYAML.Desc
 		server.Host = serverYAML.Host
 		server.User = serverYAML.User
@@ -165,7 +168,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		server.Tags = serverYAML.Tags
 		server.Shell = serverYAML.Shell
 		server.WorkDir = serverYAML.WorkDir
-		server.Envs = append(envs, defaultEnvs...)
+		// server.Envs = append(envs, defaultEnvs...)
 
 		if serverYAML.Bastion != "" {
 			bastionUser, bastionHost, bastionPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)

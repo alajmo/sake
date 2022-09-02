@@ -21,7 +21,7 @@
   - [ ] Repress certain task output if exit code is 0, otherwise displayed
   - [ ] Summary of task execution at the end
   - [ ] Pass environment variables between tasks
-  - [ ] Access the previous exit code of the previous task
+  - [ ] Access exit code of the previous task
   - [ ] Conditional task execution
   - [ ] Tags/servers filtering launching different comands on different servers #6
   - [ ] Ensure command (check existence of file, software, etc.)
