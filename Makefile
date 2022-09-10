@@ -15,6 +15,7 @@ gofmt:
 	go fmt ./core/dao/***.go
 	go fmt ./core/run/***.go
 	go fmt ./core/print/***.go
+	go fmt ./test/integration/***.go
 
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...

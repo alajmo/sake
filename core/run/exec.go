@@ -373,6 +373,7 @@ func ParseServers(servers *[]dao.Server) error {
 
 				port := ssh_config.Get(proxyJump, "Port")
 				if port != "" {
+					// TODO: Improve error handling, at least link to hostname being resolved and server
 					p, err := strconv.ParseInt(port, 10, 16)
 					if err != nil {
 						return err
@@ -385,6 +386,7 @@ func ParseServers(servers *[]dao.Server) error {
 				(*servers)[i].BastionHost = hostName
 			} else {
 				// 2. proxyjump
+				// TODO: Improve error handling, at least link to hostname being resolved and server
 				user, host, port, err := core.ParseHostName(proxyJump, (*servers)[i].User, (*servers)[i].Port)
 				if err != nil {
 					return err
@@ -406,6 +408,7 @@ func ParseServers(servers *[]dao.Server) error {
 
 			port := ssh_config.Get((*servers)[i].BastionHost, "Port")
 			if port != "" {
+				// TODO: Improve error handling, at least link to hostname being resolved and server
 				p, err := strconv.ParseInt(port, 10, 16)
 				if err != nil {
 					return err
@@ -425,6 +428,7 @@ func ParseServers(servers *[]dao.Server) error {
 
 		port := ssh_config.Get((*servers)[i].Host, "Port")
 		if port != "22" {
+			// TODO: Improve error handling, at least link to hostname being resolved and server
 			p, err := strconv.ParseInt(port, 10, 16)
 			if err != nil {
 				return err
