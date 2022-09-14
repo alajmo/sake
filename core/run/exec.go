@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"errors"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/kevinburke/ssh_config"
@@ -60,9 +61,21 @@ func (run *Run) RunTask(
 		return err
 	}
 
-	err = ParseServers(&run.Servers)
-	if err != nil {
-		return err
+	errConnects := ParseServers(&run.Servers)
+	if len(errConnects) > 0 {
+		parseOutput := dao.TableOutput{
+			Headers: []string{"server", "host", "user", "port", "error"},
+			Rows:    []dao.Row{},
+		}
+
+		for _, u := range errConnects {
+			parseOutput.Rows = append(parseOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
+		}
+
+		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
+		print.PrintTable("Parse Errors", parseOutput.Rows, options, parseOutput.Headers[0:1], parseOutput.Headers[1:])
+
+		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
 	}
 
 	err = run.ParseTask(configEnv, userArgs, runFlags, setRunFlags)
@@ -355,7 +368,8 @@ func (run *Run) CleanupClients() {
 }
 
 // ParseServers resolves host, port, proxyjump in users ssh config
-func ParseServers(servers *[]dao.Server) error {
+func ParseServers(servers *[]dao.Server) []ErrConnect {
+	var errConnects []ErrConnect
 	for i := range *servers {
 		// Bastion resolve:
 		//  1. proxyjump alias
@@ -373,10 +387,17 @@ func ParseServers(servers *[]dao.Server) error {
 
 				port := ssh_config.Get(proxyJump, "Port")
 				if port != "" {
-					// TODO: Improve error handling, at least link to hostname being resolved and server
 					p, err := strconv.ParseInt(port, 10, 16)
 					if err != nil {
-						return err
+						errConnect := &ErrConnect{
+							Name:   (*servers)[i].Name,
+							User:   (*servers)[i].User,
+							Host:   (*servers)[i].Host,
+							Port:   (*servers)[i].Port,
+							Reason: err.Error(),
+						}
+						errConnects = append(errConnects, *errConnect)
+						continue
 					}
 					(*servers)[i].BastionPort = uint16(p)
 				} else {
@@ -386,10 +407,17 @@ func ParseServers(servers *[]dao.Server) error {
 				(*servers)[i].BastionHost = hostName
 			} else {
 				// 2. proxyjump
-				// TODO: Improve error handling, at least link to hostname being resolved and server
 				user, host, port, err := core.ParseHostName(proxyJump, (*servers)[i].User, (*servers)[i].Port)
 				if err != nil {
-					return err
+					errConnect := &ErrConnect{
+						Name:   (*servers)[i].Name,
+						User:   (*servers)[i].User,
+						Host:   (*servers)[i].Host,
+						Port:   (*servers)[i].Port,
+						Reason: err.Error(),
+					}
+					errConnects = append(errConnects, *errConnect)
+					continue
 				}
 
 				(*servers)[i].BastionUser = user
@@ -408,10 +436,17 @@ func ParseServers(servers *[]dao.Server) error {
 
 			port := ssh_config.Get((*servers)[i].BastionHost, "Port")
 			if port != "" {
-				// TODO: Improve error handling, at least link to hostname being resolved and server
 				p, err := strconv.ParseInt(port, 10, 16)
 				if err != nil {
-					return err
+					errConnect := &ErrConnect{
+						Name:   (*servers)[i].Name,
+						User:   (*servers)[i].User,
+						Host:   (*servers)[i].Host,
+						Port:   (*servers)[i].Port,
+						Reason: err.Error(),
+					}
+					errConnects = append(errConnects, *errConnect)
+					continue
 				}
 				(*servers)[i].BastionPort = uint16(p)
 			} else {
@@ -421,23 +456,32 @@ func ParseServers(servers *[]dao.Server) error {
 			(*servers)[i].BastionHost = bastionHost
 		}
 
+		// HostName
 		host := ssh_config.Get((*servers)[i].Host, "HostName")
 		if host != "" {
 			(*servers)[i].Host = host
 		}
 
+		// Port
 		port := ssh_config.Get((*servers)[i].Host, "Port")
-		if port != "22" {
-			// TODO: Improve error handling, at least link to hostname being resolved and server
+		if port != "" {
 			p, err := strconv.ParseInt(port, 10, 16)
 			if err != nil {
-				return err
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
 			}
 			(*servers)[i].Port = uint16(p)
 		}
 	}
 
-	return nil
+	return errConnects
 }
 
 func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) error {

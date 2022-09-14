@@ -171,15 +171,12 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 		user = defaultUser
 	}
 
-	// TODO: Improve error handling, at least link to hostname being resolved and server
 	if strings.Contains(host, "/") {
 		return "", "", 22, fmt.Errorf("unexpected slash in the host %s", hostname)
 	}
 
-	// TODO: Improve error handling, at least link to hostname being resolved and server
 	if strings.Contains(hostname, ":") {
 		lastInd := strings.LastIndex(host, ":")
-		fmt.Println(lastInd, host[lastInd+1:])
 		p, err := strconv.ParseInt(host[lastInd+1:], 0, 16)
 		if err != nil {
 			return "", "", 22, err

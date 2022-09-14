@@ -152,6 +152,7 @@ func (f *TemplateParseError) Error() string {
 	return fmt.Sprintf("failed to parse %s", f.Msg)
 }
 
+// If there's a misconfiguration somewhere, not associated with server errors
 type ExecError struct {
 	Err      error
 	ExitCode int
