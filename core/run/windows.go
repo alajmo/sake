@@ -3,7 +3,7 @@
 
 package run
 
-func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string) error {
+func SSHToServer(server string, disableVerifyHost bool, knownHostFile string) error {
 	return nil
 }
 
