@@ -22,7 +22,7 @@ func ParseFile(path string) (map[string](Endpoint), error) {
 	}
 	defer f.Close() // nolint:errcheck
 
-	endpoints, err := ParseReader(f)
+	endpoints, err := ParseReader(f, path)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +36,8 @@ func ParseFile(path string) (map[string](Endpoint), error) {
 }
 
 // ParseReader reads and parses the given reader.
-func ParseReader(r io.Reader) ([]*Endpoint, error) {
-	infos, err := parseInternal(r)
+func ParseReader(r io.Reader, cfg string) ([]*Endpoint, error) {
+	infos, err := parseInternal(r, cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func ParseReader(r io.Reader) ([]*Endpoint, error) {
 			}
 			g, err := glob.Compile(k)
 			if err != nil {
-				return fmt.Errorf("invalid Host: %q: %w", k, err)
+				return fmt.Errorf("%s: invalid Host: %q: %w", cfg, k, err)
 			}
 			if g.Match(name) || (info.HostName != "" && g.Match(info.HostName)) {
 				info = mergeHostinfo(info, v)
@@ -166,7 +166,7 @@ func newHostinfoMap() *hostinfoMap {
 	}
 }
 
-func parseInternal(r io.Reader) (*hostinfoMap, error) {
+func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 	bts, err := io.ReadAll(r)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
@@ -205,9 +205,9 @@ func parseInternal(r io.Reader) (*hostinfoMap, error) {
 					continue
 				}
 
-				parts := strings.SplitN(node, " ", 2) // nolint:gomnd
-				if len(parts) != 2 {                  // nolint:gomnd
-					return nil, fmt.Errorf("invalid node on app %q: %q", name, node)
+				parts := strings.SplitN(node, " ", 2)
+				if len(parts) != 2 {
+					return nil, fmt.Errorf("%s: invalid node on app %q: %q", cfg, name, node)
 				}
 
 				key := strings.TrimSpace(parts[0])
@@ -330,7 +330,7 @@ func parseFileInternal(path string) (*hostinfoMap, error) {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
 	defer f.Close() // nolint:errcheck
-	return parseInternal(f)
+	return parseInternal(f, path)
 }
 
 func expandPath(p string) (string, error) {
