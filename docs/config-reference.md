@@ -432,6 +432,9 @@ SAKE_CONFIG
 SAKE_USER_CONFIG
     Override user config file path
 
+SAKE_SSH_CONFIG
+    Override ssh config file path
+
 SAKE_KNOWN_HOSTS_FILE
     Override known_hosts file path
 
