@@ -236,6 +236,10 @@ func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 					info.SetEnv = append(info.SetEnv, value)
 				case "Include":
 					// TODO: Handle glob (Include supports dir/* format)
+					if strings.Contains(value, "*") {
+						continue
+					}
+
 					path, err := expandPath(value)
 					if err != nil {
 						return nil, err
