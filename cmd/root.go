@@ -22,8 +22,9 @@ You define servers and tasks in a sake.yaml config file and then run the tasks o
 var (
 	config         dao.Config
 	configErr      error
-	configFilepath string
+	configPath     string
 	userConfigPath string
+	sshConfigPath  string
 	noColor        bool
 	buildMode      = ""
 	version        = "dev"
@@ -55,8 +56,9 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVarP(&configFilepath, "config", "c", "", "specify config")
+	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "specify config")
 	rootCmd.PersistentFlags().StringVarP(&userConfigPath, "user-config", "u", "", "specify user config")
+	rootCmd.PersistentFlags().StringVarP(&sshConfigPath, "ssh-config", "S", "", "specify ssh config")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable color")
 
 	rootCmd.AddCommand(
@@ -80,5 +82,5 @@ func init() {
 }
 
 func initConfig() {
-	config, configErr = dao.ReadConfig(configFilepath, userConfigPath, noColor)
+	config, configErr = dao.ReadConfig(configPath, userConfigPath, sshConfigPath, noColor)
 }

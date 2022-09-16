@@ -39,10 +39,11 @@ func ssh(args []string, config *dao.Config) {
 	core.CheckIfError(err)
 	servers := []dao.Server{*server}
 
-	errConnect := run.ParseServers(&servers)
+	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers)
 	if len(errConnect) > 0 {
 		core.Exit(&errConnect[0])
 	}
+	core.CheckIfError(err)
 
 	err = run.SSHToServer(*server, config.DisableVerifyHost, config.KnownHostsFile)
 	core.CheckIfError(err)

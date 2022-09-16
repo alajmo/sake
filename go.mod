@@ -3,6 +3,7 @@ module github.com/alajmo/sake
 go 1.18
 
 require (
+	github.com/gobwas/glob v0.2.3
 	github.com/jedib0t/go-pretty/v6 v6.3.8
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/kr/pretty v0.2.1
@@ -10,8 +11,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/theckman/yacspin v0.13.12
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	golang.org/x/exp v0.0.0-20220909182711-5c715a9e8561
-	golang.org/x/sys v0.0.0-20220913175220-63ea55921009
+	golang.org/x/exp v0.0.0-20220916125017-b168a2c6b86b
+	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/yaml.v3 v3.0.1
 )

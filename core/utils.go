@@ -146,6 +146,11 @@ func AnyToString(s any) string {
 	return v
 }
 
+func StringToBool(s string) bool {
+	ss := strings.ToLower(strings.TrimSpace(s))
+	return ss == "true" || ss == "yes"
+}
+
 func DebugPrint(data any) {
 	s, _ := json.MarshalIndent(data, "", "\t")
 	fmt.Print(string(s))

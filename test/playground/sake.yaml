@@ -12,7 +12,7 @@ servers:
   server-1:
     desc: server-1
     host: 172.24.2.2
-    bastion: test@172.24.2.99
+    bastion: 172.24.2.99
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi]
