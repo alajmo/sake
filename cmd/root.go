@@ -58,7 +58,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "specify config")
 	rootCmd.PersistentFlags().StringVarP(&userConfigPath, "user-config", "u", "", "specify user config")
-	rootCmd.PersistentFlags().StringVarP(&sshConfigPath, "ssh-config", "S", "", "specify ssh config")
+	rootCmd.PersistentFlags().StringVarP(&sshConfigPath, "ssh-config", "U", "", "specify ssh config")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable color")
 
 	rootCmd.AddCommand(
