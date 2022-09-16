@@ -3,7 +3,11 @@
 
 package run
 
-func SSHToServer(server string, disableVerifyHost bool, knownHostFile string) error {
+import (
+	"github.com/alajmo/sake/core/dao"
+)
+
+func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string) error {
 	return nil
 }
 
