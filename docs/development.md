@@ -44,10 +44,9 @@ The following workflow is used for releasing a new `sake` version:
 1. Create pull request with changes
 2. Generate manpage `make gen-man`
 3. Pass all tests
-4. Squash-merge to main with descriptive commit message
-5. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
-6. Push with commit message `Release vx.y.z`
-7. Run `make release`, which will:
+4. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
+5. Squash-merge to main with `Release vx.y.z` and description of changes
+6. Run `make release`, which will:
   1. Create a git tag with release notes
   2. Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
 
