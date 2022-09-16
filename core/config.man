@@ -536,6 +536,10 @@ Override config file path
 Override user config file path
 
 .TP
+.B SAKE_SSH_CONFIG
+Override ssh config file path
+
+.TP
 .B SAKE_KNOWN_HOSTS_FILE
 Override known_hosts file path
 

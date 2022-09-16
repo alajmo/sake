@@ -2,7 +2,7 @@ NAME    := sake
 PACKAGE := github.com/alajmo/$(NAME)
 DATE    := $(shell date +%FT%T%Z)
 GIT     := $(shell [ -d .git ] && git rev-parse --short HEAD)
-VERSION := v0.10.3
+VERSION := v0.11.0
 
 default: build
 
@@ -15,6 +15,7 @@ gofmt:
 	go fmt ./core/dao/***.go
 	go fmt ./core/run/***.go
 	go fmt ./core/print/***.go
+	go fmt ./test/integration/***.go
 
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...

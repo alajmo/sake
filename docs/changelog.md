@@ -2,16 +2,20 @@
 
 ## 0.11.0
 
+### Fixes
+
+- Fix not being able to parse ssh config if match keyword found [35](https://github.com/alajmo/sake/pull/35)
+
 ### Features
 
-- Support Bastion/jump host
+- Support Bastion/jump host [32](https://github.com/alajmo/sake/pull/32)
 
 ## 0.10.3
 
 ### Fixes
 
 - Previously known_hosts didn't work correctly when specifying port other than 22
-- Fix authentication failures [https://github.com/alajmo/sake/pull/30]
+- Fix authentication failures [32](https://github.com/alajmo/sake/pull/30)
 
 ### Features
 

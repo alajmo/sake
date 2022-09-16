@@ -45,6 +45,7 @@ var (
 )
 
 type Config struct {
+	SSHConfigFile     *string
 	DisableVerifyHost bool
 	KnownHostsFile    string
 	Shell             string
@@ -87,11 +88,15 @@ func (c *ConfigYAML) GetContextLine() int {
 }
 
 // Function to read sake configs.
-func ReadConfig(configFilepath string, userConfigPath string, noColor bool) (Config, error) {
+func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile string, noColor bool) (Config, error) {
 	CheckUserNoColor(noColor)
 	var configPath string
 
 	userConfigFile := getUserConfigFile(userConfigPath)
+	sshConfigPath, err := getSSHConfigPath(sshConfigFile)
+    if err != nil {
+      return Config{}, err
+    }
 
 	// Try to find config file in current directory and all parents
 	if configFilepath != "" {
@@ -147,6 +152,7 @@ func ReadConfig(configFilepath string, userConfigPath string, noColor bool) (Con
 	}
 
 	config, configErr := configYAML.parseConfig()
+	config.SSHConfigFile = sshConfigPath
 	config.CheckConfigNoColor()
 
 	if configErr != nil {
@@ -178,6 +184,39 @@ func getUserConfigFile(userConfigPath string) *string {
 	}
 
 	return nil
+}
+
+func getSSHConfigPath(sshConfigPath string) (*string, error) {
+	// Flag
+	if sshConfigPath != "" {
+		if _, err := os.Stat(sshConfigPath); err == nil {
+			return &sshConfigPath, nil
+          } else {
+            return &sshConfigPath, err
+        }
+	}
+
+	// Env
+	val, present := os.LookupEnv("SAKE_SSH_CONFIG")
+	if present {
+		return &val, nil
+	}
+
+    // User SSH config
+	if home, err := os.UserHomeDir(); err == nil {
+		userSSHConfigFile := filepath.Join(home, ".ssh", "config")
+		if _, err := os.Stat(userSSHConfigFile); err == nil {
+			return &userSSHConfigFile, nil
+		}
+	}
+
+    // Global SSH config
+	globalSSHConfig := "/etc/ssh/ssh_config"
+	if _, err := os.Stat(globalSSHConfig); err == nil {
+		return &globalSSHConfig, nil
+	}
+
+	return nil, nil
 }
 
 // Open sake config in editor

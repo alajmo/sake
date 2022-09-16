@@ -17,6 +17,7 @@ You define servers and tasks in a sake.yaml config file and then run the tasks o
   -c, --config string        specify config
   -h, --help                 help for sake
       --no-color             disable color
+  -U, --ssh-config string    specify ssh config
   -u, --user-config string   specify user config
 ```
 

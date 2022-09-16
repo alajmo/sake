@@ -3,8 +3,8 @@ package integration
 import (
 	"flag"
 	"fmt"
-	"strings"
 	"log"
+	"strings"
 
 	"io/ioutil"
 	"os"
@@ -18,7 +18,6 @@ import (
 	"github.com/kr/pretty"
 )
 
-
 var tmpDir = "../tmp/"
 
 var debug = flag.Bool("debug", false, "debug")
@@ -26,12 +25,12 @@ var update = flag.Bool("update", false, "update golden files")
 var clean = flag.Bool("clean", false, "Clean tmp directory after run")
 
 type TemplateTest struct {
-	TestName   string
-	TestCmd    string
-	Golden     string
-	Ignore     bool
-	WantErr    bool
-	Index	   int
+	TestName string
+	TestCmd  string
+	Golden   string
+	Ignore   bool
+	WantErr  bool
+	Index    int
 }
 
 func (tt TemplateTest) GoldenOutput(output []byte) []byte {
@@ -162,4 +161,3 @@ func Run(t *testing.T, tt TemplateTest) {
 		}
 	}
 }
-
