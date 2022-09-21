@@ -17,6 +17,7 @@ func TestFilterServers(t *testing.T) {
 		Servers: []Server{s1, s2, s3, s4, s5},
 	}
 
+	// TODO: Fails
 	ss, err := c.FilterServers(false, []string{"s1", "s2"}, []string{"t1"})
 	test.CheckErr(t, err)
 	wanted := []string{"s1", "s2", "s5"}

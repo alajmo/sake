@@ -9,17 +9,15 @@ import (
 	"strings"
 )
 
-func ExpandHostNames(input string) ([]string, error) {
+func ExpandHostNames(input string, envs []string) ([]string, error) {
 	// TODO:
 	// - [x] Check if enclosed by $(), if run cmd
 	// - If contains brackets, expand to list of strings
 	// - else return single host
 
 	if IsCmd(input) {
-		// TODO: Handle cmd
-		return EvaluateInventory(input)
+		return EvaluateInventory(input, envs)
 	} else if IsRange(input) {
-		// TODO: Handle range
 		return EvaluateRange(input)
 	}
 
@@ -38,13 +36,12 @@ func IsRange(input string) bool {
 }
 
 // Separate hosts with newline and space/tab
-func EvaluateInventory(input string) ([]string, error) {
-	// TODO: Add in env variables from server
+func EvaluateInventory(input string, envs []string) ([]string, error) {
 	input = strings.TrimPrefix(input, "$(")
 	input = strings.TrimSuffix(input, ")")
 
 	cmd := exec.Command("sh", "-c", input)
-	cmd.Env = os.Environ()
+	cmd.Env = append(os.Environ(), envs...)
 	stdout, err := cmd.Output()
 	if err != nil {
 		return []string{}, &InventoryEvalFailed{Err: err.Error()}

@@ -14,13 +14,17 @@ servers:
     # hosts:
     #   - 172.24.2.2
     #   - 172.24.2.4
-    hosts: 172.24.2.[4:6:1]
+    hosts: $(echo "172.24.2.2 $host")
+    # hosts: 172.24.2.[4:6:1]
     # hosts: 172.24.2.2
     # hosts: 172.24.2.[2:4]
     # host: 172.24.2.2
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi, many]
+    env:
+      hello: world
+      host: 172.24.2.4
 
   server-1:
     desc: server-1

@@ -304,21 +304,13 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				servers = append(servers, *hServer)
 			}
 		case "hosts-string":
-			// TODO: Implement
-			// Inventory: Access to server envs in script
-			// ss, err := core.GenHostNamesFromScript(serverYAML.Inventory.Value)
-			// if err != nil {
-			// 	serverErrors[j].Errors = append(serverErrors[j].Errors, err)
-			// 	continue
-			// }
-
-			ss, err := core.ExpandHostNames(serverYAML.Hosts.Value)
+			hosts, err := core.ExpandHostNames(serverYAML.Hosts.Value, envs)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
 				continue
 			}
 
-			for k, s := range ss {
+			for k, s := range hosts {
 				user, host, port, err := core.ParseHostName(s, serverYAML.User, serverYAML.Port)
 				if err != nil {
 					serverErrors[j].Errors = append(serverErrors[j].Errors, err)
