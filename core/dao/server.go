@@ -16,6 +16,7 @@ import (
 
 type Server struct {
 	Name         string
+	Group        string
 	Desc         string
 	Host         string
 	BastionHost  string
@@ -40,8 +41,7 @@ type ServerYAML struct {
 	Name         string    `yaml:"-"`
 	Desc         string    `yaml:"desc"`
 	Host         string    `yaml:"host"`
-	Hosts        []string  `yaml:"hosts"`
-	Inventory    string    `yaml:"inventory"`
+	Hosts        yaml.Node `yaml:"hosts"`
 	Bastion      string    `yaml:"bastion"`
 	User         string    `yaml:"user"`
 	Port         uint16    `yaml:"port"`
@@ -130,6 +130,12 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			serverYAML.Port = 22
 		}
 
+		hostDef, err := getServerHostDefinition(serverYAML)
+		if err != nil {
+			serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+			continue
+		}
+
 		var envs []string
 		if !IsNullNode(serverYAML.Env) {
 			err := CheckIsMappingNode(serverYAML.Env)
@@ -151,40 +157,30 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc),
 			fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")),
 			fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion),
-			fmt.Sprintf("SAKE_SERVER_USER=%s", serverYAML.User),
-			fmt.Sprintf("SAKE_SERVER_PORT=%d", serverYAML.Port),
 			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
 		}
 
-		// Move to per server host
-		// fmt.Sprintf("SAKE_SERVER_HOST=%s", serverYAML.Host),
-
-		// server.Name = serverYAML.Name
-		server.Desc = serverYAML.Desc
-		server.Host = serverYAML.Host
-		server.User = serverYAML.User
-		server.Port = serverYAML.Port
-		server.Local = serverYAML.Local
-		server.Tags = serverYAML.Tags
-		server.Shell = serverYAML.Shell
-		server.WorkDir = serverYAML.WorkDir
-		// server.Envs = append(envs, defaultEnvs...)
-
+		// Same for all servers
+		var bastionUser string
+		var bastionHost string
+		var bastionPort uint16
 		if serverYAML.Bastion != "" {
-			bastionUser, bastionHost, bastionPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
+			bUser, bHost, bPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
 				continue
 			}
 
-			server.BastionHost = bastionHost
-			server.BastionUser = bastionUser
-			server.BastionPort = bastionPort
+			bastionHost = bHost
+			bastionUser = bUser
+			bastionPort = bPort
 		}
 
+		var identityFile *string
+		// Same for all servers
 		if serverYAML.IdentityFile != nil {
-			identityFile := os.ExpandEnv(*serverYAML.IdentityFile)
-			serverYAML.IdentityFile = &identityFile
+			iFile := os.ExpandEnv(*serverYAML.IdentityFile)
+			identityFile = &iFile
 
 			if strings.HasPrefix(*serverYAML.IdentityFile, "~/") {
 				// Expand tilde ~
@@ -193,39 +189,205 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					panic(err)
 				}
 
-				identityFile := *serverYAML.IdentityFile
-				identityFile = filepath.Join(home, identityFile[2:])
-				server.IdentityFile = &identityFile
+				iFile := filepath.Join(home, (*serverYAML.IdentityFile)[2:])
+				identityFile = &iFile
 			} else {
 				// Absolute filepath
 				if filepath.IsAbs(*serverYAML.IdentityFile) {
-					server.IdentityFile = serverYAML.IdentityFile
+					iFile = *serverYAML.IdentityFile
 				} else {
 					// Relative filepath
-					identityFile := filepath.Join(c.Dir, *serverYAML.IdentityFile)
-					server.IdentityFile = &identityFile
+					f := filepath.Join(c.Dir, *serverYAML.IdentityFile)
+					iFile = f
 				}
 			}
 		}
 
+		// Same for all servers
+		var password *string
 		if serverYAML.Password != nil {
-			server.Password = serverYAML.Password
+			password = serverYAML.Password
 		}
 
-		if server.IdentityFile != nil && server.Password != nil {
-			server.AuthMethod = "password-key"
-		} else if server.IdentityFile != nil {
-			server.AuthMethod = "key"
-		} else if server.Password != nil {
-			server.AuthMethod = "password"
+		var authMethod string
+		if identityFile != nil && password != nil {
+			authMethod = "password-key"
+		} else if identityFile != nil {
+			authMethod = "key"
+		} else if password != nil {
+			authMethod = "password"
 		} else {
-			server.AuthMethod = "none"
+			authMethod = "none"
 		}
 
-		servers = append(servers, *server)
+		switch hostDef {
+		case "host":
+			// string to be evaluated and will result in list of hosts
+			user, host, port, err := core.ParseHostName(serverYAML.Host, serverYAML.User, serverYAML.Port)
+			if err != nil {
+				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+				continue
+			}
+
+			serverEnvs := append(defaultEnvs, []string{
+				fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
+				fmt.Sprintf("SAKE_SERVER_USER=%s", user),
+				fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+			}...)
+			serverEnvs = append(serverEnvs, envs...)
+
+			hServer := &Server{
+				Name:         c.Servers.Content[i].Value,
+				Group:        c.Servers.Content[i].Value,
+				Desc:         serverYAML.Desc,
+				Host:         host,
+				User:         user,
+				Port:         port,
+				Local:        serverYAML.Local,
+				Tags:         serverYAML.Tags,
+				Shell:        serverYAML.Shell,
+				WorkDir:      serverYAML.WorkDir,
+				Envs:         serverEnvs,
+				BastionHost:  bastionHost,
+				BastionUser:  bastionUser,
+				BastionPort:  bastionPort,
+				AuthMethod:   authMethod,
+				IdentityFile: identityFile,
+				Password:     password,
+
+				context:     c.Path,
+				contextLine: c.Servers.Content[i].Line,
+			}
+
+			servers = append(servers, *hServer)
+
+		case "hosts":
+			// list of servers
+
+			for k, s := range serverYAML.Hosts.Content {
+				user, host, port, err := core.ParseHostName(s.Value, serverYAML.User, serverYAML.Port)
+				if err != nil {
+					serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+					continue
+				}
+
+				serverEnvs := append(defaultEnvs, []string{
+					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
+					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
+					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+				}...)
+				serverEnvs = append(serverEnvs, envs...)
+
+				hServer := &Server{
+					Name:         fmt.Sprintf("%s-%d", c.Servers.Content[i].Value, k),
+					Group:        c.Servers.Content[i].Value,
+					Desc:         serverYAML.Desc,
+					Host:         host,
+					User:         user,
+					Port:         port,
+					Local:        serverYAML.Local,
+					Tags:         serverYAML.Tags,
+					Shell:        serverYAML.Shell,
+					WorkDir:      serverYAML.WorkDir,
+					Envs:         serverEnvs,
+					BastionHost:  bastionHost,
+					BastionUser:  bastionUser,
+					BastionPort:  bastionPort,
+					AuthMethod:   authMethod,
+					IdentityFile: identityFile,
+					Password:     password,
+
+					context:     c.Path,
+					contextLine: c.Servers.Content[i].Line,
+				}
+
+				servers = append(servers, *hServer)
+			}
+		case "hosts-string":
+			// TODO: Implement
+			// Inventory: Access to server envs in script
+			// ss, err := core.GenHostNamesFromScript(serverYAML.Inventory.Value)
+			// if err != nil {
+			// 	serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+			// 	continue
+			// }
+
+			ss, err := core.ExpandHostNames(serverYAML.Hosts.Value)
+			if err != nil {
+				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+				continue
+			}
+
+			for k, s := range ss {
+				user, host, port, err := core.ParseHostName(s, serverYAML.User, serverYAML.Port)
+				if err != nil {
+					serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+					continue
+				}
+
+				serverEnvs := append(defaultEnvs, []string{
+					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
+					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
+					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+				}...)
+				serverEnvs = append(serverEnvs, envs...)
+
+				hServer := &Server{
+					Name:         fmt.Sprintf("%s-%d", c.Servers.Content[i].Value, k),
+					Group:        c.Servers.Content[i].Value,
+					Desc:         serverYAML.Desc,
+					Host:         host,
+					User:         user,
+					Port:         port,
+					Local:        serverYAML.Local,
+					Tags:         serverYAML.Tags,
+					Shell:        serverYAML.Shell,
+					WorkDir:      serverYAML.WorkDir,
+					Envs:         serverEnvs,
+					BastionHost:  bastionHost,
+					BastionUser:  bastionUser,
+					BastionPort:  bastionPort,
+					AuthMethod:   authMethod,
+					IdentityFile: identityFile,
+					Password:     password,
+
+					context:     c.Path,
+					contextLine: c.Servers.Content[i].Line,
+				}
+
+				servers = append(servers, *hServer)
+			}
+		}
+
+		// servers = append(servers, *server)
 	}
 
 	return servers, serverErrors
+}
+
+func getServerHostDefinition(serverYAML *ServerYAML) (string, error) {
+	hostDef := ""
+	numDefined := 0
+	if serverYAML.Host != "" {
+		hostDef = "host"
+		numDefined += 1
+	}
+	if serverYAML.Hosts.Kind == 2 && len(serverYAML.Hosts.Content) > 0 {
+		// list of servers
+		numDefined += 1
+		hostDef = "hosts"
+	}
+	if serverYAML.Hosts.Kind == 8 && serverYAML.Hosts.Value != "" {
+		// string to be evaluated and will result in list of hosts
+		numDefined += 1
+		hostDef = "hosts-string"
+	}
+
+	if numDefined > 1 {
+		return "", &core.ServerMultipleDef{Name: serverYAML.Name}
+	}
+
+	return hostDef, nil
 }
 
 func ServerInSlice(name string, list []Server) bool {
@@ -290,8 +452,8 @@ func (c Config) GetServersByName(serverNames []string) ([]Server, error) {
 
 	for _, v := range serverNames {
 		for _, s := range c.Servers {
-			if v == s.Name {
-				foundServerNames[s.Name] = true
+			if v == s.Group {
+				foundServerNames[s.Group] = true
 				matchedServers = append(matchedServers, s)
 			}
 		}

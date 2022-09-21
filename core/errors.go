@@ -33,6 +33,14 @@ func (c *PasswordEvalFailed) Error() string {
 	return fmt.Sprintf("failed to evaluate password %s", c.Err)
 }
 
+type InventoryEvalFailed struct {
+	Err string
+}
+
+func (c *InventoryEvalFailed) Error() string {
+	return fmt.Sprintf("failed to run inventory command %s", c.Err)
+}
+
 type TagNotFound struct {
 	Tags []string
 }
@@ -66,6 +74,14 @@ type TaskMultipleDef struct {
 
 func (c *TaskMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for task `%s`: cmd, task, tasks", c.Name)
+}
+
+type ServerMultipleDef struct {
+	Name string
+}
+
+func (c *ServerMultipleDef) Error() string {
+	return fmt.Sprintf("can only define one of the following for server `%s`: host, hosts, inventory", c.Name)
 }
 
 type TaskRefMultipleDef struct {

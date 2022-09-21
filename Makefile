@@ -27,7 +27,8 @@ test:
 	cd ./test && docker-compose down
 
 unit-test:
-	go test -v ./core/dao/***
+	go test -v ./core/*.go
+	go test -v ./core/dao/*.go
 
 integration-test:
 	go test -v ./test/integration/... -clean

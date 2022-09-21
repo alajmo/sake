@@ -94,9 +94,9 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 
 	userConfigFile := getUserConfigFile(userConfigPath)
 	sshConfigPath, err := getSSHConfigPath(sshConfigFile)
-    if err != nil {
-      return Config{}, err
-    }
+	if err != nil {
+		return Config{}, err
+	}
 
 	// Try to find config file in current directory and all parents
 	if configFilepath != "" {
@@ -191,9 +191,9 @@ func getSSHConfigPath(sshConfigPath string) (*string, error) {
 	if sshConfigPath != "" {
 		if _, err := os.Stat(sshConfigPath); err == nil {
 			return &sshConfigPath, nil
-          } else {
-            return &sshConfigPath, err
-        }
+		} else {
+			return &sshConfigPath, err
+		}
 	}
 
 	// Env
@@ -202,7 +202,7 @@ func getSSHConfigPath(sshConfigPath string) (*string, error) {
 		return &val, nil
 	}
 
-    // User SSH config
+	// User SSH config
 	if home, err := os.UserHomeDir(); err == nil {
 		userSSHConfigFile := filepath.Join(home, ".ssh", "config")
 		if _, err := os.Stat(userSSHConfigFile); err == nil {
@@ -210,7 +210,7 @@ func getSSHConfigPath(sshConfigPath string) (*string, error) {
 		}
 	}
 
-    // Global SSH config
+	// Global SSH config
 	globalSSHConfig := "/etc/ssh/ssh_config"
 	if _, err := os.Stat(globalSSHConfig); err == nil {
 		return &globalSSHConfig, nil
