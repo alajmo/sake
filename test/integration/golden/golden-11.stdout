@@ -1,6 +1,6 @@
 Index: 11
 Name: Work Dir 1
-Cmd: go run ../../main.go run work-dir-1 -t reachable
+Cmd: go run ../../main.go run work-dir-1 -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,12 @@ WantErr: false
  Server    | Ref   | Override Inline Ref | Inline | Override Inline 
 -----------+-------+---------------------+--------+-----------------
  localhost | /home | /opt                | /home  | /               
+ hosts-1-0 | /home | /opt                | /home  | /               
+ hosts-1-1 | /home | /opt                | /home  | /               
+ hosts-2-0 | /home | /opt                | /home  | /               
+ hosts-2-1 | /home | /opt                | /home  | /               
+ hosts-3-0 | /home | /opt                | /home  | /               
+ hosts-3-1 | /home | /opt                | /home  | /               
  server-1  | /home | /opt                | /home  | /               
  server-2  | /home | /opt                | /home  | /               
  server-3  | /home | /opt                | /home  | /               

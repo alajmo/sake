@@ -7,11 +7,11 @@ import (
 )
 
 func TestFilterServers(t *testing.T) {
-	s1 := Server{Name: "s1", Tags: []string{"t1", "t2"}}
-	s2 := Server{Name: "s2", Tags: []string{"t3"}}
-	s3 := Server{Name: "s3", Tags: []string{"t2", "t3"}}
-	s4 := Server{Name: "s4", Tags: []string{"t8"}}
-	s5 := Server{Name: "s5", Tags: []string{"t1", "t2"}}
+	s1 := Server{Name: "s1", Group: "s1", Tags: []string{"t1", "t2"}}
+	s2 := Server{Name: "s2", Group: "s2", Tags: []string{"t3"}}
+	s3 := Server{Name: "s3", Group: "s3", Tags: []string{"t2", "t3"}}
+	s4 := Server{Name: "s4", Group: "s4", Tags: []string{"t8"}}
+	s5 := Server{Name: "s5", Group: "s5", Tags: []string{"t1", "t2"}}
 
 	c := Config{
 		Servers: []Server{s1, s2, s3, s4, s5},

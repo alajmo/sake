@@ -1,6 +1,6 @@
 Index: 19
 Name: unreachable true
-Cmd: go run ../../main.go run unreachable-true -a
+Cmd: go run ../../main.go run unreachable-true -S -a
 WantErr: false
 
 ---
@@ -15,6 +15,30 @@ Unreachable Hosts
 TASK [unreachable-true] 
 
 localhost | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
 
 TASK [unreachable-true] 
 

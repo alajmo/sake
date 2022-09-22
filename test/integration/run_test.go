@@ -36,107 +36,107 @@ var cases = []TemplateTest{
 	// basic
 	{
 		TestName: "Ping all servers",
-		TestCmd:  "go run ../../main.go run ping -t reachable",
+		TestCmd:  "go run ../../main.go run ping -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "Multiple commands",
-		TestCmd:  "go run ../../main.go run info -t prod",
+		TestCmd:  "go run ../../main.go run info -S -t prod",
 		WantErr:  false,
 	},
 
 	// env
 	{
 		TestName: "Simple Envs",
-		TestCmd:  "go run ../../main.go run env -t reachable",
+		TestCmd:  "go run ../../main.go run env -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "Reference Envs",
-		TestCmd:  "go run ../../main.go run env-complex -t reachable",
+		TestCmd:  "go run ../../main.go run env-complex -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "Default Envs",
-		TestCmd:  "go run ../../main.go run env-default -t reachable",
+		TestCmd:  "go run ../../main.go run env-default -S -t reachable",
 		WantErr:  false,
 	},
 
 	// nested tasks
 	{
 		TestName: "Nested tasks",
-		TestCmd:  "go run ../../main.go run d -t reachable",
+		TestCmd:  "go run ../../main.go run d -S -t reachable",
 		WantErr:  false,
 	},
 
 	// work_dir
 	{
 		TestName: "Work Dir 1",
-		TestCmd:  "go run ../../main.go run work-dir-1 -t reachable",
+		TestCmd:  "go run ../../main.go run work-dir-1 -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "Work Dir 2",
-		TestCmd:  "go run ../../main.go run work-dir-2 -t reachable",
+		TestCmd:  "go run ../../main.go run work-dir-2 -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "Work Dir 3",
-		TestCmd:  "go run ../../main.go run work-dir-3 -t reachable",
+		TestCmd:  "go run ../../main.go run work-dir-3 -S -t reachable",
 		WantErr:  false,
 	},
 
 	// spec
 	{
 		TestName: "fatal false",
-		TestCmd:  "go run ../../main.go run fatal -t reachable",
+		TestCmd:  "go run ../../main.go run fatal -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "fatal true",
-		TestCmd:  "go run ../../main.go run fatal-true -t reachable",
+		TestCmd:  "go run ../../main.go run fatal-true -S -t reachable",
 		WantErr:  true,
 	},
 	{
 		TestName: "ignore_errors false",
-		TestCmd:  "go run ../../main.go run errors -t reachable",
+		TestCmd:  "go run ../../main.go run errors -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "ignore_errors true",
-		TestCmd:  "go run ../../main.go run errors-true -t reachable",
+		TestCmd:  "go run ../../main.go run errors-true -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "unreachable false",
-		TestCmd:  "go run ../../main.go run unreachable -a",
+		TestCmd:  "go run ../../main.go run unreachable -S -a",
 		WantErr:  true,
 	},
 	{
 		TestName: "unreachable true",
-		TestCmd:  "go run ../../main.go run unreachable-true -a",
+		TestCmd:  "go run ../../main.go run unreachable-true -S -a",
 		WantErr:  false,
 	},
 	{
 		TestName: "omit_empty false",
-		TestCmd:  "go run ../../main.go run empty -t reachable",
+		TestCmd:  "go run ../../main.go run empty -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "omit_empty true",
-		TestCmd:  "go run ../../main.go run empty-true -t reachable",
+		TestCmd:  "go run ../../main.go run empty-true -S -t reachable",
 		WantErr:  false,
 	},
 	{
 		TestName: "output",
-		TestCmd:  "go run ../../main.go run output -t reachable",
+		TestCmd:  "go run ../../main.go run output -S -t reachable",
 		WantErr:  false,
 	},
 
 	// exec
 	{
 		TestName: "Run exec command",
-		TestCmd:  "go run ../../main.go exec 'echo 123' -t reachable",
+		TestCmd:  "go run ../../main.go exec 'echo 123' -S -t reachable",
 		WantErr:  false,
 	},
 }

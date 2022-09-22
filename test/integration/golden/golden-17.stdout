@@ -1,6 +1,6 @@
 Index: 17
 Name: ignore_errors true
-Cmd: go run ../../main.go run errors-true -t reachable
+Cmd: go run ../../main.go run errors-true -S -t reachable
 WantErr: false
 
 ---
@@ -9,6 +9,18 @@ WantErr: false
 -----------+--------+-------------------------------+--------
  localhost | 123    |                               | 321    
            |        | exit status 65                |        
+ hosts-1-0 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ hosts-1-1 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ hosts-2-0 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ hosts-2-1 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ hosts-3-0 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ hosts-3-1 | 123    |                               | 321    
+           |        | Process exited with status 65 |        
  server-1  | 123    |                               | 321    
            |        | Process exited with status 65 |        
  server-2  | 123    |                               | 321    

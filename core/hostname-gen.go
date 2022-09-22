@@ -4,19 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
-func ExpandHostNames(input string, envs []string) ([]string, error) {
-	// TODO:
-	// - [x] Check if enclosed by $(), if run cmd
-	// - If contains brackets, expand to list of strings
-	// - else return single host
-
+func ExpandHostNames(context string, input string, defaultEnvs []string, envs []string) ([]string, error) {
 	if IsCmd(input) {
-		return EvaluateInventory(input, envs)
+		return EvaluateInventory(context, input, defaultEnvs, envs)
 	} else if IsRange(input) {
 		return EvaluateRange(input)
 	}
@@ -25,10 +21,7 @@ func ExpandHostNames(input string, envs []string) ([]string, error) {
 }
 
 func IsCmd(input string) bool {
-	if strings.HasPrefix(input, "$(") && strings.HasSuffix(input, ")") {
-		return true
-	}
-	return false
+	return strings.HasPrefix(input, "$(") && strings.HasSuffix(input, ")")
 }
 
 func IsRange(input string) bool {
@@ -36,18 +29,20 @@ func IsRange(input string) bool {
 }
 
 // Separate hosts with newline and space/tab
-func EvaluateInventory(input string, envs []string) ([]string, error) {
+func EvaluateInventory(context string, input string, defaultEnvs []string, envs []string) ([]string, error) {
 	input = strings.TrimPrefix(input, "$(")
 	input = strings.TrimSuffix(input, ")")
 
 	cmd := exec.Command("sh", "-c", input)
-	cmd.Env = append(os.Environ(), envs...)
-	stdout, err := cmd.Output()
+	cmd.Env = append(os.Environ(), defaultEnvs...)
+	cmd.Env = append(cmd.Env, envs...)
+	cmd.Dir = filepath.Dir(context)
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return []string{}, &InventoryEvalFailed{Err: err.Error()}
+		return []string{}, &InventoryEvalFailed{Err: string(out)}
 	}
 
-	trimmedOutput := strings.TrimSpace(string(stdout))
+	trimmedOutput := strings.TrimSpace(string(out))
 	trimmedOutput = strings.Trim(trimmedOutput, "\t")
 	trimmedOutput = strings.Trim(trimmedOutput, "\r")
 	trimmedOutput = strings.TrimPrefix(trimmedOutput, "\n")
@@ -117,13 +112,6 @@ func buildRangeAST(input string) ([]any, error) {
 			i = j
 			continue
 		} else {
-			// TODO: Only allow alpha/digit/. Valid characters for hostnames are ASCII(7)
-			// letters from a to z,
-			// the digits from 0 to 9,
-			// and the hyphen (-).
-			// A hostname may not start with a hyphen.
-			// @ and : for user/port
-
 			part.Value += string(input[i])
 		}
 

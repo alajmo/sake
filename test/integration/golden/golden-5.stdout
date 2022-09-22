@@ -1,6 +1,6 @@
 Index: 5
 Name: Ping all servers
-Cmd: go run ../../main.go run ping -t reachable
+Cmd: go run ../../main.go run ping -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,30 @@ WantErr: false
 TASK [ping: ping server] 
 
 localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
 
 TASK [ping: ping server] 
 

@@ -1,6 +1,6 @@
 Index: 15
 Name: fatal true
-Cmd: go run ../../main.go run fatal-true -t reachable
+Cmd: go run ../../main.go run fatal-true -S -t reachable
 WantErr: true
 
 ---
@@ -9,6 +9,12 @@ WantErr: true
 -----------+---------------
  localhost |               
            | exit status 1 
+ hosts-1-0 |               
+ hosts-1-1 |               
+ hosts-2-0 |               
+ hosts-2-1 |               
+ hosts-3-0 |               
+ hosts-3-1 |               
  server-1  |               
  server-2  |               
  server-3  |               

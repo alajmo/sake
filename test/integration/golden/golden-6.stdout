@@ -1,12 +1,18 @@
 Index: 6
 Name: Multiple commands
-Cmd: go run ../../main.go run info -t prod
+Cmd: go run ../../main.go run info -S -t prod
 WantErr: false
 
 ---
 
- Server   | OS | Kernel 
-----------+----+--------
- server-1 | OS | kernel 
- server-2 | OS | kernel 
+ Server    | OS | Kernel 
+-----------+----+--------
+ hosts-1-0 | OS | kernel 
+ hosts-1-1 | OS | kernel 
+ hosts-2-0 | OS | kernel 
+ hosts-2-1 | OS | kernel 
+ hosts-3-0 | OS | kernel 
+ hosts-3-1 | OS | kernel 
+ server-1  | OS | kernel 
+ server-2  | OS | kernel 
 

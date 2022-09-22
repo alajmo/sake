@@ -1,6 +1,6 @@
 Index: 13
 Name: Work Dir 3
-Cmd: go run ../../main.go run work-dir-3 -t reachable
+Cmd: go run ../../main.go run work-dir-3 -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,12 @@ WantErr: false
  Server    | Ref  | Ref  
 -----------+------+------
  localhost | /usr | /etc 
+ hosts-1-0 | /usr | /etc 
+ hosts-1-1 | /usr | /etc 
+ hosts-2-0 | /usr | /etc 
+ hosts-2-1 | /usr | /etc 
+ hosts-3-0 | /usr | /etc 
+ hosts-3-1 | /usr | /etc 
  server-1  | /usr | /etc 
  server-2  | /usr | /etc 
  server-3  | /usr | /etc 

@@ -9,7 +9,7 @@ import (
 func TestExpandHostNames(t *testing.T) {
 	// SINGLE IP
 	input := "192.168.0.1"
-	hosts, err := ExpandHostNames(input, []string{})
+	hosts, err := ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted := []string{"192.168.0.1"}
 	for i := range wanted {
@@ -20,7 +20,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP inventory 1 host
 	input = `$(echo 192.168.0.1)`
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1"}
 	for i := range wanted {
@@ -29,7 +29,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on space
 	input = `$(echo "192.168.0.1 192.168.0.2")`
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -38,7 +38,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on newline
 	input = `$(echo "192.168.0.1\n192.168.0.2")`
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -47,7 +47,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on tab
 	input = `$(echo "192.168.0.1\t192.168.0.2")`
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -61,7 +61,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 1 range
 	input = "192.168.0.[1:2]"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -70,7 +70,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 1 range
 	input = "192.168.0.[1:2].33"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1.33", "192.168.0.2.33"}
 	for i := range wanted {
@@ -79,7 +79,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 1 range with padding
 	input = "192.168.0.[09:12].33"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.09.33", "192.168.0.10.33", "192.168.0.11.33", "192.168.0.12.33"}
 	for i := range wanted {
@@ -88,7 +88,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 1 range with step
 	input = "192.168.0.[1:4:2].33"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1.33", "192.168.0.3.33"}
 	for i := range wanted {
@@ -97,7 +97,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 1 range with step and padding
 	input = "192-[01:4:2].33"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192-01.33", "192-03.33"}
 	for i := range wanted {
@@ -106,7 +106,7 @@ func TestExpandHostNames(t *testing.T) {
 
 	// IP 2 ranges
 	input = "192.[0:1].0.[2:3]"
-	hosts, err = ExpandHostNames(input, []string{})
+	hosts, err = ExpandHostNames("", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{
 		"192.0.0.2",
@@ -119,15 +119,15 @@ func TestExpandHostNames(t *testing.T) {
 	}
 
 	// Malformed ranges
-	_, err = ExpandHostNames("192.[2:1].0", []string{})
+	_, err = ExpandHostNames("", "192.[2:1].0", []string{}, []string{})
 	test.IsError(t, err)
 
-	_, err = ExpandHostNames("192.[0].0", []string{})
+	_, err = ExpandHostNames("", "192.[0].0", []string{}, []string{})
 	test.IsError(t, err)
 
-	_, err = ExpandHostNames("192.[0.0", []string{})
+	_, err = ExpandHostNames("", "192.[0.0", []string{}, []string{})
 	test.IsError(t, err)
 
-	_, err = ExpandHostNames("192.[1:2:1:2]", []string{})
+	_, err = ExpandHostNames("", "192.[1:2:1:2]", []string{}, []string{})
 	test.IsError(t, err)
 }

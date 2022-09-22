@@ -1,6 +1,6 @@
 Index: 23
 Name: Run exec command
-Cmd: go run ../../main.go exec 'echo 123' -t reachable
+Cmd: go run ../../main.go exec 'echo 123' -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,30 @@ WantErr: false
 TASK
 
 localhost | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
 
 TASK
 

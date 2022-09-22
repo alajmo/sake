@@ -1,6 +1,6 @@
 Index: 10
 Name: Nested tasks
-Cmd: go run ../../main.go run d -t reachable
+Cmd: go run ../../main.go run d -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,12 @@ WantErr: false
  Server    | Ping | Ping | Ping | Ping | Ping | Ping 
 -----------+------+------+------+------+------+------
  localhost | pong | pong | pong | pong | pong | pong 
+ hosts-1-0 | pong | pong | pong | pong | pong | pong 
+ hosts-1-1 | pong | pong | pong | pong | pong | pong 
+ hosts-2-0 | pong | pong | pong | pong | pong | pong 
+ hosts-2-1 | pong | pong | pong | pong | pong | pong 
+ hosts-3-0 | pong | pong | pong | pong | pong | pong 
+ hosts-3-1 | pong | pong | pong | pong | pong | pong 
  server-1  | pong | pong | pong | pong | pong | pong 
  server-2  | pong | pong | pong | pong | pong | pong 
  server-3  | pong | pong | pong | pong | pong | pong 

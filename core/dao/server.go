@@ -304,7 +304,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				servers = append(servers, *hServer)
 			}
 		case "hosts-string":
-			hosts, err := core.ExpandHostNames(serverYAML.Hosts.Value, envs)
+			hosts, err := core.ExpandHostNames(server.context, serverYAML.Hosts.Value, defaultEnvs, envs)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
 				continue

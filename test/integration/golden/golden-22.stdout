@@ -1,6 +1,6 @@
 Index: 22
 Name: output
-Cmd: go run ../../main.go run output -t reachable
+Cmd: go run ../../main.go run output -S -t reachable
 WantErr: false
 
 ---
@@ -8,6 +8,12 @@ WantErr: false
  Server    | Output      | Output    | Output            
 -----------+-------------+-----------+-------------------
  localhost | Hello world | Bye world | Hello again world 
+ hosts-1-0 | Hello world | Bye world | Hello again world 
+ hosts-1-1 | Hello world | Bye world | Hello again world 
+ hosts-2-0 | Hello world | Bye world | Hello again world 
+ hosts-2-1 | Hello world | Bye world | Hello again world 
+ hosts-3-0 | Hello world | Bye world | Hello again world 
+ hosts-3-1 | Hello world | Bye world | Hello again world 
  server-1  | Hello world | Bye world | Hello again world 
  server-2  | Hello world | Bye world | Hello again world 
  server-3  | Hello world | Bye world | Hello again world 

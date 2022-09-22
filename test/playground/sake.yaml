@@ -2,19 +2,20 @@ known_hosts_file: known_hosts
 disable_verify_host: true
 
 servers:
-  # localhost:
-  #   desc: localhost
-  #   host: localhost
-  #   local: true
-  #   work_dir: /opt
-  #   tags: [local]
+  localhost:
+    desc: localhost
+    host: localhost
+    local: true
+    work_dir: /opt
+    tags: [local]
 
   many:
     desc: many hosts
     # hosts:
     #   - 172.24.2.2
     #   - 172.24.2.4
-    hosts: $(echo "172.24.2.2 $host")
+    hosts: $(cat hello.txt)
+    # hosts: $(echo "172.24.2.2 $host")
     # hosts: 172.24.2.[4:6:1]
     # hosts: 172.24.2.2
     # hosts: 172.24.2.[2:4]
@@ -34,42 +35,42 @@ servers:
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi]
 
-  # server-2:
-  #   desc: server-2
-  #   host: 172.24.2.3
-  #   port: 33
-  #   user: test
-  #   identity_file: ../keys/id_ed25519_pem_no
-  #   tags: [remote, pi]
+  server-2:
+    desc: server-2
+    host: 172.24.2.3
+    port: 33
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi]
 
-  # server-3:
-  #   desc: server-3
-  #   host: 172.24.2.4
-  #   user: test
-  #   identity_file: ../keys/id_ed25519_pem_no
-  #   tags: [remote, pi, pihole]
+  server-3:
+    desc: server-3
+    host: 172.24.2.4
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi, pihole]
 
-  # server-4:
-  #   desc: server-4
-  #   host: 172.24.2.4
-  #   user: test
-  #   identity_file: ../keys/id_ed25519_pem_no
-  #   tags: [remote, pi, pihole]
+  server-4:
+    desc: server-4
+    host: 172.24.2.4
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi, pihole]
 
-  # ip6-1:
-  #   desc: ip6-1
-  #   host: 2001:3984:3989::10
-  #   user: test
-  #   password: test
-  #   tags: [remote, reachable]
+  ip6-1:
+    desc: ip6-1
+    host: test@[2001:3984:3989::10]:22
+    user: test
+    password: test
+    tags: [remote, reachable]
 
-  # ip6-2:
-  #   desc: ip6-2
-  #   host: 2001:3984:3989::11
-  #   port: 33
-  #   user: test
-  #   password: test
-  #   tags: [remote, reachable]
+  ip6-2:
+    desc: ip6-2
+    host: 2001:3984:3989::11
+    port: 33
+    user: test
+    password: test
+    tags: [remote, reachable]
 
 targets:
   all:

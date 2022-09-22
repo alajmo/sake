@@ -51,6 +51,7 @@ before the command gets executed in each directory.`,
 	cmd.Flags().BoolVar(&runFlags.Attach, "attach", false, "ssh to server after command")
 	cmd.Flags().BoolVar(&runFlags.Local, "local", false, "run command on localhost")
 	cmd.Flags().BoolVar(&runFlags.DryRun, "dry-run", false, "prints the command to see what will be executed")
+	cmd.Flags().BoolVarP(&runFlags.Silent, "silent", "S", false, "do not show progress when running tasks")
 	cmd.Flags().BoolVar(&runFlags.AnyErrorsFatal, "any-errors-fatal", false, "stop task execution on all servers on error")
 	cmd.Flags().BoolVar(&runFlags.IgnoreErrors, "ignore-errors", false, "continue task execution on errors")
 	cmd.Flags().BoolVar(&runFlags.IgnoreUnreachable, "ignore-unreachable", false, "ignore unreachable hosts")

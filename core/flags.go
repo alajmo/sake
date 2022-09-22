@@ -27,6 +27,7 @@ type RunFlags struct {
 	Edit     bool
 	DryRun   bool
 	Describe bool
+	Silent   bool
 
 	// Target
 	All     bool

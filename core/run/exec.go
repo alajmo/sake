@@ -138,12 +138,16 @@ func (run *Run) RunTask(
 	switch task.Spec.Output {
 	case "table", "html", "markdown":
 		spinner := core.GetSpinner()
-		spinner.Start(" Running", 500)
+		if !runFlags.Silent {
+			spinner.Start(" Running", 500)
+		}
 
 		data, err := run.Table(runFlags.DryRun)
 		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
 		run.CleanupClients()
-		spinner.Stop()
+		if !runFlags.Silent {
+			spinner.Stop()
+		}
 		print.PrintTable("", data.Rows, options, data.Headers[0:1], data.Headers[1:])
 
 		if err != nil {
