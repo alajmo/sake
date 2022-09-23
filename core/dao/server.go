@@ -16,7 +16,6 @@ import (
 
 type Server struct {
 	Name         string
-	Group        string
 	Desc         string
 	Host         string
 	BastionHost  string
@@ -31,7 +30,10 @@ type Server struct {
 	WorkDir      string
 	IdentityFile *string
 	Password     *string
+
+	// Internal
 	AuthMethod   string
+	Group        string
 
 	context     string // config path
 	contextLine int    // defined at
@@ -154,10 +156,19 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 
 		defaultEnvs := []string{
 			fmt.Sprintf("SAKE_SERVER_NAME=%s", serverYAML.Name),
-			fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc),
-			fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")),
-			fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion),
-			fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local),
+		}
+
+		if serverYAML.Desc != "" {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc))
+		}
+		if len(serverYAML.Tags) > 0 {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")))
+		}
+		if serverYAML.Bastion != "" {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion))
+		}
+		if serverYAML.Local {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local))
 		}
 
 		// Same for all servers

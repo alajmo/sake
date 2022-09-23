@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"bytes"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -176,10 +177,6 @@ func (run *Run) RunTask(
 
 // SetClients establishes connection to server
 // InitAuthMethod
-// if identity_file, use that file
-// if identity_file + passphrase, use that file with the passphrase
-// if passphrase, use passphrase connect
-// if nothing, attempt to use SSH Agent
 func (run *Run) SetClients(
 	runFlags *core.RunFlags,
 	numChannels int,
@@ -253,6 +250,8 @@ func (run *Run) SetClients(
 
 	identities := make(map[string]ssh.Signer)
 	passwordAuthMethods := make(map[string]ssh.AuthMethod)
+	// TODO: make sure we only decode once every identity file as not to do it multiple times,
+	//       once for each server
 	for _, server := range run.Servers {
 		if server.AuthMethod == "password-key" {
 			_, found := identities[*server.IdentityFile]
@@ -292,18 +291,9 @@ func (run *Run) SetClients(
 			wg.Add(1)
 
 			var authMethods []ssh.AuthMethod
-			var signers []ssh.Signer
-
-			if globalSigner != nil {
-				signers = append(signers, globalSigner)
-			} else if server.AuthMethod == "password" {
-				pwAuth := passwordAuthMethods[*server.Password]
-				authMethods = append(authMethods, pwAuth)
-			} else if server.AuthMethod == "key" || server.AuthMethod == "password-key" {
-				identitySigner := identities[*server.IdentityFile]
-				signers = append(signers, identitySigner)
-			} else if agentSigners != nil {
-				signers = append(signers, agentSigners...)
+			signers, err := getSigners(server, globalSigner, passwordAuthMethods, authMethods, identities, agentSigners)
+			if err != nil {
+				return nil, err
 			}
 
 			if len(signers) > 0 {
@@ -622,4 +612,66 @@ func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
 	}
 
 	return ""
+}
+
+// if identity_file, use that file
+// if identity_file + passphrase, use that file with the passphrase
+// if passphrase, use passphrase connect
+// if nothing, attempt to use SSH Agent
+func getSigners(
+	server dao.Server,
+	globalSigner ssh.Signer,
+	passwordAuthMethods map[string]ssh.AuthMethod,
+	authMethods []ssh.AuthMethod,
+	identities map[string]ssh.Signer,
+	agentSigners []ssh.Signer,
+) ([]ssh.Signer, error) {
+	var signers []ssh.Signer
+	// TODO: Loop through signers and add only the ones matching Comment
+	// Use the blob to decrypt and compare keys
+
+	// fmt.Println("----------------------")
+	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem_no"].PublicKey())
+	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem"].PublicKey())
+	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem"].PublicKey().Type())
+
+	// c := identities["/home/samir/.ssh/id_rsa"].PublicKey()
+	// fmt.Println(c)
+
+	a := identities["/home/samir/.ssh/id_rsa"].PublicKey().Marshal()
+	b := agentSigners[0].PublicKey().Marshal()
+
+    res := bytes.Compare(a, b)
+
+    if res == 0 {
+        fmt.Println("!..Slices are equal..!")
+    } else {
+        fmt.Println("!..Slice are not equal..!")
+    }
+
+	core.DebugPrint(a)
+	core.DebugPrint(b)
+
+	// fmt.Println("----------------------")
+
+	if globalSigner != nil {
+		signers = append(signers, globalSigner)
+	} else if server.AuthMethod == "password" {
+		pwAuth := passwordAuthMethods[*server.Password]
+		authMethods = append(authMethods, pwAuth)
+	} else if server.AuthMethod == "key" || server.AuthMethod == "password-key" {
+		identitySigner := identities[*server.IdentityFile]
+		signers = append(signers, identitySigner)
+	} else if agentSigners != nil {
+		fmt.Println("----------------------")
+		core.DebugPrint(agentSigners[0].PublicKey())
+		// core.DebugPrint(agentSigners[0].Sign())
+		// core.DebugPrint(agentSigners[0].PublicKey().Verify())
+		// core.DebugPrint(agentSigners[0].PublicKey().Marshal)
+		fmt.Println("----------------------")
+
+		signers = append(signers, agentSigners...)
+	}
+
+	return signers, nil
 }

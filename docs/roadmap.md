@@ -5,8 +5,8 @@
 - [ ] Improve servers
   - [x] Resolve hostnames from ssh_config
   - [x] Support Bastion/Jumphost
-  - [ ] Define multiple hosts without creating individual servers
-  - [ ] Dynamically fetch hosts
+  - [x] Define multiple hosts without creating individual servers
+  - [x] Dynamically fetch hosts
   - [ ] Regex filtering of servers
 
 - [ ] Improve output

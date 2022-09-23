@@ -40,15 +40,16 @@ type BorderColors struct {
 }
 
 type CellColors struct {
-	Server *ColorOptions `yaml:"server"`
-	Tag    *ColorOptions `yaml:"tag"`
-	Desc   *ColorOptions `yaml:"desc"`
-	Host   *ColorOptions `yaml:"host"`
-	User   *ColorOptions `yaml:"user"`
-	Port   *ColorOptions `yaml:"port"`
-	Local  *ColorOptions `yaml:"local"`
-	Task   *ColorOptions `yaml:"task"`
-	Output *ColorOptions `yaml:"output"`
+	Server  *ColorOptions `yaml:"server"`
+	Tag     *ColorOptions `yaml:"tag"`
+	Desc    *ColorOptions `yaml:"desc"`
+	Host    *ColorOptions `yaml:"host"`
+	User    *ColorOptions `yaml:"user"`
+	Port    *ColorOptions `yaml:"port"`
+	Bastion *ColorOptions `yaml:"bastion"`
+	Local   *ColorOptions `yaml:"local"`
+	Task    *ColorOptions `yaml:"task"`
+	Output  *ColorOptions `yaml:"output"`
 }
 
 type TableColor struct {
@@ -248,6 +249,12 @@ var DefaultTable = Table{
 				Align: core.Ptr(""),
 				Attr:  core.Ptr("bold"),
 			},
+			Bastion: &ColorOptions{
+				Fg:    core.Ptr(""),
+				Bg:    core.Ptr(""),
+				Align: core.Ptr(""),
+				Attr:  core.Ptr("bold"),
+			},
 			Task: &ColorOptions{
 				Fg:    core.Ptr(""),
 				Bg:    core.Ptr(""),
@@ -300,6 +307,12 @@ var DefaultTable = Table{
 				Attr:  core.Ptr(""),
 			},
 			Port: &ColorOptions{
+				Fg:    core.Ptr(""),
+				Bg:    core.Ptr(""),
+				Align: core.Ptr(""),
+				Attr:  core.Ptr(""),
+			},
+			Bastion: &ColorOptions{
 				Fg:    core.Ptr(""),
 				Bg:    core.Ptr(""),
 				Align: core.Ptr(""),
@@ -583,6 +596,24 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 					}
 				}
 
+				// Bastion
+				if themes[i].Table.Color.Header.Bastion == nil {
+					themes[i].Table.Color.Header.Bastion = DefaultTable.Color.Header.Bastion
+				} else {
+					if themes[i].Table.Color.Header.Bastion.Fg == nil {
+						themes[i].Table.Color.Header.Bastion.Fg = DefaultTable.Color.Header.Bastion.Fg
+					}
+					if themes[i].Table.Color.Header.Bastion.Bg == nil {
+						themes[i].Table.Color.Header.Bastion.Bg = DefaultTable.Color.Header.Bastion.Bg
+					}
+					if themes[i].Table.Color.Header.Bastion.Align == nil {
+						themes[i].Table.Color.Header.Bastion.Align = DefaultTable.Color.Header.Bastion.Align
+					}
+					if themes[i].Table.Color.Header.Bastion.Attr == nil {
+						themes[i].Table.Color.Header.Bastion.Attr = DefaultTable.Color.Header.Bastion.Attr
+					}
+				}
+
 				// Local
 				if themes[i].Table.Color.Header.Local == nil {
 					themes[i].Table.Color.Header.Local = DefaultTable.Color.Header.Local
@@ -747,6 +778,24 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 					}
 					if themes[i].Table.Color.Row.Port.Attr == nil {
 						themes[i].Table.Color.Row.Port.Attr = DefaultTable.Color.Row.Port.Attr
+					}
+				}
+
+				// Bastion
+				if themes[i].Table.Color.Row.Bastion == nil {
+					themes[i].Table.Color.Row.Bastion = DefaultTable.Color.Row.Bastion
+				} else {
+					if themes[i].Table.Color.Row.Bastion.Fg == nil {
+						themes[i].Table.Color.Row.Bastion.Fg = DefaultTable.Color.Row.Bastion.Fg
+					}
+					if themes[i].Table.Color.Row.Bastion.Bg == nil {
+						themes[i].Table.Color.Row.Bastion.Bg = DefaultTable.Color.Row.Bastion.Bg
+					}
+					if themes[i].Table.Color.Row.Bastion.Align == nil {
+						themes[i].Table.Color.Row.Bastion.Align = DefaultTable.Color.Row.Bastion.Align
+					}
+					if themes[i].Table.Color.Row.Bastion.Attr == nil {
+						themes[i].Table.Color.Row.Bastion.Attr = DefaultTable.Color.Row.Bastion.Attr
 					}
 				}
 

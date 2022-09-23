@@ -510,9 +510,16 @@ func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
 
 // Unprotected key
 func GetIdentity(server dao.Server) (ssh.Signer, *ErrConnect) {
+    // I should use the Passphrase missing error to check if encrypted
+    // if not encrypted,
+    // - ask user for password
+    // - prompt for password
 	var signer ssh.Signer
 
 	data, err := ioutil.ReadFile(*server.IdentityFile)
+    k, e := ssh.ParseRawPrivateKey(data)
+    fmt.Println(e)
+    fmt.Println(k)
 	if err != nil {
 		errConnect := &ErrConnect{
 			Name:   server.Name,
@@ -526,6 +533,7 @@ func GetIdentity(server dao.Server) (ssh.Signer, *ErrConnect) {
 
 	signer, err = ssh.ParsePrivateKey(data)
 	if err != nil {
+        fmt.Println(123)
 		errConnect := &ErrConnect{
 			Name:   server.Name,
 			User:   server.User,

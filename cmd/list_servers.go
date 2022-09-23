@@ -50,7 +50,7 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "description"}, "set headers. Available headers: server, local, user, host, port, tag, description")
+	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "description"}, "set headers. Available headers: server, local, user, host, port, bastion, tag, description")
 	err = cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if err != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault

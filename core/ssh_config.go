@@ -210,31 +210,31 @@ func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 					return nil, fmt.Errorf("%s: invalid node on app %q: %q", cfg, name, node)
 				}
 
-				key := strings.TrimSpace(parts[0])
+				key := strings.ToLower(strings.TrimSpace(parts[0]))
 				value := strings.TrimSpace(parts[1])
 
 				switch key {
-				case "HostName":
+				case "hostname":
 					info.HostName = value
-				case "User":
+				case "user":
 					info.User = value
-				case "Port":
+				case "port":
 					info.Port = value
-				case "ProxyJump":
+				case "proxyjump":
 					info.ProxyJump = value
-				case "IdentityFile":
+				case "identityfile":
 					info.IdentityFiles = append(info.IdentityFiles, value)
-				case "ForwardAgent":
+				case "forwardagent":
 					info.ForwardAgent = value
-				case "RequestTTY":
+				case "requesttty":
 					info.RequestTTY = value
-				case "RemoteCommand":
+				case "remotecommand":
 					info.RemoteCommand = value
-				case "SendEnv":
+				case "sendenv":
 					info.SendEnv = append(info.SendEnv, value)
-				case "SetEnv":
+				case "setenv":
 					info.SetEnv = append(info.SetEnv, value)
-				case "Include":
+				case "include":
 					// TODO: Handle glob (Include supports dir/* format)
 					if strings.Contains(value, "*") {
 						continue

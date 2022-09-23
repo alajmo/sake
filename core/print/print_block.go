@@ -19,15 +19,13 @@ func PrintServerBlocks(servers []dao.Server) {
 		fmt.Printf("Name: %s\n", server.Name)
 		fmt.Printf("User: %s\n", server.User)
 		fmt.Printf("Host: %s\n", server.Host)
+		fmt.Printf("Bastion: %s\n", server.BastionHost)
 		fmt.Printf("Port: %d\n", server.Port)
 		fmt.Printf("Local: %t\n", server.Local)
 		fmt.Printf("Shell: %s\n", server.Shell)
 		fmt.Printf("WorkDir: %s\n", server.WorkDir)
 		fmt.Printf("Desc: %s\n", server.Desc)
-
-		if len(server.Tags) > 0 {
-			fmt.Printf("Tags: %s\n", server.GetValue("Tag", 0))
-		}
+		fmt.Printf("Tags: %s\n", server.GetValue("Tag", 0))
 
 		if len(server.Envs) > 0 {
 			printEnv(server.Envs)
