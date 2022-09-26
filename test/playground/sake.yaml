@@ -37,10 +37,9 @@ servers:
 
   server-2:
     desc: server-2
-    host: 172.24.2.3
-    port: 33
-    user: test
-    identity_file: ../keys/id_ed25519_pem_no
+    host: sake-resolve
+    # user: test
+    # identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi]
 
   server-3:
@@ -50,15 +49,12 @@ servers:
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi, pihole]
 
-  # TODO: try without any identity_file/password, see if I get segfault
   server-4:
     desc: server-4
-    host: 172.24.2.4
+    host: 172.24.2.5
     user: test
-    # identity_file: ~/.ssh/id_rsa
-    # identity_file: ../keys/id_ed25519_pem
-    identity_file: ../keys/id_ed25519_rfc
-    # password: Volume89
+    identity_file: ../keys/id_ed25519_pem
+    password: testing
     tags: [remote, pi, pihole]
 
   ip6-1:

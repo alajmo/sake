@@ -544,14 +544,6 @@ Override ssh config file path
 Override known_hosts file path
 
 .TP
-.B SAKE_IDENTITY_FILE
-Override identity file path
-
-.TP
-.B SAKE_PASSWORD
-Override SSH password
-
-.TP
 .B NO_COLOR
 If this env variable is set (regardless of value) then all colors will be disabled
 

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"os/user"
 	"path/filepath"
-	"net"
 	"regexp"
 	"strconv"
 	"strings"
@@ -211,7 +211,7 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 	// Invalid:
 	//  - [192.168.0.1]:port
 	//  - 2001:3984:3989::10:port
-	switch getIPType(host){
+	switch getIPType(host) {
 	case 4:
 		if strings.Contains(host, ":") {
 			lastInd := strings.LastIndex(host, ":")
@@ -226,13 +226,13 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 		}
 		return user, host, port, nil
 	case 6:
-		if strings.Contains(host, "[") && strings.Contains(host, "]"){
+		if strings.Contains(host, "[") && strings.Contains(host, "]") {
 			if at := strings.LastIndex(host, ":"); at != -1 {
 				p, err := strconv.ParseInt(host[at+1:], 10, 16)
 				if err != nil {
 					return "", "", 22, fmt.Errorf("failed to parse %s", hostname)
 				}
-				host = host[1:at-1]
+				host = host[1 : at-1]
 				port = uint16(p)
 			}
 		}
@@ -248,15 +248,15 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 	return user, host, port, nil
 }
 
-func getIPType(ip string) (uint) {
-    for i := 0; i < len(ip); i++ {
-        switch ip[i] {
-        case '.':
-            return 4
-        case ':':
-            return 6
-        }
-    }
+func getIPType(ip string) uint {
+	for i := 0; i < len(ip); i++ {
+		switch ip[i] {
+		case '.':
+			return 4
+		case ':':
+			return 6
+		}
+	}
 
 	return 0
 }

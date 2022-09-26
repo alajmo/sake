@@ -32,8 +32,8 @@ type Server struct {
 	Password     *string
 
 	// Internal
-	AuthMethod   string
-	Group        string
+	Group   string
+	PubFile *string
 
 	context     string // config path
 	contextLine int    // defined at
@@ -214,21 +214,25 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
+		var pubKeyFile *string
+		if identityFile != nil {
+			if _, err := os.Stat(*identityFile); errors.Is(err, os.ErrNotExist) {
+				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+				continue
+			}
+
+			if _, err := os.Stat(*identityFile + ".pub"); !errors.Is(err, os.ErrNotExist) {
+				str := *identityFile + ".pub"
+				pubKeyFile = &str
+			}
+		}
+
+		// Return error if file not found
+
 		// Same for all servers
 		var password *string
 		if serverYAML.Password != nil {
 			password = serverYAML.Password
-		}
-
-		var authMethod string
-		if identityFile != nil && password != nil {
-			authMethod = "password-key"
-		} else if identityFile != nil {
-			authMethod = "key"
-		} else if password != nil {
-			authMethod = "password"
-		} else {
-			authMethod = "none"
 		}
 
 		switch hostDef {
@@ -262,8 +266,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				BastionHost:  bastionHost,
 				BastionUser:  bastionUser,
 				BastionPort:  bastionPort,
-				AuthMethod:   authMethod,
 				IdentityFile: identityFile,
+				PubFile:      pubKeyFile,
 				Password:     password,
 
 				context:     c.Path,
@@ -304,8 +308,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					BastionHost:  bastionHost,
 					BastionUser:  bastionUser,
 					BastionPort:  bastionPort,
-					AuthMethod:   authMethod,
 					IdentityFile: identityFile,
+					PubFile:      pubKeyFile,
 					Password:     password,
 
 					context:     c.Path,
@@ -350,8 +354,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					BastionHost:  bastionHost,
 					BastionUser:  bastionUser,
 					BastionPort:  bastionPort,
-					AuthMethod:   authMethod,
 					IdentityFile: identityFile,
+					PubFile:      pubKeyFile,
 					Password:     password,
 
 					context:     c.Path,

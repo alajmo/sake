@@ -8,6 +8,7 @@ WantErr: false
 Name: localhost
 User: test
 Host: localhost
+Bastion: 
 Port: 22
 Local: true
 Shell: 
@@ -18,7 +19,6 @@ Env:
     SAKE_SERVER_NAME: localhost
     SAKE_SERVER_DESC: localhost
     SAKE_SERVER_TAGS: local,reachable
-    SAKE_SERVER_BASTION: 
     SAKE_SERVER_LOCAL: true
     SAKE_SERVER_HOST: localhost
     SAKE_SERVER_USER: test
@@ -29,6 +29,7 @@ Env:
 Name: unreachable
 User: test
 Host: unreachable.lan
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -37,10 +38,7 @@ Desc:
 Tags: unreachable
 Env: 
     SAKE_SERVER_NAME: unreachable
-    SAKE_SERVER_DESC: 
     SAKE_SERVER_TAGS: unreachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: unreachable.lan
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -50,6 +48,7 @@ Env:
 Name: hosts-1-0
 User: test
 Host: 172.24.2.2
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -60,8 +59,6 @@ Env:
     SAKE_SERVER_NAME: hosts-1
     SAKE_SERVER_DESC: many hosts using list
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.2
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -72,6 +69,7 @@ Env:
 Name: hosts-1-1
 User: test
 Host: 172.24.2.4
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -82,8 +80,6 @@ Env:
     SAKE_SERVER_NAME: hosts-1
     SAKE_SERVER_DESC: many hosts using list
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.4
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -94,6 +90,7 @@ Env:
 Name: hosts-2-0
 User: test
 Host: 172.24.2.2
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -104,8 +101,6 @@ Env:
     SAKE_SERVER_NAME: hosts-2
     SAKE_SERVER_DESC: many hosts using range
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.2
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -116,6 +111,7 @@ Env:
 Name: hosts-2-1
 User: test
 Host: 172.24.2.4
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -126,8 +122,6 @@ Env:
     SAKE_SERVER_NAME: hosts-2
     SAKE_SERVER_DESC: many hosts using range
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.4
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -138,6 +132,7 @@ Env:
 Name: hosts-3-0
 User: test
 Host: 172.24.2.2
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -148,8 +143,6 @@ Env:
     SAKE_SERVER_NAME: hosts-3
     SAKE_SERVER_DESC: many hosts using inventory
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.2
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -161,6 +154,7 @@ Env:
 Name: hosts-3-1
 User: test
 Host: 172.24.2.4
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -171,8 +165,6 @@ Env:
     SAKE_SERVER_NAME: hosts-3
     SAKE_SERVER_DESC: many hosts using inventory
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.4
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -184,6 +176,7 @@ Env:
 Name: server-1
 User: test
 Host: 172.24.2.2
+Bastion: 172.24.2.99
 Port: 22
 Local: false
 Shell: 
@@ -195,7 +188,6 @@ Env:
     SAKE_SERVER_DESC: server-1
     SAKE_SERVER_TAGS: remote,prod,reachable
     SAKE_SERVER_BASTION: test@172.24.2.99:22
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.2
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -206,6 +198,7 @@ Env:
 Name: server-2
 User: test
 Host: 172.24.2.3
+Bastion: 
 Port: 33
 Local: false
 Shell: 
@@ -216,8 +209,6 @@ Env:
     SAKE_SERVER_NAME: server-2
     SAKE_SERVER_DESC: server-2
     SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.3
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 33
@@ -227,6 +218,7 @@ Env:
 Name: server-3
 User: test
 Host: 172.24.2.4
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -237,8 +229,6 @@ Env:
     SAKE_SERVER_NAME: server-3
     SAKE_SERVER_DESC: server-3
     SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.4
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -248,6 +238,7 @@ Env:
 Name: server-4
 User: test
 Host: 172.24.2.5
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -258,8 +249,6 @@ Env:
     SAKE_SERVER_NAME: server-4
     SAKE_SERVER_DESC: server-4
     SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.5
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -269,6 +258,7 @@ Env:
 Name: server-5
 User: test
 Host: 172.24.2.6
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -279,8 +269,6 @@ Env:
     SAKE_SERVER_NAME: server-5
     SAKE_SERVER_DESC: server-5
     SAKE_SERVER_TAGS: remote,sandbox,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.6
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -290,6 +278,7 @@ Env:
 Name: server-6
 User: test
 Host: 172.24.2.7
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -300,8 +289,6 @@ Env:
     SAKE_SERVER_NAME: server-6
     SAKE_SERVER_DESC: server-6
     SAKE_SERVER_TAGS: remote,sandbox,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.7
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -311,6 +298,7 @@ Env:
 Name: server-7
 User: test
 Host: 172.24.2.8
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -321,8 +309,6 @@ Env:
     SAKE_SERVER_NAME: server-7
     SAKE_SERVER_DESC: server-7
     SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.8
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -332,6 +318,7 @@ Env:
 Name: server-8
 User: test
 Host: 172.24.2.9
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -342,8 +329,6 @@ Env:
     SAKE_SERVER_NAME: server-8
     SAKE_SERVER_DESC: server-8
     SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 172.24.2.9
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22
@@ -353,6 +338,7 @@ Env:
 Name: server-9
 User: test
 Host: 2001:3984:3989::10
+Bastion: 
 Port: 22
 Local: false
 Shell: 
@@ -363,8 +349,6 @@ Env:
     SAKE_SERVER_NAME: server-9
     SAKE_SERVER_DESC: server-9
     SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_LOCAL: false
     SAKE_SERVER_HOST: 2001:3984:3989::10
     SAKE_SERVER_USER: test
     SAKE_SERVER_PORT: 22

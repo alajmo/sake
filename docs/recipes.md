@@ -689,8 +689,7 @@ $ sake run work-dir --output table
 By default `sake` will attempt to load identity keys from an SSH agent if it's running in the background. However, if you wish to provide credentials manually, you can do so by (first takes precedence):
 
 1. setting `--identity-file` and/or `--password` flags
-2. providing environment variables `SAKE_IDENTITY_FILE` and `SAKE_PASSWORD`
-3. specifying it in the server definition
+2. specifying it in the server definition
 
 The type of auth used is determined by:
 
@@ -749,8 +748,6 @@ Each task has access to a number of default environment variables.
       echo "# CONFIG"
       echo "SAKE_DIR $SAKE_DIR"
       echo "SAKE_PATH $SAKE_PATH"
-      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
-      echo "SAKE_PASSWORD $SAKE_PASSWOD"
       echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
 ```
 
@@ -779,8 +776,6 @@ $ sake run env -s server-1
           | # CONFIG
           | SAKE_DIR /tmp
           | SAKE_PATH /tmp/sake.yaml
-          | SAKE_IDENTITY_FILE
-          | SAKE_PASSWORD
           | SAKE_KNOWN_HOSTS_FILE
 ```
 

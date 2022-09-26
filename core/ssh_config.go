@@ -15,12 +15,12 @@ import (
 )
 
 // PraseFile reads and parses the file in the given path.
-func ParseFile(path string) (map[string](Endpoint), error) {
+func ParseSSHConfig(path string) (map[string](Endpoint), error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close() // nolint:errcheck
+	defer f.Close()
 
 	endpoints, err := ParseReader(f, path)
 	if err != nil {
@@ -57,6 +57,7 @@ func ParseReader(r io.Reader, cfg string) ([]*Endpoint, error) {
 			if err != nil {
 				return fmt.Errorf("%s: invalid Host: %q: %w", cfg, k, err)
 			}
+
 			if g.Match(name) || (info.HostName != "" && g.Match(info.HostName)) {
 				info = mergeHostinfo(info, v)
 			}
@@ -224,15 +225,15 @@ func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 					info.ProxyJump = value
 				case "identityfile":
 					info.IdentityFiles = append(info.IdentityFiles, value)
-				case "forwardagent":
+				case "forwardagent": // not used
 					info.ForwardAgent = value
-				case "requesttty":
+				case "requesttty": // not used
 					info.RequestTTY = value
-				case "remotecommand":
+				case "remotecommand": // not used
 					info.RemoteCommand = value
-				case "sendenv":
+				case "sendenv": // not used
 					info.SendEnv = append(info.SendEnv, value)
-				case "setenv":
+				case "setenv": // not used
 					info.SetEnv = append(info.SetEnv, value)
 				case "include":
 					// TODO: Handle glob (Include supports dir/* format)
@@ -333,7 +334,7 @@ func parseFileInternal(path string) (*hostinfoMap, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close() // nolint:errcheck
+	defer f.Close()
 	return parseInternal(f, path)
 }
 

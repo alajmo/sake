@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"bytes"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -61,7 +60,7 @@ func (run *Run) RunTask(
 		return err
 	}
 
-	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers)
+	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers, runFlags)
 	if err != nil {
 		return err
 	}
@@ -175,8 +174,14 @@ func (run *Run) RunTask(
 	return nil
 }
 
+type Signers struct {
+	agentSigners []ssh.Signer
+	fingerprints map[string]ssh.Signer     // fingerprint -> signer
+	identities   map[string]ssh.Signer     // identityFile -> signer
+	passwords    map[string]ssh.AuthMethod // password -> signer
+}
+
 // SetClients establishes connection to server
-// InitAuthMethod
 func (run *Run) SetClients(
 	runFlags *core.RunFlags,
 	numChannels int,
@@ -243,63 +248,32 @@ func (run *Run) SetClients(
 		return []ErrConnect{}, err
 	}
 
-	globalSigner, err := GetGlobalIdentitySigner(runFlags)
-	if err != nil {
-		return []ErrConnect{}, err
+	signers := Signers{
+		agentSigners: agentSigners,
+		fingerprints: make(map[string]ssh.Signer),
+		identities:   make(map[string]ssh.Signer),
+		passwords:    make(map[string]ssh.AuthMethod),
 	}
 
-	identities := make(map[string]ssh.Signer)
-	passwordAuthMethods := make(map[string]ssh.AuthMethod)
-	// TODO: make sure we only decode once every identity file as not to do it multiple times,
-	//       once for each server
+	// Generate fingerprint (public key) for each agent key
+	for _, s := range signers.agentSigners {
+		fp := ssh.FingerprintSHA256(s.PublicKey())
+		signers.fingerprints[fp] = s
+	}
+
 	for _, server := range run.Servers {
-		if server.AuthMethod == "password-key" {
-			_, found := identities[*server.IdentityFile]
-			if !found {
-				signer, err := GetPassworIdentitySigner(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				identities[*server.IdentityFile] = signer
-			}
-		} else if server.AuthMethod == "key" {
-			_, found := identities[*server.IdentityFile]
-			if !found {
-				signer, err := GetIdentity(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				identities[*server.IdentityFile] = signer
-			}
-		} else if server.AuthMethod == "password" {
-			_, found := passwordAuthMethods[*server.Password]
-			if !found {
-				passAuthMethod, err := GetPasswordAuth(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				passwordAuthMethods[*server.Password] = passAuthMethod
-			}
+		err := populateSigners(server, &signers)
+		if err != nil {
+			return []ErrConnect{}, err
 		}
 	}
 
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
-
 		if !server.Local {
 			wg.Add(1)
-
-			var authMethods []ssh.AuthMethod
-			signers, err := getSigners(server, globalSigner, passwordAuthMethods, authMethods, identities, agentSigners)
-			if err != nil {
-				return nil, err
-			}
-
-			if len(signers) > 0 {
-				authMethods = append(authMethods, ssh.PublicKeys(signers...))
-			}
-
+			authMethods := getAuthMethod(server, &signers)
 			go createRemoteClient(authMethods, server, &wg, &mu)
 		}
 	}
@@ -364,12 +338,24 @@ func (run *Run) CleanupClients() {
 }
 
 // ParseServers resolves host, port, proxyjump in users ssh config
-func ParseServers(sshConfigFile *string, servers *[]dao.Server) ([]ErrConnect, error) {
+func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.RunFlags) ([]ErrConnect, error) {
+	if runFlags.IdentityFile != "" {
+		for i := range *servers {
+			(*servers)[i].IdentityFile = &runFlags.IdentityFile
+		}
+	}
+
+	if runFlags.Password != "" {
+		for i := range *servers {
+			(*servers)[i].Password = &runFlags.Password
+		}
+	}
+
 	if sshConfigFile == nil {
 		return nil, nil
 	}
 
-	cfg, err := core.ParseFile(*sshConfigFile)
+	cfg, err := core.ParseSSHConfig(*sshConfigFile)
 	if err != nil {
 		return nil, err
 	}
@@ -460,6 +446,11 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server) ([]ErrConnect, e
 			} else {
 				(*servers)[i].BastionUser = (*servers)[i].User
 			}
+		}
+
+		// IdentityFile
+		if len(serv.IdentityFiles) > 0 {
+			(*servers)[i].IdentityFile = &serv.IdentityFiles[0]
 		}
 
 		// HostName
@@ -614,64 +605,94 @@ func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
 	return ""
 }
 
-// if identity_file, use that file
-// if identity_file + passphrase, use that file with the passphrase
-// if passphrase, use passphrase connect
-// if nothing, attempt to use SSH Agent
-func getSigners(
-	server dao.Server,
-	globalSigner ssh.Signer,
-	passwordAuthMethods map[string]ssh.AuthMethod,
-	authMethods []ssh.AuthMethod,
-	identities map[string]ssh.Signer,
-	agentSigners []ssh.Signer,
-) ([]ssh.Signer, error) {
-	var signers []ssh.Signer
-	// TODO: Loop through signers and add only the ones matching Comment
-	// Use the blob to decrypt and compare keys
-
-	// fmt.Println("----------------------")
-	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem_no"].PublicKey())
-	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem"].PublicKey())
-	// core.DebugPrint(identities["/home/samir/projects/sake/test/keys/id_ed25519_pem"].PublicKey().Type())
-
-	// c := identities["/home/samir/.ssh/id_rsa"].PublicKey()
-	// fmt.Println(c)
-
-	a := identities["/home/samir/.ssh/id_rsa"].PublicKey().Marshal()
-	b := agentSigners[0].PublicKey().Marshal()
-
-    res := bytes.Compare(a, b)
-
-    if res == 0 {
-        fmt.Println("!..Slices are equal..!")
-    } else {
-        fmt.Println("!..Slice are not equal..!")
-    }
-
-	core.DebugPrint(a)
-	core.DebugPrint(b)
-
-	// fmt.Println("----------------------")
-
-	if globalSigner != nil {
-		signers = append(signers, globalSigner)
-	} else if server.AuthMethod == "password" {
-		pwAuth := passwordAuthMethods[*server.Password]
-		authMethods = append(authMethods, pwAuth)
-	} else if server.AuthMethod == "key" || server.AuthMethod == "password-key" {
-		identitySigner := identities[*server.IdentityFile]
-		signers = append(signers, identitySigner)
-	} else if agentSigners != nil {
-		fmt.Println("----------------------")
-		core.DebugPrint(agentSigners[0].PublicKey())
-		// core.DebugPrint(agentSigners[0].Sign())
-		// core.DebugPrint(agentSigners[0].PublicKey().Verify())
-		// core.DebugPrint(agentSigners[0].PublicKey().Marshal)
-		fmt.Println("----------------------")
-
-		signers = append(signers, agentSigners...)
+func populateSigners(server dao.Server, signers *Signers) error {
+	// If no identity or password provided, return
+	if server.IdentityFile == nil && server.Password == nil {
+		return nil
 	}
 
-	return signers, nil
+	if server.IdentityFile != nil {
+		// Check if identity_file already exists
+		_, found := signers.identities[*server.IdentityFile]
+		if found {
+			return nil
+		}
+	} else if server.Password != nil {
+		// Check if password already exists
+		_, found := signers.passwords[*server.Password]
+		if found {
+			return nil
+		}
+	}
+
+	// Check if exists in ssh-agent
+	if server.PubFile != nil {
+		fp, err := GetFingerprintPubKey(server)
+		if err != nil {
+			return err
+		}
+
+		v, found := signers.fingerprints[fp]
+		if found {
+			signers.identities[*server.IdentityFile] = v
+			return nil
+		}
+	}
+
+	// If only password provided -> assume password login
+	if server.IdentityFile == nil && server.Password != nil {
+		passAuthMethod, err := GetPasswordAuth(server)
+		if err != nil {
+			// TODO:
+			return nil
+		}
+		signers.passwords[*server.Password] = passAuthMethod
+		return nil
+	}
+
+	if server.Password != nil {
+		// If identity key + password -> assume password protected, populate and return
+		signer, err := GetPassworIdentitySigner(server)
+
+		// TODO:
+		if err != nil {
+			return err
+		}
+		signers.identities[*server.IdentityFile] = signer
+		return nil
+	} else {
+		// If identity key -> try first without passphrase, if passphrase required prompt password, return
+		signer, err := GetSigner(server)
+		if err != nil {
+			return err
+		}
+		signers.identities[*server.IdentityFile] = signer
+		return nil
+	}
+}
+
+func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
+	var authMethods []ssh.AuthMethod
+
+	if server.IdentityFile != nil {
+		v, found := signers.identities[*server.IdentityFile]
+		if found {
+			authMethods = append(authMethods, ssh.PublicKeys(v))
+			return authMethods
+		}
+	}
+
+	if server.Password != nil {
+		v, found := signers.passwords[*server.Password]
+		if found {
+			authMethods = append(authMethods, v)
+		}
+	}
+
+	// No signers found, use agent signers
+	if len(signers.agentSigners) > 0 {
+		authMethods = append(authMethods, ssh.PublicKeys(signers.agentSigners...))
+	}
+
+	return authMethods
 }
