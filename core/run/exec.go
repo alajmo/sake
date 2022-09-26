@@ -643,8 +643,7 @@ func populateSigners(server dao.Server, signers *Signers) error {
 	if server.IdentityFile == nil && server.Password != nil {
 		passAuthMethod, err := GetPasswordAuth(server)
 		if err != nil {
-			// TODO:
-			return nil
+			return err
 		}
 		signers.passwords[*server.Password] = passAuthMethod
 		return nil
@@ -653,8 +652,6 @@ func populateSigners(server dao.Server, signers *Signers) error {
 	if server.Password != nil {
 		// If identity key + password -> assume password protected, populate and return
 		signer, err := GetPassworIdentitySigner(server)
-
-		// TODO:
 		if err != nil {
 			return err
 		}

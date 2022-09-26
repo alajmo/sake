@@ -413,91 +413,48 @@ func GetSSHAgentSigners() ([]ssh.Signer, error) {
 	return []ssh.Signer{}, nil
 }
 
-func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, *ErrConnect) {
+func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, error) {
 	password, err := dao.EvaluatePassword(*server.Password)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: err.Error(),
-		}
-
-		return nil, errConnect
+		return nil, err
 	}
 
 	return ssh.Password(password), nil
 }
 
 // Password protected key
-func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
+func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, error) {
 	var signer ssh.Signer
 
 	data, err := ioutil.ReadFile(*server.IdentityFile)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	var pass *string
 	pw, err := dao.EvaluatePassword(*server.Password)
 	pass = &pw
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: err.Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	return signer, nil
 }
 
-func GetFingerprintPubKey(server dao.Server) (string, *ErrConnect) {
+func GetFingerprintPubKey(server dao.Server) (string, error) {
 	data, err := ioutil.ReadFile(*server.PubFile)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to open `%s`\n  %w", *server.PubFile, err).Error(),
-		}
-		return "", errConnect
+		return "", err
 	}
 
 	pk, _, _, _, err := ssh.ParseAuthorizedKey(data)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: err.Error(),
-		}
-		return "", errConnect
+		return "", err
 	}
 
 	return ssh.FingerprintSHA256(pk), nil
@@ -510,14 +467,7 @@ func GetSigner(server dao.Server) (ssh.Signer, error) {
 		return nil, err
 	}
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	signer, err = ssh.ParsePrivateKey(data)
