@@ -29,7 +29,7 @@ servers:
 
   server-1:
     desc: server-1
-    host: sake
+    host: sake-resolve
     bastion: 172.24.2.99
     user: test
     identity_file: ../keys/id_ed25519_pem_no

@@ -474,6 +474,7 @@ func GetSigner(server dao.Server) (ssh.Signer, error) {
 	if err != nil {
 		switch e := err.(type) {
 		case *ssh.PassphraseMissingError:
+			// TODO: Let user enter password 3 times, then fail
 			fmt.Printf("Enter passphrase for %s: ", *server.IdentityFile)
 			pass, err := term.ReadPassword(int(syscall.Stdin))
 			fmt.Println()

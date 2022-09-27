@@ -20,8 +20,18 @@ gofmt:
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...
 
+profile:
+	cd test && ./profile.sh
+
+profile-save:
+	cd test && ./profile.sh --save
+
 test:
-	go test -v ./core/dao/***
+	# Unit tests
+	go test -v ./core/*.go -v
+	go test -v ./core/dao/*.go -v
+
+	# Integration tests
 	cd ./test && docker-compose up -d
 	go test -v ./test/integration/... -count=5 -clean
 	cd ./test && docker-compose down
