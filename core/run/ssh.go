@@ -423,7 +423,7 @@ func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, error) {
 }
 
 // Password protected key
-func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, error) {
+func GetPasswordIdentitySigner(server dao.Server) (ssh.Signer, error) {
 	var signer ssh.Signer
 
 	data, err := ioutil.ReadFile(*server.IdentityFile)

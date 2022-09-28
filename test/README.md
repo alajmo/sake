@@ -7,7 +7,16 @@ The Docker Compose files has multiple servers with different auths (pem, rfc, ed
 
 ## Profiling
 
-To run profile tests run `make profile`, and to save profiles run `make profile-save`.
+To run benchmark run `make benchmark`, and to save benchmarks run `make benchmark-save`.
+
+Additionally, if you wish to dive into cpu, heap, and goroutine profiling, replace the `main.go` with the contents of `debug.go`, cd into test directory and run:
+
+```sh
+go run ../main.go run ping -t reachable
+go tool pprof -http="localhost:8000" ./benchmarks/cpu.prof
+go tool pprof -http="localhost:8000" ./benchmarks/heap.prof
+go tool pprof -http="localhost:8000" ./benchmarks/goroutine.prof
+```
 
 ## Unit Tests
 

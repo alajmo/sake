@@ -20,11 +20,11 @@ gofmt:
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...
 
-profile:
-	cd test && ./profile.sh
+benchmark:
+	cd test && ./benchmark.sh
 
-profile-save:
-	cd test && ./profile.sh --save
+benchmark-save:
+	cd test && ./benchmark.sh --save
 
 test:
 	# Unit tests
@@ -75,4 +75,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean
+.PHONY: tidy gofmt lint benchmark benchmark-save test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean
