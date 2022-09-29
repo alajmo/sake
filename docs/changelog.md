@@ -26,7 +26,7 @@
 
 ### Deprecated
 
-- [BREAKING CHANGE] Removed environment variables `SAKE_IDENTITY_FILE` and `SAKE_PASSWORD`, users can use flags instead
+- [BREAKING CHANGE]: Removed environment variables `SAKE_IDENTITY_FILE` and `SAKE_PASSWORD`, users can use flags instead
 
 ## 0.11.0
 
