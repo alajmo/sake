@@ -1,18 +1,70 @@
 Index: 6
-Name: Multiple commands
-Cmd: go run ../../main.go run info -S -t prod
+Name: Ping all servers
+Cmd: go run ../../main.go run ping -S -t reachable
 WantErr: false
 
 ---
 
- Server    | OS | Kernel 
------------+----+--------
- hosts-1-0 | OS | kernel 
- hosts-1-1 | OS | kernel 
- hosts-2-0 | OS | kernel 
- hosts-2-1 | OS | kernel 
- hosts-3-0 | OS | kernel 
- hosts-3-1 | OS | kernel 
- server-1  | OS | kernel 
- server-2  | OS | kernel 
+TASK [ping: ping server] 
 
+localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.3 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.5 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.6 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.7 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.8 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.9 | pong
+
+TASK [ping: ping server] 
+
+2001:3984:3989::10 | pong

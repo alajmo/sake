@@ -1,0 +1,14 @@
+Index: 24
+Name: unreachable false
+Cmd: go run ../../main.go run unreachable -S -a
+WantErr: true
+
+---
+
+Unreachable Hosts
+
+ Server      | Host            | User | Port | Error                                          
+-------------+-----------------+------+------+------------------------------------------------
+ unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+
+exit status 4

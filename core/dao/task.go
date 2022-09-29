@@ -3,9 +3,9 @@ package dao
 import (
 	"errors"
 	"fmt"
-	"strings"
-
 	"gopkg.in/yaml.v3"
+	"math"
+	"strings"
 
 	"github.com/alajmo/sake/core"
 )
@@ -349,14 +349,45 @@ func (c Config) GetTaskServers(task *Task, runFlags *core.RunFlags) ([]Server, e
 	var servers []Server
 	var err error
 	// If any runtime target flags are used, disregard config specified task targets
-	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.All {
-		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags)
+	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || runFlags.All {
+		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
 	} else {
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags)
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
 	}
 
 	if err != nil {
 		return []Server{}, err
+	}
+
+	var limit uint32
+	if runFlags.Limit > 0 {
+		limit = runFlags.Limit
+	} else if task.Target.Limit > 0 {
+		limit = task.Target.Limit
+	}
+
+	var limitp uint8
+	if runFlags.LimitP > 0 {
+		limitp = runFlags.LimitP
+	} else if task.Target.LimitP > 0 {
+		limitp = task.Target.LimitP
+	}
+
+	if limit > 0 {
+		if limit <= uint32(len(servers)) {
+			return servers[0:limit], nil
+		} else {
+			return []Server{}, &core.InvalidLimit{Max: len(servers), Limit: limit}
+		}
+	} else if limitp > 0 {
+		if limitp <= 100 {
+			tot := float64(len(servers))
+			percentage := float64(limitp) / float64(100)
+			limit := math.Floor(percentage * tot)
+			return servers[0:int(limit)], nil
+		} else {
+			return []Server{}, &core.InvalidPercentInput{}
+		}
 	}
 
 	return servers, nil
@@ -412,7 +443,13 @@ func (c Config) GetTaskNames() []string {
 func (c Config) GetTaskIDAndDesc() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
-		taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Desc))
+		if task.Desc != "" {
+			taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Desc))
+		} else if task.ID != task.Name {
+			taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Name))
+		} else {
+			taskNames = append(taskNames, task.ID)
+		}
 	}
 
 	return taskNames

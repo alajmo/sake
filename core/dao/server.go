@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -411,29 +412,45 @@ func (c Config) FilterServers(
 	allServersFlag bool,
 	serversFlag []string,
 	tagsFlag []string,
+	regexFlag string,
+	invertFlag bool,
 ) ([]Server, error) {
 	var finalServers []Server
+
+	var allServers []Server
 	if allServersFlag {
-		finalServers = c.Servers
-	} else {
-		var err error
-		var servers []Server
-		if len(serversFlag) > 0 {
-			servers, err = c.GetServersByName(serversFlag)
-			if err != nil {
-				return []Server{}, err
-			}
-		}
+		allServers = c.Servers
+	}
 
-		var tagServers []Server
-		if len(tagsFlag) > 0 {
-			tagServers, err = c.GetServersByTags(tagsFlag)
-			if err != nil {
-				return []Server{}, err
-			}
+	var err error
+	var servers []Server
+	if len(serversFlag) > 0 {
+		servers, err = c.GetServersByName(serversFlag)
+		if err != nil {
+			return []Server{}, err
 		}
+	}
 
-		finalServers = GetUnionServers(servers, tagServers)
+	var tagServers []Server
+	if len(tagsFlag) > 0 {
+		tagServers, err = c.GetServersByTags(tagsFlag)
+		if err != nil {
+			return []Server{}, err
+		}
+	}
+
+	var regexServers []Server
+	if regexFlag != "" {
+		regexServers, err = c.GetServersByRegex(regexFlag)
+		if err != nil {
+			return []Server{}, err
+		}
+	}
+
+	finalServers = GetIntersectionServers(allServers, servers, tagServers, regexServers)
+
+	if invertFlag {
+		finalServers = GetInvertedServers(c.Servers, finalServers)
 	}
 
 	return finalServers, nil
@@ -459,8 +476,8 @@ func (c Config) GetServersByName(serverNames []string) ([]Server, error) {
 
 	for _, v := range serverNames {
 		for _, s := range c.Servers {
-			if v == s.Group {
-				foundServerNames[s.Group] = true
+			if v == s.Name {
+				foundServerNames[s.Name] = true
 				matchedServers = append(matchedServers, s)
 			}
 		}
@@ -478,6 +495,34 @@ func (c Config) GetServersByName(serverNames []string) ([]Server, error) {
 	}
 
 	return matchedServers, nil
+}
+
+// Matches on server host
+func (c Config) GetServersByRegex(r string) ([]Server, error) {
+	pattern, err := regexp.Compile(r)
+	if err != nil {
+		return []Server{}, err
+	}
+
+	// foundHosts := make(map[string]bool)
+	// for _, tag := range tags {
+	// 	foundHosts[tag] = false
+	// }
+
+	// Find servers matching the flag
+	var servers []Server
+	for _, server := range c.Servers {
+		match := pattern.MatchString(server.Host)
+		if match {
+			servers = append(servers, server)
+		}
+	}
+
+	// if len(nonExistingTags) > 0 {
+	// 	return []Server{}, &core.TagNotFound{Tags: nonExistingTags}
+	// }
+
+	return servers, nil
 }
 
 func (c Config) GetRemoteServerNameAndDesc() []string {
@@ -514,10 +559,6 @@ func (c Config) GetServerNameAndDesc() []string {
 // is passed, then a server must have both tags.
 // We only return error if the flags provided do not exist in the sake config.
 func (c Config) GetServersByTags(tags []string) ([]Server, error) {
-	if len(tags) == 0 {
-		return c.Servers, nil
-	}
-
 	foundTags := make(map[string]bool)
 	for _, tag := range tags {
 		foundTags[tag] = false
@@ -565,6 +606,7 @@ func (c Config) GetServerNames() []string {
 	return names
 }
 
+// TODO: Deprecated, Remove
 func GetUnionServers(s ...[]Server) []Server {
 	servers := []Server{}
 	for _, part := range s {
@@ -572,6 +614,55 @@ func GetUnionServers(s ...[]Server) []Server {
 			if !ServerInSlice(server.Name, servers) {
 				servers = append(servers, server)
 			}
+		}
+	}
+
+	return servers
+}
+
+func GetIntersectionServers(s ...[]Server) []Server {
+	var count int
+	for _, part := range s {
+		if len(part) > 0 {
+			count += 1
+		}
+	}
+
+	var foundServers []Server
+	ss := make(map[string]int)
+	for _, part := range s {
+		for _, server := range part {
+			_, found := ss[server.Name]
+			if found {
+				ss[server.Name] += 1
+			} else {
+				foundServers = append(foundServers, server)
+				ss[server.Name] = 1
+			}
+		}
+	}
+
+	var servers []Server
+	for _, server := range foundServers {
+		if ss[server.Name] == count {
+			servers = append(servers, server)
+		}
+	}
+
+	return servers
+}
+
+func GetInvertedServers(allServers []Server, excludeServers []Server) []Server {
+	sm := make(map[string]bool, len(excludeServers))
+	for _, s := range excludeServers {
+		sm[s.Name] = true
+	}
+
+	var servers []Server
+	for _, s := range allServers {
+		_, found := sm[s.Name]
+		if !found {
+			servers = append(servers, s)
 		}
 	}
 

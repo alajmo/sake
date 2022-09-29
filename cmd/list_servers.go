@@ -39,6 +39,10 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().StringVarP(&serverFlags.Regex, "regex", "r", "", "filter servers on host regex")
+
+	cmd.Flags().BoolVarP(&serverFlags.Invert, "invert", "v", false, "invert matching on servers")
+
 	cmd.Flags().StringSliceVarP(&serverFlags.Tags, "tags", "t", []string{}, "filter servers by tags")
 	err := cmd.RegisterFlagCompletionFunc("tags", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
@@ -74,7 +78,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 		allServers = true
 	}
 
-	servers, err := config.FilterServers(allServers, args, serverFlags.Tags)
+	servers, err := config.FilterServers(allServers, args, serverFlags.Tags, serverFlags.Regex, serverFlags.Invert)
 	core.CheckIfError(err)
 
 	if len(servers) > 0 {

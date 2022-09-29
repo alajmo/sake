@@ -12,36 +12,63 @@ func TestFilterServers(t *testing.T) {
 	s3 := Server{Name: "s3", Group: "s3", Tags: []string{"t2", "t3"}}
 	s4 := Server{Name: "s4", Group: "s4", Tags: []string{"t8"}}
 	s5 := Server{Name: "s5", Group: "s5", Tags: []string{"t1", "t2"}}
+	s6 := Server{Name: "s6-1", Group: "s6", Host: "192.168", Tags: []string{}}
+	s7 := Server{Name: "s6-2", Group: "s6", Host: "192.169", Tags: []string{}}
 
 	c := Config{
-		Servers: []Server{s1, s2, s3, s4, s5},
+		Servers: []Server{s1, s2, s3, s4, s5, s6, s7},
 	}
 
-	// TODO: Fails
-	ss, err := c.FilterServers(false, []string{"s1", "s2"}, []string{"t1"})
+	// Server + Tag
+	ss, err := c.FilterServers(false, []string{"s1", "s2"}, []string{"t1"}, "", false)
 	test.CheckErr(t, err)
-	wanted := []string{"s1", "s2", "s5"}
+	wanted := []string{"s1"}
+	test.CheckEqN(t, len(ss), len(wanted))
 	for i, s := range ss {
 		test.CheckEqS(t, s.Name, wanted[i])
 	}
 
-	ss, err = c.FilterServers(false, []string{"s5"}, []string{})
+	// Invert
+	ss, err = c.FilterServers(false, []string{"s1", "s2"}, []string{"t1"}, "", true)
+	test.CheckErr(t, err)
+	wanted = []string{"s2", "s3", "s4", "s5", "s6-1", "s6-2"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	// Server
+	ss, err = c.FilterServers(false, []string{"s5"}, []string{}, "", false)
 	test.CheckErr(t, err)
 	wanted = []string{"s5"}
+	test.CheckEqN(t, len(ss), len(wanted))
 	for i, s := range ss {
 		test.CheckEqS(t, s.Name, wanted[i])
 	}
 
-	ss, err = c.FilterServers(false, []string{}, []string{"t1"})
+	// Tag
+	ss, err = c.FilterServers(false, []string{}, []string{"t1"}, "", false)
 	test.CheckErr(t, err)
 	wanted = []string{"s1", "s5"}
+	test.CheckEqN(t, len(ss), len(wanted))
 	for i, s := range ss {
 		test.CheckEqS(t, s.Name, wanted[i])
 	}
 
-	ss, err = c.FilterServers(true, []string{}, []string{})
+	// All
+	ss, err = c.FilterServers(true, []string{}, []string{}, "", false)
 	test.CheckErr(t, err)
-	wanted = []string{"s1", "s2", "s3", "s4", "s5"}
+	wanted = []string{"s1", "s2", "s3", "s4", "s5", "s6-1", "s6-2"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	// Regex
+	ss, err = c.FilterServers(false, []string{}, []string{}, "192.(168|169)", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s6-1", "s6-2"}
+	test.CheckEqN(t, len(ss), len(wanted))
 	for i, s := range ss {
 		test.CheckEqS(t, s.Name, wanted[i])
 	}

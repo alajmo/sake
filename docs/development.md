@@ -43,11 +43,12 @@ The following workflow is used for releasing a new `sake` version:
 
 1. Create pull request with changes
 2. Generate manpage `make gen-man`
-3. Pass all tests
-4. Run `make build-all` to verify windows build
-5. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
-6. Squash-merge to main with `Release vx.y.z` and description of changes
-7. Run `make release`, which will:
+3. Pass all integration and unit tests
+4. Run benchmarks and profiler to check performance and any memory leaks
+5. Run `make build-all` to verify windows build
+6. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
+7. Squash-merge to main with `Release vx.y.z` and description of changes
+8. Run `make release`, which will:
   1. Create a git tag with release notes
   2. Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
 

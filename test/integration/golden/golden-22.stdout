@@ -1,26 +1,42 @@
 Index: 22
-Name: output
-Cmd: go run ../../main.go run output -S -t reachable
+Name: ignore_errors false
+Cmd: go run ../../main.go run errors -S -t reachable
 WantErr: false
 
 ---
 
- Server    | Output      | Output    | Output            
------------+-------------+-----------+-------------------
- localhost | Hello world | Bye world | Hello again world 
- hosts-1-0 | Hello world | Bye world | Hello again world 
- hosts-1-1 | Hello world | Bye world | Hello again world 
- hosts-2-0 | Hello world | Bye world | Hello again world 
- hosts-2-1 | Hello world | Bye world | Hello again world 
- hosts-3-0 | Hello world | Bye world | Hello again world 
- hosts-3-1 | Hello world | Bye world | Hello again world 
- server-1  | Hello world | Bye world | Hello again world 
- server-2  | Hello world | Bye world | Hello again world 
- server-3  | Hello world | Bye world | Hello again world 
- server-4  | Hello world | Bye world | Hello again world 
- server-5  | Hello world | Bye world | Hello again world 
- server-6  | Hello world | Bye world | Hello again world 
- server-7  | Hello world | Bye world | Hello again world 
- server-8  | Hello world | Bye world | Hello again world 
- server-9  | Hello world | Bye world | Hello again world 
+ Server    | Output | Output                        | Output 
+-----------+--------+-------------------------------+--------
+ localhost | 123    |                               |        
+           |        | exit status 65                |        
+ hosts-1-0 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ hosts-1-1 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ hosts-2-0 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ hosts-2-1 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ hosts-3-0 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ hosts-3-1 | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-1  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-2  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-3  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-4  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-5  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-6  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-7  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-8  | 123    |                               |        
+           |        | Process exited with status 65 |        
+ server-9  | 123    |                               |        
+           |        | Process exited with status 65 |        
 

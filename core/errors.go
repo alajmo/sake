@@ -76,12 +76,27 @@ func (c *TaskMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for task `%s`: cmd, task, tasks", c.Name)
 }
 
+type InvalidPercentInput struct{}
+
+func (c *InvalidPercentInput) Error() string {
+	return "Percentage can only be between 0 and 100"
+}
+
+type InvalidLimit struct {
+	Max   int
+	Limit uint32
+}
+
+func (c *InvalidLimit) Error() string {
+	return fmt.Sprintf("The number of filtered servers is %d, but limit was set to %d", c.Max, c.Limit)
+}
+
 type ServerMultipleDef struct {
 	Name string
 }
 
 func (c *ServerMultipleDef) Error() string {
-	return fmt.Sprintf("can only define one of the following for server `%s`: host, hosts, inventory", c.Name)
+	return fmt.Sprintf("can only define one of the following for server `%s`: host, hosts", c.Name)
 }
 
 type TaskRefMultipleDef struct {

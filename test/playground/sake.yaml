@@ -14,7 +14,7 @@ servers:
     # hosts:
     #   - 172.24.2.2
     #   - 172.24.2.4
-    hosts: $(cat hello.txt)
+    hosts: $(cat list-of-servers.txt)
     # hosts: $(echo "172.24.2.2 $host")
     # hosts: 172.24.2.[4:6:1]
     # hosts: 172.24.2.2
@@ -76,6 +76,14 @@ targets:
   all:
     all: true
 
+  limit:
+    all: true
+    limit: 3
+
+  limit-p:
+    all: true
+    limit-p: 50
+
 specs:
   table:
     output: table
@@ -96,11 +104,11 @@ env:
 
 tasks:
   exit:
+    # name: hej
     local: true
     cmd: exit 3
 
   ping:
-    target: all
     desc: ping server
     cmd: echo $SAKE_SERVER_NAME
 

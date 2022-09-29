@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.12.0
+
+### Features
+
+- Add hosts keyword that supports having multiple hosts per server definition
+  - Specify as a list
+  - Specify as a string containing range (`192.168.0.[1:10:2]`)
+  - Specify as a string containing command (`$(kubectl get nodes)`)
+- Add silent flag to supress `Running...` spinner when running tasks
+- Support connection string instead of 3 fields: `user@host:port`
+- Support resolving IdentityFile in ssh config (`~/.ssh/config`)
+- Support resolving Includes in ssh config (`~/.ssh/config`)
+- Support glob pattern for Hosts (`Host *`)
+- Add bastion headers to list servers
+- Add flags/target config `--limit` & `--limit-p` to limit number of servers task is run on
+- Add filtering servers on host regex
+- Add filtering servers on range
+- Add invert flag on filtering servers
+
+### Fixes
+
+- Use IdentitiesOnly if user specifies a IdentityFile
+- Default to `Name`, if description is not set, in auto-completion for tasks
+- Support lowercase ssh config keys (previously they had to be PascalCase)
+
+### Deprecated
+
+- [BREAKING CHANGE] Removed environment variables `SAKE_IDENTITY_FILE` and `SAKE_PASSWORD`, users can use flags instead
+
 ## 0.11.0
 
 ### Fixes

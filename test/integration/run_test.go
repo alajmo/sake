@@ -18,6 +18,11 @@ var cases = []TemplateTest{
 		WantErr:  false,
 	},
 	{
+		TestName: "List servers filter on server",
+		TestCmd:  "go run ../../main.go list servers hosts-1-1",
+		WantErr:  false,
+	},
+	{
 		TestName: "Describe servers",
 		TestCmd:  "go run ../../main.go describe servers",
 		WantErr:  false,
@@ -42,6 +47,31 @@ var cases = []TemplateTest{
 	{
 		TestName: "Multiple commands",
 		TestCmd:  "go run ../../main.go run info -S -t prod",
+		WantErr:  false,
+	},
+	{
+		TestName: "Filter by hosts server",
+		TestCmd:  "go run ../../main.go run info -S -s hosts-1-1",
+		WantErr:  false,
+	},
+	{
+		TestName: "Filter by host regex",
+		TestCmd:  "go run ../../main.go run info -S -r '172.24.2.(2|4)'",
+		WantErr:  false,
+	},
+	{
+		TestName: "Limit to 2 servers",
+		TestCmd:  "go run ../../main.go run ping -S -t reachable -l 2",
+		WantErr:  false,
+	},
+	{
+		TestName: "Limit to 50 percent servers",
+		TestCmd:  "go run ../../main.go run ping -S -t reachable -L 50",
+		WantErr:  false,
+	},
+	{
+		TestName: "Filter by inverting on tag unreachable",
+		TestCmd:  "go run ../../main.go run ping -S -t unreachable -v",
 		WantErr:  false,
 	},
 

@@ -1,26 +1,90 @@
 Index: 13
-Name: Work Dir 3
-Cmd: go run ../../main.go run work-dir-3 -S -t reachable
+Name: Simple Envs
+Cmd: go run ../../main.go run env -S -t reachable
 WantErr: false
 
 ---
 
- Server    | Ref  | Ref  
------------+------+------
- localhost | /usr | /etc 
- hosts-1-0 | /usr | /etc 
- hosts-1-1 | /usr | /etc 
- hosts-2-0 | /usr | /etc 
- hosts-2-1 | /usr | /etc 
- hosts-3-0 | /usr | /etc 
- hosts-3-1 | /usr | /etc 
- server-1  | /usr | /etc 
- server-2  | /usr | /etc 
- server-3  | /usr | /etc 
- server-4  | /usr | /etc 
- server-5  | /usr | /etc 
- server-6  | /usr | /etc 
- server-7  | /usr | /etc 
- server-8  | /usr | /etc 
- server-9  | /usr | /etc 
+ Server    | Env         
+-----------+-------------
+ localhost | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ hosts-1-0 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ hosts-1-1 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ hosts-2-0 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ hosts-2-1 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ hosts-3-0 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ hosts-3-1 | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ server-1  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-2  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-3  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-4  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-5  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-6  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-7  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-8  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-9  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
 

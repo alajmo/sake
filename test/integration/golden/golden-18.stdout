@@ -1,14 +1,26 @@
 Index: 18
-Name: unreachable false
-Cmd: go run ../../main.go run unreachable -S -a
-WantErr: true
+Name: Work Dir 2
+Cmd: go run ../../main.go run work-dir-2 -S -t reachable
+WantErr: false
 
 ---
 
-Unreachable Hosts
+ Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
+-----------+------+---------------------+------------+-----------------
+ localhost | /usr | /opt                | /tmp       | /               
+ hosts-1-0 | /usr | /opt                | /home/test | /               
+ hosts-1-1 | /usr | /opt                | /home/test | /               
+ hosts-2-0 | /usr | /opt                | /home/test | /               
+ hosts-2-1 | /usr | /opt                | /home/test | /               
+ hosts-3-0 | /usr | /opt                | /home/test | /               
+ hosts-3-1 | /usr | /opt                | /home/test | /               
+ server-1  | /usr | /opt                | /home/test | /               
+ server-2  | /usr | /opt                | /home/test | /               
+ server-3  | /usr | /opt                | /home/test | /               
+ server-4  | /usr | /opt                | /home/test | /               
+ server-5  | /usr | /opt                | /home/test | /               
+ server-6  | /usr | /opt                | /home/test | /               
+ server-7  | /usr | /opt                | /home/test | /               
+ server-8  | /usr | /opt                | /home/test | /               
+ server-9  | /usr | /opt                | /home/test | /               
 
- Server      | Host            | User | Port | Error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
-
-exit status 4

@@ -11,6 +11,8 @@ type ServerFlags struct {
 	Tags    []string
 	Headers []string
 	Edit    bool
+	Regex   string
+	Invert  bool
 }
 
 type TagFlags struct {
@@ -31,9 +33,13 @@ type RunFlags struct {
 
 	// Target
 	All     bool
+	Regex   string
 	Servers []string
 	Tags    []string
 	Cwd     bool
+	Invert  bool
+	Limit   uint32
+	LimitP  uint8
 
 	// Config
 	KnownHostsFile string

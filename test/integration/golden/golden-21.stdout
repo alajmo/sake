@@ -1,25 +1,28 @@
 Index: 21
-Name: omit_empty true
-Cmd: go run ../../main.go run empty-true -S -t reachable
-WantErr: false
+Name: fatal true
+Cmd: go run ../../main.go run fatal-true -S -t reachable
+WantErr: true
 
 ---
 
- Server    | Empty-True 
------------+------------
- hosts-1-0 | Exists     
- hosts-1-1 | Exists     
- hosts-2-0 | Exists     
- hosts-2-1 | Exists     
- hosts-3-0 | Exists     
- hosts-3-1 | Exists     
- server-1  | Exists     
- server-2  | Exists     
- server-3  | Exists     
- server-4  | Exists     
- server-5  | Exists     
- server-6  | Exists     
- server-7  | Exists     
- server-8  | Exists     
- server-9  | Exists     
+ Server    | Fatal-True    
+-----------+---------------
+ localhost |               
+           | exit status 1 
+ hosts-1-0 |               
+ hosts-1-1 |               
+ hosts-2-0 |               
+ hosts-2-1 |               
+ hosts-3-0 |               
+ hosts-3-1 |               
+ server-1  |               
+ server-2  |               
+ server-3  |               
+ server-4  |               
+ server-5  |               
+ server-6  |               
+ server-7  |               
+ server-8  |               
+ server-9  |               
 
+exit status 1

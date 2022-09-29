@@ -13,6 +13,10 @@ type Target struct {
 	All     bool     `yaml:"all"`
 	Servers []string `yaml:"servers"`
 	Tags    []string `yaml:"tags"`
+	Regex   string   `yaml:"regex"`
+	Invert  bool     `yaml:"invert"`
+	Limit   uint32   `yaml:"limit"`
+	LimitP  uint8    `yaml:"limit-p"`
 
 	context     string // config path
 	contextLine int    // defined at
@@ -51,6 +55,10 @@ func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 		}
 
 		target.Name = c.Targets.Content[i].Value
+
+		if target.LimitP > 100 {
+			targetErrors[j].Errors = append(targetErrors[j].Errors, &core.InvalidPercentInput{})
+		}
 
 		targets = append(targets, *target)
 	}

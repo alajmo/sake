@@ -1,26 +1,70 @@
 Index: 12
-Name: Work Dir 2
-Cmd: go run ../../main.go run work-dir-2 -S -t reachable
+Name: Filter by inverting on tag unreachable
+Cmd: go run ../../main.go run ping -S -t unreachable -v
 WantErr: false
 
 ---
 
- Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
------------+------+---------------------+------------+-----------------
- localhost | /usr | /opt                | /tmp       | /               
- hosts-1-0 | /usr | /opt                | /home/test | /               
- hosts-1-1 | /usr | /opt                | /home/test | /               
- hosts-2-0 | /usr | /opt                | /home/test | /               
- hosts-2-1 | /usr | /opt                | /home/test | /               
- hosts-3-0 | /usr | /opt                | /home/test | /               
- hosts-3-1 | /usr | /opt                | /home/test | /               
- server-1  | /usr | /opt                | /home/test | /               
- server-2  | /usr | /opt                | /home/test | /               
- server-3  | /usr | /opt                | /home/test | /               
- server-4  | /usr | /opt                | /home/test | /               
- server-5  | /usr | /opt                | /home/test | /               
- server-6  | /usr | /opt                | /home/test | /               
- server-7  | /usr | /opt                | /home/test | /               
- server-8  | /usr | /opt                | /home/test | /               
- server-9  | /usr | /opt                | /home/test | /               
+TASK [ping: ping server] 
 
+localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.3 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.5 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.6 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.7 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.8 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.9 | pong
+
+TASK [ping: ping server] 
+
+2001:3984:3989::10 | pong

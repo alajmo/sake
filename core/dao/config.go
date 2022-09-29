@@ -321,12 +321,14 @@ func (c Config) EditTask(name string) error {
 
 // Open sake config in editor and optionally go to line matching the server name
 func (c Config) EditServer(name string) error {
+	var group string
 	configPath := c.Path
 	if name != "" {
 		server, err := c.GetServer(name)
 		if err != nil {
 			return err
 		}
+		group = server.Group
 		configPath = server.context
 	}
 
@@ -350,7 +352,7 @@ func (c Config) EditServer(name string) error {
 		lineNr = configTmp.Servers.Line - 1
 	} else {
 		for _, server := range configTmp.Servers.Content {
-			if server.Value == name {
+			if server.Value == group {
 				lineNr = server.Line
 				break
 			}
