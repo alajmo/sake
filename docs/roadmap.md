@@ -2,12 +2,17 @@
 
 `sake` is under active development. Before **v1.0.0**, I want to finish the following tasks, some miscellaneous fixes and improve code documentation:
 
-- [ ] Improve servers
+- [x] Improve servers
   - [x] Resolve hostnames from ssh_config
   - [x] Support Bastion/Jumphost
   - [x] Define multiple hosts without creating individual servers
   - [x] Dynamically fetch hosts
-  - [ ] Regex filtering of servers
+  - [x] Regex filtering of servers
+  - [x] Support glob pattern for Hosts (`Host *`)
+  - [x] Support resolving Includes in ssh config (`~/.ssh/config`)
+  - [x] Add limit and limit-p flag/target
+  - [x] Add filtering servers on host regex
+  - [x] Add invert flag on filtering servers
 
 - [ ] Improve output
   - Add new table format output (tasks in 1st column, output in 2nd, one table per server)

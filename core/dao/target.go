@@ -16,7 +16,7 @@ type Target struct {
 	Regex   string   `yaml:"regex"`
 	Invert  bool     `yaml:"invert"`
 	Limit   uint32   `yaml:"limit"`
-	LimitP  uint8    `yaml:"limit-p"`
+	LimitP  uint8    `yaml:"limit_p"`
 
 	context     string // config path
 	contextLine int    // defined at

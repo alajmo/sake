@@ -84,13 +84,18 @@ run <task> [flags]
   -i, --identity-file string      set identity file for all servers
       --ignore-errors             continue task execution on errors
       --ignore-unreachable        ignore unreachable hosts
+  -v, --invert                    invert matching on servers
       --known-hosts-file string   set known hosts file
+  -l, --limit uint32              set limit of servers to target
+  -L, --limit-p uint8             set percentage of servers to target [0-100]
       --local                     run task on localhost
       --omit-empty                omit empty results for table output
   -o, --output string             set task output [text|table|html|markdown]
   -p, --parallel                  run server tasks in parallel
       --password string           set ssh password for all servers
+  -r, --regex string              filter servers on host regex
   -s, --servers strings           target servers by names
+  -S, --silent                    omit showing loader when running tasks
   -t, --tags strings              target servers by tags
       --theme string              set theme
       --tty                       replace the current process
@@ -133,13 +138,18 @@ exec <command> [flags]
   -i, --identity-file string      set identity file for all servers
       --ignore-errors             continue task execution on errors
       --ignore-unreachable        ignore unreachable hosts
+  -v, --invert                    invert matching on servers
       --known-hosts-file string   set known hosts file
+  -l, --limit uint32              set limit of servers to target
+  -L, --limit-p uint8             set percentage of servers to target
       --local                     run command on localhost
       --omit-empty                omit empty results for table output
   -o, --output string             set task output [text|table|markdown|html]
   -p, --parallel                  run server tasks in parallel
       --password string           set ssh password for all servers
+  -r, --regex string              filter servers on host regex
   -s, --servers strings           target servers by names
+  -S, --silent                    omit showing loader when running tasks
   -t, --tags strings              target servers by tags
       --theme string              set theme (default "default")
       --tty                       replace the current process
@@ -279,8 +289,10 @@ list servers [servers] [flags]
 ### Options
 
 ```
-      --headers strings   set headers. Available headers: server, local, user, host, port, tag, description (default [server,host,tag,description])
+      --headers strings   set headers. Available headers: server, local, user, host, port, bastion, tag, description (default [server,host,tag,description])
   -h, --help              help for servers
+  -v, --invert            invert matching on servers
+  -r, --regex string      filter servers on host regex
   -t, --tags strings      filter servers by tags
 ```
 
@@ -387,6 +399,8 @@ describe servers [servers] [flags]
 ```
   -e, --edit           edit server
   -h, --help           help for servers
+  -v, --invert         invert matching on servers
+  -r, --regex string   filter servers on host regex
   -t, --tags strings   filter servers by their tag
 ```
 
@@ -441,7 +455,9 @@ ssh <server> [flags]
 ### Options
 
 ```
-  -h, --help   help for ssh
+  -h, --help                   help for ssh
+  -i, --identity-file string   set identity file for all servers
+      --password string        set ssh password for all servers
 ```
 
 ## gen

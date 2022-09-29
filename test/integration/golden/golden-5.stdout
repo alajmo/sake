@@ -15,7 +15,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -43,7 +47,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -71,7 +79,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: true
@@ -99,7 +111,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: true
@@ -127,7 +143,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: true
@@ -155,7 +175,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: true
@@ -183,7 +207,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: true
@@ -212,7 +240,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -246,7 +278,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -281,7 +317,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -312,7 +352,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -358,7 +402,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -386,7 +434,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -415,7 +467,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -445,7 +501,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -478,7 +538,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -506,7 +570,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: text
     Parallel: false
@@ -534,7 +602,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -565,7 +637,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -596,7 +672,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -625,7 +705,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -653,7 +737,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -681,7 +769,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -711,7 +803,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -741,7 +837,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: 
     Parallel: false
@@ -769,7 +869,11 @@ Theme: default
 Target: 
     All: true
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: 
     Parallel: false
@@ -797,7 +901,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -828,7 +936,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: reachable
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false
@@ -859,7 +971,11 @@ Theme: default
 Target: 
     All: false
     Servers: 
+    Regex: 
     Tags: 
+    Limit:
+    LimitP:
+
 Spec: 
     Output: table
     Parallel: false

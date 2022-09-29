@@ -57,7 +57,18 @@ func PrintTaskBlock(tasks []dao.Task) {
 		fmt.Printf("Target: \n")
 		fmt.Printf("%4sAll: %t\n", " ", task.Target.All)
 		fmt.Printf("%4sServers: %s\n", " ", strings.Join(task.Target.Servers, ", "))
-		fmt.Printf("%4sTags: %s", " ", strings.Join(task.Target.Tags, ", "))
+		fmt.Printf("%4sRegex: %s\n", " ", task.Target.Regex)
+		fmt.Printf("%4sTags: %s\n", " ", strings.Join(task.Target.Tags, ", "))
+		if task.Target.Limit > 0 {
+			fmt.Printf("%4sLimit: %d\n", " ", task.Target.Limit)
+		} else {
+			fmt.Printf("%4sLimit:\n", " ")
+		}
+		if task.Target.LimitP > 0 {
+			fmt.Printf("%4sLimitP: %d\n", " ", task.Target.LimitP)
+		} else {
+			fmt.Printf("%4sLimitP:\n", " ")
+		}
 
 		fmt.Println()
 

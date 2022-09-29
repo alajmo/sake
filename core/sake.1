@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2022-09-16T20:23:01CEST" "v0.11.0" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-09-29T20:07:17CEST" "v0.12.0" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a command runner for local and remote hosts
 
@@ -69,8 +69,17 @@ continue task execution on errors
 \fB--ignore-unreachable[=false]\fR
 ignore unreachable hosts
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
 \fB--known-hosts-file=""\fR
 set known hosts file
+.TP
+\fB-l, --limit=0\fR
+set limit of servers to target
+.TP
+\fB-L, --limit-p=0\fR
+set percentage of servers to target [0-100]
 .TP
 \fB--local[=false]\fR
 run task on localhost
@@ -87,8 +96,14 @@ run server tasks in parallel
 \fB--password=""\fR
 set ssh password for all servers
 .TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-s, --servers=[]\fR
 target servers by names
+.TP
+\fB-S, --silent[=false]\fR
+omit showing loader when running tasks
 .TP
 \fB-t, --tags=[]\fR
 target servers by tags
@@ -134,8 +149,17 @@ continue task execution on errors
 \fB--ignore-unreachable[=false]\fR
 ignore unreachable hosts
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
 \fB--known-hosts-file=""\fR
 set known hosts file
+.TP
+\fB-l, --limit=0\fR
+set limit of servers to target
+.TP
+\fB-L, --limit-p=0\fR
+set percentage of servers to target
 .TP
 \fB--local[=false]\fR
 run command on localhost
@@ -152,8 +176,14 @@ run server tasks in parallel
 \fB--password=""\fR
 set ssh password for all servers
 .TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-s, --servers=[]\fR
 target servers by names
+.TP
+\fB-S, --silent[=false]\fR
+omit showing loader when running tasks
 .TP
 \fB-t, --tags=[]\fR
 target servers by tags
@@ -191,7 +221,13 @@ List servers.
 .RS
 .TP
 \fB--headers=[server,host,tag,description]\fR
-set headers. Available headers: server, local, user, host, port, tag, description
+set headers. Available headers: server, local, user, host, port, bastion, tag, description
+.TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
+\fB-r, --regex=""\fR
+filter servers on host regex
 .TP
 \fB-t, --tags=[]\fR
 filter servers by tags
@@ -256,6 +292,12 @@ Describe servers.
 \fB-e, --edit[=false]\fR
 edit server
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-t, --tags=[]\fR
 filter servers by their tag
 .RE
@@ -277,6 +319,18 @@ edit task
 .B ssh <server> [flags]
 ssh to server.
 
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB-i, --identity-file=""\fR
+set identity file for all servers
+.TP
+\fB--password=""\fR
+set ssh password for all servers
+.RE
+.RE
 .TP
 .B gen [flags]
 Generate man page
@@ -834,14 +888,6 @@ Override ssh config file path
 .TP
 .B SAKE_KNOWN_HOSTS_FILE
 Override known_hosts file path
-
-.TP
-.B SAKE_IDENTITY_FILE
-Override identity file path
-
-.TP
-.B SAKE_PASSWORD
-Override SSH password
 
 .TP
 .B NO_COLOR

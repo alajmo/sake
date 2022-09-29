@@ -16,7 +16,6 @@
 - Add bastion headers to list servers
 - Add flags/target config `--limit` & `--limit-p` to limit number of servers task is run on
 - Add filtering servers on host regex
-- Add filtering servers on range
 - Add invert flag on filtering servers
 
 ### Fixes

@@ -21,7 +21,6 @@ import (
 	"golang.org/x/crypto/ssh/knownhosts"
 	"golang.org/x/term"
 
-	// "github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
 

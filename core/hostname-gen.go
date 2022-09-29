@@ -75,12 +75,6 @@ type HostRange struct {
 }
 
 func EvaluateRange(input string) ([]string, error) {
-	// leftBrackets := strings.Count(input, "[")
-	// rightBrackets := strings.Count(input, "]")
-	// if leftBrackets != rightBrackets {
-	// 	return []string{}, fmt.Errorf("missing brackets, found %d '[' and %d ']'", leftBrackets, rightBrackets)
-	// }
-
 	ast, err := buildRangeAST(input)
 	if err != nil {
 		return []string{}, err
