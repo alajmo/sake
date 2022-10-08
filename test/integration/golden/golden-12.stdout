@@ -1,6 +1,6 @@
 Index: 12
-Name: Filter by inverting on tag unreachable
-Cmd: go run ../../main.go run ping -S -t unreachable -v
+Name: Ping all servers
+Cmd: go run ../../main.go run ping -S -t reachable
 WantErr: false
 
 ---

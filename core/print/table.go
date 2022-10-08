@@ -12,13 +12,14 @@ import (
 func CreateTable(
 	options PrintTableOptions,
 	defaultHeaders []string,
-	taskHeaders []string,
+	restHeaders []string,
 ) table.Writer {
 	t := table.NewWriter()
 
 	theme := options.Theme
 
 	t.SetOutputMirror(os.Stdout)
+
 	t.SetStyle(FormatTable(theme))
 	if options.SuppressEmptyColumns {
 		t.SuppressEmptyColumns()
@@ -87,6 +88,16 @@ func CreateTable(
 				Align:  GetAlign(*theme.Table.Color.Row.Port.Align),
 				Colors: combineColors(theme.Table.Color.Row.Port.Fg, theme.Table.Color.Row.Port.Bg, theme.Table.Color.Row.Port.Attr),
 			}
+		case "bastion":
+			headerStyles[h] = table.ColumnConfig{
+				Name: "bastion",
+
+				AlignHeader:  GetAlign(*theme.Table.Color.Header.Bastion.Align),
+				ColorsHeader: combineColors(theme.Table.Color.Header.Bastion.Fg, theme.Table.Color.Header.Bastion.Bg, theme.Table.Color.Header.Bastion.Attr),
+
+				Align:  GetAlign(*theme.Table.Color.Row.Bastion.Align),
+				Colors: combineColors(theme.Table.Color.Row.Bastion.Fg, theme.Table.Color.Row.Bastion.Bg, theme.Table.Color.Row.Bastion.Attr),
+			}
 		case "local":
 			headerStyles[h] = table.ColumnConfig{
 				Name: "local",
@@ -115,7 +126,7 @@ func CreateTable(
 		headers = append(headers, headerStyles[h])
 	}
 
-	for i := range taskHeaders {
+	for i := range restHeaders {
 		hh := table.ColumnConfig{
 			Number:       len(defaultHeaders) + 1 + i,
 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Output.Align),
@@ -148,6 +159,11 @@ func FormatTable(theme dao.Theme) table.Style {
 			SeparateColumns: *theme.Table.Options.SeparateColumns,
 			SeparateHeader:  *theme.Table.Options.SeparateHeader,
 			SeparateRows:    *theme.Table.Options.SeparateRows,
+		},
+
+		Title: table.TitleOptions {
+			Align: GetAlign(*theme.Table.Color.Title.Align),
+			Colors: combineColors(theme.Table.Color.Title.Fg, theme.Table.Color.Title.Bg, theme.Table.Color.Title.Attr),
 		},
 
 		// Border colors

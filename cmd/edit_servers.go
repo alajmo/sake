@@ -11,7 +11,7 @@ func editServer(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Aliases: []string{"servers", "serv"},
 		Use:     "server [server]",
-		Short:   "Open up sake config file in $EDITOR and go to servers section",
+		Short:   "Edit server",
 		Long:    `Open up sake config file in $EDITOR and go to servers section.`,
 		Example: `  # Edit servers
   sake edit server
@@ -32,8 +32,7 @@ func editServer(config *dao.Config, configErr *error) *cobra.Command {
 			if *configErr != nil || len(args) == 1 {
 				return []string{}, cobra.ShellCompDirectiveDefault
 			}
-
-			values := config.GetServerNameAndDesc()
+			values := config.GetServerGroupsAndDesc()
 			return values, cobra.ShellCompDirectiveNoFileComp
 		},
 		DisableAutoGenTag: true,

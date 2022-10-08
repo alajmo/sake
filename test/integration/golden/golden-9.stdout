@@ -1,18 +1,31 @@
 Index: 9
-Name: Filter by host regex
-Cmd: go run ../../main.go run info -S -r '172.24.2.(2|4)'
+Name: Describe servers filter on inventory hosts
+Cmd: go run ../../main.go describe servers inv
 WantErr: false
 
 ---
 
- Server    | OS | Kernel 
------------+----+--------
- hosts-1-0 | OS | kernel 
- hosts-1-1 | OS | kernel 
- hosts-2-0 | OS | kernel 
- hosts-2-1 | OS | kernel 
- hosts-3-0 | OS | kernel 
- hosts-3-1 | OS | kernel 
- server-1  | OS | kernel 
- server-3  | OS | kernel 
+name: inv-0
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
+
+--
+
+name: inv-1
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
 

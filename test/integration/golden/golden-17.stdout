@@ -1,26 +1,18 @@
 Index: 17
-Name: Work Dir 1
-Cmd: go run ../../main.go run work-dir-1 -S -t reachable
+Name: Filter by host regex
+Cmd: go run ../../main.go run info -S -r '172.24.2.(2|4)'
 WantErr: false
 
 ---
 
- Server    | Ref   | Override Inline Ref | Inline | Override Inline 
------------+-------+---------------------+--------+-----------------
- localhost | /home | /opt                | /home  | /               
- hosts-1-0 | /home | /opt                | /home  | /               
- hosts-1-1 | /home | /opt                | /home  | /               
- hosts-2-0 | /home | /opt                | /home  | /               
- hosts-2-1 | /home | /opt                | /home  | /               
- hosts-3-0 | /home | /opt                | /home  | /               
- hosts-3-1 | /home | /opt                | /home  | /               
- server-1  | /home | /opt                | /home  | /               
- server-2  | /home | /opt                | /home  | /               
- server-3  | /home | /opt                | /home  | /               
- server-4  | /home | /opt                | /home  | /               
- server-5  | /home | /opt                | /home  | /               
- server-6  | /home | /opt                | /home  | /               
- server-7  | /home | /opt                | /home  | /               
- server-8  | /home | /opt                | /home  | /               
- server-9  | /home | /opt                | /home  | /               
+ Server   | OS | Kernel 
+----------+----+--------
+ list-0   | OS | kernel 
+ list-1   | OS | kernel 
+ range-0  | OS | kernel 
+ range-1  | OS | kernel 
+ inv-0    | OS | kernel 
+ inv-1    | OS | kernel 
+ server-1 | OS | kernel 
+ server-3 | OS | kernel 
 

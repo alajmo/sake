@@ -1,3 +1,6 @@
+import:
+  - ./tasks.yaml
+
 known_hosts_file: known_hosts
 disable_verify_host: true
 
@@ -9,23 +12,39 @@ servers:
     work_dir: /opt
     tags: [local]
 
-  many:
-    desc: many hosts
-    # hosts:
-    #   - 172.24.2.2
-    #   - 172.24.2.4
-    hosts: $(cat list-of-servers.txt)
-    # hosts: $(echo "172.24.2.2 $host")
-    # hosts: 172.24.2.[4:6:1]
-    # hosts: 172.24.2.2
-    # hosts: 172.24.2.[2:4]
-    # host: 172.24.2.2
+  list:
+    desc: many hosts using list of hosts
+    hosts:
+      - 172.24.2.2
+      - 172.24.2.4
+      - 172.24.2.5
+      - 2001:3984:3989::10
     user: test
     identity_file: ../keys/id_ed25519_pem_no
-    tags: [remote, pi, many]
+    tags: [remote, pi, many, list]
     env:
       hello: world
       host: 172.24.2.4
+
+  range:
+    desc: many hosts using range
+    hosts: 172.24.2.[4:6:1]
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi, many, range]
+    env:
+      hello: world
+      host: 172.24.2.4
+
+  inv:
+    desc: many hosts using inventory
+    inventory: ./inventory.sh $opt
+    user: test
+    identity_file: ../keys/id_ed25519_pem_no
+    tags: [remote, pi, many, inv]
+    env:
+      hello: world
+      hosts: 172.24.2.4
 
   server-1:
     desc: server-1
@@ -82,6 +101,23 @@ targets:
     all: true
     limit-p: 50
 
+  regex:
+    regex: 192
+
+  servers:
+    servers: [server-1, server-2]
+
+  tags:
+    tags: [remote, reachable]
+
+  mult:
+    all: true
+    regex: 192
+    servers: [server-1, range]
+    tags: [remote]
+    limit: 3
+    limit_p: 50
+
 specs:
   table:
     output: table
@@ -96,6 +132,10 @@ specs:
     ignore_unreachable: true
     any_errors_fatal: false
 
+  # default:
+  #   output: text
+    # parallel: true
+
 env:
   VERSION: v0.1.0
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
@@ -107,12 +147,24 @@ tasks:
     cmd: exit 3
 
   ping:
+    target: all
+    spec: info
     desc: ping server
-    cmd: echo $SAKE_SERVER_NAME
+    cmd: echo pong
 
   sleep:
     desc: ping server
     cmd: sleep 2 & echo done
+
+  info:
+    name: Info
+    desc: print info
+    target: all
+    tasks:
+      - task: print-host
+      - task: print-hostname
+      - task: print-os
+      - task: print-kernel
 
   # Info
   print-host:

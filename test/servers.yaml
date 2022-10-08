@@ -15,7 +15,7 @@ servers:
     user: test
     tags: [unreachable]
 
-  hosts-1:
+  list:
     desc: many hosts using list
     hosts:
       - 172.24.2.2
@@ -23,25 +23,25 @@ servers:
     user: test
     identity_file: keys/id_ed25519_pem
     password: testing
-    tags: [remote, prod, reachable]
+    tags: [remote, prod, list, reachable]
     env:
       hello: world
 
-  hosts-2:
+  range:
     desc: many hosts using range
     hosts: 172.24.2.[2:4:2]
     user: test
     password: test
-    tags: [remote, prod, reachable]
+    tags: [remote, prod, range, reachable]
     env:
       hello: world
 
-  hosts-3:
+  inv:
     desc: many hosts using inventory
-    hosts: $(echo "172.24.2.2 test@$host:22")
+    inventory: echo "172.24.2.2 test@$host:22"
     user: test
     password: test
-    tags: [remote, prod, reachable]
+    tags: [remote, prod, inv, reachable]
     env:
       hello: world
       host: 172.24.2.4

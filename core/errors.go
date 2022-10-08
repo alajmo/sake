@@ -50,6 +50,24 @@ func (c *TagNotFound) Error() string {
 	return fmt.Sprintf("cannot find tags %s", tags)
 }
 
+type TargetsNotFound struct {
+	Targets []string
+}
+
+func (c *TargetsNotFound) Error() string {
+	targets := "`" + strings.Join(c.Targets, "`, `") + "`"
+	return fmt.Sprintf("cannot find targets %s", targets)
+}
+
+type SpecsNotFound struct {
+	Specs []string
+}
+
+func (c *SpecsNotFound) Error() string {
+	specs := "`" + strings.Join(c.Specs, "`, `") + "`"
+	return fmt.Sprintf("cannot find specs %s", specs)
+}
+
 type ServerNotFound struct {
 	Name []string
 }

@@ -1,26 +1,14 @@
 Index: 18
-Name: Work Dir 2
-Cmd: go run ../../main.go run work-dir-2 -S -t reachable
+Name: Limit to 2 servers
+Cmd: go run ../../main.go run ping -S -t reachable -l 2
 WantErr: false
 
 ---
 
- Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
------------+------+---------------------+------------+-----------------
- localhost | /usr | /opt                | /tmp       | /               
- hosts-1-0 | /usr | /opt                | /home/test | /               
- hosts-1-1 | /usr | /opt                | /home/test | /               
- hosts-2-0 | /usr | /opt                | /home/test | /               
- hosts-2-1 | /usr | /opt                | /home/test | /               
- hosts-3-0 | /usr | /opt                | /home/test | /               
- hosts-3-1 | /usr | /opt                | /home/test | /               
- server-1  | /usr | /opt                | /home/test | /               
- server-2  | /usr | /opt                | /home/test | /               
- server-3  | /usr | /opt                | /home/test | /               
- server-4  | /usr | /opt                | /home/test | /               
- server-5  | /usr | /opt                | /home/test | /               
- server-6  | /usr | /opt                | /home/test | /               
- server-7  | /usr | /opt                | /home/test | /               
- server-8  | /usr | /opt                | /home/test | /               
- server-9  | /usr | /opt                | /home/test | /               
+TASK [ping: ping server] 
 
+localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong

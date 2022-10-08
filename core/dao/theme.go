@@ -53,9 +53,10 @@ type CellColors struct {
 }
 
 type TableColor struct {
-	Border *BorderColors `yaml:"border"`
+	Title  *ColorOptions `yaml:"title"`
 	Header *CellColors   `yaml:"header"`
 	Row    *CellColors   `yaml:"row"`
+	Border *BorderColors `yaml:"border"`
 }
 
 type Table struct {
@@ -204,6 +205,13 @@ var DefaultTable = Table{
 				Bg:   core.Ptr(""),
 				Attr: core.Ptr("faint"),
 			},
+		},
+
+		Title: &ColorOptions{
+			Fg:    core.Ptr(""),
+			Bg:    core.Ptr(""),
+			Align: core.Ptr(""),
+			Attr:  core.Ptr("bold"),
 		},
 
 		Header: &CellColors{
@@ -481,6 +489,23 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 					if themes[i].Table.Color.Border.Footer.Attr == nil {
 						themes[i].Table.Color.Border.Footer.Attr = DefaultTable.Color.Border.Footer.Attr
 					}
+				}
+			}
+
+			if themes[i].Table.Color.Title == nil {
+				themes[i].Table.Color.Title = DefaultTable.Color.Title
+			} else {
+				if themes[i].Table.Color.Title.Fg == nil {
+					themes[i].Table.Color.Title.Fg = DefaultTable.Color.Title.Fg
+				}
+				if themes[i].Table.Color.Title.Bg == nil {
+					themes[i].Table.Color.Title.Bg = DefaultTable.Color.Title.Bg
+				}
+				if themes[i].Table.Color.Title.Align == nil {
+					themes[i].Table.Color.Title.Align = DefaultTable.Color.Title.Align
+				}
+				if themes[i].Table.Color.Title.Attr == nil {
+					themes[i].Table.Color.Title.Attr = DefaultTable.Color.Title.Attr
 				}
 			}
 
@@ -859,7 +884,7 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 	return themes, themeErrors
 }
 
-func (c Config) GetTheme(name string) (*Theme, error) {
+func (c *Config) GetTheme(name string) (*Theme, error) {
 	for _, theme := range c.Themes {
 		if name == theme.Name {
 			return &theme, nil
@@ -869,7 +894,7 @@ func (c Config) GetTheme(name string) (*Theme, error) {
 	return nil, &core.ThemeNotFound{Name: name}
 }
 
-func (c Config) GetThemeNames() []string {
+func (c *Config) GetThemeNames() []string {
 	names := []string{}
 	for _, theme := range c.Themes {
 		names = append(names, theme.Name)

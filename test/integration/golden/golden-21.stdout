@@ -1,28 +1,90 @@
 Index: 21
-Name: fatal true
-Cmd: go run ../../main.go run fatal-true -S -t reachable
-WantErr: true
+Name: Simple Envs
+Cmd: go run ../../main.go run env -S -t reachable
+WantErr: false
 
 ---
 
- Server    | Fatal-True    
------------+---------------
- localhost |               
-           | exit status 1 
- hosts-1-0 |               
- hosts-1-1 |               
- hosts-2-0 |               
- hosts-2-1 |               
- hosts-3-0 |               
- hosts-3-1 |               
- server-1  |               
- server-2  |               
- server-3  |               
- server-4  |               
- server-5  |               
- server-6  |               
- server-7  |               
- server-8  |               
- server-9  |               
+ Server    | Env         
+-----------+-------------
+ localhost | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ list-0    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ list-1    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-0   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-1   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-0     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-1     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ server-1  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-2  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-3  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-4  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-5  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-6  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-7  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-8  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-9  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
 
-exit status 1

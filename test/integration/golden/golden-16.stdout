@@ -1,26 +1,12 @@
 Index: 16
-Name: Nested tasks
-Cmd: go run ../../main.go run d -S -t reachable
+Name: Filter by hosts server
+Cmd: go run ../../main.go run info -S -s 'list[0:2]'
 WantErr: false
 
 ---
 
- Server    | Ping | Ping | Ping | Ping | Ping | Ping 
------------+------+------+------+------+------+------
- localhost | pong | pong | pong | pong | pong | pong 
- hosts-1-0 | pong | pong | pong | pong | pong | pong 
- hosts-1-1 | pong | pong | pong | pong | pong | pong 
- hosts-2-0 | pong | pong | pong | pong | pong | pong 
- hosts-2-1 | pong | pong | pong | pong | pong | pong 
- hosts-3-0 | pong | pong | pong | pong | pong | pong 
- hosts-3-1 | pong | pong | pong | pong | pong | pong 
- server-1  | pong | pong | pong | pong | pong | pong 
- server-2  | pong | pong | pong | pong | pong | pong 
- server-3  | pong | pong | pong | pong | pong | pong 
- server-4  | pong | pong | pong | pong | pong | pong 
- server-5  | pong | pong | pong | pong | pong | pong 
- server-6  | pong | pong | pong | pong | pong | pong 
- server-7  | pong | pong | pong | pong | pong | pong 
- server-8  | pong | pong | pong | pong | pong | pong 
- server-9  | pong | pong | pong | pong | pong | pong 
+ Server | OS | Kernel 
+--------+----+--------
+ list-0 | OS | kernel 
+ list-1 | OS | kernel 
 

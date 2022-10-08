@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/alajmo/sake/core"
@@ -69,16 +71,30 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 }
 
 func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, serverFlags *core.ServerFlags) {
+	var userArgs []string
+	var serverArgs []string
+	// Separate user arguments from task ids
+	for _, arg := range args {
+		if strings.Contains(arg, "=") {
+			userArgs = append(userArgs, arg)
+		} else {
+			serverArgs = append(serverArgs, arg)
+		}
+	}
+
 	theme, err := config.GetTheme(listFlags.Theme)
 	core.CheckIfError(err)
 
 	allServers := false
-	if len(args) == 0 &&
+	if len(serverArgs) == 0 &&
 		len(serverFlags.Tags) == 0 {
 		allServers = true
 	}
 
-	servers, err := config.FilterServers(allServers, args, serverFlags.Tags, serverFlags.Regex, serverFlags.Invert)
+	err = config.ParseInventory(userArgs)
+	core.CheckIfError(err)
+
+	servers, err := config.FilterServers(allServers, serverArgs, serverFlags.Tags, serverFlags.Regex, serverFlags.Invert)
 	core.CheckIfError(err)
 
 	if len(servers) > 0 {

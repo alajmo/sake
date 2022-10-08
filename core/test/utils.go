@@ -17,6 +17,12 @@ func CheckErr(t *testing.T, err error) {
 	}
 }
 
+func WantErr(t *testing.T, err error) {
+	if err == nil {
+		t.Fatalf("Wanted error, got nil")
+	}
+}
+
 func CheckEqS(t *testing.T, found string, wanted string) {
 	if found != wanted {
 		t.Fatalf(`Wanted: %q, Found: %q`, wanted, found)
@@ -25,7 +31,7 @@ func CheckEqS(t *testing.T, found string, wanted string) {
 
 func CheckEqN(t *testing.T, found int, wanted int) {
 	if found != wanted {
-		t.Fatalf(`Wanted: %q, Found: %q`, wanted, found)
+		t.Fatalf(`Wanted: %d, Found: %d`, wanted, found)
 	}
 }
 

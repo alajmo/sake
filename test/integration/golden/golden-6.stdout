@@ -1,70 +1,183 @@
 Index: 6
-Name: Ping all servers
-Cmd: go run ../../main.go run ping -S -t reachable
+Name: Describe servers
+Cmd: go run ../../main.go describe servers
 WantErr: false
 
 ---
 
-TASK [ping: ping server] 
+name: localhost
+desc: localhost
+user: test
+host: localhost
+port: 22
+local: true
+work_dir: /tmp
+tags: local, reachable
 
-localhost | pong
+--
 
-TASK [ping: ping server] 
+name: unreachable
+user: test
+host: unreachable.lan
+port: 22
+tags: unreachable
 
-172.24.2.2 | pong
+--
 
-TASK [ping: ping server] 
+name: list-0
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
 
-172.24.2.4 | pong
+--
 
-TASK [ping: ping server] 
+name: list-1
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
 
-172.24.2.2 | pong
+--
 
-TASK [ping: ping server] 
+name: range-0
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 
-172.24.2.4 | pong
+--
 
-TASK [ping: ping server] 
+name: range-1
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 
-172.24.2.2 | pong
+--
 
-TASK [ping: ping server] 
+name: inv-0
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
 
-172.24.2.4 | pong
+--
 
-TASK [ping: ping server] 
+name: inv-1
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
 
-172.24.2.2 | pong
+--
 
-TASK [ping: ping server] 
+name: server-1
+desc: server-1
+user: test
+host: 172.24.2.2
+port: 22
+bastion: 172.24.2.99
+work_dir: /home/test
+tags: remote, prod, reachable
+env: 
+    host: 172.24.2.2
 
-172.24.2.3 | pong
+--
 
-TASK [ping: ping server] 
+name: server-2
+desc: server-2
+user: test
+host: 172.24.2.3
+port: 33
+tags: remote, prod, reachable
 
-172.24.2.4 | pong
+--
 
-TASK [ping: ping server] 
+name: server-3
+desc: server-3
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, demo, reachable
 
-172.24.2.5 | pong
+--
 
-TASK [ping: ping server] 
+name: server-4
+desc: server-4
+user: test
+host: 172.24.2.5
+port: 22
+tags: remote, demo, reachable
 
-172.24.2.6 | pong
+--
 
-TASK [ping: ping server] 
+name: server-5
+desc: server-5
+user: test
+host: 172.24.2.6
+port: 22
+tags: remote, sandbox, reachable
 
-172.24.2.7 | pong
+--
 
-TASK [ping: ping server] 
+name: server-6
+desc: server-6
+user: test
+host: 172.24.2.7
+port: 22
+tags: remote, sandbox, reachable
 
-172.24.2.8 | pong
+--
 
-TASK [ping: ping server] 
+name: server-7
+desc: server-7
+user: test
+host: 172.24.2.8
+port: 22
+tags: remote, demo, reachable
 
-172.24.2.9 | pong
+--
 
-TASK [ping: ping server] 
+name: server-8
+desc: server-8
+user: test
+host: 172.24.2.9
+port: 22
+tags: remote, demo, reachable
 
-2001:3984:3989::10 | pong
+--
+
+name: server-9
+desc: server-9
+user: test
+host: 2001:3984:3989::10
+port: 22
+tags: remote, demo, reachable
+

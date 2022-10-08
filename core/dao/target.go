@@ -30,6 +30,18 @@ func (t *Target) GetContextLine() int {
 	return t.contextLine
 }
 
+func (t Target) GetValue(key string, _ int) string {
+	switch key {
+	case "Name", "name", "Target", "target":
+		return t.Name
+	// case "All", "all":
+	// 	return t.All
+	case "Regex", "regex":
+		return t.Regex
+	}
+	return ""
+}
+
 // ParseTargetsYAML parses the target dictionary and returns it as a list.
 func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 	var targets []Target
@@ -66,7 +78,7 @@ func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 	return targets, targetErrors
 }
 
-func (c Config) GetTarget(name string) (*Target, error) {
+func (c *Config) GetTarget(name string) (*Target, error) {
 	for _, target := range c.Targets {
 		if name == target.Name {
 			return &target, nil
@@ -76,11 +88,49 @@ func (c Config) GetTarget(name string) (*Target, error) {
 	return nil, &core.TargetNotFound{Name: name}
 }
 
-func (c Config) GetTargetNames() []string {
+func (c *Config) GetTargetNames() []string {
 	names := []string{}
 	for _, target := range c.Targets {
 		names = append(names, target.Name)
 	}
 
 	return names
+}
+
+func (c *Config) GetTargetsByName(names []string) ([]Target, error) {
+	if len(names) == 0 {
+		return c.Targets, nil
+	}
+
+	foundTargets := make(map[string]bool)
+	for _, t := range names {
+		foundTargets[t] = false
+	}
+
+	var filteredTargets []Target
+	for _, id := range names {
+		if foundTargets[id] {
+			continue
+		}
+
+		for _, target := range c.Targets {
+			if id == target.Name {
+				foundTargets[target.Name] = true
+				filteredTargets = append(filteredTargets, target)
+			}
+		}
+	}
+
+	nonExistingTargets := []string{}
+	for k, v := range foundTargets {
+		if !v {
+			nonExistingTargets = append(nonExistingTargets, k)
+		}
+	}
+
+	if len(nonExistingTargets) > 0 {
+		return []Target{}, &core.TargetsNotFound{Targets: nonExistingTargets}
+	}
+
+	return filteredTargets, nil
 }

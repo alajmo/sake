@@ -105,7 +105,7 @@ func (t Task) GetValue(key string, _ int) string {
 	return ""
 }
 
-func (t Task) GetDefaultEnvs() []string {
+func (t *Task) GetDefaultEnvs() []string {
 	var defaultEnvs []string
 	for _, env := range t.Envs {
 		if strings.Contains(env, "SAKE_TASK_") {
@@ -114,6 +114,17 @@ func (t Task) GetDefaultEnvs() []string {
 	}
 
 	return defaultEnvs
+}
+
+func (t *Task) GetNonDefaultEnvs() []string {
+	var envs []string
+	for _, env := range t.Envs {
+		if !strings.Contains(env, "SAKE_TASK_") {
+			envs = append(envs, env)
+		}
+	}
+
+	return envs
 }
 
 func (t *Task) GetContext() string {
@@ -345,11 +356,11 @@ func ParseTaskEnv(cmdEnv []string, userEnv []string, parentEnv []string, configE
 	return envs, nil
 }
 
-func (c Config) GetTaskServers(task *Task, runFlags *core.RunFlags) ([]Server, error) {
+func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) ([]Server, error) {
 	var servers []Server
 	var err error
 	// If any runtime target flags are used, disregard config specified task targets
-	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || runFlags.All {
+	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
 		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
 	} else {
 		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
@@ -393,7 +404,7 @@ func (c Config) GetTaskServers(task *Task, runFlags *core.RunFlags) ([]Server, e
 	return servers, nil
 }
 
-func (c Config) GetTasksByIDs(ids []string) ([]Task, error) {
+func (c *Config) GetTasksByIDs(ids []string) ([]Task, error) {
 	if len(ids) == 0 {
 		return c.Tasks, nil
 	}
@@ -431,7 +442,7 @@ func (c Config) GetTasksByIDs(ids []string) ([]Task, error) {
 	return filteredTasks, nil
 }
 
-func (c Config) GetTaskNames() []string {
+func (c *Config) GetTaskNames() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
 		taskNames = append(taskNames, task.Name)
@@ -440,7 +451,7 @@ func (c Config) GetTaskNames() []string {
 	return taskNames
 }
 
-func (c Config) GetTaskIDAndDesc() []string {
+func (c *Config) GetTaskIDAndDesc() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
 		if task.Desc != "" {
@@ -455,7 +466,7 @@ func (c Config) GetTaskIDAndDesc() []string {
 	return taskNames
 }
 
-func (c Config) GetTask(id string) (*Task, error) {
+func (c *Config) GetTask(id string) (*Task, error) {
 	for _, task := range c.Tasks {
 		if id == task.ID {
 			return &task, nil

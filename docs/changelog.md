@@ -7,7 +7,7 @@
 - Add hosts keyword that supports having multiple hosts per server definition
   - Specify as a list
   - Specify as a string containing range (`192.168.0.[1:10:2]`)
-  - Specify as a string containing command (`$(kubectl get nodes)`)
+  - Use `inventory` attribute (`kubectl get nodes`)
 - Add silent flag to supress `Running...` spinner when running tasks
 - Support connection string instead of 3 fields: `user@host:port`
 - Support resolving IdentityFile in ssh config (`~/.ssh/config`)

@@ -15,6 +15,16 @@ type ServerFlags struct {
 	Invert  bool
 }
 
+type TargetFlags struct {
+	Headers []string
+	Edit    bool
+}
+
+type SpecFlags struct {
+	Headers []string
+	Edit    bool
+}
+
 type TagFlags struct {
 	Headers []string
 }
@@ -64,6 +74,8 @@ type RunFlags struct {
 }
 
 type SetRunFlags struct {
+	All               bool
+	Invert            bool
 	Parallel          bool
 	OmitEmpty         bool
 	Local             bool

@@ -1,0 +1,4 @@
+Benchmark 1: ../dist/sake run ping -t reachable
+  Time (mean ± σ):     563.6 ms ±  27.4 ms    [User: 365.2 ms, System: 25.2 ms]
+  Range (min … max):   516.2 ms … 585.7 ms    5 runs
+ 

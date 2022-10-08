@@ -1,0 +1,78 @@
+Index: 33
+Name: unreachable true
+Cmd: go run ../../main.go run unreachable-true -S -a
+WantErr: false
+
+---
+
+                                                                                              
+ Unreachable Hosts                                                                            
+                                                                                              
+ Server      | Host            | User | Port | Error                                          
+-------------+-----------------+------+------+------------------------------------------------
+ unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+
+
+TASK [unreachable-true] 
+
+localhost | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.2 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.3 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.4 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.5 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.6 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.7 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.8 | 123
+
+TASK [unreachable-true] 
+
+172.24.2.9 | 123
+
+TASK [unreachable-true] 
+
+2001:3984:3989::10 | 123

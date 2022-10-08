@@ -1,42 +1,70 @@
 Index: 20
-Name: fatal false
-Cmd: go run ../../main.go run fatal -S -t reachable
+Name: Filter by inverting on tag unreachable
+Cmd: go run ../../main.go run ping -S -t unreachable -v
 WantErr: false
 
 ---
 
- Server    | Fatal                        
------------+------------------------------
- localhost |                              
-           | exit status 1                
- hosts-1-0 |                              
-           | Process exited with status 1 
- hosts-1-1 |                              
-           | Process exited with status 1 
- hosts-2-0 |                              
-           | Process exited with status 1 
- hosts-2-1 |                              
-           | Process exited with status 1 
- hosts-3-0 |                              
-           | Process exited with status 1 
- hosts-3-1 |                              
-           | Process exited with status 1 
- server-1  |                              
-           | Process exited with status 1 
- server-2  |                              
-           | Process exited with status 1 
- server-3  |                              
-           | Process exited with status 1 
- server-4  |                              
-           | Process exited with status 1 
- server-5  |                              
-           | Process exited with status 1 
- server-6  |                              
-           | Process exited with status 1 
- server-7  |                              
-           | Process exited with status 1 
- server-8  |                              
-           | Process exited with status 1 
- server-9  |                              
-           | Process exited with status 1 
+TASK [ping: ping server] 
 
+localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.3 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.5 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.6 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.7 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.8 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.9 | pong
+
+TASK [ping: ping server] 
+
+2001:3984:3989::10 | pong

@@ -29,6 +29,19 @@ func (s *Spec) GetContextLine() int {
 	return s.contextLine
 }
 
+func (s Spec) GetValue(key string, _ int) string {
+	switch key {
+	case "Name", "name", "Spec", "spec":
+		return s.Name
+	// case "All", "all":
+	// 	return s.All
+	case "Output", "output":
+		return s.Output
+	}
+	return ""
+}
+
+
 // ParseSpecsYAML parses the specs dictionary and returns it as a list.
 func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 	var specs []Spec
@@ -60,7 +73,7 @@ func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 	return specs, specErrors
 }
 
-func (c Config) GetSpec(name string) (*Spec, error) {
+func (c *Config) GetSpec(name string) (*Spec, error) {
 	for _, spec := range c.Specs {
 		if name == spec.Name {
 			return &spec, nil
@@ -70,7 +83,7 @@ func (c Config) GetSpec(name string) (*Spec, error) {
 	return nil, &core.SpecNotFound{Name: name}
 }
 
-func (c Config) GetSpecNames() []string {
+func (c *Config) GetSpecNames() []string {
 	names := []string{}
 	for _, spec := range c.Specs {
 		names = append(names, spec.Name)
@@ -78,3 +91,42 @@ func (c Config) GetSpecNames() []string {
 
 	return names
 }
+
+func (c *Config) GetSpecsByName(names []string) ([]Spec, error) {
+	if len(names) == 0 {
+		return c.Specs, nil
+	}
+
+	foundSpecs := make(map[string]bool)
+	for _, t := range names {
+		foundSpecs[t] = false
+	}
+
+	var filteredSpecs []Spec
+	for _, id := range names {
+		if foundSpecs[id] {
+			continue
+		}
+
+		for _, spec := range c.Specs {
+			if id == spec.Name {
+				foundSpecs[spec.Name] = true
+				filteredSpecs = append(filteredSpecs, spec)
+			}
+		}
+	}
+
+	nonExistingSpecs := []string{}
+	for k, v := range foundSpecs {
+		if !v {
+			nonExistingSpecs = append(nonExistingSpecs, k)
+		}
+	}
+
+	if len(nonExistingSpecs) > 0 {
+		return []Spec{}, &core.SpecsNotFound{Specs: nonExistingSpecs}
+	}
+
+	return filteredSpecs, nil
+}
+

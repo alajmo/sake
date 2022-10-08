@@ -11,7 +11,7 @@ func editTask(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Aliases: []string{"tasks", "tsk"},
 		Use:     "task [task]",
-		Short:   "Open up sake config file in $EDITOR and go to tasks section",
+		Short:   "Edit task",
 		Long:    `Open up sake config file in $EDITOR and go to tasks section.`,
 		Example: `  # Edit tasks
   sake edit task

@@ -1,42 +1,106 @@
 Index: 22
-Name: ignore_errors false
-Cmd: go run ../../main.go run errors -S -t reachable
+Name: Reference Envs
+Cmd: go run ../../main.go run env-complex -S -t reachable
 WantErr: false
 
 ---
 
- Server    | Output | Output                        | Output 
------------+--------+-------------------------------+--------
- localhost | 123    |                               |        
-           |        | exit status 65                |        
- hosts-1-0 | 123    |                               |        
-           |        | Process exited with status 65 |        
- hosts-1-1 | 123    |                               |        
-           |        | Process exited with status 65 |        
- hosts-2-0 | 123    |                               |        
-           |        | Process exited with status 65 |        
- hosts-2-1 | 123    |                               |        
-           |        | Process exited with status 65 |        
- hosts-3-0 | 123    |                               |        
-           |        | Process exited with status 65 |        
- hosts-3-1 | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-1  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-2  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-3  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-4  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-5  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-6  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-7  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-8  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-9  | 123    |                               |        
-           |        | Process exited with status 65 |        
+ Server    | Env-Ref     | Env-Ref     
+-----------+-------------+-------------
+ localhost | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ list-0    | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ list-1    | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ range-0   | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ range-1   | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ inv-0     | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ inv-1     | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-1  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-2  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-3  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-4  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-5  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-6  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-7  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-8  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-9  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
 

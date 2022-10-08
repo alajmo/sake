@@ -24,7 +24,8 @@ A list of useful recipes.
 - [Provide Identity and Password Credentials](#provide-identity-and-password-credentials)
 - [Disable Verify Host](#disable-verify-host)
 - [Change known_hosts Path](#change-known_hosts-path)
-- [List Default Variables](#list-default-variables)
+- [Pass Variables from CLI](#pass-variables-from-cli)
+- [List Default Environment Variables](#list-default-variables)
 - [Change Default Behavior of `sake`](#change-default-behavior-of-sake)
 - [Invoke `sake` From Any Directory](#invoke-sake-from-any-directory)
 - [Import a Default User Config for Any `sake` Project](#import-a-default-user-config-for-any-sake-project)
@@ -694,7 +695,7 @@ By default `sake` will attempt to load identity keys from an SSH agent if it's r
 The type of auth used is determined by:
 
 - if `identity-file` and `password` are provided, then it assumes password protected identity key
-- if only `identity-file` is provided, then it assumes a passwordless identity key
+- if only `identity-file` is provided, then it first tries without passphrase, if file is encrypted, it will prompt for passphrase
 - if only `password` is provided, then it assumes password protected auth
 
 ```yaml
@@ -704,6 +705,8 @@ servers:
     identity_file: id_rsa
     password: $(echo $MY_SECRET_PASSWORD)
 ```
+
+You can also define entries in your `~/.ssh/config` file and `sake` will try to resolve them.
 
 ## Disable Verify Host
 
@@ -721,7 +724,20 @@ By default a `known_hosts` file is used to verify host connections. It's default
 known_hosts_file: ./known_hosts
 ```
 
-## List Default Variables
+## Pass Variables from CLI
+
+If you wish to pass CLI variables you can run the following:
+
+```bash
+$ sake run hello option=123
+```
+
+```yaml
+hello:
+  cmd: echo $option
+```
+
+## List Default Environment Variables
 
 Each task has access to a number of default environment variables.
 

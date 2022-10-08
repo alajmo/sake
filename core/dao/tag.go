@@ -22,7 +22,7 @@ func (t Tag) GetValue(key string, _ int) string {
 	return ""
 }
 
-func (c Config) GetTags() []string {
+func (c *Config) GetTags() []string {
 	tags := []string{}
 	for _, server := range c.Servers {
 		for _, tag := range server.Tags {
@@ -35,7 +35,7 @@ func (c Config) GetTags() []string {
 	return tags
 }
 
-func (c Config) GetTagAssocations(tags []string) ([]Tag, error) {
+func (c *Config) GetTagAssocations(tags []string) ([]Tag, error) {
 	t := []Tag{}
 
 	for _, tag := range tags {

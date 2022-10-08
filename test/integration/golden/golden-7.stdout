@@ -1,18 +1,29 @@
 Index: 7
-Name: Multiple commands
-Cmd: go run ../../main.go run info -S -t prod
+Name: Describe servers filter on list hosts
+Cmd: go run ../../main.go describe servers list
 WantErr: false
 
 ---
 
- Server    | OS | Kernel 
------------+----+--------
- hosts-1-0 | OS | kernel 
- hosts-1-1 | OS | kernel 
- hosts-2-0 | OS | kernel 
- hosts-2-1 | OS | kernel 
- hosts-3-0 | OS | kernel 
- hosts-3-1 | OS | kernel 
- server-1  | OS | kernel 
- server-2  | OS | kernel 
+name: list-0
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
+
+--
+
+name: list-1
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
 

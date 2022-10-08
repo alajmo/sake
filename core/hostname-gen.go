@@ -10,32 +10,12 @@ import (
 	"strings"
 )
 
-func ExpandHostNames(context string, input string, defaultEnvs []string, envs []string) ([]string, error) {
-	if IsCmd(input) {
-		return EvaluateInventory(context, input, defaultEnvs, envs)
-	} else if IsRange(input) {
-		return EvaluateRange(input)
-	}
-
-	return []string{input}, nil
-}
-
-func IsCmd(input string) bool {
-	return strings.HasPrefix(input, "$(") && strings.HasSuffix(input, ")")
-}
-
-func IsRange(input string) bool {
-	return strings.Contains(input, "[")
-}
-
 // Separate hosts with newline and space/tab
-func EvaluateInventory(context string, input string, defaultEnvs []string, envs []string) ([]string, error) {
-	input = strings.TrimPrefix(input, "$(")
-	input = strings.TrimSuffix(input, ")")
-
+func EvaluateInventory(context string, input string, serverEnvs []string, userEnvs []string) ([]string, error) {
 	cmd := exec.Command("sh", "-c", input)
-	cmd.Env = append(os.Environ(), defaultEnvs...)
-	cmd.Env = append(cmd.Env, envs...)
+	cmd.Env = append(os.Environ(), serverEnvs...)
+	cmd.Env = append(cmd.Env, userEnvs...)
+
 	cmd.Dir = filepath.Dir(context)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -189,7 +169,7 @@ func readRange(input string, i int) (HostRange, int, error) {
 			break
 		}
 
-		if isDigit(string(input[i])) {
+		if IsDigit(string(input[i])) {
 			switch state {
 			case Start:
 				r.Start += string(input[i])
@@ -266,15 +246,6 @@ func expandRange(hr HostRange) ([]string, error) {
 	}
 
 	return hosts, nil
-}
-
-func isDigit(s string) bool {
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return false
-		}
-	}
-	return true
 }
 
 func countPadding(s string) (int, error) {

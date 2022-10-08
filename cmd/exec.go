@@ -79,13 +79,13 @@ before the command gets executed in each directory.`,
 
 	cmd.Flags().BoolVarP(&runFlags.Invert, "invert", "v", false, "invert matching on servers")
 
-	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|markdown|html]")
+	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|table-2|table-3|table-4|html|markdown]")
 	err := cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		valid := []string{"table", "markdown", "html"}
+		valid := []string{"text", "table", "table-2", "table-3", "table-4", "html", "markdown"}
 		return valid, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
@@ -135,6 +135,9 @@ func execTask(
 	runFlags *core.RunFlags,
 	setRunFlags *core.SetRunFlags,
 ) {
+	err := config.ParseInventory([]string{})
+	core.CheckIfError(err)
+
 	servers, err := config.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
 	core.CheckIfError(err)
 

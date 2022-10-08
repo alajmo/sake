@@ -220,7 +220,7 @@ func getSSHConfigPath(sshConfigPath string) (*string, error) {
 }
 
 // Open sake config in editor
-func (c Config) EditConfig() error {
+func (c *Config) EditConfig() error {
 	return openEditor(c.Path, -1)
 }
 
@@ -279,7 +279,7 @@ func openEditor(path string, lineNr int) error {
 }
 
 // Open sake config in editor and optionally go to line matching the task name
-func (c Config) EditTask(name string) error {
+func (c *Config) EditTask(name string) error {
 	configPath := c.Path
 	if name != "" {
 		task, err := c.GetTask(name)
@@ -320,11 +320,11 @@ func (c Config) EditTask(name string) error {
 }
 
 // Open sake config in editor and optionally go to line matching the server name
-func (c Config) EditServer(name string) error {
+func (c *Config) EditServer(name string) error {
 	var group string
 	configPath := c.Path
 	if name != "" {
-		server, err := c.GetServer(name)
+		server, err := c.GetServerByGroup(name)
 		if err != nil {
 			return err
 		}
@@ -354,6 +354,88 @@ func (c Config) EditServer(name string) error {
 		for _, server := range configTmp.Servers.Content {
 			if server.Value == group {
 				lineNr = server.Line
+				break
+			}
+		}
+	}
+
+	return openEditor(configPath, lineNr)
+}
+
+// Open sake config in editor and optionally go to line matching the target name
+func (c *Config) EditTarget(name string) error {
+	configPath := c.Path
+	if name != "" {
+		target, err := c.GetTarget(name)
+		if err != nil {
+			return err
+		}
+		configPath = target.context
+	}
+
+	dat, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return err
+	}
+
+	type ConfigTmp struct {
+		Targets yaml.Node
+	}
+
+	var configTmp ConfigTmp
+	err = yaml.Unmarshal(dat, &configTmp)
+	if err != nil {
+		return err
+	}
+
+	lineNr := 0
+	if name == "" {
+		lineNr = configTmp.Targets.Line - 1
+	} else {
+		for _, target := range configTmp.Targets.Content {
+			if target.Value == name {
+				lineNr = target.Line
+				break
+			}
+		}
+	}
+
+	return openEditor(configPath, lineNr)
+}
+
+// Open sake config in editor and optionally go to line matching the spec name
+func (c *Config) EditSpec(name string) error {
+	configPath := c.Path
+	if name != "" {
+		spec, err := c.GetSpec(name)
+		if err != nil {
+			return err
+		}
+		configPath = spec.context
+	}
+
+	dat, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return err
+	}
+
+	type ConfigTmp struct {
+		Specs yaml.Node
+	}
+
+	var configTmp ConfigTmp
+	err = yaml.Unmarshal(dat, &configTmp)
+	if err != nil {
+		return err
+	}
+
+	lineNr := 0
+	if name == "" {
+		lineNr = configTmp.Specs.Line - 1
+	} else {
+		for _, spec := range configTmp.Specs.Content {
+			if spec.Value == name {
+				lineNr = spec.Line
 				break
 			}
 		}
@@ -441,6 +523,38 @@ tasks:
 	fmt.Println("- Created sake.yaml")
 
 	return servers, nil
+}
+
+func (c *Config) ParseInventory(userArgs []string) error {
+	var servers []Server
+	for _, s := range c.Servers {
+		if s.Inventory != "" {
+			hosts, err := core.EvaluateInventory(s.context, s.Inventory, s.Envs, userArgs)
+			if err != nil {
+				return err
+			}
+
+			if len(hosts) == 0 {
+				return fmt.Errorf("inventory %s returned 0 hosts", s.Name)
+			}
+
+			for i, host := range hosts {
+				server, err := CreateInventoryServers(host, i, s, userArgs)
+				if err != nil {
+					return err
+				}
+
+				servers = append(servers, server)
+			}
+
+		} else {
+			servers = append(servers, s)
+		}
+	}
+
+	c.Servers = servers
+
+	return nil
 }
 
 func CheckUserNoColor(noColorFlag bool) {

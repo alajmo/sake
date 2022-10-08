@@ -1,26 +1,26 @@
 Index: 26
-Name: omit_empty false
-Cmd: go run ../../main.go run empty -S -t reachable
+Name: Work Dir 2
+Cmd: go run ../../main.go run work-dir-2 -S -t reachable
 WantErr: false
 
 ---
 
- Server    | Empty  
------------+--------
- localhost |        
- hosts-1-0 | Exists 
- hosts-1-1 | Exists 
- hosts-2-0 | Exists 
- hosts-2-1 | Exists 
- hosts-3-0 | Exists 
- hosts-3-1 | Exists 
- server-1  | Exists 
- server-2  | Exists 
- server-3  | Exists 
- server-4  | Exists 
- server-5  | Exists 
- server-6  | Exists 
- server-7  | Exists 
- server-8  | Exists 
- server-9  | Exists 
+ Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
+-----------+------+---------------------+------------+-----------------
+ localhost | /usr | /opt                | /tmp       | /               
+ list-0    | /usr | /opt                | /home/test | /               
+ list-1    | /usr | /opt                | /home/test | /               
+ range-0   | /usr | /opt                | /home/test | /               
+ range-1   | /usr | /opt                | /home/test | /               
+ inv-0     | /usr | /opt                | /home/test | /               
+ inv-1     | /usr | /opt                | /home/test | /               
+ server-1  | /usr | /opt                | /home/test | /               
+ server-2  | /usr | /opt                | /home/test | /               
+ server-3  | /usr | /opt                | /home/test | /               
+ server-4  | /usr | /opt                | /home/test | /               
+ server-5  | /usr | /opt                | /home/test | /               
+ server-6  | /usr | /opt                | /home/test | /               
+ server-7  | /usr | /opt                | /home/test | /               
+ server-8  | /usr | /opt                | /home/test | /               
+ server-9  | /usr | /opt                | /home/test | /               
 

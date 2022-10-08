@@ -30,6 +30,8 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 		listServersCmd(config, configErr, &listFlags),
 		listTasksCmd(config, configErr, &listFlags),
 		listTagsCmd(config, configErr, &listFlags),
+		listTargetsCmd(config, configErr, &listFlags),
+		listSpecsCmd(config, configErr, &listFlags),
 	)
 
 	cmd.PersistentFlags().StringVar(&listFlags.Theme, "theme", "default", "set theme")

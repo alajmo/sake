@@ -19,6 +19,7 @@ type Server struct {
 	Name         string
 	Desc         string
 	Host         string
+	Inventory    string
 	BastionHost  string
 	BastionUser  string
 	BastionPort  uint16
@@ -45,6 +46,7 @@ type ServerYAML struct {
 	Desc         string    `yaml:"desc"`
 	Host         string    `yaml:"host"`
 	Hosts        yaml.Node `yaml:"hosts"`
+	Inventory    string    `yaml:"inventory"`
 	Bastion      string    `yaml:"bastion"`
 	User         string    `yaml:"user"`
 	Port         uint16    `yaml:"port"`
@@ -86,6 +88,17 @@ func (s *Server) GetContext() string {
 
 func (s *Server) GetContextLine() int {
 	return s.contextLine
+}
+
+func (s *Server) GetNonDefaultEnvs() []string {
+	var envs []string
+	for _, env := range s.Envs {
+		if !strings.Contains(env, "SAKE_SERVER_") {
+			envs = append(envs, env)
+		}
+	}
+
+	return envs
 }
 
 // ParseServersYAML parses the servers dictionary and returns it as a list.
@@ -155,10 +168,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
-		defaultEnvs := []string{
-			fmt.Sprintf("SAKE_SERVER_NAME=%s", serverYAML.Name),
-		}
-
+		defaultEnvs := []string{}
 		if serverYAML.Desc != "" {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc))
 		}
@@ -246,6 +256,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 
 			serverEnvs := append(defaultEnvs, []string{
+				fmt.Sprintf("SAKE_SERVER_NAME=%s", c.Servers.Content[i].Value),
 				fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
 				fmt.Sprintf("SAKE_SERVER_USER=%s", user),
 				fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
@@ -276,7 +287,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 
 			servers = append(servers, *hServer)
-
 		case "hosts":
 			// list of servers
 
@@ -288,6 +298,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				}
 
 				serverEnvs := append(defaultEnvs, []string{
+					fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", c.Servers.Content[i].Value, k),
 					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
 					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
 					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
@@ -320,7 +331,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				servers = append(servers, *hServer)
 			}
 		case "hosts-string":
-			hosts, err := core.ExpandHostNames(server.context, serverYAML.Hosts.Value, defaultEnvs, envs)
+			hosts, err := core.EvaluateRange(serverYAML.Hosts.Value)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
 				continue
@@ -334,6 +345,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				}
 
 				serverEnvs := append(defaultEnvs, []string{
+					fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", c.Servers.Content[i].Value, k),
 					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
 					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
 					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
@@ -365,9 +377,33 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 
 				servers = append(servers, *hServer)
 			}
-		}
+		case "inventory":
+			serverEnvs := append(defaultEnvs, envs...)
+			hServer := &Server{
+				Name:         c.Servers.Content[i].Value,
+				Group:        c.Servers.Content[i].Value,
+				Desc:         serverYAML.Desc,
+				Inventory:    serverYAML.Inventory,
+				User:         serverYAML.User,
+				Port:         serverYAML.Port,
+				Local:        serverYAML.Local,
+				Tags:         serverYAML.Tags,
+				Shell:        serverYAML.Shell,
+				WorkDir:      serverYAML.WorkDir,
+				Envs:         serverEnvs,
+				BastionHost:  bastionHost,
+				BastionUser:  bastionUser,
+				BastionPort:  bastionPort,
+				IdentityFile: identityFile,
+				PubFile:      pubKeyFile,
+				Password:     password,
 
-		// servers = append(servers, *server)
+				context:     c.Path,
+				contextLine: c.Servers.Content[i].Line,
+			}
+
+			servers = append(servers, *hServer)
+		}
 	}
 
 	return servers, serverErrors
@@ -378,6 +414,10 @@ func getServerHostDefinition(serverYAML *ServerYAML) (string, error) {
 	numDefined := 0
 	if serverYAML.Host != "" {
 		hostDef = "host"
+		numDefined += 1
+	}
+	if serverYAML.Inventory != "" {
+		hostDef = "inventory"
 		numDefined += 1
 	}
 	if serverYAML.Hosts.Kind == 2 && len(serverYAML.Hosts.Content) > 0 {
@@ -408,7 +448,7 @@ func ServerInSlice(name string, list []Server) bool {
 }
 
 // FilterServers returns servers matching filters, it does a union select.
-func (c Config) FilterServers(
+func (c *Config) FilterServers(
 	allServersFlag bool,
 	serversFlag []string,
 	tagsFlag []string,
@@ -456,7 +496,7 @@ func (c Config) FilterServers(
 	return finalServers, nil
 }
 
-func (c Config) GetServer(name string) (*Server, error) {
+func (c *Config) GetServer(name string) (*Server, error) {
 	for _, server := range c.Servers {
 		if name == server.Name {
 			return &server, nil
@@ -466,48 +506,239 @@ func (c Config) GetServer(name string) (*Server, error) {
 	return nil, &core.ServerNotFound{Name: []string{name}}
 }
 
-func (c Config) GetServersByName(serverNames []string) ([]Server, error) {
-	var matchedServers []Server
-
-	foundServerNames := make(map[string]bool)
-	for _, s := range serverNames {
-		foundServerNames[s] = false
+func (c *Config) GetServerByGroup(group string) (*Server, error) {
+	for _, server := range c.Servers {
+		if group == server.Group {
+			return &server, nil
+		}
 	}
 
-	for _, v := range serverNames {
-		for _, s := range c.Servers {
-			if v == s.Name {
-				foundServerNames[s.Name] = true
-				matchedServers = append(matchedServers, s)
+	return nil, &core.ServerNotFound{Name: []string{group}}
+}
+
+func (c *Config) GetServersByName(groupNames []string) ([]Server, error) {
+	serverGroup := make(map[string]Server, len(c.Servers))
+	groupServers := make(map[string][]Server, len(c.Servers))
+	for _, s := range c.Servers {
+		serverGroup[s.Name] = s
+		_, found := groupServers[s.Group]
+		if found {
+			groupServers[s.Group] = append(groupServers[s.Group], s)
+		} else {
+			groupServers[s.Group] = []Server{s}
+		}
+	}
+
+	var matchedServers []Server
+	for _, groupName := range groupNames {
+		// If groupName is a server name, add to matched and continue
+		s, found := serverGroup[groupName]
+		if found {
+			matchedServers = append(matchedServers, s)
+			continue
+		}
+
+		// If groupName is a group, then check if there's a range, otherwise return all servers in the group
+		if containsRange(groupName) {
+			targetRange, err := parseRange(groupName)
+			if err != nil {
+				return []Server{}, err
+			}
+
+			servers, err := evalTargetRange(groupServers, targetRange)
+			if err != nil {
+				return []Server{}, err
+			}
+
+			if len(groupServers[targetRange.Group]) > 0 {
+				matchedServers = append(matchedServers, servers...)
+			} else {
+				return []Server{}, fmt.Errorf("cannot find server %s", groupName)
+			}
+		} else {
+			if len(groupServers[groupName]) > 0 {
+				matchedServers = append(matchedServers, groupServers[groupName]...)
+			} else {
+				return []Server{}, fmt.Errorf("cannot find server %s", groupName)
 			}
 		}
 	}
 
-	nonExistingServers := []string{}
-	for k, v := range foundServerNames {
-		if !v {
-			nonExistingServers = append(nonExistingServers, k)
+	// Handle duplicates
+	addedServer := make(map[string]bool)
+	for _, s := range matchedServers {
+		addedServer[s.Name] = false
+	}
+	var servers []Server
+	for _, s := range matchedServers {
+		if !addedServer[s.Name] {
+			servers = append(servers, s)
+			addedServer[s.Name] = true
 		}
 	}
 
-	if len(nonExistingServers) > 0 {
-		return []Server{}, &core.ServerNotFound{Name: nonExistingServers}
+	return servers, nil
+}
+
+func containsRange(s string) bool {
+	return strings.Contains(s, "[")
+}
+
+type TargetRange struct {
+	Group    string
+	Start    int
+	End      int
+	Range    bool
+	HasStart bool
+	HasEnd   bool
+}
+
+// input: a, b, c, d
+// [0] -> a
+// [1:] -> b, c, d
+// [1:2] -> b, c
+// [:2] -> a, b, c
+func parseRange(s string) (TargetRange, error) {
+	if strings.Count(s, "[") != 1 || strings.Count(s, "]") != 1 {
+		return TargetRange{}, fmt.Errorf("invalid server range")
+	}
+	if strings.Count(s, ":") > 1 {
+		return TargetRange{}, fmt.Errorf("invalid server range")
 	}
 
-	return matchedServers, nil
+	state := 0
+	group := ""
+	start := ""
+	hasStart := false
+	end := ""
+	hasEnd := false
+	rrange := false
+	i := 0
+	for i < len(s) {
+		if string(s[i]) == "]" {
+			break
+		} else if string(s[i]) == "[" {
+			state = 1
+			i += 1
+			continue
+		} else if string(s[i]) == ":" {
+			rrange = true
+			state = 2
+			i += 1
+			continue
+		}
+
+		switch state {
+		case 0:
+			group += string(s[i])
+		case 1:
+			if !core.IsDigit(string(s[i])) {
+				return TargetRange{}, fmt.Errorf("only [0-9] allowed in server range")
+			}
+
+			hasStart = true
+			start += string(s[i])
+		case 2:
+			if !core.IsDigit(string(s[i])) {
+				return TargetRange{}, fmt.Errorf("only [0-9] allowed in server range")
+			}
+			hasEnd = true
+			end += string(s[i])
+		}
+		i += 1
+	}
+
+	rr := TargetRange{
+		Group:    group,
+		HasStart: hasStart,
+		HasEnd:   hasEnd,
+		Range:    rrange,
+	}
+
+	if hasStart {
+		ss, err := strconv.ParseInt(start, 10, 0)
+		if err != nil {
+			return TargetRange{}, err
+		}
+		rr.Start = int(ss)
+	}
+
+	if hasEnd {
+		ee, err := strconv.ParseInt(end, 10, 0)
+		if err != nil {
+			return TargetRange{}, err
+		}
+		rr.End = int(ee)
+	}
+
+	return rr, nil
+}
+
+// input: a, b, c, d
+//
+// [0] -> a
+//
+// [1:2] -> b, c (start = 1, end = 2 | len(hm[tr.Group]))
+// hasStart = true
+// hasEnd = true
+//
+// [1:] -> b, c, d (start = 1, end = len(hm[tr.Group]))
+// hasStart = true
+// hasEnd = false
+//
+// [:2] -> a, b, c, (start = 0, end = 2 | len(hm[tr.Group]))
+// hasStart = false
+// hasEnd = true
+func evalTargetRange(hm map[string][]Server, tr TargetRange) ([]Server, error) {
+	s, found := hm[tr.Group]
+	if !found {
+		return []Server{}, fmt.Errorf("could not find server %s", tr.Group)
+	}
+
+	// Keep start/end within array boundary
+	if tr.Start > len(hm[tr.Group])-1 {
+		tr.Start = len(hm[tr.Group]) - 1
+	}
+	if tr.End > len(hm[tr.Group])-1 {
+		tr.End = len(hm[tr.Group]) - 1
+	}
+
+	// Handle single elements
+	if !tr.Range {
+		return []Server{s[tr.Start]}, nil
+	}
+
+	start := 0
+	end := 0
+	if tr.HasStart && tr.HasEnd {
+		start = tr.Start
+		end = tr.End
+	} else if tr.HasStart {
+		start = tr.Start
+		end = len(hm[tr.Group]) - 1
+	} else if tr.HasEnd {
+		start = 0
+		end = tr.End
+	} else {
+		// Handle [:], to include all hosts
+		start = 0
+		end = len(hm[tr.Group]) - 1
+	}
+
+	var servers []Server
+	for i := start; i <= end; i++ {
+		servers = append(servers, hm[tr.Group][i])
+	}
+
+	return servers, nil
 }
 
 // Matches on server host
-func (c Config) GetServersByRegex(r string) ([]Server, error) {
+func (c *Config) GetServersByRegex(r string) ([]Server, error) {
 	pattern, err := regexp.Compile(r)
 	if err != nil {
 		return []Server{}, err
 	}
-
-	// foundHosts := make(map[string]bool)
-	// for _, tag := range tags {
-	// 	foundHosts[tag] = false
-	// }
 
 	// Find servers matching the flag
 	var servers []Server
@@ -518,14 +749,14 @@ func (c Config) GetServersByRegex(r string) ([]Server, error) {
 		}
 	}
 
-	// if len(nonExistingTags) > 0 {
-	// 	return []Server{}, &core.TagNotFound{Tags: nonExistingTags}
-	// }
+	if len(servers) == 0 {
+		return []Server{}, fmt.Errorf("cannot find server any servers matching regex %s", r)
+	}
 
 	return servers, nil
 }
 
-func (c Config) GetRemoteServerNameAndDesc() []string {
+func (c *Config) GetRemoteServerNameAndDesc() []string {
 	options := []string{}
 	for _, server := range c.Servers {
 		if !server.Local {
@@ -546,10 +777,35 @@ func GetFirstRemoteServer(servers []Server) (Server, error) {
 	return Server{}, &core.NoRemoteServerToAttach{}
 }
 
-func (c Config) GetServerNameAndDesc() []string {
+func (c *Config) GetServerNameAndDesc() []string {
 	options := []string{}
-	for _, server := range c.Servers {
-		options = append(options, fmt.Sprintf("%s\t%s", server.Name, server.Desc))
+	hm := make(map[string][]Server, len(c.Servers))
+	for _, s := range c.Servers {
+		_, found := hm[s.Group]
+		if found {
+			options = append(options, fmt.Sprintf("%s\t%s", s.Name, s.Desc))
+			hm[s.Group] = append(hm[s.Group], s)
+		} else {
+			// Has multiple servers, this only runs once per group
+			if s.Name != s.Group {
+				options = append(options, fmt.Sprintf("%s\t%s", s.Group, s.Desc))
+			}
+			options = append(options, fmt.Sprintf("%s\t%s", s.Name, s.Desc))
+			hm[s.Group] = []Server{s}
+		}
+	}
+
+	return options
+}
+
+func (c *Config) GetServerGroupsAndDesc() []string {
+	options := []string{}
+	hm := make(map[string][]Server, len(c.Servers))
+	for _, s := range c.Servers {
+		_, found := hm[s.Group]
+		if !found {
+			options = append(options, fmt.Sprintf("%s\t%s", s.Group, s.Desc))
+		}
 	}
 
 	return options
@@ -558,7 +814,7 @@ func (c Config) GetServerNameAndDesc() []string {
 // Servers must have all tags to match. For instance, if --tags frontend,backend
 // is passed, then a server must have both tags.
 // We only return error if the flags provided do not exist in the sake config.
-func (c Config) GetServersByTags(tags []string) ([]Server, error) {
+func (c *Config) GetServersByTags(tags []string) ([]Server, error) {
 	foundTags := make(map[string]bool)
 	for _, tag := range tags {
 		foundTags[tag] = false
@@ -597,27 +853,13 @@ func (c Config) GetServersByTags(tags []string) ([]Server, error) {
 	return servers, nil
 }
 
-func (c Config) GetServerNames() []string {
+func (c *Config) GetServerNames() []string {
 	names := []string{}
 	for _, server := range c.Servers {
 		names = append(names, server.Name)
 	}
 
 	return names
-}
-
-// TODO: Deprecated, Remove
-func GetUnionServers(s ...[]Server) []Server {
-	servers := []Server{}
-	for _, part := range s {
-		for _, server := range part {
-			if !ServerInSlice(server.Name, servers) {
-				servers = append(servers, server)
-			}
-		}
-	}
-
-	return servers
 }
 
 func GetIntersectionServers(s ...[]Server) []Server {
@@ -667,4 +909,44 @@ func GetInvertedServers(allServers []Server, excludeServers []Server) []Server {
 	}
 
 	return servers
+}
+
+func CreateInventoryServers(inputHost string, i int, server Server, userArgs []string) (Server, error) {
+	user, host, port, err := core.ParseHostName(inputHost, server.User, server.Port)
+	if err != nil {
+		return server, err
+	}
+
+	serverEnvs := append(server.Envs, []string{
+		fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", server.Name, i),
+		fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
+		fmt.Sprintf("SAKE_SERVER_USER=%s", user),
+		fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+	}...)
+	serverEnvs = append(serverEnvs, userArgs...)
+
+	iServer := &Server{
+		Name:         fmt.Sprintf("%s-%d", server.Name, i),
+		Group:        server.Group,
+		Desc:         server.Desc,
+		Host:         host,
+		User:         user,
+		Port:         port,
+		Local:        server.Local,
+		Tags:         server.Tags,
+		Shell:        server.Shell,
+		WorkDir:      server.WorkDir,
+		Envs:         serverEnvs,
+		BastionHost:  server.BastionHost,
+		BastionUser:  server.BastionUser,
+		BastionPort:  server.BastionPort,
+		IdentityFile: server.IdentityFile,
+		PubFile:      server.PubFile,
+		Password:     server.Password,
+
+		context:     server.context,
+		contextLine: server.contextLine,
+	}
+
+	return *iServer, nil
 }

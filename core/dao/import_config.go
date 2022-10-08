@@ -662,7 +662,7 @@ type TaskResources struct {
 	TaskErrors []ResourceErrors[Task]
 }
 
-func (c ConfigResources) GetTask(id string) (*Task, error) {
+func (c *ConfigResources) GetTask(id string) (*Task, error) {
 	for _, task := range c.Tasks {
 		if id == task.ID {
 			return &task, nil
@@ -672,7 +672,7 @@ func (c ConfigResources) GetTask(id string) (*Task, error) {
 	return nil, &core.TaskNotFound{IDs: []string{id}}
 }
 
-func (c ConfigResources) GetTheme(name string) (*Theme, error) {
+func (c *ConfigResources) GetTheme(name string) (*Theme, error) {
 	for _, theme := range c.Themes {
 		if name == theme.Name {
 			return &theme, nil
@@ -682,7 +682,7 @@ func (c ConfigResources) GetTheme(name string) (*Theme, error) {
 	return nil, &core.ThemeNotFound{Name: name}
 }
 
-func (c ConfigResources) GetSpec(name string) (*Spec, error) {
+func (c *ConfigResources) GetSpec(name string) (*Spec, error) {
 	for _, spec := range c.Specs {
 		if name == spec.Name {
 			return &spec, nil
@@ -692,7 +692,7 @@ func (c ConfigResources) GetSpec(name string) (*Spec, error) {
 	return nil, &core.SpecNotFound{Name: name}
 }
 
-func (c ConfigResources) GetTarget(name string) (*Target, error) {
+func (c *ConfigResources) GetTarget(name string) (*Target, error) {
 	for _, target := range c.Targets {
 		if name == target.Name {
 			return &target, nil

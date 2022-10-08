@@ -107,8 +107,8 @@ func (run *Run) RunTask(
 			unreachableOutput.Rows = append(unreachableOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
 		}
 
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
-		print.PrintTable("Unreachable Hosts", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
+		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: "table", SuppressEmptyColumns: false}
+		print.PrintTable("\nUnreachable Hosts\n", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
 
 		if !task.Spec.IgnoreUnreachable {
 			return &core.ExecError{Err: err, ExitCode: 4}
@@ -136,7 +136,7 @@ func (run *Run) RunTask(
 	}
 
 	switch task.Spec.Output {
-	case "table", "html", "markdown":
+	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown":
 		spinner := core.GetSpinner()
 		if !runFlags.Silent {
 			spinner.Start(" Running", 500)

@@ -9,12 +9,11 @@ WantErr: false
 -------------+-------------
  local       | localhost   
  reachable   | localhost   
-             | hosts-1-0   
-             | hosts-1-1   
-             | hosts-2-0   
-             | hosts-2-1   
-             | hosts-3-0   
-             | hosts-3-1   
+             | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
              | server-1    
              | server-2    
              | server-3    
@@ -25,12 +24,11 @@ WantErr: false
              | server-8    
              | server-9    
  unreachable | unreachable 
- remote      | hosts-1-0   
-             | hosts-1-1   
-             | hosts-2-0   
-             | hosts-2-1   
-             | hosts-3-0   
-             | hosts-3-1   
+ remote      | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
              | server-1    
              | server-2    
              | server-3    
@@ -40,14 +38,18 @@ WantErr: false
              | server-7    
              | server-8    
              | server-9    
- prod        | hosts-1-0   
-             | hosts-1-1   
-             | hosts-2-0   
-             | hosts-2-1   
-             | hosts-3-0   
-             | hosts-3-1   
+ prod        | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
              | server-1    
              | server-2    
+ list        | list-0      
+             | list-1      
+ range       | range-0     
+             | range-1     
+ inv         | inv         
  demo        | server-3    
              | server-4    
              | server-7    

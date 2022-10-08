@@ -33,6 +33,8 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 			// This is necessary since cobra doesn't support pointers for bools
 			// (that would allow us to use nil as default value)
+			setRunFlags.All = cmd.Flags().Changed("all")
+			setRunFlags.Invert = cmd.Flags().Changed("invert")
 			setRunFlags.Local = cmd.Flags().Changed("local")
 			setRunFlags.TTY = cmd.Flags().Changed("tty")
 			setRunFlags.Parallel = cmd.Flags().Changed("parallel")
@@ -87,13 +89,13 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 	cmd.Flags().BoolVarP(&runFlags.Invert, "invert", "v", false, "invert matching on servers")
 
-	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|html|markdown]")
+	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|table-2|table-3|table-4|html|markdown]")
 	err := cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		valid := []string{"text", "table", "html", "markdown"}
+		valid := []string{"text", "table", "table-2", "table-3", "table-4", "html", "markdown"}
 		return valid, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
@@ -143,6 +145,8 @@ func runTask(
 	runFlags *core.RunFlags,
 	setRunFlags *core.SetRunFlags,
 ) {
+	config.GetServerNameAndDesc()
+
 	var taskIDs []string
 	var userArgs []string
 	// Separate user arguments from task ids
@@ -153,7 +157,6 @@ func runTask(
 			taskIDs = append(taskIDs, arg)
 		}
 	}
-
 	if runFlags.Edit {
 		if len(args) > 0 {
 			err := config.EditTask(taskIDs[0])
@@ -162,21 +165,24 @@ func runTask(
 			err := config.EditTask("")
 			core.CheckIfError(err)
 		}
-	}
-
-	for _, taskID := range taskIDs {
-		task, err := config.GetTask(taskID)
-		core.CheckIfError(err)
-
-		servers, err := config.GetTaskServers(task, runFlags)
-		core.CheckIfError(err)
-
-		if len(servers) == 0 {
-			fmt.Println("No targets")
-		} else {
-			target := run.Run{Servers: servers, Task: task, Config: *config}
-			err := target.RunTask(userArgs, runFlags, setRunFlags)
+	} else {
+		for _, taskID := range taskIDs {
+			task, err := config.GetTask(taskID)
 			core.CheckIfError(err)
+
+			err = config.ParseInventory(userArgs)
+			core.CheckIfError(err)
+
+			servers, err := config.GetTaskServers(task, runFlags, setRunFlags)
+			core.CheckIfError(err)
+
+			if len(servers) == 0 {
+				fmt.Println("No targets")
+			} else {
+				target := run.Run{Servers: servers, Task: task, Config: *config}
+				err := target.RunTask(userArgs, runFlags, setRunFlags)
+				core.CheckIfError(err)
+			}
 		}
 	}
 }

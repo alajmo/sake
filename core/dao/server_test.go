@@ -121,3 +121,100 @@ func TestGetTagAssocations(t *testing.T) {
 	}
 	test.CheckEqualStringArr(t, ss[0].Servers, wanted.Servers)
 }
+
+func TestTargetRange(t *testing.T) {
+	s1 := Server{Name: "s1", Group: "s1"}
+	s2 := Server{Name: "s2", Group: "s2"}
+	s3 := Server{Name: "s3", Group: "s3"}
+	s4 := Server{Name: "s4", Group: "s4"}
+	s5 := Server{Name: "s5-0", Group: "s5"}
+	s6 := Server{Name: "s5-1", Group: "s5"}
+
+	c := Config{
+		Servers: []Server{s1, s2, s3, s4, s5, s6},
+	}
+
+	ss, err := c.FilterServers(false, []string{"s4"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted := []string{"s4"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[:]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[0:]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[0:10]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[:10]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[:3]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0", "s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[0]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-0"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	ss, err = c.FilterServers(false, []string{"s5[1]"}, []string{}, "", false)
+	test.CheckErr(t, err)
+	wanted = []string{"s5-1"}
+	test.CheckEqN(t, len(ss), len(wanted))
+	for i, s := range ss {
+		test.CheckEqS(t, s.Name, wanted[i])
+	}
+
+	// Want errors when input malformed
+	_, err = c.FilterServers(false, []string{"s4[1"}, []string{}, "", false)
+	test.WantErr(t, err)
+	_, err = c.FilterServers(false, []string{"s4[1]]"}, []string{}, "", false)
+	test.WantErr(t, err)
+	_, err = c.FilterServers(false, []string{"s4[1::]"}, []string{}, "", false)
+	test.WantErr(t, err)
+	_, err = c.FilterServers(false, []string{"s4[01:a]"}, []string{}, "", false)
+	test.WantErr(t, err)
+	_, err = c.FilterServers(false, []string{"s4[-1]"}, []string{}, "", false)
+	test.WantErr(t, err)
+}

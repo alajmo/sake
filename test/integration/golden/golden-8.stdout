@@ -1,11 +1,29 @@
 Index: 8
-Name: Filter by hosts server
-Cmd: go run ../../main.go run info -S -s hosts-1-1
+Name: Describe servers filter on range hosts
+Cmd: go run ../../main.go describe servers range
 WantErr: false
 
 ---
 
- Server    | OS | Kernel 
------------+----+--------
- hosts-1-1 | OS | kernel 
+name: range-0
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
+
+--
+
+name: range-1
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 

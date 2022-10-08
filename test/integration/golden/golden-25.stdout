@@ -1,77 +1,26 @@
 Index: 25
-Name: unreachable true
-Cmd: go run ../../main.go run unreachable-true -S -a
+Name: Work Dir 1
+Cmd: go run ../../main.go run work-dir-1 -S -t reachable
 WantErr: false
 
 ---
 
-Unreachable Hosts
+ Server    | Ref   | Override Inline Ref | Inline | Override Inline 
+-----------+-------+---------------------+--------+-----------------
+ localhost | /home | /opt                | /home  | /               
+ list-0    | /home | /opt                | /home  | /               
+ list-1    | /home | /opt                | /home  | /               
+ range-0   | /home | /opt                | /home  | /               
+ range-1   | /home | /opt                | /home  | /               
+ inv-0     | /home | /opt                | /home  | /               
+ inv-1     | /home | /opt                | /home  | /               
+ server-1  | /home | /opt                | /home  | /               
+ server-2  | /home | /opt                | /home  | /               
+ server-3  | /home | /opt                | /home  | /               
+ server-4  | /home | /opt                | /home  | /               
+ server-5  | /home | /opt                | /home  | /               
+ server-6  | /home | /opt                | /home  | /               
+ server-7  | /home | /opt                | /home  | /               
+ server-8  | /home | /opt                | /home  | /               
+ server-9  | /home | /opt                | /home  | /               
 
- Server      | Host            | User | Port | Error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
-
-
-TASK [unreachable-true] 
-
-localhost | 123
-
-TASK [unreachable-true] 
-
-172.24.2.2 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.4 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.2 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.4 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.2 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.4 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.2 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.3 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.4 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.5 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.6 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.7 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.8 | 123
-
-TASK [unreachable-true] 
-
-172.24.2.9 | 123
-
-TASK [unreachable-true] 
-
-2001:3984:3989::10 | 123
