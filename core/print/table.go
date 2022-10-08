@@ -25,121 +25,38 @@ func CreateTable(
 		t.SuppressEmptyColumns()
 	}
 
-	// headerStyles := make(map[string]table.ColumnConfig)
-	// for _, h := range defaultHeaders {
-	// 	switch h {
-	// 	case "server":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "server",
+	// Responsible for formatting headers and rows
+	headerStyles := make(map[string]table.ColumnConfig)
+	for _, h := range defaultHeaders {
+		headerStyles[h] = table.ColumnConfig{
+			Name: h,
+			AlignHeader:  GetAlign(*theme.Table.Header.Align),
+			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
 
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Server.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Server.Fg, theme.Table.Color.Header.Server.Bg, theme.Table.Color.Header.Server.Attr),
+			Align:  GetAlign(*theme.Table.Row.Align),
+			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+		}
+	}
 
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Server.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Server.Fg, theme.Table.Color.Row.Server.Bg, theme.Table.Color.Row.Server.Attr),
-	// 		}
-	// 	case "tag":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "tag",
+	headers := []table.ColumnConfig{}
+	for _, h := range defaultHeaders {
+		headers = append(headers, headerStyles[h])
+	}
 
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Tag.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Tag.Fg, theme.Table.Color.Header.Tag.Bg, theme.Table.Color.Header.Tag.Attr),
+	for i := range restHeaders {
+		hh := table.ColumnConfig{
+			Number:       len(defaultHeaders) + 1 + i,
+			AlignHeader:  GetAlign(*theme.Table.Header.Align),
+			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
 
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Tag.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Tag.Fg, theme.Table.Color.Row.Tag.Bg, theme.Table.Color.Row.Tag.Attr),
-	// 		}
-	// 	case "description":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "description",
+			Align:  GetAlign(*theme.Table.Row.Align),
+			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+		}
 
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Desc.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Desc.Fg, theme.Table.Color.Header.Desc.Bg, theme.Table.Color.Header.Desc.Attr),
+		headers = append(headers, hh)
+	}
 
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Desc.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Desc.Fg, theme.Table.Color.Row.Desc.Bg, theme.Table.Color.Row.Desc.Attr),
-	// 		}
-	// 	case "host":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "host",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Host.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Host.Fg, theme.Table.Color.Header.Host.Bg, theme.Table.Color.Header.Host.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Host.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Host.Fg, theme.Table.Color.Row.Host.Bg, theme.Table.Color.Row.Host.Attr),
-	// 		}
-	// 	case "user":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "user",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.User.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.User.Fg, theme.Table.Color.Header.User.Bg, theme.Table.Color.Header.User.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.User.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.User.Fg, theme.Table.Color.Row.User.Bg, theme.Table.Color.Row.User.Attr),
-	// 		}
-	// 	case "port":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "port",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Port.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Port.Fg, theme.Table.Color.Header.Port.Bg, theme.Table.Color.Header.Port.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Port.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Port.Fg, theme.Table.Color.Row.Port.Bg, theme.Table.Color.Row.Port.Attr),
-	// 		}
-	// 	case "bastion":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "bastion",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Bastion.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Bastion.Fg, theme.Table.Color.Header.Bastion.Bg, theme.Table.Color.Header.Bastion.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Bastion.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Bastion.Fg, theme.Table.Color.Row.Bastion.Bg, theme.Table.Color.Row.Bastion.Attr),
-	// 		}
-	// 	case "local":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "local",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Local.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Local.Fg, theme.Table.Color.Header.Local.Bg, theme.Table.Color.Header.Local.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Local.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Local.Fg, theme.Table.Color.Row.Local.Bg, theme.Table.Color.Row.Local.Attr),
-	// 		}
-	// 	case "task":
-	// 		headerStyles[h] = table.ColumnConfig{
-	// 			Name: "task",
-
-	// 			AlignHeader:  GetAlign(*theme.Table.Color.Header.Task.Align),
-	// 			ColorsHeader: combineColors(theme.Table.Color.Header.Task.Fg, theme.Table.Color.Header.Task.Bg, theme.Table.Color.Header.Task.Attr),
-
-	// 			Align:  GetAlign(*theme.Table.Color.Row.Task.Align),
-	// 			Colors: combineColors(theme.Table.Color.Row.Task.Fg, theme.Table.Color.Row.Task.Bg, theme.Table.Color.Row.Task.Attr),
-	// 		}
-	// 	}
-	// }
-
-	// headers := []table.ColumnConfig{}
-	// for _, h := range defaultHeaders {
-	// 	headers = append(headers, headerStyles[h])
-	// }
-
-	// for i := range restHeaders {
-	// 	hh := table.ColumnConfig{
-	// 		Number:       len(defaultHeaders) + 1 + i,
-	// 		AlignHeader:  GetAlign(*theme.Table.Color.Header.Output.Align),
-	// 		ColorsHeader: combineColors(theme.Table.Color.Header.Output.Fg, theme.Table.Color.Header.Output.Bg, theme.Table.Color.Header.Output.Attr),
-
-	// 		Align:  GetAlign(*theme.Table.Color.Row.Output.Align),
-	// 		Colors: combineColors(theme.Table.Color.Row.Output.Fg, theme.Table.Color.Row.Output.Bg, theme.Table.Color.Row.Output.Attr),
-	// 	}
-
-	// 	headers = append(headers, hh)
-	// }
-
-	// t.SetColumnConfigs(headers)
+	t.SetColumnConfigs(headers)
 
 	return t
 }
