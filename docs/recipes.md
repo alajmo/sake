@@ -224,18 +224,9 @@ The describe sub-command describes servers and tasks.
   User: samir
   Host: pihole.lan
   Port: 22
-  Local: false
   WorkDir:
   Desc: runs pihole
   Tags: remote, pi
-  Env:
-      SAKE_SERVER_NAME: pihole
-      SAKE_SERVER_DESC: runs pihole
-      SAKE_SERVER_TAGS: remote,pi
-      SAKE_SERVER_HOST: pihole.lan
-      SAKE_SERVER_USER: samir
-      SAKE_SERVER_PORT: 22
-      SAKE_SERVER_LOCAL: false
   ```
 
 - **Tasks**: To describe all tasks run `sake describe tasks [task]`
@@ -246,25 +237,15 @@ The describe sub-command describes servers and tasks.
   Task: info
   Name: info
   Desc: get remote info
-  Local: false
   WorkDir:
   Theme: default
   Target:
       All: true
-      Servers:
-      Tags:
   Spec:
       Output: table
       Parallel: true
-      AnyErrorsFatal: false
       IgnoreErrors: true
       IgnoreUnreachable: true
-      OmitEmpty: false
-  Env:
-      SAKE_TASK_ID: info
-      SAKE_TASK_NAME:
-      SAKE_TASK_DESC: get remote info
-      SAKE_TASK_LOCAL: false
   Tasks:
       - OS: print OS
       - Kernel: Print kernel version
@@ -633,7 +614,7 @@ $ sake run output --all --output markdown
 
 You can change the default `shell` for tasks by setting the `shell` property in the global scope, server section or the task section (nested tasks/commands included).
 
-The order of precedence is as follows:
+The order of precedence is as follows (first takes precedence):
 
 1. task list
 2. task
