@@ -1,6 +1,6 @@
 Index: 18
-Name: Limit to 2 servers
-Cmd: go run ../../main.go run ping -S -t reachable -l 2
+Name: Limit to 50 percent servers
+Cmd: go run ../../main.go run ping -S -t reachable -L 50
 WantErr: false
 
 ---
@@ -8,6 +8,30 @@ WantErr: false
 TASK [ping: ping server] 
 
 localhost | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
 
 TASK [ping: ping server] 
 

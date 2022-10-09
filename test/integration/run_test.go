@@ -67,11 +67,6 @@ var cases = []TemplateTest{
 	// describe tasks
 	{
 		TestName: "Describe tasks",
-		TestCmd:  "go run ../../main.go list tasks",
-		WantErr:  false,
-	},
-	{
-		TestName: "Describe tasks",
 		TestCmd:  "go run ../../main.go describe tasks",
 		WantErr:  false,
 	},

@@ -1,70 +1,90 @@
 Index: 20
-Name: Filter by inverting on tag unreachable
-Cmd: go run ../../main.go run ping -S -t unreachable -v
+Name: Simple Envs
+Cmd: go run ../../main.go run env -S -t reachable
 WantErr: false
 
 ---
 
-TASK [ping: ping server] 
+ server    | env         
+-----------+-------------
+ localhost | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ list-0    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ list-1    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-0   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-1   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-0     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-1     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ server-1  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-2  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-3  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-4  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-5  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-6  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-7  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-8  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-9  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
 
-localhost | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.3 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.5 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.6 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.7 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.8 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.9 | pong
-
-TASK [ping: ping server] 
-
-2001:3984:3989::10 | pong

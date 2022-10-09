@@ -1,409 +1,70 @@
 Index: 11
-Name: Describe tasks
-Cmd: go run ../../main.go describe tasks
+Name: Ping all servers
+Cmd: go run ../../main.go run ping -S -t reachable
 WantErr: false
 
 ---
 
-name: ping
-desc: ping server
-theme: default
-target:
-    all: true
-spec:
-    output: text
-cmd: 
-    echo pong
+TASK [ping: ping server] 
 
---
+localhost | pong
 
-name: real-ping
-desc: ping server
-theme: default
-local: true
-target:
-    all: true
-spec:
-    output: text
-cmd: 
-    ping $SAKE_SERVER_HOST -c 2
+TASK [ping: ping server] 
 
---
+172.24.2.2 | pong
 
-task: print-host
-name: Host
-desc: print host
-theme: default
-target:
-    all: true
-spec:
-    output: table
-    parallel: true
-    ignore_errors: true
-    ignore_unreachable: true
-cmd: 
-    echo $SAKE_SERVER_HOST
+TASK [ping: ping server] 
 
---
+172.24.2.4 | pong
 
-task: print-hostname
-name: Hostname
-desc: print hostname
-theme: default
-target:
-    all: true
-spec:
-    output: table
-    parallel: true
-    ignore_errors: true
-    ignore_unreachable: true
-cmd: 
-    hostname
+TASK [ping: ping server] 
 
---
+172.24.2.2 | pong
 
-task: print-os
-name: OS
-desc: print OS
-theme: default
-target:
-    all: true
-spec:
-    output: table
-    parallel: true
-    ignore_errors: true
-    ignore_unreachable: true
-cmd: 
-    echo OS
+TASK [ping: ping server] 
 
---
+172.24.2.4 | pong
 
-task: print-kernel
-name: Kernel
-desc: Print kernel version
-theme: default
-target:
-    all: true
-spec:
-    output: table
-    parallel: true
-    ignore_errors: true
-    ignore_unreachable: true
-cmd: 
-    echo kernel
+TASK [ping: ping server] 
 
---
+172.24.2.2 | pong
 
-name: info
-desc: get remote info
-theme: default
-target:
-    all: true
-spec:
-    output: table
-    parallel: true
-    ignore_errors: true
-    ignore_unreachable: true
-tasks: 
-    - OS: print OS
-    - Kernel: Print kernel version
+TASK [ping: ping server] 
 
---
+172.24.2.4 | pong
 
-name: env
-theme: default
-target:
-    all: true
-spec:
-    output: table
-env: 
-    foo: xyz
-    task: local
-cmd: 
-    echo "foo $foo"
-    echo "hello $hello"
-    echo "cookie $cookie"
-    echo "release $release"
-    echo "task $task"
+TASK [ping: ping server] 
 
---
+172.24.2.2 | pong
 
-name: env-ref
-theme: default
-target:
-    all: true
-spec:
-    output: table
-env: 
-    task: 123
-    xyz: xyz
-cmd: 
-    echo "foo $foo"
-    echo "hello $hello"
-    echo "cookie $cookie"
-    echo "release $release"
-    echo "task $task"
-    echo "xyz $xyz"
+TASK [ping: ping server] 
 
---
+172.24.2.3 | pong
 
-name: env-complex
-theme: default
-target:
-    all: true
-spec:
-    output: table
-env: 
-    foo: xyz
-    task: local
-tasks: 
-    - env-ref
-    - env-ref
+TASK [ping: ping server] 
 
---
+172.24.2.4 | pong
 
-name: env-default
-theme: default
-target:
-    all: true
-spec:
-    output: table
-cmd: 
-    echo "# SERVER"
-    echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
-    echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
-    echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
-    echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
-    echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
-    echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
-    echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
-    
-    echo
-    echo "# TASK"
-    echo "SAKE_TASK_ID $SAKE_TASK_ID"
-    echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
-    echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
-    echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
-    
-    echo
-    echo "# CONFIG"
-    echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
+TASK [ping: ping server] 
 
---
+172.24.2.5 | pong
 
-name: a
-theme: default
-spec:
-    output: text
-tasks: 
-    - ping: ping server
+TASK [ping: ping server] 
 
---
+172.24.2.6 | pong
 
-name: b
-theme: default
-spec:
-    output: text
-tasks: 
-    - ping: ping server
-    - ping: ping server
+TASK [ping: ping server] 
 
---
+172.24.2.7 | pong
 
-name: c
-theme: default
-spec:
-    output: text
-tasks: 
-    - ping: ping server
-    - ping: ping server
-    - ping: ping server
+TASK [ping: ping server] 
 
---
+172.24.2.8 | pong
 
-name: d
-theme: default
-target:
-    all: true
-spec:
-    output: table
-tasks: 
-    - ping: ping server
-    - ping: ping server
-    - ping: ping server
-    - ping: ping server
-    - ping: ping server
-    - ping: ping server
+TASK [ping: ping server] 
 
---
+172.24.2.9 | pong
 
-task: work-ref
-name: ref
-theme: default
-work_dir: /usr
-spec:
-    output: text
-cmd: 
-    pwd
+TASK [ping: ping server] 
 
---
-
-task: work-nested
-name: nested
-theme: default
-spec:
-    output: text
-tasks: 
-    - ref
-
---
-
-name: work-dir-1
-theme: default
-work_dir: /home
-target:
-    all: true
-spec:
-    output: table
-tasks: 
-    - ref
-    - Override inline ref
-    - Inline
-    - Override inline
-
---
-
-name: work-dir-2
-theme: default
-target:
-    all: true
-spec:
-    output: table
-tasks: 
-    - ref
-    - Override inline ref
-    - Inline
-    - Override inline
-
---
-
-name: work-dir-3
-theme: default
-target:
-    all: true
-spec:
-    output: table
-tasks: 
-    - ref
-    - ref
-
---
-
-name: fatal
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-cmd: 
-    exit 1
-
---
-
-name: fatal-true
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-    any_errors_fatal: true
-cmd: 
-    exit 1
-
---
-
-name: errors
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-tasks: 
-    - cmd
-    - cmd
-    - cmd
-
---
-
-name: errors-true
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-    ignore_errors: true
-tasks: 
-    - cmd
-    - cmd
-    - cmd
-
---
-
-name: unreachable
-theme: default
-target:
-    all: true
-cmd: 
-    echo 123
-
---
-
-name: unreachable-true
-theme: default
-target:
-    all: true
-spec:
-    ignore_unreachable: true
-cmd: 
-    echo 123
-
---
-
-name: empty
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-cmd: 
-    if [[ -d ".ssh" ]]
-    then
-        echo "Exists"
-    fi
-
---
-
-name: empty-true
-theme: default
-target:
-    tags: reachable
-spec:
-    output: table
-    omit_empty: true
-cmd: 
-    if [[ -d ".ssh" ]]
-    then
-        echo "Exists"
-    fi
-
---
-
-name: output
-theme: default
-spec:
-    output: table
-tasks: 
-    - cmd
-    - cmd
-    - cmd
-
+2001:3984:3989::10 | pong

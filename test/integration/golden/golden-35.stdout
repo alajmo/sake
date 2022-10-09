@@ -1,25 +1,26 @@
 Index: 35
-Name: omit_empty true
-Cmd: go run ../../main.go run empty-true -S -t reachable
+Name: output
+Cmd: go run ../../main.go run output -S -t reachable
 WantErr: false
 
 ---
 
- server   | empty-true 
-----------+------------
- list-0   | Exists     
- list-1   | Exists     
- range-0  | Exists     
- range-1  | Exists     
- inv-0    | Exists     
- inv-1    | Exists     
- server-1 | Exists     
- server-2 | Exists     
- server-3 | Exists     
- server-4 | Exists     
- server-5 | Exists     
- server-6 | Exists     
- server-7 | Exists     
- server-8 | Exists     
- server-9 | Exists     
+ server    | output      | output    | output            
+-----------+-------------+-----------+-------------------
+ localhost | Hello world | Bye world | Hello again world 
+ list-0    | Hello world | Bye world | Hello again world 
+ list-1    | Hello world | Bye world | Hello again world 
+ range-0   | Hello world | Bye world | Hello again world 
+ range-1   | Hello world | Bye world | Hello again world 
+ inv-0     | Hello world | Bye world | Hello again world 
+ inv-1     | Hello world | Bye world | Hello again world 
+ server-1  | Hello world | Bye world | Hello again world 
+ server-2  | Hello world | Bye world | Hello again world 
+ server-3  | Hello world | Bye world | Hello again world 
+ server-4  | Hello world | Bye world | Hello again world 
+ server-5  | Hello world | Bye world | Hello again world 
+ server-6  | Hello world | Bye world | Hello again world 
+ server-7  | Hello world | Bye world | Hello again world 
+ server-8  | Hello world | Bye world | Hello again world 
+ server-9  | Hello world | Bye world | Hello again world 
 

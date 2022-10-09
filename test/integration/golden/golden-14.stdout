@@ -1,11 +1,11 @@
 Index: 14
-Name: Filter by hosts server using server name
-Cmd: go run ../../main.go run info -S -s list-1
+Name: Filter by hosts server using range index
+Cmd: go run ../../main.go run info -S -s 'list[0]'
 WantErr: false
 
 ---
 
  server | OS | Kernel 
 --------+----+--------
- list-1 | OS | kernel 
+ list-0 | OS | kernel 
 

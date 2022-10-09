@@ -1,18 +1,11 @@
 Index: 13
-Name: Multiple commands
-Cmd: go run ../../main.go run info -S -t prod
+Name: Filter by hosts server using server name
+Cmd: go run ../../main.go run info -S -s list-1
 WantErr: false
 
 ---
 
- server   | OS | Kernel 
-----------+----+--------
- list-0   | OS | kernel 
- list-1   | OS | kernel 
- range-0  | OS | kernel 
- range-1  | OS | kernel 
- inv-0    | OS | kernel 
- inv-1    | OS | kernel 
- server-1 | OS | kernel 
- server-2 | OS | kernel 
+ server | OS | Kernel 
+--------+----+--------
+ list-1 | OS | kernel 
 

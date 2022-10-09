@@ -1,42 +1,42 @@
 Index: 30
-Name: ignore_errors false
-Cmd: go run ../../main.go run errors -S -t reachable
+Name: ignore_errors true
+Cmd: go run ../../main.go run errors-true -S -t reachable
 WantErr: false
 
 ---
 
  server    | output | output                        | output 
 -----------+--------+-------------------------------+--------
- localhost | 123    |                               |        
+ localhost | 123    |                               | 321    
            |        | exit status 65                |        
- list-0    | 123    |                               |        
+ list-0    | 123    |                               | 321    
            |        | Process exited with status 65 |        
- list-1    | 123    |                               |        
+ list-1    | 123    |                               | 321    
            |        | Process exited with status 65 |        
- range-0   | 123    |                               |        
+ range-0   | 123    |                               | 321    
            |        | Process exited with status 65 |        
- range-1   | 123    |                               |        
+ range-1   | 123    |                               | 321    
            |        | Process exited with status 65 |        
- inv-0     | 123    |                               |        
+ inv-0     | 123    |                               | 321    
            |        | Process exited with status 65 |        
- inv-1     | 123    |                               |        
+ inv-1     | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-1  | 123    |                               |        
+ server-1  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-2  | 123    |                               |        
+ server-2  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-3  | 123    |                               |        
+ server-3  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-4  | 123    |                               |        
+ server-4  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-5  | 123    |                               |        
+ server-5  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-6  | 123    |                               |        
+ server-6  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-7  | 123    |                               |        
+ server-7  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-8  | 123    |                               |        
+ server-8  | 123    |                               | 321    
            |        | Process exited with status 65 |        
- server-9  | 123    |                               |        
+ server-9  | 123    |                               | 321    
            |        | Process exited with status 65 |        
 

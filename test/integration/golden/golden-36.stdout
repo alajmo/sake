@@ -1,26 +1,70 @@
 Index: 36
-Name: output
-Cmd: go run ../../main.go run output -S -t reachable
+Name: Run exec command
+Cmd: go run ../../main.go exec 'echo 123' -S -t reachable
 WantErr: false
 
 ---
 
- server    | output      | output    | output            
------------+-------------+-----------+-------------------
- localhost | Hello world | Bye world | Hello again world 
- list-0    | Hello world | Bye world | Hello again world 
- list-1    | Hello world | Bye world | Hello again world 
- range-0   | Hello world | Bye world | Hello again world 
- range-1   | Hello world | Bye world | Hello again world 
- inv-0     | Hello world | Bye world | Hello again world 
- inv-1     | Hello world | Bye world | Hello again world 
- server-1  | Hello world | Bye world | Hello again world 
- server-2  | Hello world | Bye world | Hello again world 
- server-3  | Hello world | Bye world | Hello again world 
- server-4  | Hello world | Bye world | Hello again world 
- server-5  | Hello world | Bye world | Hello again world 
- server-6  | Hello world | Bye world | Hello again world 
- server-7  | Hello world | Bye world | Hello again world 
- server-8  | Hello world | Bye world | Hello again world 
- server-9  | Hello world | Bye world | Hello again world 
+TASK
 
+localhost | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.2 | 123
+
+TASK
+
+172.24.2.3 | 123
+
+TASK
+
+172.24.2.4 | 123
+
+TASK
+
+172.24.2.5 | 123
+
+TASK
+
+172.24.2.6 | 123
+
+TASK
+
+172.24.2.7 | 123
+
+TASK
+
+172.24.2.8 | 123
+
+TASK
+
+172.24.2.9 | 123
+
+TASK
+
+2001:3984:3989::10 | 123

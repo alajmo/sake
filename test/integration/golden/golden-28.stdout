@@ -1,42 +1,28 @@
 Index: 28
-Name: fatal false
-Cmd: go run ../../main.go run fatal -S -t reachable
-WantErr: false
+Name: fatal true
+Cmd: go run ../../main.go run fatal-true -S -t reachable
+WantErr: true
 
 ---
 
- server    | fatal                        
------------+------------------------------
- localhost |                              
-           | exit status 1                
- list-0    |                              
-           | Process exited with status 1 
- list-1    |                              
-           | Process exited with status 1 
- range-0   |                              
-           | Process exited with status 1 
- range-1   |                              
-           | Process exited with status 1 
- inv-0     |                              
-           | Process exited with status 1 
- inv-1     |                              
-           | Process exited with status 1 
- server-1  |                              
-           | Process exited with status 1 
- server-2  |                              
-           | Process exited with status 1 
- server-3  |                              
-           | Process exited with status 1 
- server-4  |                              
-           | Process exited with status 1 
- server-5  |                              
-           | Process exited with status 1 
- server-6  |                              
-           | Process exited with status 1 
- server-7  |                              
-           | Process exited with status 1 
- server-8  |                              
-           | Process exited with status 1 
- server-9  |                              
-           | Process exited with status 1 
+ server    | fatal-true    
+-----------+---------------
+ localhost |               
+           | exit status 1 
+ list-0    |               
+ list-1    |               
+ range-0   |               
+ range-1   |               
+ inv-0     |               
+ inv-1     |               
+ server-1  |               
+ server-2  |               
+ server-3  |               
+ server-4  |               
+ server-5  |               
+ server-6  |               
+ server-7  |               
+ server-8  |               
+ server-9  |               
 
+exit status 1

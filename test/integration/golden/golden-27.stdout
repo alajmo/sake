@@ -1,26 +1,42 @@
 Index: 27
-Name: Work Dir 3
-Cmd: go run ../../main.go run work-dir-3 -S -t reachable
+Name: fatal false
+Cmd: go run ../../main.go run fatal -S -t reachable
 WantErr: false
 
 ---
 
- server    | ref  | ref  
------------+------+------
- localhost | /usr | /etc 
- list-0    | /usr | /etc 
- list-1    | /usr | /etc 
- range-0   | /usr | /etc 
- range-1   | /usr | /etc 
- inv-0     | /usr | /etc 
- inv-1     | /usr | /etc 
- server-1  | /usr | /etc 
- server-2  | /usr | /etc 
- server-3  | /usr | /etc 
- server-4  | /usr | /etc 
- server-5  | /usr | /etc 
- server-6  | /usr | /etc 
- server-7  | /usr | /etc 
- server-8  | /usr | /etc 
- server-9  | /usr | /etc 
+ server    | fatal                        
+-----------+------------------------------
+ localhost |                              
+           | exit status 1                
+ list-0    |                              
+           | Process exited with status 1 
+ list-1    |                              
+           | Process exited with status 1 
+ range-0   |                              
+           | Process exited with status 1 
+ range-1   |                              
+           | Process exited with status 1 
+ inv-0     |                              
+           | Process exited with status 1 
+ inv-1     |                              
+           | Process exited with status 1 
+ server-1  |                              
+           | Process exited with status 1 
+ server-2  |                              
+           | Process exited with status 1 
+ server-3  |                              
+           | Process exited with status 1 
+ server-4  |                              
+           | Process exited with status 1 
+ server-5  |                              
+           | Process exited with status 1 
+ server-6  |                              
+           | Process exited with status 1 
+ server-7  |                              
+           | Process exited with status 1 
+ server-8  |                              
+           | Process exited with status 1 
+ server-9  |                              
+           | Process exited with status 1 
 
