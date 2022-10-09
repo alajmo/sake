@@ -12,7 +12,7 @@ target:
     all: true
 spec:
     output: text
-cmd:
+cmd: 
     echo pong
 
 --
@@ -25,7 +25,7 @@ target:
     all: true
 spec:
     output: text
-cmd:
+cmd: 
     ping $SAKE_SERVER_HOST -c 2
 
 --
@@ -41,7 +41,7 @@ spec:
     parallel: true
     ignore_errors: true
     ignore_unreachable: true
-cmd:
+cmd: 
     echo $SAKE_SERVER_HOST
 
 --
@@ -57,7 +57,7 @@ spec:
     parallel: true
     ignore_errors: true
     ignore_unreachable: true
-cmd:
+cmd: 
     hostname
 
 --
@@ -73,7 +73,7 @@ spec:
     parallel: true
     ignore_errors: true
     ignore_unreachable: true
-cmd:
+cmd: 
     echo OS
 
 --
@@ -89,7 +89,7 @@ spec:
     parallel: true
     ignore_errors: true
     ignore_unreachable: true
-cmd:
+cmd: 
     echo kernel
 
 --
@@ -104,7 +104,7 @@ spec:
     parallel: true
     ignore_errors: true
     ignore_unreachable: true
-tasks:
+tasks: 
     - OS: print OS
     - Kernel: Print kernel version
 
@@ -116,10 +116,10 @@ target:
     all: true
 spec:
     output: table
-env:
+env: 
     foo: xyz
     task: local
-cmd:
+cmd: 
     echo "foo $foo"
     echo "hello $hello"
     echo "cookie $cookie"
@@ -134,10 +134,10 @@ target:
     all: true
 spec:
     output: table
-env:
+env: 
     task: 123
     xyz: xyz
-cmd:
+cmd: 
     echo "foo $foo"
     echo "hello $hello"
     echo "cookie $cookie"
@@ -153,10 +153,10 @@ target:
     all: true
 spec:
     output: table
-env:
+env: 
     foo: xyz
     task: local
-tasks:
+tasks: 
     - env-ref
     - env-ref
 
@@ -168,7 +168,7 @@ target:
     all: true
 spec:
     output: table
-cmd:
+cmd: 
     echo "# SERVER"
     echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
     echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
@@ -177,14 +177,14 @@ cmd:
     echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
     echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
     echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
-
+    
     echo
     echo "# TASK"
     echo "SAKE_TASK_ID $SAKE_TASK_ID"
     echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
     echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
     echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
-
+    
     echo
     echo "# CONFIG"
     echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
@@ -195,7 +195,7 @@ name: a
 theme: default
 spec:
     output: text
-tasks:
+tasks: 
     - ping: ping server
 
 --
@@ -204,7 +204,7 @@ name: b
 theme: default
 spec:
     output: text
-tasks:
+tasks: 
     - ping: ping server
     - ping: ping server
 
@@ -214,7 +214,7 @@ name: c
 theme: default
 spec:
     output: text
-tasks:
+tasks: 
     - ping: ping server
     - ping: ping server
     - ping: ping server
@@ -227,7 +227,7 @@ target:
     all: true
 spec:
     output: table
-tasks:
+tasks: 
     - ping: ping server
     - ping: ping server
     - ping: ping server
@@ -243,7 +243,7 @@ theme: default
 work_dir: /usr
 spec:
     output: text
-cmd:
+cmd: 
     pwd
 
 --
@@ -253,7 +253,7 @@ name: nested
 theme: default
 spec:
     output: text
-tasks:
+tasks: 
     - ref
 
 --
@@ -265,7 +265,7 @@ target:
     all: true
 spec:
     output: table
-tasks:
+tasks: 
     - ref
     - Override inline ref
     - Inline
@@ -279,7 +279,7 @@ target:
     all: true
 spec:
     output: table
-tasks:
+tasks: 
     - ref
     - Override inline ref
     - Inline
@@ -293,7 +293,7 @@ target:
     all: true
 spec:
     output: table
-tasks:
+tasks: 
     - ref
     - ref
 
@@ -305,7 +305,7 @@ target:
     tags: reachable
 spec:
     output: table
-cmd:
+cmd: 
     exit 1
 
 --
@@ -317,7 +317,7 @@ target:
 spec:
     output: table
     any_errors_fatal: true
-cmd:
+cmd: 
     exit 1
 
 --
@@ -328,7 +328,7 @@ target:
     tags: reachable
 spec:
     output: table
-tasks:
+tasks: 
     - cmd
     - cmd
     - cmd
@@ -342,7 +342,7 @@ target:
 spec:
     output: table
     ignore_errors: true
-tasks:
+tasks: 
     - cmd
     - cmd
     - cmd
@@ -353,7 +353,7 @@ name: unreachable
 theme: default
 target:
     all: true
-cmd:
+cmd: 
     echo 123
 
 --
@@ -364,7 +364,7 @@ target:
     all: true
 spec:
     ignore_unreachable: true
-cmd:
+cmd: 
     echo 123
 
 --
@@ -375,7 +375,7 @@ target:
     tags: reachable
 spec:
     output: table
-cmd:
+cmd: 
     if [[ -d ".ssh" ]]
     then
         echo "Exists"
@@ -390,7 +390,7 @@ target:
 spec:
     output: table
     omit_empty: true
-cmd:
+cmd: 
     if [[ -d ".ssh" ]]
     then
         echo "Exists"
@@ -402,7 +402,7 @@ name: output
 theme: default
 spec:
     output: table
-tasks:
+tasks: 
     - cmd
     - cmd
     - cmd
