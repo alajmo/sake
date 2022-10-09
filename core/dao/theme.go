@@ -18,13 +18,13 @@ type Table struct {
 	Style   string        `yaml:"style"`
 	Options *TableOptions `yaml:"options"`
 
-	Border       *BorderColors `yaml:"border"`
+	Border *BorderColors `yaml:"border"`
 
-	Title        *CellColors   `yaml:"title"`
-	Header       *CellColors   `yaml:"header"`
-	Row          *CellColors   `yaml:"row"`
-	RowAlternate *CellColors   `yaml:"row_alt"`
-	Footer       *CellColors   `yaml:"footer"`
+	Title        *CellColors `yaml:"title"`
+	Header       *CellColors `yaml:"header"`
+	Row          *CellColors `yaml:"row"`
+	RowAlternate *CellColors `yaml:"row_alt"`
+	Footer       *CellColors `yaml:"footer"`
 
 	// Not stylable via YAML
 	Box table.BoxStyle `yaml:"-"`
@@ -94,6 +94,21 @@ func (r Row) GetValue(_ string, i int) string {
 	return ""
 }
 
+type Items interface {
+	GetValue(string, int) string
+}
+
+func GetTableData[T Items](items []T, headers []string) []Row {
+	var rows []Row
+	for i, s := range items {
+		rows = append(rows, Row{Columns: []string{}})
+		for _, h := range headers {
+			rows[i].Columns = append(rows[i].Columns, s.GetValue(h, 0))
+		}
+	}
+	return rows
+}
+
 // Table Box Styles
 
 var StyleBoxLight = table.BoxStyle{
@@ -158,7 +173,7 @@ var DefaultTable = Table{
 	},
 
 	Border: &BorderColors{
-		Header: &CellColors {
+		Header: &CellColors{
 			Fg:   core.Ptr(""),
 			Bg:   core.Ptr(""),
 			Attr: core.Ptr("faint"),
@@ -191,35 +206,35 @@ var DefaultTable = Table{
 	},
 
 	Header: &CellColors{
-		Fg:    core.Ptr(""),
-		Bg:    core.Ptr(""),
-		Align: core.Ptr(""),
-		Attr:  core.Ptr("bold"),
-		Format:  core.Ptr("default"),
+		Fg:     core.Ptr(""),
+		Bg:     core.Ptr(""),
+		Align:  core.Ptr(""),
+		Attr:   core.Ptr("bold"),
+		Format: core.Ptr("default"),
 	},
 
 	Row: &CellColors{
-		Fg:    core.Ptr(""),
-		Bg:    core.Ptr(""),
-		Align: core.Ptr(""),
-		Attr:  core.Ptr("bold"),
-		Format:  core.Ptr("default"),
+		Fg:     core.Ptr(""),
+		Bg:     core.Ptr(""),
+		Align:  core.Ptr(""),
+		Attr:   core.Ptr("bold"),
+		Format: core.Ptr("default"),
 	},
 
 	RowAlternate: &CellColors{
-		Fg:    core.Ptr(""),
-		Bg:    core.Ptr(""),
-		Align: core.Ptr(""),
-		Attr:  core.Ptr("bold"),
-		Format:  core.Ptr("default"),
+		Fg:     core.Ptr(""),
+		Bg:     core.Ptr(""),
+		Align:  core.Ptr(""),
+		Attr:   core.Ptr("bold"),
+		Format: core.Ptr("default"),
 	},
 
 	Footer: &CellColors{
-		Fg:    core.Ptr(""),
-		Bg:    core.Ptr(""),
-		Align: core.Ptr(""),
-		Attr:  core.Ptr("bold"),
-		Format:  core.Ptr("default"),
+		Fg:     core.Ptr(""),
+		Bg:     core.Ptr(""),
+		Align:  core.Ptr(""),
+		Attr:   core.Ptr("bold"),
+		Format: core.Ptr("default"),
 	},
 }
 

@@ -11,8 +11,7 @@ import (
 
 func CreateTable(
 	options PrintTableOptions,
-	defaultHeaders []string,
-	restHeaders []string,
+	tableHeaders []string,
 ) table.Writer {
 	t := table.NewWriter()
 
@@ -27,9 +26,9 @@ func CreateTable(
 
 	// Responsible for formatting headers and rows
 	headerStyles := make(map[string]table.ColumnConfig)
-	for _, h := range defaultHeaders {
+	for _, h := range tableHeaders {
 		headerStyles[h] = table.ColumnConfig{
-			Name: h,
+			Name:         h,
 			AlignHeader:  GetAlign(*theme.Table.Header.Align),
 			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
 
@@ -39,21 +38,8 @@ func CreateTable(
 	}
 
 	headers := []table.ColumnConfig{}
-	for _, h := range defaultHeaders {
+	for _, h := range tableHeaders {
 		headers = append(headers, headerStyles[h])
-	}
-
-	for i := range restHeaders {
-		hh := table.ColumnConfig{
-			Number:       len(defaultHeaders) + 1 + i,
-			AlignHeader:  GetAlign(*theme.Table.Header.Align),
-			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
-
-			Align:  GetAlign(*theme.Table.Row.Align),
-			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
-		}
-
-		headers = append(headers, hh)
 	}
 
 	t.SetColumnConfigs(headers)
@@ -78,15 +64,10 @@ func FormatTable(theme dao.Theme) table.Style {
 			SeparateRows:    *theme.Table.Options.SeparateRows,
 		},
 
-		Title: table.TitleOptions {
-			Align: GetAlign(*theme.Table.Title.Align),
+		Title: table.TitleOptions{
+			Align:  GetAlign(*theme.Table.Title.Align),
 			Colors: combineColors(theme.Table.Title.Fg, theme.Table.Title.Bg, theme.Table.Title.Attr),
 		},
-
-		// Rows: table.Row {
-		// 	Align: GetAlign(*theme.Table.Title.Align),
-		// 	Colors: combineColors(theme.Table.Title.Fg, theme.Table.Title.Bg, theme.Table.Title.Attr),
-		// },
 
 		// Border colors
 		Color: table.ColorOptions{

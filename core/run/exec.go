@@ -75,8 +75,14 @@ func (run *Run) RunTask(
 			parseOutput.Rows = append(parseOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
 		}
 
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
-		print.PrintTable("Parse Errors", parseOutput.Rows, options, parseOutput.Headers[0:1], parseOutput.Headers[1:])
+		options := print.PrintTableOptions{
+			Theme: task.Theme,
+			OmitEmpty: task.Spec.OmitEmpty,
+			Output: task.Spec.Output,
+			SuppressEmptyColumns: false,
+			Title: "Parse Errors",
+		}
+		print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
 
 		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
 	}
@@ -107,8 +113,14 @@ func (run *Run) RunTask(
 			unreachableOutput.Rows = append(unreachableOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
 		}
 
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: "table", SuppressEmptyColumns: false}
-		print.PrintTable("\nUnreachable Hosts\n", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
+		options := print.PrintTableOptions{
+			Theme: task.Theme,
+			OmitEmpty: task.Spec.OmitEmpty,
+			Output: "table",
+			SuppressEmptyColumns: false,
+			Title: "\nUnreachable Hosts\n",
+		}
+		print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
 
 		if !task.Spec.IgnoreUnreachable {
 			return &core.ExecError{Err: err, ExitCode: 4}
@@ -143,12 +155,18 @@ func (run *Run) RunTask(
 		}
 
 		data, err := run.Table(runFlags.DryRun)
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
+		options := print.PrintTableOptions{
+			Theme: task.Theme,
+			OmitEmpty: task.Spec.OmitEmpty,
+			Output: task.Spec.Output,
+			SuppressEmptyColumns: false,
+			Resource: "task",
+		}
 		run.CleanupClients()
 		if !runFlags.Silent {
 			spinner.Stop()
 		}
-		print.PrintTable("", data.Rows, options, data.Headers[0:1], data.Headers[1:])
+		print.PrintTable(data.Rows, options, data.Headers)
 
 		if err != nil {
 			return err

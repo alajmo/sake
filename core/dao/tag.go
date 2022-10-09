@@ -12,14 +12,15 @@ type Tag struct {
 }
 
 func (t Tag) GetValue(key string, _ int) string {
-	switch key {
-	case "Tag", "tag":
-		return t.Name
-	case "Server", "server":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "server":
 		return strings.Join(t.Servers, "\n")
+	case "name", "tag":
+		return t.Name
+	default:
+		return ""
 	}
-
-	return ""
 }
 
 func (c *Config) GetTags() []string {

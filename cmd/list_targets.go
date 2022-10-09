@@ -8,6 +8,8 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
+var targetHeaders = []string{"target", "all", "servers", "tags", "regex", "invert", "limit", "limit_p",}
+
 func listTargetsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var targetFlags core.TargetFlags
 
@@ -33,13 +35,13 @@ func listTargetsCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().StringSliceVar(&targetFlags.Headers, "headers", []string{"name", "regex"}, "set headers. Available headers: name, regex")
+	cmd.Flags().StringSliceVar(&targetFlags.Headers, "headers", targetHeaders, "set headers. Available headers: name, regex")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		validHeaders := []string{"name", "regex"}
+		validHeaders := targetHeaders
 		return validHeaders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
@@ -61,6 +63,7 @@ func listTargets(
 		Theme:                *theme,
 		OmitEmpty:            false,
 		SuppressEmptyColumns: true,
+		Resource:			  "target",
 	}
 
 	var targets []dao.Target
@@ -73,6 +76,7 @@ func listTargets(
 	}
 
 	if len(targets) > 0 {
-		print.PrintTable("", targets, options, targetFlags.Headers, []string{})
+		rows := dao.GetTableData(targets, targetFlags.Headers)
+		print.PrintTable(rows, options, targetFlags.Headers)
 	}
 }

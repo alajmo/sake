@@ -67,8 +67,10 @@ func listTasks(
 			Theme:                *theme,
 			OmitEmpty:            false,
 			SuppressEmptyColumns: true,
+			Resource:			  "task",
 		}
 
-		print.PrintTable("", tasks, options, taskFlags.Headers, []string{})
+		rows := dao.GetTableData(tasks, taskFlags.Headers)
+		print.PrintTable(rows, options, taskFlags.Headers)
 	}
 }

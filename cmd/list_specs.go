@@ -8,6 +8,8 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
+var specHeaders = []string{"spec", "output", "parallel", "any_errors_fatal", "ignore_errors", "ignore_unreachable", "omit_empty"}
+
 func listSpecsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var specFlags core.SpecFlags
 
@@ -33,13 +35,13 @@ func listSpecsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlag
 		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().StringSliceVar(&specFlags.Headers, "headers", []string{"spec", "output"}, "set headers. Available headers: spec, output")
+	cmd.Flags().StringSliceVar(&specFlags.Headers, "headers", specHeaders, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		validHeaders := []string{"spec", "output"}
+		validHeaders := specHeaders
 		return validHeaders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
@@ -61,6 +63,7 @@ func listSpecs(
 		Theme:                *theme,
 		OmitEmpty:            false,
 		SuppressEmptyColumns: true,
+		Resource:			  "spec",
 	}
 
 	var specs []dao.Spec
@@ -73,6 +76,7 @@ func listSpecs(
 	}
 
 	if len(specs) > 0 {
-		print.PrintTable("", specs, options, specFlags.Headers, []string{})
+		rows := dao.GetTableData(specs, specFlags.Headers)
+		print.PrintTable(rows, options, specFlags.Headers)
 	}
 }

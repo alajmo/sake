@@ -93,12 +93,13 @@ type TaskRefYAML struct {
 }
 
 func (t Task) GetValue(key string, _ int) string {
-	switch key {
-	case "Name", "name", "Task", "task":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "task":
 		return t.Name
-	case "Desc", "desc", "Description", "description":
+	case "desc", "description":
 		return t.Desc
-	case "Command", "command":
+	case "command":
 		return t.Cmd
 	}
 

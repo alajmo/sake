@@ -7,9 +7,8 @@ disable_verify_host: true
 servers:
   localhost:
     desc: localhost
-    host: localhost
+    host: localhost desc
     local: true
-    work_dir: /opt
     tags: [local]
 
   list:
@@ -47,27 +46,28 @@ servers:
       hosts: 172.24.2.4
 
   server-1:
-    desc: server-1
+    desc: server-1 desc
     host: sake-resolve
     bastion: 172.24.2.99
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi]
+    work_dir: /tmp
 
   server-2:
-    desc: server-2
+    desc: server-2 desc
     host: sake-resolve
     tags: [remote, pi]
 
   server-3:
-    desc: server-3
+    desc: server-3 desc
     host: 172.24.2.4
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi, pihole]
 
   server-4:
-    desc: server-4
+    desc: server-4 desc
     host: 172.24.2.5
     user: test
     identity_file: ../keys/id_ed25519_pem
@@ -75,14 +75,14 @@ servers:
     tags: [remote, pi, pihole]
 
   ip6-1:
-    desc: ip6-1
+    desc: ip6-1 desc
     host: test@[2001:3984:3989::10]:22
     user: test
     password: test
     tags: [remote, reachable]
 
   ip6-2:
-    desc: ip6-2
+    desc: ip6-2 desc
     host: 2001:3984:3989::11
     port: 33
     user: test
@@ -97,9 +97,9 @@ targets:
     all: true
     limit: 3
 
-  limit-p:
+  limit_p:
     all: true
-    limit-p: 50
+    limit_p: 50
 
   regex:
     regex: 192
@@ -197,3 +197,10 @@ tasks:
     spec: info
     target: all
     cmd: uname -r | awk -v FS='-' '{print $1}'
+
+  a:
+    tasks:
+      - cmd: echo haha > /tmp/kaka
+      - cmd: cat /tmp/kaka
+      # - cmd: haha=123
+      # - cmd: echo $haha

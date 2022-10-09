@@ -190,7 +190,7 @@ func printStringField(key string, value string, indent bool) string {
 		if indent {
 			return fmt.Sprintf("%4s%s: %s\n", " ", key, value)
 		} else {
-			return fmt.Sprintf ("%s: %s\n", key, value)
+			return fmt.Sprintf("%s: %s\n", key, value)
 		}
 	}
 

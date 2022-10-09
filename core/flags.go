@@ -8,11 +8,12 @@ type ListFlags struct {
 }
 
 type ServerFlags struct {
-	Tags    []string
-	Headers []string
-	Edit    bool
-	Regex   string
-	Invert  bool
+	Tags       []string
+	Headers    []string
+	Edit       bool
+	Regex      string
+	Invert     bool
+	AllHeaders bool
 }
 
 type TargetFlags struct {

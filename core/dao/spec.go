@@ -2,6 +2,8 @@ package dao
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -30,17 +32,26 @@ func (s *Spec) GetContextLine() int {
 }
 
 func (s Spec) GetValue(key string, _ int) string {
-	switch key {
-	case "Name", "name", "Spec", "spec":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "spec":
 		return s.Name
-	// case "All", "all":
-	// 	return s.All
-	case "Output", "output":
+	case "output":
 		return s.Output
+	case "parallel":
+		return strconv.FormatBool(s.Parallel)
+	case "any_errors_fatal":
+		return strconv.FormatBool(s.AnyErrorsFatal)
+	case "ignore_errors":
+		return strconv.FormatBool(s.IgnoreErrors)
+	case "ignore_unreachable":
+		return strconv.FormatBool(s.IgnoreUnreachable)
+	case "omit_empty":
+		return strconv.FormatBool(s.OmitEmpty)
+	default:
+		return ""
 	}
-	return ""
 }
-
 
 // ParseSpecsYAML parses the specs dictionary and returns it as a list.
 func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
@@ -129,4 +140,3 @@ func (c *Config) GetSpecsByName(names []string) ([]Spec, error) {
 
 	return filteredSpecs, nil
 }
-

@@ -2,6 +2,8 @@ package dao
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -31,15 +33,27 @@ func (t *Target) GetContextLine() int {
 }
 
 func (t Target) GetValue(key string, _ int) string {
-	switch key {
-	case "Name", "name", "Target", "target":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "target":
 		return t.Name
-	// case "All", "all":
-	// 	return t.All
-	case "Regex", "regex":
+	case "all":
+		return strconv.FormatBool(t.All)
+	case "servers":
+		return strings.Join(t.Servers, "\n")
+	case "tags":
+		return strings.Join(t.Tags, "\n")
+	case "regex":
 		return t.Regex
+	case "invert":
+		return strconv.FormatBool(t.Invert)
+	case "limit":
+		return strconv.Itoa(int(t.Limit))
+	case "limit_p":
+		return strconv.Itoa(int(t.LimitP))
+	default:
+		return ""
 	}
-	return ""
 }
 
 // ParseTargetsYAML parses the target dictionary and returns it as a list.

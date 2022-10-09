@@ -10,6 +10,8 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
+var serverHeaders = []string{"server", "desc", "host", "bastion", "user", "port", "local", "shell", "work_dir", "tags", "env", "identity_file"}
+
 func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var serverFlags core.ServerFlags
 
@@ -56,16 +58,18 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "description"}, "set headers. Available headers: server, local, user, host, port, bastion, tag, description")
+	cmd.Flags().BoolVarP(&serverFlags.AllHeaders, "all-headers", "H", false, "select all server headers")
+	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "description"}, "set headers")
 	err = cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if err != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		validHeaders := []string{"server", "local", "user", "host", "port", "tag", "description"}
+		validHeaders := serverHeaders
 		return validHeaders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
+	cmd.MarkFlagsMutuallyExclusive("all-headers", "headers")
 
 	return &cmd
 }
@@ -103,8 +107,17 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 			Theme:                *theme,
 			OmitEmpty:            false,
 			SuppressEmptyColumns: true,
+			Resource:			  "server",
 		}
 
-		print.PrintTable("", servers, options, serverFlags.Headers, []string{})
+		var headers []string
+		if serverFlags.AllHeaders {
+			headers = serverHeaders
+		} else {
+			headers = serverFlags.Headers
+		}
+
+		rows := dao.GetTableData(servers, headers)
+		print.PrintTable(rows, options, headers)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -60,23 +61,36 @@ type ServerYAML struct {
 }
 
 func (s Server) GetValue(key string, _ int) string {
-	switch key {
-	case "Server", "server":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "server":
 		return s.Name
-	case "Host", "host":
-		return s.Host
-	case "Bastion", "bastion":
-		return s.BastionHost
-	case "User", "user":
-		return s.User
-	case "Port", "port":
-		return strconv.Itoa(int(s.Port))
-	case "Local", "local":
-		return strconv.FormatBool(s.Local)
-	case "Desc", "desc", "Description", "description":
+	case "desc", "description":
 		return s.Desc
-	case "Tag", "tag":
-		return strings.Join(s.Tags, ", ")
+	case "host":
+		return s.Host
+	case "bastion":
+		return s.BastionHost
+	case "user":
+		return s.User
+	case "port":
+		return strconv.Itoa(int(s.Port))
+	case "local":
+		return strconv.FormatBool(s.Local)
+	case "shell":
+		return s.Shell
+	case "work_dir":
+		return s.WorkDir
+	case "identity_file":
+		if s.IdentityFile != nil {
+			return path.Base(*s.IdentityFile)
+		} else {
+			return ""
+		}
+	case "tags":
+		return strings.Join(s.Tags, "\n")
+	case "env":
+		return strings.Join(s.GetNonDefaultEnvs(), "\n")
 	}
 
 	return ""
