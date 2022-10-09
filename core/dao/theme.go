@@ -20,10 +20,10 @@ type Table struct {
 
 	Border *BorderColors `yaml:"border"`
 
-	Title        *CellColors `yaml:"title"`
-	Header       *CellColors `yaml:"header"`
-	Row          *CellColors `yaml:"row"`
-	Footer       *CellColors `yaml:"footer"`
+	Title  *CellColors `yaml:"title"`
+	Header *CellColors `yaml:"header"`
+	Row    *CellColors `yaml:"row"`
+	Footer *CellColors `yaml:"footer"`
 
 	// Not stylable via YAML
 	Box table.BoxStyle `yaml:"-"`

@@ -11,8 +11,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/theckman/yacspin v0.13.12
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
-	golang.org/x/exp v0.0.0-20221004215720-b9f4876ce741
-	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec
+	golang.org/x/exp v0.0.0-20221006183845-316c7553db56
+	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875
 	golang.org/x/term v0.0.0-20220919170432-7a66f970e087
 	gopkg.in/yaml.v3 v3.0.1
 )
