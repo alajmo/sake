@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
+ server    | ref  | Override inline ref | Inline     | Override inline 
 -----------+------+---------------------+------------+-----------------
  localhost | /usr | /opt                | /tmp       | /               
  list-0    | /usr | /opt                | /home/test | /               

@@ -8,6 +8,8 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
+var taskHeaders = []string{"task", "desc", "local", "tty", "attach", "work_dir", "shell", "spec", "target", "theme"}
+
 func listTasksCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var taskFlags core.TaskFlags
 
@@ -35,16 +37,18 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *core.ListFlag
 		DisableAutoGenTag: true,
 	}
 
-	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"name", "description"}, "set headers. Available headers: name, description")
+	cmd.Flags().BoolVarP(&taskFlags.AllHeaders, "all-headers", "H", false, "select all task headers")
+	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"task", "desc"}, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		validHeaders := []string{"name", "description"}
+		validHeaders := taskHeaders
 		return validHeaders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
+	cmd.MarkFlagsMutuallyExclusive("all-headers", "headers")
 
 	return &cmd
 }
@@ -67,10 +71,17 @@ func listTasks(
 			Theme:                *theme,
 			OmitEmpty:            false,
 			SuppressEmptyColumns: true,
-			Resource:			  "task",
+			Resource:             "task",
 		}
 
-		rows := dao.GetTableData(tasks, taskFlags.Headers)
-		print.PrintTable(rows, options, taskFlags.Headers)
+		var headers []string
+		if taskFlags.AllHeaders {
+			headers = taskHeaders
+		} else {
+			headers = taskFlags.Headers
+		}
+
+		rows := dao.GetTableData(tasks, headers)
+		print.PrintTable(rows, options, headers)
 	}
 }

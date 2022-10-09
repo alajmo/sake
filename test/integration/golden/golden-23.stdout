@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Env-Default                                  
+ server    | env-default                                  
 -----------+----------------------------------------------
  localhost | # SERVER                                     
            | SAKE_SERVER_NAME localhost                   
@@ -20,7 +20,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -37,7 +37,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -54,7 +54,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -71,7 +71,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -88,7 +88,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -105,7 +105,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -122,7 +122,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -139,7 +139,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -156,7 +156,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -173,7 +173,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -190,7 +190,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -207,7 +207,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -224,7 +224,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -241,7 +241,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -258,7 +258,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        
@@ -275,7 +275,7 @@ WantErr: false
            | SAKE_TASK_ID env-default                     
            | SAKE_TASK_NAME                               
            | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL false                        
+           | SAKE_TASK_LOCAL                              
            |                                              
            | # CONFIG                                     
            | SAKE_KNOWN_HOSTS_FILE                        

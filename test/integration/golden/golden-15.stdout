@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server | OS | Kernel 
+ server | OS | Kernel 
 --------+----+--------
  list-0 | OS | kernel 
 

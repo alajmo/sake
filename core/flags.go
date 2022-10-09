@@ -31,8 +31,9 @@ type TagFlags struct {
 }
 
 type TaskFlags struct {
-	Headers []string
-	Edit    bool
+	Headers    []string
+	Edit       bool
+	AllHeaders bool
 }
 
 type RunFlags struct {

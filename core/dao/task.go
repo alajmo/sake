@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"math"
+	"strconv"
 	"strings"
 
 	"github.com/alajmo/sake/core"
@@ -99,11 +100,25 @@ func (t Task) GetValue(key string, _ int) string {
 		return t.Name
 	case "desc", "description":
 		return t.Desc
-	case "command":
-		return t.Cmd
+	case "local":
+		return strconv.FormatBool(t.Local)
+	case "tty":
+		return strconv.FormatBool(t.TTY)
+	case "attach":
+		return strconv.FormatBool(t.Attach)
+	case "work_dir":
+		return t.WorkDir
+	case "shell":
+		return t.Shell
+	case "spec":
+		return t.Spec.Name
+	case "target":
+		return t.Target.Name
+	case "theme":
+		return t.Theme.Name
+	default:
+		return ""
 	}
-
-	return ""
 }
 
 func (t *Task) GetDefaultEnvs() []string {
@@ -220,7 +235,10 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			fmt.Sprintf("SAKE_TASK_ID=%s", task.ID),
 			fmt.Sprintf("SAKE_TASK_NAME=%s", taskYAML.Name),
 			fmt.Sprintf("SAKE_TASK_DESC=%s", taskYAML.Desc),
-			fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local),
+		}
+
+		if taskYAML.Local {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local))
 		}
 
 		task.Envs = append(task.Envs, defaultEnvs...)

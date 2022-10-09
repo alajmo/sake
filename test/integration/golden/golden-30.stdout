@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Output | Output                        | Output 
+ server    | output | output                        | output 
 -----------+--------+-------------------------------+--------
  localhost | 123    |                               |        
            |        | exit status 65                |        

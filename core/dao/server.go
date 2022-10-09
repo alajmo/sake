@@ -89,8 +89,6 @@ func (s Server) GetValue(key string, _ int) string {
 		}
 	case "tags":
 		return strings.Join(s.Tags, "\n")
-	case "env":
-		return strings.Join(s.GetNonDefaultEnvs(), "\n")
 	}
 
 	return ""

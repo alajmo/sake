@@ -17,6 +17,10 @@
 - Add flags/target config `--limit` & `--limit-p` to limit number of servers task is run on
 - Add filtering servers on host regex
 - Add invert flag on filtering servers
+- Add flag `--all-headers` for tasks and servers
+- Add sub-commands edit/list/describe [specs|targets]
+- Add 3 new table outputs (table-2, table-3, table-4)
+- [BREAKING CHANGE]: Simplified theme config, now it only accepts manipulation of rows and headers, not specific properties
 
 ### Fixes
 

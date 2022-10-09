@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Tag         | Server      
+ tag         | server      
 -------------+-------------
  local       | localhost   
  reachable   | localhost   

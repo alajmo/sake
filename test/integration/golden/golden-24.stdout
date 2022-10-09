@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Ping | Ping | Ping | Ping | Ping | Ping 
+ server    | ping | ping | ping | ping | ping | ping 
 -----------+------+------+------+------+------+------
  localhost | pong | pong | pong | pong | pong | pong 
  list-0    | pong | pong | pong | pong | pong | pong 

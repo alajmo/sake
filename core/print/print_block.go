@@ -32,7 +32,7 @@ func PrintServerBlocks(servers []dao.Server) {
 		output += printStringField("work_dir", server.WorkDir, false)
 		output += printSliceField("tags", server.Tags, false)
 
-		fmt.Printf(output)
+		fmt.Print(output)
 
 		envs := server.GetNonDefaultEnvs()
 		if envs != nil {
@@ -40,7 +40,7 @@ func PrintServerBlocks(servers []dao.Server) {
 		}
 
 		if i < len(servers)-1 {
-			fmt.Printf("\n--\n\n")
+			fmt.Print("\n--\n\n")
 		}
 	}
 
@@ -71,7 +71,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 		output += printBoolField("tty", task.TTY, false)
 		output += printBoolField("attach", task.Attach, false)
 
-		fmt.Printf(output)
+		fmt.Print(output)
 
 		PrintTargetBlocks([]dao.Target{task.Target}, true)
 		PrintSpecBlocks([]dao.Spec{task.Spec}, true, false)
@@ -100,7 +100,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 		}
 
 		if i < len(tasks)-1 {
-			fmt.Printf("\n--\n\n")
+			fmt.Print("\n--\n\n")
 		}
 	}
 	fmt.Println()

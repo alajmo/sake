@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Empty  
+ server    | empty  
 -----------+--------
  localhost |        
  list-0    | Exists 

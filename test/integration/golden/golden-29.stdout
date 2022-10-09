@@ -5,7 +5,7 @@ WantErr: true
 
 ---
 
- Server    | Fatal-True    
+ server    | fatal-true    
 -----------+---------------
  localhost |               
            | exit status 1 

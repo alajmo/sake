@@ -10,7 +10,7 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
-var serverHeaders = []string{"server", "desc", "host", "bastion", "user", "port", "local", "shell", "work_dir", "tags", "env", "identity_file"}
+var serverHeaders = []string{"server", "desc", "host", "bastion", "user", "port", "local", "shell", "work_dir", "tags", "identity_file"}
 
 func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var serverFlags core.ServerFlags
@@ -59,7 +59,7 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 	core.CheckIfError(err)
 
 	cmd.Flags().BoolVarP(&serverFlags.AllHeaders, "all-headers", "H", false, "select all server headers")
-	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "description"}, "set headers")
+	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "desc"}, "set headers")
 	err = cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if err != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
@@ -107,7 +107,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 			Theme:                *theme,
 			OmitEmpty:            false,
 			SuppressEmptyColumns: true,
-			Resource:			  "server",
+			Resource:             "server",
 		}
 
 		var headers []string

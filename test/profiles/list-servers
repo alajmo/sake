@@ -1,4 +1,4 @@
 Benchmark 1: ../dist/sake list servers
-  Time (mean ± σ):       5.9 ms ±   2.8 ms    [User: 3.2 ms, System: 3.0 ms]
-  Range (min … max):     3.0 ms …   9.6 ms    5 runs
+  Time (mean ± σ):       5.2 ms ±   0.2 ms    [User: 2.6 ms, System: 3.3 ms]
+  Range (min … max):     5.0 ms …   5.5 ms    5 runs
  

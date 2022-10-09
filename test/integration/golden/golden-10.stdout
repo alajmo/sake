@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Name             | Description          
+ task             | desc                 
 ------------------+----------------------
  ping             | ping server          
  real-ping        | ping server          

@@ -48,9 +48,6 @@ servers:
   server-1:
     desc: server-1 desc
     host: sake-resolve
-    bastion: 172.24.2.99
-    user: test
-    identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi]
     work_dir: /tmp
 
@@ -197,10 +194,3 @@ tasks:
     spec: info
     target: all
     cmd: uname -r | awk -v FS='-' '{print $1}'
-
-  a:
-    tasks:
-      - cmd: echo haha > /tmp/kaka
-      - cmd: cat /tmp/kaka
-      # - cmd: haha=123
-      # - cmd: echo $haha

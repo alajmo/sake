@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Output      | Output    | Output            
+ server    | output      | output    | output            
 -----------+-------------+-----------+-------------------
  localhost | Hello world | Bye world | Hello again world 
  list-0    | Hello world | Bye world | Hello again world 

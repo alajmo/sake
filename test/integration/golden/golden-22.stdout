@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Env-Ref     | Env-Ref     
+ server    | env-ref     | env-ref     
 -----------+-------------+-------------
  localhost | foo xyz     | foo xyz     
            | hello       | hello       

@@ -5,7 +5,7 @@ WantErr: false
 
 ---
 
- Server    | Env         
+ server    | env         
 -----------+-------------
  localhost | foo xyz     
            | hello       

@@ -24,22 +24,18 @@ func CreateTable(
 		t.SuppressEmptyColumns()
 	}
 
-	// Responsible for formatting headers and rows
-	headerStyles := make(map[string]table.ColumnConfig)
-	for _, h := range tableHeaders {
-		headerStyles[h] = table.ColumnConfig{
-			Name:         h,
+	var headers []table.ColumnConfig
+	for i := range tableHeaders {
+		hh := table.ColumnConfig{
+			Number:       i + 1,
 			AlignHeader:  GetAlign(*theme.Table.Header.Align),
 			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
 
 			Align:  GetAlign(*theme.Table.Row.Align),
 			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
 		}
-	}
 
-	headers := []table.ColumnConfig{}
-	for _, h := range tableHeaders {
-		headers = append(headers, headerStyles[h])
+		headers = append(headers, hh)
 	}
 
 	t.SetColumnConfigs(headers)

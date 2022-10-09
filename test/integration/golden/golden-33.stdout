@@ -8,7 +8,7 @@ WantErr: false
                                                                                               
  Unreachable Hosts                                                                            
                                                                                               
- Server      | Host            | User | Port | Error                                          
+ server      | host            | user | port | error                                          
 -------------+-----------------+------+------+------------------------------------------------
  unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
 

@@ -8,7 +8,7 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
-var targetHeaders = []string{"target", "all", "servers", "tags", "regex", "invert", "limit", "limit_p",}
+var targetHeaders = []string{"target", "all", "servers", "tags", "regex", "invert", "limit", "limit_p"}
 
 func listTargetsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var targetFlags core.TargetFlags
@@ -63,7 +63,7 @@ func listTargets(
 		Theme:                *theme,
 		OmitEmpty:            false,
 		SuppressEmptyColumns: true,
-		Resource:			  "target",
+		Resource:             "target",
 	}
 
 	var targets []dao.Target

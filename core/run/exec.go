@@ -76,11 +76,11 @@ func (run *Run) RunTask(
 		}
 
 		options := print.PrintTableOptions{
-			Theme: task.Theme,
-			OmitEmpty: task.Spec.OmitEmpty,
-			Output: task.Spec.Output,
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               task.Spec.Output,
 			SuppressEmptyColumns: false,
-			Title: "Parse Errors",
+			Title:                "Parse Errors",
 		}
 		print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
 
@@ -114,11 +114,11 @@ func (run *Run) RunTask(
 		}
 
 		options := print.PrintTableOptions{
-			Theme: task.Theme,
-			OmitEmpty: task.Spec.OmitEmpty,
-			Output: "table",
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               "table",
 			SuppressEmptyColumns: false,
-			Title: "\nUnreachable Hosts\n",
+			Title:                "\nUnreachable Hosts\n",
 		}
 		print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
 
@@ -156,11 +156,11 @@ func (run *Run) RunTask(
 
 		data, err := run.Table(runFlags.DryRun)
 		options := print.PrintTableOptions{
-			Theme: task.Theme,
-			OmitEmpty: task.Spec.OmitEmpty,
-			Output: task.Spec.Output,
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               task.Spec.Output,
 			SuppressEmptyColumns: false,
-			Resource: "task",
+			Resource:             "task",
 		}
 		run.CleanupClients()
 		if !runFlags.Silent {

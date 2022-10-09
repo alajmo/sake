@@ -6,7 +6,6 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 
 	"github.com/alajmo/sake/core/dao"
-	"github.com/alajmo/sake/core"
 )
 
 type PrintTableOptions struct {
@@ -46,11 +45,6 @@ func PrintTable[T dao.Items](
 
 */
 func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) {
-	fmt.Println("----------------------")
-	fmt.Println(headers)
-	core.DebugPrint(data)
-	fmt.Println("----------------------")
-
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -115,9 +109,9 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 	t := CreateTable(options, rh)
 
 	t.AppendHeader(tableHeaders)
-	for i, task := range headers[1:] {
+	for i, header := range headers[1:] {
 		var row table.Row
-		row = append(row, task)
+		row = append(row, header)
 		for _, h := range data {
 			value := h.GetValue(fmt.Sprintf("%v", h), i+1)
 			row = append(row, value)

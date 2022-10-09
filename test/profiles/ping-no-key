@@ -1,4 +1,4 @@
 Benchmark 1: ../dist/sake run ping -s server-9
-  Time (mean ± σ):     120.9 ms ±  33.6 ms    [User: 7.4 ms, System: 7.7 ms]
-  Range (min … max):    94.7 ms … 176.5 ms    5 runs
+  Time (mean ± σ):     134.9 ms ±  31.6 ms    [User: 9.5 ms, System: 6.2 ms]
+  Range (min … max):    97.9 ms … 169.3 ms    5 runs
  

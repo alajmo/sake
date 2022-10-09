@@ -5,8 +5,8 @@ WantErr: false
 
 ---
 
- Server | Host       | Tag                           | Description           
---------+------------+-------------------------------+-----------------------
- list-0 | 172.24.2.2 | remote, prod, list, reachable | many hosts using list 
- list-1 | 172.24.2.4 | remote, prod, list, reachable | many hosts using list 
+ server | host       | desc                  
+--------+------------+-----------------------
+ list-0 | 172.24.2.2 | many hosts using list 
+ list-1 | 172.24.2.4 | many hosts using list 
 

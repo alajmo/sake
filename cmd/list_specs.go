@@ -63,7 +63,7 @@ func listSpecs(
 		Theme:                *theme,
 		OmitEmpty:            false,
 		SuppressEmptyColumns: true,
-		Resource:			  "spec",
+		Resource:             "spec",
 	}
 
 	var specs []dao.Spec

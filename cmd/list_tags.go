@@ -63,7 +63,7 @@ func listTags(
 		Theme:                *theme,
 		OmitEmpty:            false,
 		SuppressEmptyColumns: true,
-		Resource:			  "tag",
+		Resource:             "tag",
 	}
 
 	allTags := config.GetTags()

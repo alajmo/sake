@@ -23,7 +23,6 @@ type Table struct {
 	Title        *CellColors `yaml:"title"`
 	Header       *CellColors `yaml:"header"`
 	Row          *CellColors `yaml:"row"`
-	RowAlternate *CellColors `yaml:"row_alt"`
 	Footer       *CellColors `yaml:"footer"`
 
 	// Not stylable via YAML
@@ -214,14 +213,6 @@ var DefaultTable = Table{
 	},
 
 	Row: &CellColors{
-		Fg:     core.Ptr(""),
-		Bg:     core.Ptr(""),
-		Align:  core.Ptr(""),
-		Attr:   core.Ptr("bold"),
-		Format: core.Ptr("default"),
-	},
-
-	RowAlternate: &CellColors{
 		Fg:     core.Ptr(""),
 		Bg:     core.Ptr(""),
 		Align:  core.Ptr(""),
@@ -432,29 +423,6 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 				}
 				if themes[i].Table.Row.Format == nil {
 					themes[i].Table.Row.Format = DefaultTable.Row.Format
-				}
-			}
-		}
-
-		// Row Alternate
-		if themes[i].Table.RowAlternate == nil {
-			themes[i].Table.RowAlternate = DefaultTable.RowAlternate
-		} else {
-			// RowAlternate
-			if themes[i].Table.RowAlternate == nil {
-				themes[i].Table.RowAlternate = DefaultTable.RowAlternate
-			} else {
-				if themes[i].Table.RowAlternate.Fg == nil {
-					themes[i].Table.RowAlternate.Fg = DefaultTable.RowAlternate.Fg
-				}
-				if themes[i].Table.RowAlternate.Bg == nil {
-					themes[i].Table.RowAlternate.Bg = DefaultTable.RowAlternate.Bg
-				}
-				if themes[i].Table.RowAlternate.Attr == nil {
-					themes[i].Table.RowAlternate.Attr = DefaultTable.RowAlternate.Attr
-				}
-				if themes[i].Table.RowAlternate.Format == nil {
-					themes[i].Table.RowAlternate.Format = DefaultTable.RowAlternate.Format
 				}
 			}
 		}

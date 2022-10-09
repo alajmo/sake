@@ -2,6 +2,7 @@
 
 A list of useful recipes.
 
+- [Specify multiple hosts](#specify-multiple-hosts)
 - [Validate Config](#validate-config)
 - [Upload File](#upload-file)
 - [Download File](#download-file)
@@ -33,6 +34,46 @@ A list of useful recipes.
 - [Disable Colors](#disable-colors)
 - [Performing a Dry Run](#performing-a-dry-run)
 - [Modify Theme](#modify-theme)
+
+## Specify multiple hosts
+
+In `sake` there's 3 ways to specify multiple hosts:
+
+```yaml
+servers:
+  # Option 1
+  many-1:
+    hosts:
+      - samir@192.168.1.1:22
+      - samir@192.168.1.2:22
+
+  # Option 2
+  many-2:
+    hosts: samir@192.168.1.[1:2]:22
+
+  # Option 3
+  many-3:
+    inventory: echo samir@192.168.1.1:22 samir@192.168.1.2:22
+```
+
+```bash
+sake list servers
+
+ Server   | Host
+----------+-------------
+ many-1-0 | 192.168.1.1
+----------+-------------
+ many-1-1 | 192.168.1.2
+----------+-------------
+ many-2-0 | 192.168.1.1
+----------+-------------
+ many-2-1 | 192.168.1.2
+----------+-------------
+ many-3-0 | 192.168.1.1
+----------+-------------
+ many-3-1 | 192.168.1.2
+
+```
 
 ## Validate Config
 
