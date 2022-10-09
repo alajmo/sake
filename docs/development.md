@@ -54,8 +54,8 @@ The following workflow is used for releasing a new `sake` version:
 6. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
 7. Squash-merge to main with `Release vx.y.z` and description of changes
 8. Run `make release`, which will:
-  1. Create a git tag with release notes
-  2. Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
+  - Create a git tag with release notes
+  - Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
 
 ## Dependency Graph
 
