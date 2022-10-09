@@ -14,9 +14,9 @@
   - [x] Add filtering servers on host regex
   - [x] Add invert flag on filtering servers
 
-- [ ] Improve output
-  - Add new table format output (tasks in 1st column, output in 2nd, one table per server)
-  - Add new format output (tasks in column, project output in row)
+- [x] Improve output and add new table outputs
+  - [x] Tasks in 1st column, output in 2nd, one table per server
+  - [x] Tasks in column, project output in row
 
 - [ ] Improve tasks
   - [ ] Return correct error exit codes when running tasks
