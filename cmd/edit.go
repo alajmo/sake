@@ -30,6 +30,8 @@ func editCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd.AddCommand(
 		editTask(config, configErr),
 		editServer(config, configErr),
+		editSpec(config, configErr),
+		editTarget(config, configErr),
 	)
 
 	return &cmd

@@ -3,9 +3,10 @@ package dao
 import (
 	"errors"
 	"fmt"
-	"strings"
-
 	"gopkg.in/yaml.v3"
+	"math"
+	"strconv"
+	"strings"
 
 	"github.com/alajmo/sake/core"
 )
@@ -93,19 +94,34 @@ type TaskRefYAML struct {
 }
 
 func (t Task) GetValue(key string, _ int) string {
-	switch key {
-	case "Name", "name", "Task", "task":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "task":
 		return t.Name
-	case "Desc", "desc", "Description", "description":
+	case "desc", "description":
 		return t.Desc
-	case "Command", "command":
-		return t.Cmd
+	case "local":
+		return strconv.FormatBool(t.Local)
+	case "tty":
+		return strconv.FormatBool(t.TTY)
+	case "attach":
+		return strconv.FormatBool(t.Attach)
+	case "work_dir":
+		return t.WorkDir
+	case "shell":
+		return t.Shell
+	case "spec":
+		return t.Spec.Name
+	case "target":
+		return t.Target.Name
+	case "theme":
+		return t.Theme.Name
+	default:
+		return ""
 	}
-
-	return ""
 }
 
-func (t Task) GetDefaultEnvs() []string {
+func (t *Task) GetDefaultEnvs() []string {
 	var defaultEnvs []string
 	for _, env := range t.Envs {
 		if strings.Contains(env, "SAKE_TASK_") {
@@ -114,6 +130,17 @@ func (t Task) GetDefaultEnvs() []string {
 	}
 
 	return defaultEnvs
+}
+
+func (t *Task) GetNonDefaultEnvs() []string {
+	var envs []string
+	for _, env := range t.Envs {
+		if !strings.Contains(env, "SAKE_TASK_") {
+			envs = append(envs, env)
+		}
+	}
+
+	return envs
 }
 
 func (t *Task) GetContext() string {
@@ -208,7 +235,10 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			fmt.Sprintf("SAKE_TASK_ID=%s", task.ID),
 			fmt.Sprintf("SAKE_TASK_NAME=%s", taskYAML.Name),
 			fmt.Sprintf("SAKE_TASK_DESC=%s", taskYAML.Desc),
-			fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local),
+		}
+
+		if taskYAML.Local {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local))
 		}
 
 		task.Envs = append(task.Envs, defaultEnvs...)
@@ -345,24 +375,55 @@ func ParseTaskEnv(cmdEnv []string, userEnv []string, parentEnv []string, configE
 	return envs, nil
 }
 
-func (c Config) GetTaskServers(task *Task, runFlags *core.RunFlags) ([]Server, error) {
+func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) ([]Server, error) {
 	var servers []Server
 	var err error
 	// If any runtime target flags are used, disregard config specified task targets
-	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.All {
-		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags)
+	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
+		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
 	} else {
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags)
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
 	}
 
 	if err != nil {
 		return []Server{}, err
 	}
 
+	var limit uint32
+	if runFlags.Limit > 0 {
+		limit = runFlags.Limit
+	} else if task.Target.Limit > 0 {
+		limit = task.Target.Limit
+	}
+
+	var limitp uint8
+	if runFlags.LimitP > 0 {
+		limitp = runFlags.LimitP
+	} else if task.Target.LimitP > 0 {
+		limitp = task.Target.LimitP
+	}
+
+	if limit > 0 {
+		if limit <= uint32(len(servers)) {
+			return servers[0:limit], nil
+		} else {
+			return []Server{}, &core.InvalidLimit{Max: len(servers), Limit: limit}
+		}
+	} else if limitp > 0 {
+		if limitp <= 100 {
+			tot := float64(len(servers))
+			percentage := float64(limitp) / float64(100)
+			limit := math.Floor(percentage * tot)
+			return servers[0:int(limit)], nil
+		} else {
+			return []Server{}, &core.InvalidPercentInput{}
+		}
+	}
+
 	return servers, nil
 }
 
-func (c Config) GetTasksByIDs(ids []string) ([]Task, error) {
+func (c *Config) GetTasksByIDs(ids []string) ([]Task, error) {
 	if len(ids) == 0 {
 		return c.Tasks, nil
 	}
@@ -400,7 +461,7 @@ func (c Config) GetTasksByIDs(ids []string) ([]Task, error) {
 	return filteredTasks, nil
 }
 
-func (c Config) GetTaskNames() []string {
+func (c *Config) GetTaskNames() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
 		taskNames = append(taskNames, task.Name)
@@ -409,16 +470,22 @@ func (c Config) GetTaskNames() []string {
 	return taskNames
 }
 
-func (c Config) GetTaskIDAndDesc() []string {
+func (c *Config) GetTaskIDAndDesc() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
-		taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Desc))
+		if task.Desc != "" {
+			taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Desc))
+		} else if task.ID != task.Name {
+			taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Name))
+		} else {
+			taskNames = append(taskNames, task.ID)
+		}
 	}
 
 	return taskNames
 }
 
-func (c Config) GetTask(id string) (*Task, error) {
+func (c *Config) GetTask(id string) (*Task, error) {
 	for _, task := range c.Tasks {
 		if id == task.ID {
 			return &task, nil

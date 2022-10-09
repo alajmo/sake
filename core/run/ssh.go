@@ -9,18 +9,18 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
-	"os/user"
-	"path/filepath"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
+	"crypto/sha256"
 	"github.com/kevinburke/ssh_config"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/knownhosts"
+	"golang.org/x/term"
 
-	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
 
@@ -371,6 +371,30 @@ func Line(address string, key ssh.PublicKey) string {
 	return entry + " " + serialize(key)
 }
 
+func serialize(k ssh.PublicKey) string {
+	return k.Type() + " " + base64.StdEncoding.EncodeToString(k.Marshal())
+}
+
+// Process all ENVs into a string of form
+// Example output:
+// export FOO="bar"; export BAR="baz";
+func AsExport(env []string) string {
+	exports := ``
+
+	for _, v := range env {
+		kv := strings.Split(v, "=")
+		exports += `export ` + kv[0] + `="` + kv[1] + `";`
+	}
+
+	return exports
+}
+
+func FingerprintSHA256(b []byte) string {
+	sha256sum := sha256.Sum256(b)
+	hash := base64.RawStdEncoding.EncodeToString(sha256sum[:])
+	return "SHA256:" + hash
+}
+
 func GetSSHAgentSigners() ([]ssh.Signer, error) {
 	// Load keys from SSH Agent if it's running
 	sockPath, found := os.LookupEnv("SSH_AUTH_SOCK")
@@ -388,171 +412,84 @@ func GetSSHAgentSigners() ([]ssh.Signer, error) {
 	return []ssh.Signer{}, nil
 }
 
-func GetGlobalIdentitySigner(runFlags *core.RunFlags) (ssh.Signer, error) {
-	var identityFile string
-	var password string
-
-	if runFlags.IdentityFile != "" {
-		identityFile = runFlags.IdentityFile
-	} else {
-		value, found := os.LookupEnv("SAKE_IDENTITY_FILE")
-		if found {
-			if strings.HasPrefix(value, "~/") {
-				usr, err := user.Current()
-				if err != nil {
-					panic(err)
-				}
-				dir := usr.HomeDir
-				identityFile = filepath.Join(dir, value[2:])
-			} else {
-				identityFile = value
-			}
-		}
-	}
-
-	if runFlags.Password != "" {
-		password = runFlags.Password
-	} else {
-		value, found := os.LookupEnv("SAKE_PASSWORD")
-		if found {
-			password = value
-		}
-	}
-
-	// User provides global identity/password via flag/env
-	if identityFile != "" {
-		data, err := ioutil.ReadFile(identityFile)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
-		}
-
-		if password != "" {
-			signer, err := ssh.ParsePrivateKeyWithPassphrase(data, []byte(password))
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
-			}
-
-			return signer, nil
-		} else {
-			signer, err := ssh.ParsePrivateKey(data)
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse `%s`\n  %w", identityFile, err)
-			}
-
-			return signer, nil
-		}
-	}
-
-	return nil, nil
-}
-
-func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, *ErrConnect) {
+func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, error) {
 	password, err := dao.EvaluatePassword(*server.Password)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: err.Error(),
-		}
-
-		return nil, errConnect
+		return nil, err
 	}
 
 	return ssh.Password(password), nil
 }
 
 // Password protected key
-func GetPassworIdentitySigner(server dao.Server) (ssh.Signer, *ErrConnect) {
+func GetPasswordIdentitySigner(server dao.Server) (ssh.Signer, error) {
 	var signer ssh.Signer
 
 	data, err := ioutil.ReadFile(*server.IdentityFile)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	var pass *string
 	pw, err := dao.EvaluatePassword(*server.Password)
 	pass = &pw
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: err.Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	signer, err = ssh.ParsePrivateKeyWithPassphrase(data, []byte(*pass))
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
 	}
 
 	return signer, nil
 }
 
-// Unprotected key
-func GetIdentity(server dao.Server) (ssh.Signer, *ErrConnect) {
-	var signer ssh.Signer
+func GetFingerprintPubKey(server dao.Server) (string, error) {
+	data, err := ioutil.ReadFile(*server.PubFile)
+	if err != nil {
+		return "", err
+	}
 
+	pk, _, _, _, err := ssh.ParseAuthorizedKey(data)
+	if err != nil {
+		return "", err
+	}
+
+	return ssh.FingerprintSHA256(pk), nil
+}
+
+func GetSigner(server dao.Server) (ssh.Signer, error) {
+	var signer ssh.Signer
 	data, err := ioutil.ReadFile(*server.IdentityFile)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
-		}
-		return nil, errConnect
+		return nil, err
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	signer, err = ssh.ParsePrivateKey(data)
 	if err != nil {
-		errConnect := &ErrConnect{
-			Name:   server.Name,
-			User:   server.User,
-			Host:   server.Host,
-			Port:   server.Port,
-			Reason: fmt.Errorf("failed to parse `%s`\n  %w", *server.IdentityFile, err).Error(),
+		switch e := err.(type) {
+		case *ssh.PassphraseMissingError:
+			// TODO: Let user enter password 3 times, then fail
+			fmt.Printf("Enter passphrase for %s: ", *server.IdentityFile)
+			pass, err := term.ReadPassword(int(syscall.Stdin))
+			fmt.Println()
+			if err != nil {
+				return nil, err
+			}
+
+			signer, err = ssh.ParsePrivateKeyWithPassphrase(data, pass)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			return nil, e
 		}
-		return nil, errConnect
 	}
 
 	return signer, nil
-}
 
-func serialize(k ssh.PublicKey) string {
-	return k.Type() + " " + base64.StdEncoding.EncodeToString(k.Marshal())
-}
-
-// Process all ENVs into a string of form
-// Example output:
-// export FOO="bar"; export BAR="baz";
-func AsExport(env []string) string {
-	exports := ``
-
-	for _, v := range env {
-		kv := strings.Split(v, "=")
-		exports += `export ` + kv[0] + `="` + kv[1] + `";`
-	}
-
-	return exports
 }

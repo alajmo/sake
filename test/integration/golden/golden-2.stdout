@@ -1,236 +1,27 @@
 Index: 2
-Name: Describe servers
-Cmd: go run ../../main.go describe servers
+Name: List servers
+Cmd: go run ../../main.go list servers
 WantErr: false
 
 ---
 
-Name: localhost
-User: test
-Host: localhost
-Port: 22
-Local: true
-Shell: 
-WorkDir: /tmp
-Desc: localhost
-Tags: local, reachable
-Env: 
-    SAKE_SERVER_NAME: localhost
-    SAKE_SERVER_DESC: localhost
-    SAKE_SERVER_TAGS: local,reachable
-    SAKE_SERVER_HOST: localhost
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: true
-
---
-
-Name: unreachable
-User: test
-Host: unreachable.lan
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: 
-Tags: unreachable
-Env: 
-    SAKE_SERVER_NAME: unreachable
-    SAKE_SERVER_DESC: 
-    SAKE_SERVER_TAGS: unreachable
-    SAKE_SERVER_HOST: unreachable.lan
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-1
-User: test
-Host: 172.24.2.2
-Port: 22
-Local: false
-Shell: 
-WorkDir: /home/test
-Desc: server-1
-Tags: remote, prod, reachable
-Env: 
-    SAKE_SERVER_NAME: server-1
-    SAKE_SERVER_DESC: server-1
-    SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_HOST: 172.24.2.2
-    SAKE_SERVER_BASTION: test@172.24.2.99:22
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-2
-User: test
-Host: 172.24.2.3
-Port: 33
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-2
-Tags: remote, prod, reachable
-Env: 
-    SAKE_SERVER_NAME: server-2
-    SAKE_SERVER_DESC: server-2
-    SAKE_SERVER_TAGS: remote,prod,reachable
-    SAKE_SERVER_HOST: 172.24.2.3
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 33
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-3
-User: test
-Host: 172.24.2.4
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-3
-Tags: remote, demo, reachable
-Env: 
-    SAKE_SERVER_NAME: server-3
-    SAKE_SERVER_DESC: server-3
-    SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_HOST: 172.24.2.4
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-4
-User: test
-Host: 172.24.2.5
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-4
-Tags: remote, demo, reachable
-Env: 
-    SAKE_SERVER_NAME: server-4
-    SAKE_SERVER_DESC: server-4
-    SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_HOST: 172.24.2.5
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-5
-User: test
-Host: 172.24.2.6
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-5
-Tags: remote, sandbox, reachable
-Env: 
-    SAKE_SERVER_NAME: server-5
-    SAKE_SERVER_DESC: server-5
-    SAKE_SERVER_TAGS: remote,sandbox,reachable
-    SAKE_SERVER_HOST: 172.24.2.6
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-6
-User: test
-Host: 172.24.2.7
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-6
-Tags: remote, sandbox, reachable
-Env: 
-    SAKE_SERVER_NAME: server-6
-    SAKE_SERVER_DESC: server-6
-    SAKE_SERVER_TAGS: remote,sandbox,reachable
-    SAKE_SERVER_HOST: 172.24.2.7
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-7
-User: test
-Host: 172.24.2.8
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-7
-Tags: remote, demo, reachable
-Env: 
-    SAKE_SERVER_NAME: server-7
-    SAKE_SERVER_DESC: server-7
-    SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_HOST: 172.24.2.8
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-8
-User: test
-Host: 172.24.2.9
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-8
-Tags: remote, demo, reachable
-Env: 
-    SAKE_SERVER_NAME: server-8
-    SAKE_SERVER_DESC: server-8
-    SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_HOST: 172.24.2.9
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
-
---
-
-Name: server-9
-User: test
-Host: 2001:3984:3989::10
-Port: 22
-Local: false
-Shell: 
-WorkDir: 
-Desc: server-9
-Tags: remote, demo, reachable
-Env: 
-    SAKE_SERVER_NAME: server-9
-    SAKE_SERVER_DESC: server-9
-    SAKE_SERVER_TAGS: remote,demo,reachable
-    SAKE_SERVER_HOST: 2001:3984:3989::10
-    SAKE_SERVER_BASTION: 
-    SAKE_SERVER_USER: test
-    SAKE_SERVER_PORT: 22
-    SAKE_SERVER_LOCAL: false
+ server      | host               | desc                       
+-------------+--------------------+----------------------------
+ localhost   | localhost          | localhost                  
+ unreachable | unreachable.lan    |                            
+ list-0      | 172.24.2.2         | many hosts using list      
+ list-1      | 172.24.2.4         | many hosts using list      
+ range-0     | 172.24.2.2         | many hosts using range     
+ range-1     | 172.24.2.4         | many hosts using range     
+ inv-0       | 172.24.2.2         | many hosts using inventory 
+ inv-1       | 172.24.2.4         | many hosts using inventory 
+ server-1    | 172.24.2.2         | server-1                   
+ server-2    | 172.24.2.3         | server-2                   
+ server-3    | 172.24.2.4         | server-3                   
+ server-4    | 172.24.2.5         | server-4                   
+ server-5    | 172.24.2.6         | server-5                   
+ server-6    | 172.24.2.7         | server-6                   
+ server-7    | 172.24.2.8         | server-7                   
+ server-8    | 172.24.2.9         | server-8                   
+ server-9    | 2001:3984:3989::10 | server-9                   
 

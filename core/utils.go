@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -151,6 +152,7 @@ func StringToBool(s string) bool {
 	return ss == "true" || ss == "yes"
 }
 
+// TODO: Don't include this in build
 func DebugPrint(data any) {
 	s, _ := json.MarshalIndent(data, "", "\t")
 	fmt.Print(string(s))
@@ -159,6 +161,10 @@ func DebugPrint(data any) {
 
 // Parse host, for instance : user@hostname
 func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (string, string, uint16, error) {
+	if strings.Contains(hostname, "/") {
+		return "", "", 22, fmt.Errorf("unexpected slash in the host %s", hostname)
+	}
+
 	var user string
 	host := hostname
 	var port uint16
@@ -176,22 +182,90 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 		user = defaultUser
 	}
 
-	if strings.Contains(host, "/") {
-		return "", "", 22, fmt.Errorf("unexpected slash in the host %s", hostname)
+	// Checks only host, not user or port
+	// Valid:
+	//  - 192.168.0.1
+	//  - 2001:3984:3989::10
+	//
+	// Invalid:
+	//  - user@192.168.0.1:port
+	//  - user@[2001:3984:3989::10]:port
+	ip := net.ParseIP(host)
+	if ip != nil {
+		ipp := ip.To4()
+		if ipp != nil {
+			return user, ipp.String(), defaultPort, nil
+		}
+
+		ipp = ip.To16()
+		if ipp != nil {
+			return user, ipp.String(), defaultPort, nil
+		}
 	}
 
-	if strings.Contains(hostname, ":") {
-		lastInd := strings.LastIndex(host, ":")
-		p, err := strconv.ParseInt(host[lastInd+1:], 0, 16)
-		if err != nil {
-			return "", "", 22, err
+	// We check this when user has specified port in ip address:
+	// Valid:
+	//  - 192.168.0.1:port
+	//  - [2001:3984:3989::10]:port
+	//
+	// Invalid:
+	//  - [192.168.0.1]:port
+	//  - 2001:3984:3989::10:port
+	switch getIPType(host) {
+	case 4:
+		if strings.Contains(host, ":") {
+			lastInd := strings.LastIndex(host, ":")
+			p, err := strconv.ParseInt(host[lastInd+1:], 0, 16)
+			if err != nil {
+				return "", "", 22, err
+			}
+			host = host[:lastInd]
+			port = uint16(p)
+		} else {
+			port = defaultPort
 		}
-		port = uint16(p)
+		return user, host, port, nil
+	case 6:
+		if strings.Contains(host, "[") && strings.Contains(host, "]") {
+			if at := strings.LastIndex(host, ":"); at != -1 {
+				p, err := strconv.ParseInt(host[at+1:], 10, 16)
+				if err != nil {
+					return "", "", 22, fmt.Errorf("failed to parse %s", hostname)
+				}
+				host = host[1 : at-1]
+				port = uint16(p)
+			}
+		}
 
-		host = host[:lastInd]
-	} else {
+		// Check if has brackets and port, remove brackets and add new port
+		return user, host, port, nil
+	}
+
+	if port == 0 {
 		port = defaultPort
 	}
 
 	return user, host, port, nil
+}
+
+func getIPType(ip string) uint {
+	for i := 0; i < len(ip); i++ {
+		switch ip[i] {
+		case '.':
+			return 4
+		case ':':
+			return 6
+		}
+	}
+
+	return 0
+}
+
+func IsDigit(s string) bool {
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }

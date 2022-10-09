@@ -5,10 +5,15 @@ WantErr: false
 
 ---
 
- Tag         | Server      
+ tag         | server      
 -------------+-------------
  local       | localhost   
  reachable   | localhost   
+             | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
              | server-1    
              | server-2    
              | server-3    
@@ -19,7 +24,12 @@ WantErr: false
              | server-8    
              | server-9    
  unreachable | unreachable 
- remote      | server-1    
+ remote      | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
+             | server-1    
              | server-2    
              | server-3    
              | server-4    
@@ -28,8 +38,18 @@ WantErr: false
              | server-7    
              | server-8    
              | server-9    
- prod        | server-1    
+ prod        | list-0      
+             | list-1      
+             | range-0     
+             | range-1     
+             | inv         
+             | server-1    
              | server-2    
+ list        | list-0      
+             | list-1      
+ range       | range-0     
+             | range-1     
+ inv         | inv         
  demo        | server-3    
              | server-4    
              | server-7    

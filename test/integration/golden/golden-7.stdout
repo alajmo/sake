@@ -1,60 +1,29 @@
 Index: 7
-Name: Simple Envs
-Cmd: go run ../../main.go run env -t reachable
+Name: Describe servers filter on list hosts
+Cmd: go run ../../main.go describe servers list
 WantErr: false
 
 ---
 
- Server    | Env        
------------+------------
- localhost | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-1  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-2  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-3  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-4  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-5  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-6  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-7  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-8  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
- server-9  | foo xyz    
-           | hello      
-           | cookie     
-           | release    
-           | task local 
+name: list-0
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
+
+--
+
+name: list-1
+group: list
+desc: many hosts using list
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, list, reachable
+env: 
+    hello: world
 

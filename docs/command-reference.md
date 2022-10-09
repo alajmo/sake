@@ -84,13 +84,18 @@ run <task> [flags]
   -i, --identity-file string      set identity file for all servers
       --ignore-errors             continue task execution on errors
       --ignore-unreachable        ignore unreachable hosts
+  -v, --invert                    invert matching on servers
       --known-hosts-file string   set known hosts file
+  -l, --limit uint32              set limit of servers to target
+  -L, --limit-p uint8             set percentage of servers to target [0-100]
       --local                     run task on localhost
       --omit-empty                omit empty results for table output
-  -o, --output string             set task output [text|table|html|markdown]
+  -o, --output string             set task output [text|table|table-2|table-3|table-4|html|markdown]
   -p, --parallel                  run server tasks in parallel
       --password string           set ssh password for all servers
+  -r, --regex string              filter servers on host regex
   -s, --servers strings           target servers by names
+  -S, --silent                    omit showing loader when running tasks
   -t, --tags strings              target servers by tags
       --theme string              set theme
       --tty                       replace the current process
@@ -133,13 +138,18 @@ exec <command> [flags]
   -i, --identity-file string      set identity file for all servers
       --ignore-errors             continue task execution on errors
       --ignore-unreachable        ignore unreachable hosts
+  -v, --invert                    invert matching on servers
       --known-hosts-file string   set known hosts file
+  -l, --limit uint32              set limit of servers to target
+  -L, --limit-p uint8             set percentage of servers to target
       --local                     run command on localhost
       --omit-empty                omit empty results for table output
-  -o, --output string             set task output [text|table|markdown|html]
+  -o, --output string             set task output [text|table|table-2|table-3|table-4|html|markdown]
   -p, --parallel                  run server tasks in parallel
       --password string           set ssh password for all servers
+  -r, --regex string              filter servers on host regex
   -s, --servers strings           target servers by names
+  -S, --silent                    omit showing loader when running tasks
   -t, --tags strings              target servers by tags
       --theme string              set theme (default "default")
       --tty                       replace the current process
@@ -197,7 +207,7 @@ edit [flags]
 
 ## edit server
 
-Open up sake config file in $EDITOR and go to servers section
+Edit server
 
 ### Synopsis
 
@@ -223,9 +233,65 @@ edit server [server] [flags]
   -h, --help   help for server
 ```
 
+## edit spec
+
+Edit spec
+
+### Synopsis
+
+Open up sake config file in $EDITOR and go to specs section.
+
+```
+edit spec [spec] [flags]
+```
+
+### Examples
+
+```
+  # Edit specs
+  sake edit spec
+
+  # Edit spec <spec>
+  sake edit spec <spec>
+```
+
+### Options
+
+```
+  -h, --help   help for spec
+```
+
+## edit target
+
+Edit target
+
+### Synopsis
+
+Open up sake config file in $EDITOR and go to targets section.
+
+```
+edit target [target] [flags]
+```
+
+### Examples
+
+```
+  # Edit targets
+  sake edit target
+
+  # Edit target <target>
+  sake edit target <target>
+```
+
+### Options
+
+```
+  -h, --help   help for target
+```
+
 ## edit task
 
-Open up sake config file in $EDITOR and go to tasks section
+Edit task
 
 ### Synopsis
 
@@ -279,15 +345,51 @@ list servers [servers] [flags]
 ### Options
 
 ```
-      --headers strings   set headers. Available headers: server, local, user, host, port, tag, description (default [server,host,tag,description])
+  -H, --all-headers       select all server headers
+      --headers strings   set headers (default [server,host,tag,desc])
   -h, --help              help for servers
+  -v, --invert            invert matching on servers
+  -r, --regex string      filter servers on host regex
   -t, --tags strings      filter servers by tags
 ```
 
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set output [table|markdown|html] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
+      --theme string    set theme (default "default")
+```
+
+## list specs
+
+List specs
+
+### Synopsis
+
+List specs.
+
+```
+list specs [specs] [flags]
+```
+
+### Examples
+
+```
+  # List all specs
+  sake list specs
+```
+
+### Options
+
+```
+      --headers strings   set headers (default [spec,output,parallel,any_errors_fatal,ignore_errors,ignore_unreachable,omit_empty])
+  -h, --help              help for specs
+```
+
+### Options inherited from parent commands
+
+```
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -313,14 +415,47 @@ list tags [tags] [flags]
 ### Options
 
 ```
-      --headers strings   set headers. Available headers: tag, server (default [tag,server])
+      --headers strings   set headers (default [tag,server])
   -h, --help              help for tags
 ```
 
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set output [table|markdown|html] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
+      --theme string    set theme (default "default")
+```
+
+## list targets
+
+List targets
+
+### Synopsis
+
+List targets.
+
+```
+list targets [targets] [flags]
+```
+
+### Examples
+
+```
+  # List all targets
+  sake list targets
+```
+
+### Options
+
+```
+      --headers strings   set headers. Available headers: name, regex (default [target,all,servers,tags,regex,invert,limit,limit_p])
+  -h, --help              help for targets
+```
+
+### Options inherited from parent commands
+
+```
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -349,14 +484,15 @@ list tasks [tasks] [flags]
 ### Options
 
 ```
-      --headers strings   set headers. Available headers: task, description, name (default [task,description])
+  -H, --all-headers       select all task headers
+      --headers strings   set headers (default [task,desc])
   -h, --help              help for tasks
 ```
 
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set output [table|markdown|html] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -387,7 +523,61 @@ describe servers [servers] [flags]
 ```
   -e, --edit           edit server
   -h, --help           help for servers
+  -v, --invert         invert matching on servers
+  -r, --regex string   filter servers on host regex
   -t, --tags strings   filter servers by their tag
+```
+
+## describe specs
+
+Describe specs
+
+### Synopsis
+
+Describe specs.
+
+```
+describe specs [specs] [flags]
+```
+
+### Examples
+
+```
+  # Describe all specs
+  sake describe specs
+```
+
+### Options
+
+```
+  -e, --edit   edit spec
+  -h, --help   help for specs
+```
+
+## describe targets
+
+Describe targets
+
+### Synopsis
+
+Describe targets.
+
+```
+describe targets [targets] [flags]
+```
+
+### Examples
+
+```
+  # Describe all targets
+  sake describe targets
+```
+
+### Options
+
+```
+  -e, --edit   edit target
+  -h, --help   help for targets
 ```
 
 ## describe tasks
@@ -441,7 +631,9 @@ ssh <server> [flags]
 ### Options
 
 ```
-  -h, --help   help for ssh
+  -h, --help                   help for ssh
+  -i, --identity-file string   set identity file for all servers
+      --password string        set ssh password for all servers
 ```
 
 ## gen

@@ -33,6 +33,14 @@ func (c *PasswordEvalFailed) Error() string {
 	return fmt.Sprintf("failed to evaluate password %s", c.Err)
 }
 
+type InventoryEvalFailed struct {
+	Err string
+}
+
+func (c *InventoryEvalFailed) Error() string {
+	return fmt.Sprintf("failed to run inventory command %s", c.Err)
+}
+
 type TagNotFound struct {
 	Tags []string
 }
@@ -40,6 +48,24 @@ type TagNotFound struct {
 func (c *TagNotFound) Error() string {
 	tags := "`" + strings.Join(c.Tags, "`, `") + "`"
 	return fmt.Sprintf("cannot find tags %s", tags)
+}
+
+type TargetsNotFound struct {
+	Targets []string
+}
+
+func (c *TargetsNotFound) Error() string {
+	targets := "`" + strings.Join(c.Targets, "`, `") + "`"
+	return fmt.Sprintf("cannot find targets %s", targets)
+}
+
+type SpecsNotFound struct {
+	Specs []string
+}
+
+func (c *SpecsNotFound) Error() string {
+	specs := "`" + strings.Join(c.Specs, "`, `") + "`"
+	return fmt.Sprintf("cannot find specs %s", specs)
 }
 
 type ServerNotFound struct {
@@ -66,6 +92,29 @@ type TaskMultipleDef struct {
 
 func (c *TaskMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for task `%s`: cmd, task, tasks", c.Name)
+}
+
+type InvalidPercentInput struct{}
+
+func (c *InvalidPercentInput) Error() string {
+	return "Percentage can only be between 0 and 100"
+}
+
+type InvalidLimit struct {
+	Max   int
+	Limit uint32
+}
+
+func (c *InvalidLimit) Error() string {
+	return fmt.Sprintf("The number of filtered servers is %d, but limit was set to %d", c.Max, c.Limit)
+}
+
+type ServerMultipleDef struct {
+	Name string
+}
+
+func (c *ServerMultipleDef) Error() string {
+	return fmt.Sprintf("can only define one of the following for server `%s`: host, hosts", c.Name)
 }
 
 type TaskRefMultipleDef struct {

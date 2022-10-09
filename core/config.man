@@ -48,9 +48,25 @@ Below is a config file detailing all of the available options and their defaults
 
      # Host [required]
      host: media.lan
+     # one-line for setting user and port
+     # host: samir@media.lan:22
+
+     # Specify multiple hosts:
+     # hosts:
+     # - samir@192.168.0.1:22
+     # - samir@l92.168.1.1:22
+
+     # or use a host range generator
+     # hosts: samir@192.168.[0:1].1:22
+
+     # generate hosts by local command
+     # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
+
+     # Bastion [optional]
+     bastion: samir@192.168.1.1:2222
 
      # User to connect as. It defaults to the current user [optional]
-     user: whoami
+     user: samir
 
      # Port for ssh [optional]
      port: 22
@@ -58,17 +74,18 @@ Below is a config file detailing all of the available options and their defaults
      # Shell used for commands [optional]
      shell: bash
 
-     # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
-     identity_file: ./id_rsa
-
-     # Set password. Accepts either a string or a shell command [optional]
-     password: $(echo $MY_SECRET_PASSWORD)
-
      # Run on localhost [optional]
      local: false
 
      # Set default working directory for task execution [optional]
      work_dir: ""
+
+     # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
+     # sake respects users ssh config, so you can set auth credentials in the users ssh config
+     identity_file: ./id_rsa
+
+     # Set password. Accepts either a string or a shell command [optional]
+     password: $(echo $MY_SECRET_PASSWORD)
 
      # List of tags [optional]
      tags: [remote]
@@ -116,14 +133,8 @@ Below is a config file detailing all of the available options and their defaults
      # Table options [optional]
      table:
        # Table style [optional]
-       # Available options: ascii, default
+       # Available options: ascii, connected-light
        style: ascii
-
-       # Text format options for headers and rows in table output [optional]
-       # Available options: default, lower, title, upper
-       format:
-         header: default
-         row: default
 
        # Border options for table output [optional]
        options:
@@ -133,145 +144,63 @@ Below is a config file detailing all of the available options and their defaults
          separate_rows: false
          separate_footer: false
 
-       # Color, attr and align options [optional]
-       # Available options for fg/bg: green, blue, red, yellow, magenta, cyan
+       # Color, attr, align, and format options [optional]
+       # Available options for fg/bg: green, blue, red, yellow, magenta, cyan, hi_green, hi_blue, hi_red, hi_yellow, hi_magenta, hi_cyan
        # Available options for align: left, center, justify, right
        # Available options for attr: normal, bold, faint, italic, underline, crossed_out
-       color:
+       # Available options for format: default, lower, title, upper
+       title:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       header:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       row:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       footer:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       border:
          header:
-           server:
-             fg:
-             bg:
-             align:
-             attr:
-
-           user:
-             fg:
-             bg:
-             align:
-             attr:
-
-           host:
-             fg:
-             bg:
-             align:
-             attr:
-
-           port:
-             fg:
-             bg:
-             align:
-             attr:
-
-           local:
-             fg:
-             bg:
-             align:
-             attr:
-
-           tag:
-             fg:
-             bg:
-             align:
-             attr:
-
-           desc:
-             fg:
-             bg:
-             align:
-             attr:
-
-           task:
-             fg:
-             bg:
-             align:
-             attr:
-
-           output:
-             fg:
-             bg:
-             align:
-             attr:
+           fg:
+           bg:
+           align:
+           attr:
 
          row:
-           server:
-             fg:
-             bg:
-             align:
-             attr:
+           fg:
+           bg:
+           align:
+           attr:
 
-           user:
-             fg:
-             bg:
-             align:
-             attr:
+         row_alt:
+           fg:
+           bg:
+           align:
+           attr:
 
-           host:
-             fg:
-             bg:
-             align:
-             attr: normal
-
-           port:
-             fg:
-             bg:
-             align:
-             attr:
-
-           local:
-             fg:
-             bg:
-             align:
-             attr:
-
-           tag:
-             fg:
-             bg:
-             align:
-             attr:
-
-           desc:
-             fg:
-             # bg:
-             align:
-             attr:
-
-           task:
-             fg:
-             # bg:
-             align:
-             attr:
-
-           output:
-             fg:
-             bg:
-             align:
-             attr:
-
-         border:
-           header:
-             fg:
-             bg:
-             align:
-             attr:
-
-           row:
-             fg:
-             bg:
-             align:
-             attr:
-
-           row_alt:
-             fg:
-             bg:
-             align:
-             attr:
-
-           footer:
-             fg:
-             bg:
-             align:
-             attr:
+         footer:
+           fg:
+           bg:
+           align:
+           attr:
 
  # List of Specs [optional]
  specs:
@@ -305,6 +234,12 @@ Below is a config file detailing all of the available options and their defaults
 
      # Specify servers via server tags
      tags: []
+
+     # Limit of servers to target
+     limit: 0
+
+     # Limit of servers to target in percentage
+     limit_p: 0
 
  # List of tasks
  tasks:
@@ -352,6 +287,8 @@ Below is a config file detailing all of the available options and their defaults
        all: true
        servers: [media]
        tags: [remote]
+       limit: 1
+       limit_p: 100
 
      # List of environment variables [optional]
      env:
@@ -376,6 +313,7 @@ Below is a config file detailing all of the available options and their defaults
        #   SAKE_SERVER_HOST
        #   SAKE_SERVER_USER
        #   SAKE_SERVER_PORT
+       #   SAKE_SERVER_BASTION
        #   SAKE_SERVER_LOCAL
 
      # Run on localhost [optional]
@@ -544,14 +482,6 @@ Override ssh config file path
 Override known_hosts file path
 
 .TP
-.B SAKE_IDENTITY_FILE
-Override identity file path
-
-.TP
-.B SAKE_PASSWORD
-Override SSH password
-
-.TP
 .B NO_COLOR
 If this env variable is set (regardless of value) then all colors will be disabled
 
@@ -571,6 +501,3 @@ For updates and more information go to
 .UR https://\:www.sakecli.com
 sakecli.com
 .UE .
-
-
-

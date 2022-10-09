@@ -2,6 +2,8 @@ package dao
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -27,6 +29,28 @@ func (s *Spec) GetContext() string {
 
 func (s *Spec) GetContextLine() int {
 	return s.contextLine
+}
+
+func (s Spec) GetValue(key string, _ int) string {
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "name", "spec":
+		return s.Name
+	case "output":
+		return s.Output
+	case "parallel":
+		return strconv.FormatBool(s.Parallel)
+	case "any_errors_fatal":
+		return strconv.FormatBool(s.AnyErrorsFatal)
+	case "ignore_errors":
+		return strconv.FormatBool(s.IgnoreErrors)
+	case "ignore_unreachable":
+		return strconv.FormatBool(s.IgnoreUnreachable)
+	case "omit_empty":
+		return strconv.FormatBool(s.OmitEmpty)
+	default:
+		return ""
+	}
 }
 
 // ParseSpecsYAML parses the specs dictionary and returns it as a list.
@@ -60,7 +84,7 @@ func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 	return specs, specErrors
 }
 
-func (c Config) GetSpec(name string) (*Spec, error) {
+func (c *Config) GetSpec(name string) (*Spec, error) {
 	for _, spec := range c.Specs {
 		if name == spec.Name {
 			return &spec, nil
@@ -70,11 +94,49 @@ func (c Config) GetSpec(name string) (*Spec, error) {
 	return nil, &core.SpecNotFound{Name: name}
 }
 
-func (c Config) GetSpecNames() []string {
+func (c *Config) GetSpecNames() []string {
 	names := []string{}
 	for _, spec := range c.Specs {
 		names = append(names, spec.Name)
 	}
 
 	return names
+}
+
+func (c *Config) GetSpecsByName(names []string) ([]Spec, error) {
+	if len(names) == 0 {
+		return c.Specs, nil
+	}
+
+	foundSpecs := make(map[string]bool)
+	for _, t := range names {
+		foundSpecs[t] = false
+	}
+
+	var filteredSpecs []Spec
+	for _, id := range names {
+		if foundSpecs[id] {
+			continue
+		}
+
+		for _, spec := range c.Specs {
+			if id == spec.Name {
+				foundSpecs[spec.Name] = true
+				filteredSpecs = append(filteredSpecs, spec)
+			}
+		}
+	}
+
+	nonExistingSpecs := []string{}
+	for k, v := range foundSpecs {
+		if !v {
+			nonExistingSpecs = append(nonExistingSpecs, k)
+		}
+	}
+
+	if len(nonExistingSpecs) > 0 {
+		return []Spec{}, &core.SpecsNotFound{Specs: nonExistingSpecs}
+	}
+
+	return filteredSpecs, nil
 }

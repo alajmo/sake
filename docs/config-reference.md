@@ -438,9 +438,6 @@ SAKE_SSH_CONFIG
 SAKE_KNOWN_HOSTS_FILE
     Override known_hosts file path
 
-SAKE_IDENTITY_FILE
-    Override identity file path
-
 SAKE_PASSWORD
     Override SSH password
 

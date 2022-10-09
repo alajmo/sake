@@ -1,22 +1,12 @@
 Index: 15
-Name: fatal true
-Cmd: go run ../../main.go run fatal-true -t reachable
-WantErr: true
+Name: Filter by hosts server
+Cmd: go run ../../main.go run info -S -s 'list[0:2]'
+WantErr: false
 
 ---
 
- Server    | Fatal-True    
------------+---------------
- localhost |               
-           | exit status 1 
- server-1  |               
- server-2  |               
- server-3  |               
- server-4  |               
- server-5  |               
- server-6  |               
- server-7  |               
- server-8  |               
- server-9  |               
+ server | OS | Kernel 
+--------+----+--------
+ list-0 | OS | kernel 
+ list-1 | OS | kernel 
 
-exit status 1

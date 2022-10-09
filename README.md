@@ -24,7 +24,7 @@
 
 <br>
 
-`sake` is a command runner for local and remote hosts. You define servers and tasks in a `sake.yaml` config file and then run the tasks on the servers.
+`sake` is a command runner for local and remote hosts. You define servers and tasks in `sake.yaml` file and then run the tasks on the servers.
 
 This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
@@ -150,9 +150,9 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Recipes](docs/recipes.md)
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)
-- [Project Background](docs/project-background.md)
-- [Roadmap](docs/roadmap.md)
 - [Changelog](docs/changelog.md)
+- [Roadmap](docs/roadmap.md)
+- [Project Background](docs/project-background.md)
 - [Contributing](docs/contributing.md)
 
 ## [License](LICENSE)

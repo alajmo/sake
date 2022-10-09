@@ -1,30 +1,11 @@
 Index: 14
-Name: fatal false
-Cmd: go run ../../main.go run fatal -t reachable
+Name: Filter by hosts server using range index
+Cmd: go run ../../main.go run info -S -s 'list[0]'
 WantErr: false
 
 ---
 
- Server    | Fatal                        
------------+------------------------------
- localhost |                              
-           | exit status 1                
- server-1  |                              
-           | Process exited with status 1 
- server-2  |                              
-           | Process exited with status 1 
- server-3  |                              
-           | Process exited with status 1 
- server-4  |                              
-           | Process exited with status 1 
- server-5  |                              
-           | Process exited with status 1 
- server-6  |                              
-           | Process exited with status 1 
- server-7  |                              
-           | Process exited with status 1 
- server-8  |                              
-           | Process exited with status 1 
- server-9  |                              
-           | Process exited with status 1 
+ server | OS | Kernel 
+--------+----+--------
+ list-0 | OS | kernel 
 

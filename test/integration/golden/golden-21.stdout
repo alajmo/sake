@@ -1,19 +1,106 @@
 Index: 21
-Name: omit_empty true
-Cmd: go run ../../main.go run empty-true -t reachable
+Name: Reference Envs
+Cmd: go run ../../main.go run env-complex -S -t reachable
 WantErr: false
 
 ---
 
- Server   | Empty-True 
-----------+------------
- server-1 | Exists     
- server-2 | Exists     
- server-3 | Exists     
- server-4 | Exists     
- server-5 | Exists     
- server-6 | Exists     
- server-7 | Exists     
- server-8 | Exists     
- server-9 | Exists     
+ server    | env-ref     | env-ref     
+-----------+-------------+-------------
+ localhost | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ list-0    | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ list-1    | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ range-0   | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ range-1   | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ inv-0     | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ inv-1     | foo xyz     | foo xyz     
+           | hello world | hello world 
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-1  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-2  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-3  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-4  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-5  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-6  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-7  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-8  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
+ server-9  | foo xyz     | foo xyz     
+           | hello       | hello       
+           | cookie      | cookie      
+           | release     | release     
+           | task local  | task remote 
+           | xyz xyz     | xyz xyz     
 

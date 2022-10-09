@@ -1,0 +1,28 @@
+Index: 28
+Name: fatal true
+Cmd: go run ../../main.go run fatal-true -S -t reachable
+WantErr: true
+
+---
+
+ server    | fatal-true    
+-----------+---------------
+ localhost |               
+           | exit status 1 
+ list-0    |               
+ list-1    |               
+ range-0   |               
+ range-1   |               
+ inv-0     |               
+ inv-1     |               
+ server-1  |               
+ server-2  |               
+ server-3  |               
+ server-4  |               
+ server-5  |               
+ server-6  |               
+ server-7  |               
+ server-8  |               
+ server-9  |               
+
+exit status 1

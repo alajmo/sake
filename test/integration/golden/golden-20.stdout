@@ -1,20 +1,90 @@
 Index: 20
-Name: omit_empty false
-Cmd: go run ../../main.go run empty -t reachable
+Name: Simple Envs
+Cmd: go run ../../main.go run env -S -t reachable
 WantErr: false
 
 ---
 
- Server    | Empty  
------------+--------
- localhost |        
- server-1  | Exists 
- server-2  | Exists 
- server-3  | Exists 
- server-4  | Exists 
- server-5  | Exists 
- server-6  | Exists 
- server-7  | Exists 
- server-8  | Exists 
- server-9  | Exists 
+ server    | env         
+-----------+-------------
+ localhost | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ list-0    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ list-1    | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-0   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ range-1   | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-0     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ inv-1     | foo xyz     
+           | hello world 
+           | cookie      
+           | release     
+           | task local  
+ server-1  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-2  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-3  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-4  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-5  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-6  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-7  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-8  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
+ server-9  | foo xyz     
+           | hello       
+           | cookie      
+           | release     
+           | task local  
 

@@ -1,20 +1,18 @@
 Index: 12
-Name: Work Dir 2
-Cmd: go run ../../main.go run work-dir-2 -t reachable
+Name: Multiple commands
+Cmd: go run ../../main.go run info -S -t prod
 WantErr: false
 
 ---
 
- Server    | Ref  | Override Inline Ref | Inline     | Override Inline 
------------+------+---------------------+------------+-----------------
- localhost | /usr | /opt                | /tmp       | /               
- server-1  | /usr | /opt                | /home/test | /               
- server-2  | /usr | /opt                | /home/test | /               
- server-3  | /usr | /opt                | /home/test | /               
- server-4  | /usr | /opt                | /home/test | /               
- server-5  | /usr | /opt                | /home/test | /               
- server-6  | /usr | /opt                | /home/test | /               
- server-7  | /usr | /opt                | /home/test | /               
- server-8  | /usr | /opt                | /home/test | /               
- server-9  | /usr | /opt                | /home/test | /               
+ server   | OS | Kernel 
+----------+----+--------
+ list-0   | OS | kernel 
+ list-1   | OS | kernel 
+ range-0  | OS | kernel 
+ range-1  | OS | kernel 
+ inv-0    | OS | kernel 
+ inv-1    | OS | kernel 
+ server-1 | OS | kernel 
+ server-2 | OS | kernel 
 

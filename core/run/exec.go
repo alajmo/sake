@@ -60,7 +60,7 @@ func (run *Run) RunTask(
 		return err
 	}
 
-	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers)
+	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers, runFlags)
 	if err != nil {
 		return err
 	}
@@ -75,8 +75,14 @@ func (run *Run) RunTask(
 			parseOutput.Rows = append(parseOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
 		}
 
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
-		print.PrintTable("Parse Errors", parseOutput.Rows, options, parseOutput.Headers[0:1], parseOutput.Headers[1:])
+		options := print.PrintTableOptions{
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               task.Spec.Output,
+			SuppressEmptyColumns: false,
+			Title:                "Parse Errors",
+		}
+		print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
 
 		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
 	}
@@ -107,8 +113,14 @@ func (run *Run) RunTask(
 			unreachableOutput.Rows = append(unreachableOutput.Rows, dao.Row{Columns: []string{u.Name, u.Host, u.User, strconv.Itoa(int(u.Port)), u.Reason}})
 		}
 
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
-		print.PrintTable("Unreachable Hosts", unreachableOutput.Rows, options, unreachableOutput.Headers[0:1], unreachableOutput.Headers[1:])
+		options := print.PrintTableOptions{
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               "table",
+			SuppressEmptyColumns: false,
+			Title:                "\nUnreachable Hosts\n",
+		}
+		print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
 
 		if !task.Spec.IgnoreUnreachable {
 			return &core.ExecError{Err: err, ExitCode: 4}
@@ -136,15 +148,25 @@ func (run *Run) RunTask(
 	}
 
 	switch task.Spec.Output {
-	case "table", "html", "markdown":
+	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown":
 		spinner := core.GetSpinner()
-		spinner.Start(" Running", 500)
+		if !runFlags.Silent {
+			spinner.Start(" Running", 500)
+		}
 
 		data, err := run.Table(runFlags.DryRun)
-		options := print.PrintTableOptions{Theme: task.Theme, OmitEmpty: task.Spec.OmitEmpty, Output: task.Spec.Output, SuppressEmptyColumns: false}
+		options := print.PrintTableOptions{
+			Theme:                task.Theme,
+			OmitEmpty:            task.Spec.OmitEmpty,
+			Output:               task.Spec.Output,
+			SuppressEmptyColumns: false,
+			Resource:             "task",
+		}
 		run.CleanupClients()
-		spinner.Stop()
-		print.PrintTable("", data.Rows, options, data.Headers[0:1], data.Headers[1:])
+		if !runFlags.Silent {
+			spinner.Stop()
+		}
+		print.PrintTable(data.Rows, options, data.Headers)
 
 		if err != nil {
 			return err
@@ -170,12 +192,14 @@ func (run *Run) RunTask(
 	return nil
 }
 
+type Signers struct {
+	agentSigners []ssh.Signer
+	fingerprints map[string]ssh.Signer     // fingerprint -> signer
+	identities   map[string]ssh.Signer     // identityFile -> signer
+	passwords    map[string]ssh.AuthMethod // password -> signer
+}
+
 // SetClients establishes connection to server
-// InitAuthMethod
-// if identity_file, use that file
-// if identity_file + passphrase, use that file with the passphrase
-// if passphrase, use passphrase connect
-// if nothing, attempt to use SSH Agent
 func (run *Run) SetClients(
 	runFlags *core.RunFlags,
 	numChannels int,
@@ -242,70 +266,32 @@ func (run *Run) SetClients(
 		return []ErrConnect{}, err
 	}
 
-	globalSigner, err := GetGlobalIdentitySigner(runFlags)
-	if err != nil {
-		return []ErrConnect{}, err
+	signers := Signers{
+		agentSigners: agentSigners,
+		fingerprints: make(map[string]ssh.Signer),
+		identities:   make(map[string]ssh.Signer),
+		passwords:    make(map[string]ssh.AuthMethod),
 	}
 
-	identities := make(map[string]ssh.Signer)
-	passwordAuthMethods := make(map[string]ssh.AuthMethod)
+	// Generate fingerprint (public key) for each agent key
+	for _, s := range signers.agentSigners {
+		fp := ssh.FingerprintSHA256(s.PublicKey())
+		signers.fingerprints[fp] = s
+	}
+
 	for _, server := range run.Servers {
-		if server.AuthMethod == "password-key" {
-			_, found := identities[*server.IdentityFile]
-			if !found {
-				signer, err := GetPassworIdentitySigner(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				identities[*server.IdentityFile] = signer
-			}
-		} else if server.AuthMethod == "key" {
-			_, found := identities[*server.IdentityFile]
-			if !found {
-				signer, err := GetIdentity(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				identities[*server.IdentityFile] = signer
-			}
-		} else if server.AuthMethod == "password" {
-			_, found := passwordAuthMethods[*server.Password]
-			if !found {
-				passAuthMethod, err := GetPasswordAuth(server)
-				if err != nil {
-					return []ErrConnect{*err}, nil
-				}
-				passwordAuthMethods[*server.Password] = passAuthMethod
-			}
+		err := populateSigners(server, &signers)
+		if err != nil {
+			return []ErrConnect{}, err
 		}
 	}
 
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
-
 		if !server.Local {
 			wg.Add(1)
-
-			var authMethods []ssh.AuthMethod
-			var signers []ssh.Signer
-
-			if globalSigner != nil {
-				signers = append(signers, globalSigner)
-			} else if server.AuthMethod == "password" {
-				pwAuth := passwordAuthMethods[*server.Password]
-				authMethods = append(authMethods, pwAuth)
-			} else if server.AuthMethod == "key" || server.AuthMethod == "password-key" {
-				identitySigner := identities[*server.IdentityFile]
-				signers = append(signers, identitySigner)
-			} else if agentSigners != nil {
-				signers = append(signers, agentSigners...)
-			}
-
-			if len(signers) > 0 {
-				authMethods = append(authMethods, ssh.PublicKeys(signers...))
-			}
-
+			authMethods := getAuthMethod(server, &signers)
 			go createRemoteClient(authMethods, server, &wg, &mu)
 		}
 	}
@@ -325,14 +311,13 @@ func (run *Run) SetClients(
 		}
 	}
 
-	// Return on error
+	run.LocalClients = localCLients
+	run.RemoteClients = remoteClients
+
 	var unreachable []ErrConnect
 	for err := range errCh {
 		unreachable = append(unreachable, err)
 	}
-
-	run.LocalClients = localCLients
-	run.RemoteClients = remoteClients
 
 	return unreachable, nil
 }
@@ -371,12 +356,24 @@ func (run *Run) CleanupClients() {
 }
 
 // ParseServers resolves host, port, proxyjump in users ssh config
-func ParseServers(sshConfigFile *string, servers *[]dao.Server) ([]ErrConnect, error) {
+func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.RunFlags) ([]ErrConnect, error) {
+	if runFlags.IdentityFile != "" {
+		for i := range *servers {
+			(*servers)[i].IdentityFile = &runFlags.IdentityFile
+		}
+	}
+
+	if runFlags.Password != "" {
+		for i := range *servers {
+			(*servers)[i].Password = &runFlags.Password
+		}
+	}
+
 	if sshConfigFile == nil {
 		return nil, nil
 	}
 
-	cfg, err := core.ParseFile(*sshConfigFile)
+	cfg, err := core.ParseSSHConfig(*sshConfigFile)
 	if err != nil {
 		return nil, err
 	}
@@ -467,6 +464,11 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server) ([]ErrConnect, e
 			} else {
 				(*servers)[i].BastionUser = (*servers)[i].User
 			}
+		}
+
+		// IdentityFile
+		if len(serv.IdentityFiles) > 0 {
+			(*servers)[i].IdentityFile = &serv.IdentityFiles[0]
 		}
 
 		// HostName
@@ -619,4 +621,91 @@ func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
 	}
 
 	return ""
+}
+
+func populateSigners(server dao.Server, signers *Signers) error {
+	// If no identity or password provided, return
+	if server.IdentityFile == nil && server.Password == nil {
+		return nil
+	}
+
+	if server.IdentityFile != nil {
+		// Check if identity_file already exists
+		_, found := signers.identities[*server.IdentityFile]
+		if found {
+			return nil
+		}
+	} else if server.Password != nil {
+		// Check if password already exists
+		_, found := signers.passwords[*server.Password]
+		if found {
+			return nil
+		}
+	}
+
+	// Check if exists in ssh-agent
+	if server.PubFile != nil {
+		fp, err := GetFingerprintPubKey(server)
+		if err != nil {
+			return err
+		}
+
+		v, found := signers.fingerprints[fp]
+		if found {
+			signers.identities[*server.IdentityFile] = v
+			return nil
+		}
+	}
+
+	// If only password provided -> assume password login
+	if server.IdentityFile == nil && server.Password != nil {
+		passAuthMethod, err := GetPasswordAuth(server)
+		if err != nil {
+			return err
+		}
+		signers.passwords[*server.Password] = passAuthMethod
+		return nil
+	} else if server.Password != nil {
+		// If identity key + password -> assume password protected, populate and return
+		signer, err := GetPasswordIdentitySigner(server)
+		if err != nil {
+			return err
+		}
+		signers.identities[*server.IdentityFile] = signer
+		return nil
+	} else {
+		// If identity key -> try first without passphrase, if passphrase required prompt password, return
+		signer, err := GetSigner(server)
+		if err != nil {
+			return err
+		}
+		signers.identities[*server.IdentityFile] = signer
+		return nil
+	}
+}
+
+func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
+	var authMethods []ssh.AuthMethod
+
+	if server.IdentityFile != nil {
+		v, found := signers.identities[*server.IdentityFile]
+		if found {
+			authMethods = append(authMethods, ssh.PublicKeys(v))
+			return authMethods
+		}
+	}
+
+	if server.Password != nil {
+		v, found := signers.passwords[*server.Password]
+		if found {
+			authMethods = append(authMethods, v)
+		}
+	}
+
+	// No signers found, use agent signers
+	if len(signers.agentSigners) > 0 {
+		authMethods = append(authMethods, ssh.PublicKeys(signers.agentSigners...))
+	}
+
+	return authMethods
 }

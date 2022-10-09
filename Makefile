@@ -2,7 +2,7 @@ NAME    := sake
 PACKAGE := github.com/alajmo/$(NAME)
 DATE    := $(shell date +%FT%T%Z)
 GIT     := $(shell [ -d .git ] && git rev-parse --short HEAD)
-VERSION := v0.11.0
+VERSION := v0.12.0
 
 default: build
 
@@ -20,14 +20,25 @@ gofmt:
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...
 
+benchmark:
+	cd test && ./benchmark.sh
+
+benchmark-save:
+	cd test && ./benchmark.sh --save
+
 test:
-	go test -v ./core/dao/***
+	# Unit tests
+	go test -v ./core/*.go -v
+	go test -v ./core/dao/*.go -v
+
+	# Integration tests
 	cd ./test && docker-compose up -d
 	go test -v ./test/integration/... -count=5 -clean
 	cd ./test && docker-compose down
 
 unit-test:
-	go test -v ./core/dao/***
+	go test -v ./core/*.go -v
+	go test -v ./core/dao/*.go -v
 
 integration-test:
 	go test -v ./test/integration/... -clean
@@ -64,4 +75,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean
+.PHONY: tidy gofmt lint benchmark benchmark-save test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean

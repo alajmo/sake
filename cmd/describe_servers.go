@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/alajmo/sake/core"
@@ -36,6 +38,10 @@ func describeServersCmd(config *dao.Config, configErr *error) *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVarP(&serverFlags.Regex, "regex", "r", "", "filter servers on host regex")
+
+	cmd.Flags().BoolVarP(&serverFlags.Invert, "invert", "v", false, "invert matching on servers")
+
 	cmd.Flags().StringSliceVarP(&serverFlags.Tags, "tags", "t", []string{}, "filter servers by their tag")
 	err := cmd.RegisterFlagCompletionFunc("tags", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
@@ -57,9 +63,20 @@ func describeServers(
 	args []string,
 	serverFlags core.ServerFlags,
 ) {
+	var userArgs []string
+	var serverArgs []string
+	// Separate user arguments from task ids
+	for _, arg := range args {
+		if strings.Contains(arg, "=") {
+			userArgs = append(userArgs, arg)
+		} else {
+			serverArgs = append(serverArgs, arg)
+		}
+	}
+
 	if serverFlags.Edit {
-		if len(args) > 0 {
-			err := config.EditServer(args[0])
+		if len(serverArgs) > 0 {
+			err := config.EditServer(serverArgs[0])
 			core.CheckIfError(err)
 		} else {
 			err := config.EditServer("")
@@ -67,13 +84,17 @@ func describeServers(
 		}
 	} else {
 		allServers := false
-		if len(args) == 0 &&
+		if len(serverArgs) == 0 &&
 			len(serverFlags.Tags) == 0 {
 			allServers = true
 		}
 
-		servers, err := config.FilterServers(allServers, args, serverFlags.Tags)
+		err := config.ParseInventory(userArgs)
 		core.CheckIfError(err)
+
+		servers, err := config.FilterServers(allServers, serverArgs, serverFlags.Tags, serverFlags.Regex, serverFlags.Invert)
+		core.CheckIfError(err)
+
 		if len(servers) > 0 {
 			print.PrintServerBlocks(servers)
 		}

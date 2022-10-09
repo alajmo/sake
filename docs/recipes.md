@@ -2,6 +2,7 @@
 
 A list of useful recipes.
 
+- [Specify multiple hosts](#specify-multiple-hosts)
 - [Validate Config](#validate-config)
 - [Upload File](#upload-file)
 - [Download File](#download-file)
@@ -24,7 +25,8 @@ A list of useful recipes.
 - [Provide Identity and Password Credentials](#provide-identity-and-password-credentials)
 - [Disable Verify Host](#disable-verify-host)
 - [Change known_hosts Path](#change-known_hosts-path)
-- [List Default Variables](#list-default-variables)
+- [Pass Variables from CLI](#pass-variables-from-cli)
+- [List Default Environment Variables](#list-default-variables)
 - [Change Default Behavior of `sake`](#change-default-behavior-of-sake)
 - [Invoke `sake` From Any Directory](#invoke-sake-from-any-directory)
 - [Import a Default User Config for Any `sake` Project](#import-a-default-user-config-for-any-sake-project)
@@ -32,6 +34,46 @@ A list of useful recipes.
 - [Disable Colors](#disable-colors)
 - [Performing a Dry Run](#performing-a-dry-run)
 - [Modify Theme](#modify-theme)
+
+## Specify multiple hosts
+
+In `sake` there's 3 ways to specify multiple hosts:
+
+```yaml
+servers:
+  # Option 1
+  many-1:
+    hosts:
+      - samir@192.168.1.1:22
+      - samir@192.168.1.2:22
+
+  # Option 2
+  many-2:
+    hosts: samir@192.168.1.[1:2]:22
+
+  # Option 3
+  many-3:
+    inventory: echo samir@192.168.1.1:22 samir@192.168.1.2:22
+```
+
+```bash
+sake list servers
+
+ Server   | Host
+----------+-------------
+ many-1-0 | 192.168.1.1
+----------+-------------
+ many-1-1 | 192.168.1.2
+----------+-------------
+ many-2-0 | 192.168.1.1
+----------+-------------
+ many-2-1 | 192.168.1.2
+----------+-------------
+ many-3-0 | 192.168.1.1
+----------+-------------
+ many-3-1 | 192.168.1.2
+
+```
 
 ## Validate Config
 
@@ -182,18 +224,9 @@ The describe sub-command describes servers and tasks.
   User: samir
   Host: pihole.lan
   Port: 22
-  Local: false
   WorkDir:
   Desc: runs pihole
   Tags: remote, pi
-  Env:
-      SAKE_SERVER_NAME: pihole
-      SAKE_SERVER_DESC: runs pihole
-      SAKE_SERVER_TAGS: remote,pi
-      SAKE_SERVER_HOST: pihole.lan
-      SAKE_SERVER_USER: samir
-      SAKE_SERVER_PORT: 22
-      SAKE_SERVER_LOCAL: false
   ```
 
 - **Tasks**: To describe all tasks run `sake describe tasks [task]`
@@ -204,25 +237,15 @@ The describe sub-command describes servers and tasks.
   Task: info
   Name: info
   Desc: get remote info
-  Local: false
   WorkDir:
   Theme: default
   Target:
       All: true
-      Servers:
-      Tags:
   Spec:
       Output: table
       Parallel: true
-      AnyErrorsFatal: false
       IgnoreErrors: true
       IgnoreUnreachable: true
-      OmitEmpty: false
-  Env:
-      SAKE_TASK_ID: info
-      SAKE_TASK_NAME:
-      SAKE_TASK_DESC: get remote info
-      SAKE_TASK_LOCAL: false
   Tasks:
       - OS: print OS
       - Kernel: Print kernel version
@@ -591,7 +614,7 @@ $ sake run output --all --output markdown
 
 You can change the default `shell` for tasks by setting the `shell` property in the global scope, server section or the task section (nested tasks/commands included).
 
-The order of precedence is as follows:
+The order of precedence is as follows (first takes precedence):
 
 1. task list
 2. task
@@ -689,13 +712,12 @@ $ sake run work-dir --output table
 By default `sake` will attempt to load identity keys from an SSH agent if it's running in the background. However, if you wish to provide credentials manually, you can do so by (first takes precedence):
 
 1. setting `--identity-file` and/or `--password` flags
-2. providing environment variables `SAKE_IDENTITY_FILE` and `SAKE_PASSWORD`
-3. specifying it in the server definition
+2. specifying it in the server definition
 
 The type of auth used is determined by:
 
 - if `identity-file` and `password` are provided, then it assumes password protected identity key
-- if only `identity-file` is provided, then it assumes a passwordless identity key
+- if only `identity-file` is provided, then it first tries without passphrase, if file is encrypted, it will prompt for passphrase
 - if only `password` is provided, then it assumes password protected auth
 
 ```yaml
@@ -705,6 +727,8 @@ servers:
     identity_file: id_rsa
     password: $(echo $MY_SECRET_PASSWORD)
 ```
+
+You can also define entries in your `~/.ssh/config` file and `sake` will try to resolve them.
 
 ## Disable Verify Host
 
@@ -722,7 +746,20 @@ By default a `known_hosts` file is used to verify host connections. It's default
 known_hosts_file: ./known_hosts
 ```
 
-## List Default Variables
+## Pass Variables from CLI
+
+If you wish to pass CLI variables you can run the following:
+
+```bash
+$ sake run hello option=123
+```
+
+```yaml
+hello:
+  cmd: echo $option
+```
+
+## List Default Environment Variables
 
 Each task has access to a number of default environment variables.
 
@@ -749,8 +786,6 @@ Each task has access to a number of default environment variables.
       echo "# CONFIG"
       echo "SAKE_DIR $SAKE_DIR"
       echo "SAKE_PATH $SAKE_PATH"
-      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
-      echo "SAKE_PASSWORD $SAKE_PASSWOD"
       echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
 ```
 
@@ -779,8 +814,6 @@ $ sake run env -s server-1
           | # CONFIG
           | SAKE_DIR /tmp
           | SAKE_PATH /tmp/sake.yaml
-          | SAKE_IDENTITY_FILE
-          | SAKE_PASSWORD
           | SAKE_KNOWN_HOSTS_FILE
 ```
 

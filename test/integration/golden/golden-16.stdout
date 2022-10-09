@@ -1,30 +1,18 @@
 Index: 16
-Name: ignore_errors false
-Cmd: go run ../../main.go run errors -t reachable
+Name: Filter by host regex
+Cmd: go run ../../main.go run info -S -r '172.24.2.(2|4)'
 WantErr: false
 
 ---
 
- Server    | Output | Output                        | Output 
------------+--------+-------------------------------+--------
- localhost | 123    |                               |        
-           |        | exit status 65                |        
- server-1  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-2  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-3  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-4  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-5  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-6  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-7  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-8  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-9  | 123    |                               |        
-           |        | Process exited with status 65 |        
+ server   | OS | Kernel 
+----------+----+--------
+ list-0   | OS | kernel 
+ list-1   | OS | kernel 
+ range-0  | OS | kernel 
+ range-1  | OS | kernel 
+ inv-0    | OS | kernel 
+ inv-1    | OS | kernel 
+ server-1 | OS | kernel 
+ server-3 | OS | kernel 
 

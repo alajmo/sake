@@ -30,6 +30,8 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 		listServersCmd(config, configErr, &listFlags),
 		listTasksCmd(config, configErr, &listFlags),
 		listTagsCmd(config, configErr, &listFlags),
+		listTargetsCmd(config, configErr, &listFlags),
+		listSpecsCmd(config, configErr, &listFlags),
 	)
 
 	cmd.PersistentFlags().StringVar(&listFlags.Theme, "theme", "default", "set theme")
@@ -44,13 +46,13 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 	})
 	core.CheckIfError(err)
 
-	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "set output [table|markdown|html]")
+	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "set table output [table|table-2|table-3|table-4|markdown|html]")
 	err = cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		valid := []string{"table", "markdown", "html"}
+		valid := []string{"table", "table-2", "table-3", "table-4", "markdown", "html"}
 		return valid, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)

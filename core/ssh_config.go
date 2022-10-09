@@ -15,12 +15,12 @@ import (
 )
 
 // PraseFile reads and parses the file in the given path.
-func ParseFile(path string) (map[string](Endpoint), error) {
+func ParseSSHConfig(path string) (map[string](Endpoint), error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close() // nolint:errcheck
+	defer f.Close()
 
 	endpoints, err := ParseReader(f, path)
 	if err != nil {
@@ -57,6 +57,7 @@ func ParseReader(r io.Reader, cfg string) ([]*Endpoint, error) {
 			if err != nil {
 				return fmt.Errorf("%s: invalid Host: %q: %w", cfg, k, err)
 			}
+
 			if g.Match(name) || (info.HostName != "" && g.Match(info.HostName)) {
 				info = mergeHostinfo(info, v)
 			}
@@ -210,31 +211,31 @@ func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 					return nil, fmt.Errorf("%s: invalid node on app %q: %q", cfg, name, node)
 				}
 
-				key := strings.TrimSpace(parts[0])
+				key := strings.ToLower(strings.TrimSpace(parts[0]))
 				value := strings.TrimSpace(parts[1])
 
 				switch key {
-				case "HostName":
+				case "hostname":
 					info.HostName = value
-				case "User":
+				case "user":
 					info.User = value
-				case "Port":
+				case "port":
 					info.Port = value
-				case "ProxyJump":
+				case "proxyjump":
 					info.ProxyJump = value
-				case "IdentityFile":
+				case "identityfile":
 					info.IdentityFiles = append(info.IdentityFiles, value)
-				case "ForwardAgent":
+				case "forwardagent": // not used
 					info.ForwardAgent = value
-				case "RequestTTY":
+				case "requesttty": // not used
 					info.RequestTTY = value
-				case "RemoteCommand":
+				case "remotecommand": // not used
 					info.RemoteCommand = value
-				case "SendEnv":
+				case "sendenv": // not used
 					info.SendEnv = append(info.SendEnv, value)
-				case "SetEnv":
+				case "setenv": // not used
 					info.SetEnv = append(info.SetEnv, value)
-				case "Include":
+				case "include":
 					// TODO: Handle glob (Include supports dir/* format)
 					if strings.Contains(value, "*") {
 						continue
@@ -333,7 +334,7 @@ func parseFileInternal(path string) (*hostinfoMap, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close() // nolint:errcheck
+	defer f.Close()
 	return parseInternal(f, path)
 }
 

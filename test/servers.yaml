@@ -7,80 +7,112 @@ servers:
     host: localhost
     user: test
     local: true
-    tags: [local,reachable]
     work_dir: /tmp
+    tags: [local,reachable]
 
   unreachable:
     host: unreachable.lan
     user: test
     tags: [unreachable]
 
+  list:
+    desc: many hosts using list
+    hosts:
+      - 172.24.2.2
+      - test@172.24.2.4:22
+    user: test
+    identity_file: keys/id_ed25519_pem
+    password: testing
+    tags: [remote, prod, list, reachable]
+    env:
+      hello: world
+
+  range:
+    desc: many hosts using range
+    hosts: 172.24.2.[2:4:2]
+    user: test
+    password: test
+    tags: [remote, prod, range, reachable]
+    env:
+      hello: world
+
+  inv:
+    desc: many hosts using inventory
+    inventory: echo "172.24.2.2 test@$host:22"
+    user: test
+    password: test
+    tags: [remote, prod, inv, reachable]
+    env:
+      hello: world
+      host: 172.24.2.4
+
   server-1:
     desc: server-1
     host: 172.24.2.2
     bastion: test@172.24.2.99:22
-    tags: [remote,prod,reachable]
     user: test
     work_dir: /home/test
     identity_file: keys/id_ed25519_pem
     password: testing
+    tags: [remote,prod,reachable]
+    env:
+        host: 172.24.2.2
 
   server-2:
     desc: server-2
     host: 172.24.2.3
-    port: 33
-    tags: [remote,prod,reachable]
     user: test
+    port: 33
     identity_file: keys/id_ed25519_pem_no
+    tags: [remote,prod,reachable]
 
   server-3:
     desc: server-3
     host: 172.24.2.4
-    tags: [remote,demo,reachable]
     user: test
     identity_file: keys/id_ed25519_rfc
     password: testing
+    tags: [remote,demo,reachable]
 
   server-4:
     desc: server-4
     host: 172.24.2.5
-    tags: [remote,demo,reachable]
     user: test
     identity_file: keys/id_ed25519_rfc_no
+    tags: [remote,demo,reachable]
 
   server-5:
     desc: server-5
     host: 172.24.2.6
-    tags: [remote,sandbox,reachable]
     user: test
     identity_file: keys/id_rsa_pem
     password: testing
+    tags: [remote,sandbox,reachable]
 
   server-6:
     desc: server-6
     host: 172.24.2.7
-    tags: [remote,sandbox,reachable]
     user: test
     identity_file: keys/id_rsa_pem_no
+    tags: [remote,sandbox,reachable]
 
   server-7:
     desc: server-7
-    host: 172.24.2.8
-    tags: [remote,demo,reachable]
-    user: test
+    host: test@172.24.2.8:22
     identity_file: keys/id_rsa_rfc
     password: testing
+    tags: [remote,demo,reachable]
 
   server-8:
     desc: server-8
     host: 172.24.2.9
-    tags: [remote,demo,reachable]
     user: test
     identity_file: keys/id_rsa_rfc_no
+    tags: [remote,demo,reachable]
 
   server-9:
     desc: server-9
     host: 2001:3984:3989::10
-    tags: [remote,demo,reachable]
     user: test
     password: test
+    tags: [remote,demo,reachable]

@@ -1,53 +1,70 @@
 Index: 19
-Name: unreachable true
-Cmd: go run ../../main.go run unreachable-true -a
+Name: Filter by inverting on tag unreachable
+Cmd: go run ../../main.go run ping -S -t unreachable -v
 WantErr: false
 
 ---
 
-Unreachable Hosts
+TASK [ping: ping server] 
 
- Server      | Host            | User | Port | Error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+localhost | pong
 
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.2 | pong
 
-localhost | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.4 | pong
 
-172.24.2.2 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.2 | pong
 
-172.24.2.3 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.4 | pong
 
-172.24.2.4 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.2 | pong
 
-172.24.2.5 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.4 | pong
 
-172.24.2.6 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.2 | pong
 
-172.24.2.7 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.3 | pong
 
-172.24.2.8 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.4 | pong
 
-172.24.2.9 | 123
+TASK [ping: ping server] 
 
-TASK [unreachable-true] 
+172.24.2.5 | pong
 
-2001:3984:3989::10 | 123
+TASK [ping: ping server] 
+
+172.24.2.6 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.7 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.8 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.9 | pong
+
+TASK [ping: ping server] 
+
+2001:3984:3989::10 | pong

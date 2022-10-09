@@ -1,14 +1,38 @@
 Index: 18
-Name: unreachable false
-Cmd: go run ../../main.go run unreachable -a
-WantErr: true
+Name: Limit to 50 percent servers
+Cmd: go run ../../main.go run ping -S -t reachable -L 50
+WantErr: false
 
 ---
 
-Unreachable Hosts
+TASK [ping: ping server] 
 
- Server      | Host            | User | Port | Error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+localhost | pong
 
-exit status 4
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.4 | pong
+
+TASK [ping: ping server] 
+
+172.24.2.2 | pong

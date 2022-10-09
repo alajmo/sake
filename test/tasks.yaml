@@ -122,8 +122,6 @@ tasks:
 
       echo
       echo "# CONFIG"
-      echo "SAKE_IDENTITY_FILE $SAKE_IDENTITY_FILE"
-      echo "SAKE_PASSWORD $SAKE_PASSWOD"
       echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
 
   ################

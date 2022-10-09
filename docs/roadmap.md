@@ -2,16 +2,21 @@
 
 `sake` is under active development. Before **v1.0.0**, I want to finish the following tasks, some miscellaneous fixes and improve code documentation:
 
-- [ ] Improve servers
+- [x] Improve servers
   - [x] Resolve hostnames from ssh_config
   - [x] Support Bastion/Jumphost
-  - [ ] Define multiple hosts without creating individual servers
-  - [ ] Dynamically fetch hosts
-  - [ ] Regex filtering of servers
+  - [x] Define multiple hosts without creating individual servers
+  - [x] Dynamically fetch hosts
+  - [x] Regex filtering of servers
+  - [x] Support glob pattern for Hosts (`Host *`)
+  - [x] Support resolving Includes in ssh config (`~/.ssh/config`)
+  - [x] Add limit and limit-p flag/target
+  - [x] Add filtering servers on host regex
+  - [x] Add invert flag on filtering servers
 
-- [ ] Improve output
-  - Add new table format output (tasks in 1st column, output in 2nd, one table per server)
-  - Add new format output (tasks in column, project output in row)
+- [x] Improve output and add new table outputs
+  - [x] Tasks in 1st column, output in 2nd, one table per server
+  - [x] Tasks in column, project output in row
 
 - [ ] Improve tasks
   - [ ] Return correct error exit codes when running tasks
@@ -21,7 +26,7 @@
   - [ ] Repress certain task output if exit code is 0, otherwise displayed
   - [ ] Summary of task execution at the end
   - [ ] Pass environment variables between tasks
-  - [ ] Access the previous exit code of the previous task
+  - [ ] Access exit code of the previous task
   - [ ] Conditional task execution
   - [ ] Tags/servers filtering launching different comands on different servers #6
   - [ ] Ensure command (check existence of file, software, etc.)

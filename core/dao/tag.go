@@ -12,17 +12,18 @@ type Tag struct {
 }
 
 func (t Tag) GetValue(key string, _ int) string {
-	switch key {
-	case "Tag", "tag":
-		return t.Name
-	case "Server", "server":
+	lkey := strings.ToLower(key)
+	switch lkey {
+	case "server":
 		return strings.Join(t.Servers, "\n")
+	case "name", "tag":
+		return t.Name
+	default:
+		return ""
 	}
-
-	return ""
 }
 
-func (c Config) GetTags() []string {
+func (c *Config) GetTags() []string {
 	tags := []string{}
 	for _, server := range c.Servers {
 		for _, tag := range server.Tags {
@@ -35,7 +36,7 @@ func (c Config) GetTags() []string {
 	return tags
 }
 
-func (c Config) GetTagAssocations(tags []string) ([]Tag, error) {
+func (c *Config) GetTagAssocations(tags []string) ([]Tag, error) {
 	t := []Tag{}
 
 	for _, tag := range tags {

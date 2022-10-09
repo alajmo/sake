@@ -1,70 +1,29 @@
 Index: 8
-Name: Reference Envs
-Cmd: go run ../../main.go run env-complex -t reachable
+Name: Describe servers filter on range hosts
+Cmd: go run ../../main.go describe servers range
 WantErr: false
 
 ---
 
- Server    | Env-Ref    | Env-Ref     
------------+------------+-------------
- localhost | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-1  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-2  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-3  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-4  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-5  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-6  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-7  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-8  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
- server-9  | foo xyz    | foo xyz     
-           | hello      | hello       
-           | cookie     | cookie      
-           | release    | release     
-           | task local | task remote 
-           | xyz xyz    | xyz xyz     
+name: range-0
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
+
+--
+
+name: range-1
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 

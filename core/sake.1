@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2022-09-16T20:23:01CEST" "v0.11.0" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-10-09T22:24:44CEST" "v0.12.0" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a command runner for local and remote hosts
 
@@ -69,8 +69,17 @@ continue task execution on errors
 \fB--ignore-unreachable[=false]\fR
 ignore unreachable hosts
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
 \fB--known-hosts-file=""\fR
 set known hosts file
+.TP
+\fB-l, --limit=0\fR
+set limit of servers to target
+.TP
+\fB-L, --limit-p=0\fR
+set percentage of servers to target [0-100]
 .TP
 \fB--local[=false]\fR
 run task on localhost
@@ -79,7 +88,7 @@ run task on localhost
 omit empty results for table output
 .TP
 \fB-o, --output=""\fR
-set task output [text|table|html|markdown]
+set task output [text|table|table-2|table-3|table-4|html|markdown]
 .TP
 \fB-p, --parallel[=false]\fR
 run server tasks in parallel
@@ -87,8 +96,14 @@ run server tasks in parallel
 \fB--password=""\fR
 set ssh password for all servers
 .TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-s, --servers=[]\fR
 target servers by names
+.TP
+\fB-S, --silent[=false]\fR
+omit showing loader when running tasks
 .TP
 \fB-t, --tags=[]\fR
 target servers by tags
@@ -134,8 +149,17 @@ continue task execution on errors
 \fB--ignore-unreachable[=false]\fR
 ignore unreachable hosts
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
 \fB--known-hosts-file=""\fR
 set known hosts file
+.TP
+\fB-l, --limit=0\fR
+set limit of servers to target
+.TP
+\fB-L, --limit-p=0\fR
+set percentage of servers to target
 .TP
 \fB--local[=false]\fR
 run command on localhost
@@ -144,7 +168,7 @@ run command on localhost
 omit empty results for table output
 .TP
 \fB-o, --output=""\fR
-set task output [text|table|markdown|html]
+set task output [text|table|table-2|table-3|table-4|html|markdown]
 .TP
 \fB-p, --parallel[=false]\fR
 run server tasks in parallel
@@ -152,8 +176,14 @@ run server tasks in parallel
 \fB--password=""\fR
 set ssh password for all servers
 .TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-s, --servers=[]\fR
 target servers by names
+.TP
+\fB-S, --silent[=false]\fR
+omit showing loader when running tasks
 .TP
 \fB-t, --tags=[]\fR
 target servers by tags
@@ -178,6 +208,14 @@ Open up sake config file in $EDITOR.
 Open up sake config file in $EDITOR and go to servers section.
 
 .TP
+.B edit spec [spec]
+Open up sake config file in $EDITOR and go to specs section.
+
+.TP
+.B edit target [target]
+Open up sake config file in $EDITOR and go to targets section.
+
+.TP
 .B edit task [task]
 Open up sake config file in $EDITOR and go to tasks section.
 
@@ -190,14 +228,43 @@ List servers.
 .RS
 .RS
 .TP
-\fB--headers=[server,host,tag,description]\fR
-set headers. Available headers: server, local, user, host, port, tag, description
+\fB-H, --all-headers[=false]\fR
+select all server headers
+.TP
+\fB--headers=[server,host,tag,desc]\fR
+set headers
+.TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
+\fB-r, --regex=""\fR
+filter servers on host regex
 .TP
 \fB-t, --tags=[]\fR
 filter servers by tags
 .TP
 \fB-o, --output="table"\fR
-set output [table|markdown|html]
+set table output [table|table-2|table-3|table-4|markdown|html]
+.TP
+\fB--theme="default"\fR
+set theme
+
+.RE
+.RE
+.TP
+.B list specs [specs] [flags]
+List specs.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB--headers=[spec,output,parallel,any_errors_fatal,ignore_errors,ignore_unreachable,omit_empty]\fR
+set headers
+.TP
+\fB-o, --output="table"\fR
+set table output [table|table-2|table-3|table-4|markdown|html]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -214,10 +281,30 @@ List tags.
 .RS
 .TP
 \fB--headers=[tag,server]\fR
-set headers. Available headers: tag, server
+set headers
 .TP
 \fB-o, --output="table"\fR
-set output [table|markdown|html]
+set table output [table|table-2|table-3|table-4|markdown|html]
+.TP
+\fB--theme="default"\fR
+set theme
+
+.RE
+.RE
+.TP
+.B list targets [targets] [flags]
+List targets.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB--headers=[target,all,servers,tags,regex,invert,limit,limit_p]\fR
+set headers. Available headers: name, regex
+.TP
+\fB-o, --output="table"\fR
+set table output [table|table-2|table-3|table-4|markdown|html]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -233,11 +320,14 @@ List tasks.
 .RS
 .RS
 .TP
-\fB--headers=[task,description]\fR
-set headers. Available headers: task, description, name
+\fB-H, --all-headers[=false]\fR
+select all task headers
+.TP
+\fB--headers=[task,desc]\fR
+set headers
 .TP
 \fB-o, --output="table"\fR
-set output [table|markdown|html]
+set table output [table|table-2|table-3|table-4|markdown|html]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -256,8 +346,40 @@ Describe servers.
 \fB-e, --edit[=false]\fR
 edit server
 .TP
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
+\fB-r, --regex=""\fR
+filter servers on host regex
+.TP
 \fB-t, --tags=[]\fR
 filter servers by their tag
+.RE
+.RE
+.TP
+.B describe specs [specs] [flags]
+Describe specs.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB-e, --edit[=false]\fR
+edit spec
+.RE
+.RE
+.TP
+.B describe targets [targets] [flags]
+Describe targets.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB-e, --edit[=false]\fR
+edit target
 .RE
 .RE
 .TP
@@ -277,6 +399,18 @@ edit task
 .B ssh <server> [flags]
 ssh to server.
 
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB-i, --identity-file=""\fR
+set identity file for all servers
+.TP
+\fB--password=""\fR
+set ssh password for all servers
+.RE
+.RE
 .TP
 .B gen [flags]
 Generate man page
@@ -340,9 +474,25 @@ Below is a config file detailing all of the available options and their defaults
 
      # Host [required]
      host: media.lan
+     # one-line for setting user and port
+     # host: samir@media.lan:22
+
+     # Specify multiple hosts:
+     # hosts:
+     # - samir@192.168.0.1:22
+     # - samir@l92.168.1.1:22
+
+     # or use a host range generator
+     # hosts: samir@192.168.[0:1].1:22
+
+     # generate hosts by local command
+     # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
+
+     # Bastion [optional]
+     bastion: samir@192.168.1.1:2222
 
      # User to connect as. It defaults to the current user [optional]
-     user: whoami
+     user: samir
 
      # Port for ssh [optional]
      port: 22
@@ -350,17 +500,18 @@ Below is a config file detailing all of the available options and their defaults
      # Shell used for commands [optional]
      shell: bash
 
-     # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
-     identity_file: ./id_rsa
-
-     # Set password. Accepts either a string or a shell command [optional]
-     password: $(echo $MY_SECRET_PASSWORD)
-
      # Run on localhost [optional]
      local: false
 
      # Set default working directory for task execution [optional]
      work_dir: ""
+
+     # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
+     # sake respects users ssh config, so you can set auth credentials in the users ssh config
+     identity_file: ./id_rsa
+
+     # Set password. Accepts either a string or a shell command [optional]
+     password: $(echo $MY_SECRET_PASSWORD)
 
      # List of tags [optional]
      tags: [remote]
@@ -408,14 +559,8 @@ Below is a config file detailing all of the available options and their defaults
      # Table options [optional]
      table:
        # Table style [optional]
-       # Available options: ascii, default
+       # Available options: ascii, connected-light
        style: ascii
-
-       # Text format options for headers and rows in table output [optional]
-       # Available options: default, lower, title, upper
-       format:
-         header: default
-         row: default
 
        # Border options for table output [optional]
        options:
@@ -425,145 +570,63 @@ Below is a config file detailing all of the available options and their defaults
          separate_rows: false
          separate_footer: false
 
-       # Color, attr and align options [optional]
-       # Available options for fg/bg: green, blue, red, yellow, magenta, cyan
+       # Color, attr, align, and format options [optional]
+       # Available options for fg/bg: green, blue, red, yellow, magenta, cyan, hi_green, hi_blue, hi_red, hi_yellow, hi_magenta, hi_cyan
        # Available options for align: left, center, justify, right
        # Available options for attr: normal, bold, faint, italic, underline, crossed_out
-       color:
+       # Available options for format: default, lower, title, upper
+       title:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       header:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       row:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       footer:
+         fg:
+         bg:
+         align:
+         attr:
+         format:
+
+       border:
          header:
-           server:
-             fg:
-             bg:
-             align:
-             attr:
-
-           user:
-             fg:
-             bg:
-             align:
-             attr:
-
-           host:
-             fg:
-             bg:
-             align:
-             attr:
-
-           port:
-             fg:
-             bg:
-             align:
-             attr:
-
-           local:
-             fg:
-             bg:
-             align:
-             attr:
-
-           tag:
-             fg:
-             bg:
-             align:
-             attr:
-
-           desc:
-             fg:
-             bg:
-             align:
-             attr:
-
-           task:
-             fg:
-             bg:
-             align:
-             attr:
-
-           output:
-             fg:
-             bg:
-             align:
-             attr:
+           fg:
+           bg:
+           align:
+           attr:
 
          row:
-           server:
-             fg:
-             bg:
-             align:
-             attr:
+           fg:
+           bg:
+           align:
+           attr:
 
-           user:
-             fg:
-             bg:
-             align:
-             attr:
+         row_alt:
+           fg:
+           bg:
+           align:
+           attr:
 
-           host:
-             fg:
-             bg:
-             align:
-             attr: normal
-
-           port:
-             fg:
-             bg:
-             align:
-             attr:
-
-           local:
-             fg:
-             bg:
-             align:
-             attr:
-
-           tag:
-             fg:
-             bg:
-             align:
-             attr:
-
-           desc:
-             fg:
-             # bg:
-             align:
-             attr:
-
-           task:
-             fg:
-             # bg:
-             align:
-             attr:
-
-           output:
-             fg:
-             bg:
-             align:
-             attr:
-
-         border:
-           header:
-             fg:
-             bg:
-             align:
-             attr:
-
-           row:
-             fg:
-             bg:
-             align:
-             attr:
-
-           row_alt:
-             fg:
-             bg:
-             align:
-             attr:
-
-           footer:
-             fg:
-             bg:
-             align:
-             attr:
+         footer:
+           fg:
+           bg:
+           align:
+           attr:
 
  # List of Specs [optional]
  specs:
@@ -597,6 +660,12 @@ Below is a config file detailing all of the available options and their defaults
 
      # Specify servers via server tags
      tags: []
+
+     # Limit of servers to target
+     limit: 0
+
+     # Limit of servers to target in percentage
+     limit_p: 0
 
  # List of tasks
  tasks:
@@ -644,6 +713,8 @@ Below is a config file detailing all of the available options and their defaults
        all: true
        servers: [media]
        tags: [remote]
+       limit: 1
+       limit_p: 100
 
      # List of environment variables [optional]
      env:
@@ -668,6 +739,7 @@ Below is a config file detailing all of the available options and their defaults
        #   SAKE_SERVER_HOST
        #   SAKE_SERVER_USER
        #   SAKE_SERVER_PORT
+       #   SAKE_SERVER_BASTION
        #   SAKE_SERVER_LOCAL
 
      # Run on localhost [optional]
@@ -836,14 +908,6 @@ Override ssh config file path
 Override known_hosts file path
 
 .TP
-.B SAKE_IDENTITY_FILE
-Override identity file path
-
-.TP
-.B SAKE_PASSWORD
-Override SSH password
-
-.TP
 .B NO_COLOR
 If this env variable is set (regardless of value) then all colors will be disabled
 
@@ -863,6 +927,3 @@ For updates and more information go to
 .UR https://\:www.sakecli.com
 sakecli.com
 .UE .
-
-
-

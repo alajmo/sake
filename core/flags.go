@@ -8,7 +8,20 @@ type ListFlags struct {
 }
 
 type ServerFlags struct {
-	Tags    []string
+	Tags       []string
+	Headers    []string
+	Edit       bool
+	Regex      string
+	Invert     bool
+	AllHeaders bool
+}
+
+type TargetFlags struct {
+	Headers []string
+	Edit    bool
+}
+
+type SpecFlags struct {
 	Headers []string
 	Edit    bool
 }
@@ -18,8 +31,9 @@ type TagFlags struct {
 }
 
 type TaskFlags struct {
-	Headers []string
-	Edit    bool
+	Headers    []string
+	Edit       bool
+	AllHeaders bool
 }
 
 type RunFlags struct {
@@ -27,12 +41,17 @@ type RunFlags struct {
 	Edit     bool
 	DryRun   bool
 	Describe bool
+	Silent   bool
 
 	// Target
 	All     bool
+	Regex   string
 	Servers []string
 	Tags    []string
 	Cwd     bool
+	Invert  bool
+	Limit   uint32
+	LimitP  uint8
 
 	// Config
 	KnownHostsFile string
@@ -57,6 +76,8 @@ type RunFlags struct {
 }
 
 type SetRunFlags struct {
+	All               bool
+	Invert            bool
 	Parallel          bool
 	OmitEmpty         bool
 	Local             bool

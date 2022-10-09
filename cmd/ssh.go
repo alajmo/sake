@@ -9,6 +9,8 @@ import (
 )
 
 func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
+	var runFlags core.RunFlags
+
 	cmd := cobra.Command{
 		Use:   "ssh <server> [flags]",
 		Short: "ssh to server",
@@ -19,7 +21,7 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Args: cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			core.CheckIfError(*configErr)
-			ssh(args, config)
+			ssh(args, config, &runFlags)
 		},
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			if *configErr != nil {
@@ -31,15 +33,18 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file for all servers")
+	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password for all servers")
+
 	return &cmd
 }
 
-func ssh(args []string, config *dao.Config) {
+func ssh(args []string, config *dao.Config, runFlags *core.RunFlags) {
 	server, err := config.GetServer(args[0])
 	core.CheckIfError(err)
 	servers := []dao.Server{*server}
 
-	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers)
+	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers, runFlags)
 	if len(errConnect) > 0 {
 		core.Exit(&errConnect[0])
 	}

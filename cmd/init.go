@@ -52,5 +52,5 @@ func PrintServerInit(servers []dao.Server) {
 	}
 
 	fmt.Println("\nFollowing servers were added to sake.yaml")
-	print.PrintTable("", data.Rows, options, data.Headers, []string{})
+	print.PrintTable(data.Rows, options, data.Headers)
 }
