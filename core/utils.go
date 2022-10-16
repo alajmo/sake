@@ -217,7 +217,6 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 			lastInd := strings.LastIndex(host, ":")
 			p, err := strconv.ParseUint(host[lastInd+1:], 10, 16)
 			if err != nil {
-				fmt.Println(1111)
 				return "", "", 22, err
 			}
 			host = host[:lastInd]
