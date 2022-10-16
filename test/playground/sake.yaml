@@ -47,7 +47,10 @@ servers:
 
   server-1:
     desc: server-1 desc
-    host: sake-resolve
+    host: kaka
+    port: 33
+    user: test
+    identity_file: ../keys/id_rsa_pem_no
     tags: [remote, pi]
     work_dir: /tmp
 
@@ -128,10 +131,6 @@ specs:
     ignore_errors: true
     ignore_unreachable: true
     any_errors_fatal: false
-
-  # default:
-  #   output: text
-    # parallel: true
 
 env:
   VERSION: v0.1.0

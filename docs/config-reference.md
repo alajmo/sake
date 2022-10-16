@@ -24,7 +24,7 @@ import:
 disable_verify_host: false
 
 # Set known_hosts_file path. Default is users ssh home directory [optional]
-known_hosts_file: $HOME/.ssh/known_hosts
+# known_hosts_file: $HOME/.ssh/known_hosts
 
 # Shell used for commands [optional]
 # If you use any other program than bash, zsh, sh, node, or python
@@ -41,9 +41,25 @@ servers:
 
     # Host [required]
     host: media.lan
+    # one-line for setting user and port
+    # host: samir@media.lan:22
+
+    # Specify multiple hosts:
+    # hosts:
+    # - samir@192.168.0.1:22
+    # - samir@l92.168.1.1:22
+
+    # or use a host range generator
+    # hosts: samir@192.168.[0:1].1:22
+
+    # generate hosts by local command
+    # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
+
+    # Bastion [optional]
+    bastion: samir@192.168.1.1:2222
 
     # User to connect as. It defaults to the current user [optional]
-    user: whoami
+    user: samir
 
     # Port for ssh [optional]
     port: 22
@@ -51,17 +67,18 @@ servers:
     # Shell used for commands [optional]
     shell: bash
 
-    # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
-    identity_file: ./id_rsa
-
-    # Set password. Accepts either a string or a shell command [optional]
-    password: $(echo $MY_SECRET_PASSWORD)
-
     # Run on localhost [optional]
     local: false
 
     # Set default working directory for task execution [optional]
     work_dir: ""
+
+    # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
+    # sake respects users ssh config, so you can set auth credentials in the users ssh config
+    identity_file: ./id_rsa
+
+    # Set password. Accepts either a string or a shell command [optional]
+    password: $(echo $MY_SECRET_PASSWORD)
 
     # List of tags [optional]
     tags: [remote]
@@ -103,20 +120,14 @@ themes:
       #   Attributes: normal, bold, faint, italic, underline crossed_out
       header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
 
-      # Fill remaining spaces with a character after the prefix, if set to empty string, no filler characters will be displayed [optional]
+      # Fill remaining spaces with a character after the header, if set to empty string, no filler characters will be displayed [optional]
       header_filler: "*"
 
     # Table options [optional]
     table:
       # Table style [optional]
-      # Available options: ascii, default
+      # Available options: ascii, connected-light
       style: ascii
-
-      # Text format options for headers and rows in table output [optional]
-      # Available options: default, lower, title, upper
-      format:
-        header: default
-        row: default
 
       # Border options for table output [optional]
       options:
@@ -126,145 +137,59 @@ themes:
         separate_rows: false
         separate_footer: false
 
-      # Color, attr and align options [optional]
-      # Available options for fg/bg: green, blue, red, yellow, magenta, cyan
+      # Color, attr, align, and format options [optional]
+      # Available options for fg/bg: green, blue, red, yellow, magenta, cyan, hi_green, hi_blue, hi_red, hi_yellow, hi_magenta, hi_cyan
       # Available options for align: left, center, justify, right
       # Available options for attr: normal, bold, faint, italic, underline, crossed_out
-      color:
+      # Available options for format: default, lower, title, upper
+      title:
+        fg:
+        bg:
+        align:
+        attr:
+        format:
+
+      header:
+        fg:
+        bg:
+        align:
+        attr:
+        format:
+
+      row:
+        fg:
+        bg:
+        align:
+        attr:
+        format:
+
+      footer:
+        fg:
+        bg:
+        align:
+        attr:
+        format:
+
+      border:
         header:
-          server:
-            fg:
-            bg:
-            align:
-            attr:
-
-          user:
-            fg:
-            bg:
-            align:
-            attr:
-
-          host:
-            fg:
-            bg:
-            align:
-            attr:
-
-          port:
-            fg:
-            bg:
-            align:
-            attr:
-
-          local:
-            fg:
-            bg:
-            align:
-            attr:
-
-          tag:
-            fg:
-            bg:
-            align:
-            attr:
-
-          desc:
-            fg:
-            bg:
-            align:
-            attr:
-
-          task:
-            fg:
-            bg:
-            align:
-            attr:
-
-          output:
-            fg:
-            bg:
-            align:
-            attr:
+          fg:
+          bg:
+          attr:
 
         row:
-          server:
-            fg:
-            bg:
-            align:
-            attr:
+          fg:
+          bg:
+          attr:
 
-          user:
-            fg:
-            bg:
-            align:
-            attr:
+        row_alt:
+          fg:
+          bg:
+          attr:
 
-          host:
-            fg:
-            bg:
-            align:
-            attr:
-
-          port:
-            fg:
-            bg:
-            align:
-            attr:
-
-          local:
-            fg:
-            bg:
-            align:
-            attr:
-
-          tag:
-            fg:
-            bg:
-            align:
-            attr:
-
-          desc:
-            fg:
-            bg:
-            align:
-            attr:
-
-          task:
-            fg:
-            bg:
-            align:
-            attr:
-
-          output:
-            fg:
-            bg:
-            align:
-            attr:
-
-        border:
-          header:
-            fg:
-            bg:
-            align:
-            attr:
-
-          row:
-            fg:
-            bg:
-            align:
-            attr:
-
-          row_alt:
-            fg:
-            bg:
-            align:
-            attr:
-
-          footer:
-            fg:
-            bg:
-            align:
-            attr:
+        footer:
+          fg:
+          bg:
+          attr:
 
 # List of Specs [optional]
 specs:
@@ -298,6 +223,12 @@ targets:
 
     # Specify servers via server tags
     tags: []
+
+    # Limit of servers to target
+    limit: 0
+
+    # Limit of servers to target in percentage
+    limit_p: 0
 
 # List of tasks
 tasks:
@@ -345,6 +276,8 @@ tasks:
       all: true
       servers: [media]
       tags: [remote]
+      limit: 1
+      limit_p: 100
 
     # List of environment variables [optional]
     env:
@@ -369,6 +302,7 @@ tasks:
       #   SAKE_SERVER_HOST
       #   SAKE_SERVER_USER
       #   SAKE_SERVER_PORT
+      #   SAKE_SERVER_BASTION
       #   SAKE_SERVER_LOCAL
 
     # Run on localhost [optional]
@@ -390,10 +324,10 @@ tasks:
       echo complex
       echo command
 
-    # Task reference. work_dir and env variables are passed down.
+    # Task reference. work_dir and env variables are passed down
     task: simple-1
 
-    # List of task references or commands.
+    # List of task references or commands
     tasks:
       # Command
       - name: inline-command

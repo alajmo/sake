@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.2
+
+### Fixes
+
+- Fix omitting attribute `align` when creating a theme
+
+### Changes
+
+- Enable `CGO` to support cgo-based resolver (go resolver doesn't support all setups)
+
 ## 0.12.1
 
 ### Fixes

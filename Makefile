@@ -2,7 +2,7 @@ NAME    := sake
 PACKAGE := github.com/alajmo/$(NAME)
 DATE    := $(shell date +%FT%T%Z)
 GIT     := $(shell [ -d .git ] && git rev-parse --short HEAD)
-VERSION := v0.12.1
+VERSION := v0.12.2
 
 default: build
 
@@ -53,9 +53,9 @@ mock-performance-ssh:
 	cd ./test && docker-compose -f docker-compose-performance.yaml up
 
 build:
-	CGO_ENABLED=0 go build \
+	go build \
 	-ldflags "-s -w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
-	-a -tags netgo -o dist/${NAME} main.go
+	-a -o dist/${NAME} main.go
 
 build-all:
 	goreleaser release --skip-publish --rm-dist --snapshot
@@ -63,7 +63,7 @@ build-all:
 build-and-link:
 	go build \
 		-ldflags "-w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
-		-a -tags netgo -o dist/${NAME} main.go
+		-a -o dist/${NAME} main.go
 	cp ./dist/sake ~/.local/bin/sake
 
 gen-man:

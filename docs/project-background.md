@@ -58,6 +58,48 @@ In terms of features, `sake` mostly resembles [Sup](https://github.com/pressly/s
 - `sup` is not maintained anymore
 - Better CLI ergonomics in my opinion, `sake run <task> -s server-1` versus `sup <network> <task>` (I often forget which one comes first, network or task)
 
+### Ansible
+
+If we begin by their overall description:
+
+Ansible: is software used to provision, configure, and deploy software
+sake: is a task runner for local and remote hosts
+
+The main difference is that Ansible is a server configuration and task software, whereas sake is a task software.
+
+A big difference is that Ansible takes care of managing state when you run tasks, whereas in `sake` you're responsible for task logic.
+
+A simple example is, if you run the `apt` module, in Ansible it will first check if said package is installed before trying to install it, whereas in sake you're left to do that logic yourself.
+
+The main difference in philosophy between Ansible and sake is that Ansible tries to provide up-to date modules (apt, rsync, etc.), whereas sake delegates that responsibility to the developer, so in sake you would call the binary themselves, whereas in Ansible you would use a module that wraps the software.
+
+Both have their pro's and con's, on one hand if you're wrapping software, you can provide the users with some state management and nice looking DSL (although that's subjective, do you prefer YAML calling or shell calling), but on the other hand, it's up to Ansible to update their wrappers when the underlying software updates (lagging).
+
+If you allow the users on the other hand to call the software via shell, then you're in control of the underlying software, but you don't get that nice looking DSL/state updates.
+
+sake
+- specify hosts via CLI
+- autocomplete hosts
+- same config for tasks/inventory
+- auto-completion for all options (tasks, servers, tags)
+- single binary
+- 5x faster for shell commands
+- Better query/output system for shell
+
+ansible
+- enforced directory structure
+- specify host via task
+- separate config for tasks/inventory
+- no auto-completion for all tasks, inventory, etc.
+- python runtime + install
+- Better state handling
+- Requires python + pip on remote servers for modules (cross-platform)
+- Has yearly conference
+- Big community
+- Established
+
+https://github.com/ansible/ansible/blob/7acd4f75c037974be7fa4e7eabe55152dfc57500/lib/ansible/modules/apt.py
+
 ### User Experience
 
 These features make using `sake` feel more effortless:

@@ -181,25 +181,21 @@ Below is a config file detailing all of the available options and their defaults
          header:
            fg:
            bg:
-           align:
            attr:
 
          row:
            fg:
            bg:
-           align:
            attr:
 
          row_alt:
            fg:
            bg:
-           align:
            attr:
 
          footer:
            fg:
            bg:
-           align:
            attr:
 
  # List of Specs [optional]
