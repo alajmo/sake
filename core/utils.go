@@ -215,7 +215,7 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 	case 4:
 		if strings.Contains(host, ":") {
 			lastInd := strings.LastIndex(host, ":")
-			p, err := strconv.ParseInt(host[lastInd+1:], 0, 16)
+			p, err := strconv.ParseUint(host[lastInd+1:], 10, 16)
 			if err != nil {
 				return "", "", 22, err
 			}
@@ -228,7 +228,7 @@ func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (str
 	case 6:
 		if strings.Contains(host, "[") && strings.Contains(host, "]") {
 			if at := strings.LastIndex(host, ":"); at != -1 {
-				p, err := strconv.ParseInt(host[at+1:], 10, 16)
+				p, err := strconv.ParseUint(host[at+1:], 10, 16)
 				if err != nil {
 					return "", "", 22, fmt.Errorf("failed to parse %s", hostname)
 				}

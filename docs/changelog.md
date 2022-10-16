@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.1
+
+### Fixes
+
+- Fix port out of range when using shorthand format for hosts
+
 ## 0.12.0
 
 ### Features
