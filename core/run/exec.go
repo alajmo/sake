@@ -393,7 +393,7 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.R
 
 				port := cfg[proxyJump].Port
 				if port != "" {
-					p, err := strconv.ParseInt(port, 10, 16)
+					p, err := strconv.ParseUint(port, 10, 16)
 					if err != nil {
 						errConnect := &ErrConnect{
 							Name:   (*servers)[i].Name,
@@ -441,7 +441,7 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.R
 
 			port := cfg[(*servers)[i].BastionHost].Port
 			if port != "" {
-				p, err := strconv.ParseInt(port, 10, 16)
+				p, err := strconv.ParseUint(port, 10, 16)
 				if err != nil {
 					errConnect := &ErrConnect{
 						Name:   (*servers)[i].Name,
@@ -486,7 +486,7 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.R
 		// Port
 		port := serv.Port
 		if port != "" {
-			p, err := strconv.ParseInt(port, 10, 16)
+			p, err := strconv.ParseUint(port, 10, 16)
 			if err != nil {
 				errConnect := &ErrConnect{
 					Name:   (*servers)[i].Name,
