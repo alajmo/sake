@@ -9,7 +9,7 @@ builds:
     id: sake
     ldflags: -s -w -X github.com/alajmo/sake/cmd.version={{ .Version }} -X github.com/alajmo/sake/cmd.commit={{ .ShortCommit }} -X github.com/alajmo/sake/cmd.date={{ .Date }}
     env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
     goos:
       - darwin
       - linux

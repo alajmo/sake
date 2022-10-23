@@ -1,19 +1,19 @@
 module github.com/alajmo/sake
 
-go 1.18
+go 1.19
 
 require (
 	github.com/gobwas/glob v0.2.3
 	github.com/jedib0t/go-pretty/v6 v6.4.0
 	github.com/kevinburke/ssh_config v1.2.0
 	github.com/kr/pretty v0.2.1
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	github.com/theckman/yacspin v0.13.12
-	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
-	golang.org/x/exp v0.0.0-20221006183845-316c7553db56
-	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875
-	golang.org/x/term v0.0.0-20220919170432-7a66f970e087
+	golang.org/x/crypto v0.1.0
+	golang.org/x/exp v0.0.0-20221019170559-20944726eadf
+	golang.org/x/sys v0.1.0
+	golang.org/x/term v0.1.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -28,5 +28,4 @@ require (
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
