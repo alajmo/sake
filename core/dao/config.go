@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -133,7 +132,7 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 		configPath = filename
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -289,7 +288,7 @@ func (c *Config) EditTask(name string) error {
 		configPath = task.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -332,7 +331,7 @@ func (c *Config) EditServer(name string) error {
 		configPath = server.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -373,7 +372,7 @@ func (c *Config) EditTarget(name string) error {
 		configPath = target.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -414,7 +413,7 @@ func (c *Config) EditSpec(name string) error {
 		configPath = spec.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}

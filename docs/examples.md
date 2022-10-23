@@ -637,7 +637,7 @@ tasks:
 
 ### docker-compose.yaml
 
-This is a docker-compose file used to start multiple Docker containers. Currently three servies are ran `syncthing`, `mealie`, and `Node-RED`.
+This is a docker-compose file used to start multiple Docker containers. Currently three services are ran `syncthing`, `mealie`, and `Node-RED`.
 
 ```yaml title="docker-compose.yaml"
 version: "3.9"

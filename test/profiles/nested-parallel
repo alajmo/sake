@@ -1,4 +1,4 @@
 Benchmark 1: ../dist/sake run d -p -t reachable
-  Time (mean ± σ):     516.5 ms ±  15.4 ms    [User: 365.5 ms, System: 50.5 ms]
-  Range (min … max):   504.7 ms … 542.5 ms    5 runs
+  Time (mean ± σ):     465.0 ms ±  25.0 ms    [User: 334.4 ms, System: 31.5 ms]
+  Range (min … max):   429.1 ms … 523.3 ms    10 runs
  

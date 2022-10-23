@@ -40,7 +40,7 @@ This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
 ![demo](res/output.gif)
 
-Interested in managing your git repositiories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
+Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 

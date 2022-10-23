@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
 	"strings"
@@ -425,7 +424,7 @@ func GetPasswordAuth(server dao.Server) (ssh.AuthMethod, error) {
 func GetPasswordIdentitySigner(server dao.Server) (ssh.Signer, error) {
 	var signer ssh.Signer
 
-	data, err := ioutil.ReadFile(*server.IdentityFile)
+	data, err := os.ReadFile(*server.IdentityFile)
 	if err != nil {
 		return nil, err
 	}
@@ -446,7 +445,7 @@ func GetPasswordIdentitySigner(server dao.Server) (ssh.Signer, error) {
 }
 
 func GetFingerprintPubKey(server dao.Server) (string, error) {
-	data, err := ioutil.ReadFile(*server.PubFile)
+	data, err := os.ReadFile(*server.PubFile)
 	if err != nil {
 		return "", err
 	}
@@ -461,7 +460,7 @@ func GetFingerprintPubKey(server dao.Server) (string, error) {
 
 func GetSigner(server dao.Server) (ssh.Signer, error) {
 	var signer ssh.Signer
-	data, err := ioutil.ReadFile(*server.IdentityFile)
+	data, err := os.ReadFile(*server.IdentityFile)
 	if err != nil {
 		return nil, err
 	}

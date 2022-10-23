@@ -9,6 +9,7 @@
 ### Changes
 
 - Enable `CGO` to support cgo-based resolver (go resolver doesn't support all setups)
+- Building `sake` with go 1.19
 
 ## 0.12.1
 

@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -336,7 +335,7 @@ func parseConfigFile(path string, cr *ConfigResources) (ConfigYAML, error) {
 	configYAML.Path = absPath
 	configYAML.Dir = filepath.Dir(absPath)
 
-	dat, err := ioutil.ReadFile(absPath)
+	dat, err := os.ReadFile(absPath)
 	if err != nil {
 		return configYAML, &core.FileError{Err: err.Error()}
 	}

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"golang.org/x/crypto/ssh"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -143,7 +142,7 @@ func RunTableCmd(t TaskContext, data dao.TableOutput, dataMutex *sync.RWMutex, w
 	var stdoutHandler = func(client Client) {
 		defer wg.Done()
 		dataMutex.Lock()
-		out, err := ioutil.ReadAll(client.Stdout())
+		out, err := io.ReadAll(client.Stdout())
 
 		data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s%s", data.Rows[t.rIndex].Columns[t.cIndex], strings.TrimSuffix(string(out), "\n"))
 		dataMutex.Unlock()
@@ -159,7 +158,7 @@ func RunTableCmd(t TaskContext, data dao.TableOutput, dataMutex *sync.RWMutex, w
 	var stderrHandler = func(client Client) {
 		defer wg.Done()
 		dataMutex.Lock()
-		out, err := ioutil.ReadAll(client.Stderr())
+		out, err := io.ReadAll(client.Stderr())
 		data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s%s", data.Rows[t.rIndex].Columns[t.cIndex], strings.TrimSuffix(string(out), "\n"))
 		dataMutex.Unlock()
 		if err != nil && err != io.EOF {
