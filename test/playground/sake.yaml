@@ -47,10 +47,7 @@ servers:
 
   server-1:
     desc: server-1 desc
-    host: kaka
-    port: 33
-    user: test
-    identity_file: ../keys/id_rsa_pem_no
+    host: sake-resolve
     tags: [remote, pi]
     work_dir: /tmp
 
