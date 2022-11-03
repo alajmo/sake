@@ -11,16 +11,22 @@ import (
 )
 
 // Separate hosts with newline and space/tab
-func EvaluateInventory(context string, input string, serverEnvs []string, userEnvs []string) ([]string, error) {
-	cmd := exec.Command("sh", "-c", input)
+func EvaluateInventory(shell string, context string, input string, serverEnvs []string, userEnvs []string) ([]string, error) {
+	args := strings.SplitN(shell, " ", 2)
+	shellProgram := args[0]
+	shellFlag := append(args[1:], input)
+
+	cmd := exec.Command(shellProgram, shellFlag...)
 	cmd.Env = append(os.Environ(), serverEnvs...)
 	cmd.Env = append(cmd.Env, userEnvs...)
 
 	cmd.Dir = filepath.Dir(context)
 	out, err := cmd.CombinedOutput()
+
 	if err != nil {
 		return []string{}, &InventoryEvalFailed{Err: string(out)}
 	}
+
 
 	trimmedOutput := strings.TrimSpace(string(out))
 	trimmedOutput = strings.Trim(trimmedOutput, "\t")
@@ -195,7 +201,17 @@ func readRange(input string, i int) (HostRange, int, error) {
 		return HostRange{}, i, errors.New("parsing hosts failed, missing end range")
 	}
 
-	if r.Start > r.End {
+	s, err := strconv.Atoi(r.Start)
+	if err != nil {
+		return HostRange{}, i, errors.New("start is not a number")
+	}
+
+	e, err := strconv.Atoi(r.End)
+	if err != nil {
+		return HostRange{}, i, errors.New("end is not a number")
+	}
+
+	if s > e {
 		return HostRange{}, i, errors.New("parsing hosts failed, start cannot be greater than end")
 	}
 

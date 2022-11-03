@@ -100,15 +100,6 @@ func (c *InvalidPercentInput) Error() string {
 	return "Percentage can only be between 0 and 100"
 }
 
-type InvalidLimit struct {
-	Max   int
-	Limit uint32
-}
-
-func (c *InvalidLimit) Error() string {
-	return fmt.Sprintf("The number of filtered servers is %d, but limit was set to %d", c.Max, c.Limit)
-}
-
 type ServerMultipleDef struct {
 	Name string
 }

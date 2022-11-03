@@ -77,6 +77,7 @@ func listTargets(
 
 	if len(targets) > 0 {
 		rows := dao.GetTableData(targets, targetFlags.Headers)
-		print.PrintTable(rows, options, targetFlags.Headers)
+		err := print.PrintTable(rows, options, targetFlags.Headers)
+		core.CheckIfError(err)
 	}
 }

@@ -76,17 +76,19 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 			workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir)
 			shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell)
 
+			// TODO: Add task register here, where else?
 			childTask := TaskCmd{
-				ID:      tn.TaskRefs[i].Task,
-				Name:    tn.TaskRefs[i].Name,
-				Desc:    tn.TaskRefs[i].Desc,
-				RootDir: filepath.Dir(task.context),
-				WorkDir: workDir,
-				Shell:   shell,
-				Cmd:     tn.TaskRefs[i].Cmd,
-				Envs:    envs,
-				Local:   local,
-				TTY:     tty,
+				ID:       tn.TaskRefs[i].Task,
+				Name:     tn.TaskRefs[i].Name,
+				Desc:     tn.TaskRefs[i].Desc,
+				Register: tn.TaskRefs[i].Register,
+				RootDir:  filepath.Dir(task.context),
+				WorkDir:  workDir,
+				Shell:    shell,
+				Cmd:      tn.TaskRefs[i].Cmd,
+				Envs:     envs,
+				Local:    local,
+				TTY:      tty,
 			}
 			task.Tasks = append(task.Tasks, childTask)
 		} else {
@@ -137,6 +139,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir, childTask.WorkDir)
 				shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell, childTask.Shell)
 
+				// TODO: Should task.Register be set here?
 				t := TaskCmd{
 					ID:      childTask.ID,
 					Name:    name,
@@ -145,6 +148,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					WorkDir: workDir,
 					Shell:   shell,
 					Cmd:     childTask.Cmd,
+					Register: tn.TaskRefs[i].Register,
 					Envs:    envs,
 					Local:   local,
 					TTY:     tty,

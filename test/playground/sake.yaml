@@ -108,6 +108,7 @@ targets:
     tags: [remote, reachable]
 
   mult:
+    desc: Info
     all: true
     regex: 192
     servers: [server-1, range]
@@ -123,6 +124,7 @@ specs:
     output: text
 
   info:
+    desc: Info
     output: table
     parallel: true
     ignore_errors: true
@@ -134,59 +136,96 @@ env:
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
-  exit:
-    # name: hej
-    local: true
-    cmd: exit 3
-
-  ping:
+  capture:
     target: all
     spec: info
     desc: ping server
-    cmd: echo pong
-
-  sleep:
-    desc: ping server
-    cmd: sleep 2 & echo done
-
-  info:
-    name: Info
-    desc: print info
-    target: all
     tasks:
-      - task: print-host
-      - task: print-hostname
-      - task: print-os
-      - task: print-kernel
+      - cmd: |
+          >&2 echo "error"
+          >&1 echo "stdout"
+          >&2 echo "error"
+          exit 1
+          # sleep 2 && >&2 echo "error"
+          # >&1 echo "stdout"
+          # sleep 2 && >&2 echo "error"
+        register: hej
+      # - cmd: echo $hej
+      # - cmd: |
+      #     echo 123
+      #     echo 345
+      #   register: kaka
+      # - cmd: |
+      #     if [[ $SAKE_TASK_EXIT == 1 ]]; then
+      #       echo $SAKE_TASK_EXIT
+      #     else
+      #       echo $SAKE_TASK_OUT
+      #     fi
+      #   register: kaka
+      - cmd: |
+          echo $hej
+          echo $hej_stdout
+          echo $hej_stderr
+          echo $hej_rc
+          echo $hej_failed
+          # echo
+          # echo $kaka
+          # echo $kaka_rc
+          # echo $kaka_failed
 
-  # Info
-  print-host:
-    name: Host
-    desc: print host
-    spec: info
-    target: all
-    cmd: echo $SAKE_SERVER_HOST
+  # exit:
+  #   # name: hej
+  #   local: true
+  #   cmd: exit 3
 
-  print-hostname:
-    name: Hostname
-    desc: print hostname
-    spec: info
-    target: all
-    cmd: hostname
+  # ping:
+  #   target: all
+  #   spec: info
+  #   desc: ping server
+  #   cmd: echo pong
 
-  print-os:
-    name: OS
-    desc: print OS
-    spec: info
-    target: all
-    cmd: |
-      os=$(lsb_release -si)
-      release=$(lsb_release -sr)
-      echo "$os $release"
+  # sleep:
+  #   desc: ping server
+  #   cmd: sleep 2 & echo done
 
-  print-kernel:
-    name: Kernel
-    desc: Print kernel version
-    spec: info
-    target: all
-    cmd: uname -r | awk -v FS='-' '{print $1}'
+  # info:
+  #   name: Info
+  #   desc: print info
+  #   target: all
+  #   tasks:
+  #     - task: print-host
+  #     - task: print-hostname
+  #     - task: print-os
+  #     - task: print-kernel
+
+  # # Info
+  # print-host:
+  #   name: Host
+  #   desc: print host
+  #   spec: info
+  #   target: all
+  #   cmd: echo $SAKE_SERVER_HOST
+
+  # print-hostname:
+  #   name: Hostname
+  #   desc: print hostname
+  #   spec: info
+  #   target: all
+  #   cmd: hostname
+
+  # print-os:
+  #   name: OS
+  #   desc: print OS
+  #   spec: info
+  #   target: all
+  #   cmd: |
+  #     os=$(lsb_release -si)
+  #     release=$(lsb_release -sr)
+  #     echo "$os $release"
+
+  # print-kernel:
+  #   name: Kernel
+  #   desc: Print kernel version
+  #   spec: info
+  #   target: all
+  #   cmd: uname -r | awk -v FS='-' '{print $1}'

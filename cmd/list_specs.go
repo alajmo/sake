@@ -77,6 +77,7 @@ func listSpecs(
 
 	if len(specs) > 0 {
 		rows := dao.GetTableData(specs, specFlags.Headers)
-		print.PrintTable(rows, options, specFlags.Headers)
+		err := print.PrintTable(rows, options, specFlags.Headers)
+		core.CheckIfError(err)
 	}
 }

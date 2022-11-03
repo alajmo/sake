@@ -49,7 +49,7 @@ The following workflow is used for releasing a new `sake` version:
    - `make benchmark`
 4. Verify build works (especially windows build)
    - `make build-all`
-5. Generate manpage
+5. Update `config-reference.md` and `config.man` if any config changes and generate manpage
    - `make gen-man`
 6. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
 7. Squash-merge to main with `Release vx.y.z` and description of changes

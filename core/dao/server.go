@@ -181,6 +181,9 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		}
 
 		defaultEnvs := []string{}
+		if serverYAML.IdentityFile != nil {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_IDENTITY=%s", *serverYAML.IdentityFile))
+		}
 		if serverYAML.Desc != "" {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc))
 		}

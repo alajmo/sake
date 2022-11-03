@@ -13,8 +13,8 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Aliases: []string{"ls", "l"},
 		Use:     "list",
-		Short:   "List servers, tasks and tags",
-		Long:    "List servers, tasks and tags.",
+		Short:   "List servers, tasks, tags, specs and targets",
+		Long:   "List servers, tasks, tags, specs and targets",
 		Example: `  # List all servers
   sake list servers
 

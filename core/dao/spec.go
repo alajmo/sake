@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"fmt"
 
 	"gopkg.in/yaml.v3"
 
@@ -12,6 +13,7 @@ import (
 
 type Spec struct {
 	Name              string `yaml:"_"`
+	Desc			  string `yaml:"desc"`
 	Output            string `yaml:"output"`
 	Parallel          bool   `yaml:"parallel"`
 	AnyErrorsFatal    bool   `yaml:"any_errors_fatal"`
@@ -97,7 +99,11 @@ func (c *Config) GetSpec(name string) (*Spec, error) {
 func (c *Config) GetSpecNames() []string {
 	names := []string{}
 	for _, spec := range c.Specs {
-		names = append(names, spec.Name)
+		if spec.Desc != "" {
+			names = append(names, fmt.Sprintf("%s\t%s", spec.Name, spec.Desc))
+		} else {
+			names = append(names, spec.Name)
+		}
 	}
 
 	return names

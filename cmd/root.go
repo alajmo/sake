@@ -12,8 +12,8 @@ import (
 
 const (
 	appName      = "sake"
-	shortAppDesc = "sake is a command runner for local and remote hosts"
-	longAppDesc  = `sake is a command runner for local and remote hosts.
+	shortAppDesc = "sake is a task runner for local and remote hosts"
+	longAppDesc  = `sake is a task runner for local and remote hosts.
 
 You define servers and tasks in a sake.yaml config file and then run the tasks on the servers.
 `
@@ -60,18 +60,18 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&userConfigPath, "user-config", "u", "", "specify user config")
 	rootCmd.PersistentFlags().StringVarP(&sshConfigPath, "ssh-config", "U", "", "specify ssh config")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable color")
-
+	cobra.EnableCommandSorting = false
 	rootCmd.AddCommand(
-		completionCmd(),
-		genCmd(),
 		initCmd(),
 		listCmd(&config, &configErr),
 		describeCmd(&config, &configErr),
-		editCmd(&config, &configErr),
-		execCmd(&config, &configErr),
 		runCmd(&config, &configErr),
-		checkCmd(&config, &configErr),
+		execCmd(&config, &configErr),
 		sshCmd(&config, &configErr),
+		editCmd(&config, &configErr),
+		checkCmd(&config, &configErr),
+		completionCmd(),
+		genCmd(),
 	)
 
 	rootCmd.SetVersionTemplate(fmt.Sprintf("Version: %-10s\nCommit: %-10s\nDate: %-10s\n", version, commit, date))

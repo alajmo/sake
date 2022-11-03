@@ -118,6 +118,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 		}
 
 		rows := dao.GetTableData(servers, headers)
-		print.PrintTable(rows, options, headers)
+		err := print.PrintTable(rows, options, headers)
+		core.CheckIfError(err)
 	}
 }

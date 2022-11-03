@@ -2,6 +2,7 @@ package print
 
 import (
 	"fmt"
+	"encoding/json"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 
@@ -21,16 +22,20 @@ func PrintTable[T dao.Items](
 	data []T,
 	options PrintTableOptions,
 	headers []string,
-) {
+) error {
 	switch options.Output {
 	case "table-2":
-		table2(data, options, headers)
+		return table2(data, options, headers)
 	case "table-3":
-		table3(data, options, headers)
+		return table3(data, options, headers)
 	case "table-4":
-		table4(data, options, headers)
+		return table4(data, options, headers)
+	case "csv":
+		return printCSV(data, options, headers)
+	case "json":
+		return printJSON(data, options, headers)
 	default:
-		table1(data, options, headers)
+		return table1(data, options, headers)
 	}
 }
 
@@ -44,7 +49,7 @@ func PrintTable[T dao.Items](
  ip6-2  | 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 
 */
-func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) {
+func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -83,6 +88,8 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 	}
 
 	RenderTable(t, options.Output)
+
+	return nil
 }
 
 /*
@@ -98,7 +105,7 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 ----------+--------------------+--------------------
  Kernel   | 5.18.0             | 5.18.0
 */
-func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) {
+func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	tableHeaders := table.Row{options.Resource}
 	rh := []string{options.Resource}
 	for _, h := range data {
@@ -133,6 +140,8 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 	}
 
 	RenderTable(t, options.Output)
+
+	return nil
 }
 
 /*
@@ -152,7 +161,7 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) 
  --------------------+--------------+--------------+--------
   2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
-func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) {
+func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	var tableHeaders table.Row
 	for _, h := range headers[1:] {
 		tableHeaders = append(tableHeaders, h)
@@ -187,6 +196,8 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 
 		RenderTable(t, options.Output)
 	}
+
+	return nil
 }
 
 /*
@@ -212,7 +223,7 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 ----------+--------------------
  Kernel   | 5.18.0
 */
-func table4[T dao.Items](data []T, options PrintTableOptions, headers []string) {
+func table4[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	for _, s := range data {
 		val := s.GetValue(fmt.Sprintf("%v", s), 0)
 		t := CreateTable(options, []string{options.Resource, val})
@@ -243,4 +254,86 @@ func table4[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 
 		RenderTable(t, options.Output)
 	}
+
+	return nil
+}
+
+/*
+server,host
+ip6-1,2001:3984:3989::10
+ip6-2,2001:3984:3989::11
+*/
+func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+	t := CreateTable(options, headers)
+
+	// Headers
+	var tableHeaders table.Row
+	for _, h := range headers {
+		tableHeaders = append(tableHeaders, h)
+	}
+	t.AppendHeader(tableHeaders)
+
+	// Rows
+	for _, item := range data {
+		var row []any
+		for i, h := range headers {
+			value := item.GetValue(fmt.Sprintf("%v", h), i)
+			row = append(row, value)
+		}
+
+		if options.OmitEmpty {
+			empty := true
+			for _, v := range row[1:] {
+				if v != "" {
+					empty = false
+				}
+			}
+
+			if empty {
+				continue
+			}
+		}
+
+		t.AppendRow(row)
+	}
+
+	if options.Title != "" {
+		t.SetTitle(options.Title)
+	}
+
+	RenderTable(t, options.Output)
+
+	return nil
+}
+
+/*
+[
+  {
+    "ping": "pong"
+    "server": "list-0",
+  },
+  {
+    "ping": "pong"
+    "server": "list-1",
+  }
+]
+*/
+func printJSON[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+	var out []map[string]string
+	for _, v := range data {
+		m := make(map[string]string)
+		for j, k := range headers {
+			m[k] = v.GetValue(k, j)
+		}
+		out = append(out, m)
+	}
+
+	a, err := json.Marshal(out)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(a))
+
+	return nil
 }

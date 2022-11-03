@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"fmt"
 
 	"gopkg.in/yaml.v3"
 
@@ -12,6 +13,7 @@ import (
 
 type Target struct {
 	Name    string   `yaml:"name"`
+	Desc	string	 `yaml:"desc"`
 	All     bool     `yaml:"all"`
 	Servers []string `yaml:"servers"`
 	Tags    []string `yaml:"tags"`
@@ -105,7 +107,11 @@ func (c *Config) GetTarget(name string) (*Target, error) {
 func (c *Config) GetTargetNames() []string {
 	names := []string{}
 	for _, target := range c.Targets {
-		names = append(names, target.Name)
+		if target.Desc != "" {
+			names = append(names, fmt.Sprintf("%s\t%s", target.Name, target.Desc))
+		} else {
+			names = append(names, target.Name)
+		}
 	}
 
 	return names

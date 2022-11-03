@@ -82,7 +82,10 @@ func (run *Run) RunTask(
 			SuppressEmptyColumns: false,
 			Title:                "Parse Errors",
 		}
-		print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
+		err = print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
+		if err != nil {
+			return err
+		}
 
 		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
 	}
@@ -120,7 +123,10 @@ func (run *Run) RunTask(
 			SuppressEmptyColumns: false,
 			Title:                "\nUnreachable Hosts\n",
 		}
-		print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
+		err := print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
+		if err != nil {
+			return err
+		}
 
 		if !task.Spec.IgnoreUnreachable {
 			return &core.ExecError{Err: err, ExitCode: 4}
@@ -148,13 +154,17 @@ func (run *Run) RunTask(
 	}
 
 	switch task.Spec.Output {
-	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown":
+	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv":
 		spinner := core.GetSpinner()
 		if !runFlags.Silent {
 			spinner.Start(" Running", 500)
 		}
 
 		data, err := run.Table(runFlags.DryRun)
+		if err != nil {
+			return err
+		}
+
 		options := print.PrintTableOptions{
 			Theme:                task.Theme,
 			OmitEmpty:            task.Spec.OmitEmpty,
@@ -166,8 +176,7 @@ func (run *Run) RunTask(
 		if !runFlags.Silent {
 			spinner.Stop()
 		}
-		print.PrintTable(data.Rows, options, data.Headers)
-
+		err = print.PrintTable(data.Rows, options, data.Headers)
 		if err != nil {
 			return err
 		}
@@ -286,6 +295,7 @@ func (run *Run) SetClients(
 		}
 	}
 
+	// TODO: Dont create remote clients if task is set to local
 	for _, server := range run.Servers {
 		wg.Add(1)
 		go createLocalClient(server, &wg, &mu)
@@ -553,6 +563,12 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 
 	// Update sub-commands
 	for j := range run.Task.Tasks {
+
+		// If command name is not set, set one
+		if run.Task.Tasks[j].Name == "" {
+			run.Task.Tasks[j].Name = fmt.Sprintf("output-%d", j)
+		}
+
 		// If local flag is set to true, then cmd will run locally instead of on remote server
 		if setRunFlags.Local {
 			run.Task.Tasks[j].Local = runFlags.Local

@@ -79,14 +79,16 @@ func listTags(
 		core.CheckIfError(err)
 
 		if len(tags) > 0 {
-			print.PrintTable(tags, options, tagFlags.Headers)
+			err := print.PrintTable(tags, options, tagFlags.Headers)
+			core.CheckIfError(err)
 		}
 	} else {
 		tags, err := config.GetTagAssocations(allTags)
 		core.CheckIfError(err)
 		if len(tags) > 0 {
 			rows := dao.GetTableData(tags, tagFlags.Headers)
-			print.PrintTable(rows, options, tagFlags.Headers)
+			err := print.PrintTable(rows, options, tagFlags.Headers)
+			core.CheckIfError(err)
 		}
 	}
 }

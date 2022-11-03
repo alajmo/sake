@@ -1,14 +1,26 @@
 # Changelog
 
-## 0.12.2
+## 0.13.0
+
+### Features
+
+- Add description to targets and specs
+- Add server identity to environment variables
+- Support csv/json output
+- Add output and exit code of previous task to environment variables for conditional task execution
 
 ### Fixes
 
 - Fix omitting attribute `align` when creating a theme
+- Fix server range (previously `[2:100]` didn't work as strings were compared)
+- Switch to default shell when evaluating inventory
 
 ### Changes
 
+- If no command name is set on nested tasks, assign `output-$i` instead of `output`
+- If `--limit` flag is higher than available hosts, then select all hosts filtered. Previously it threw an error
 - Enable `CGO` to support cgo-based resolver (go resolver doesn't support all setups)
+  - Note, this may break Alpine builds
 - Building `sake` with go 1.19
 
 ## 0.12.1

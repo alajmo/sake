@@ -36,7 +36,3 @@
   - [ ] Abort if certain env variables are not present (required envs)
   - [ ] Add --step mode flag or config setting to prompt before executing a task
   - [ ] Add yaml to command mapper
-
-## Future
-
-After **v1.0.0**, focus will be directed to implementing a `tui` for `sake`. The idea is to create something similar to `k9s`, where you have can peruse your servers, tasks, and tags via a `tui`, and execute tasks for selected servers, ssh into servers, etc.

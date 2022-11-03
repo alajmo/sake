@@ -76,14 +76,16 @@ func FormatTable(theme dao.Theme) table.Style {
 }
 
 func RenderTable(t table.Writer, output string) {
-	fmt.Println()
 	switch output {
 	case "markdown":
 		t.RenderMarkdown()
 	case "html":
 		t.RenderHTML()
+	case "csv":
+		t.RenderCSV()
 	default:
+		fmt.Println()
 		t.Render()
+		fmt.Println()
 	}
-	fmt.Println()
 }

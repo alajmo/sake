@@ -526,9 +526,15 @@ tasks:
 
 func (c *Config) ParseInventory(userArgs []string) error {
 	var servers []Server
+    var shell = DEFAULT_SHELL
+	if c.Shell != "" {
+		shell = c.Shell
+	}
+    shell = core.FormatShell(shell)
+
 	for _, s := range c.Servers {
 		if s.Inventory != "" {
-			hosts, err := core.EvaluateInventory(s.context, s.Inventory, s.Envs, userArgs)
+			hosts, err := core.EvaluateInventory(shell, s.context, s.Inventory, s.Envs, userArgs)
 			if err != nil {
 				return err
 			}

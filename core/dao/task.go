@@ -13,29 +13,31 @@ import (
 
 // This is the struct that is added to the Task.Tasks in import_task.go
 type TaskCmd struct {
-	ID      string
-	Name    string
-	Desc    string
-	WorkDir string
-	Shell   string
-	RootDir string
-	Cmd     string
-	Local   bool
-	TTY     bool
-	Envs    []string
+	ID       string
+	Name     string
+	Desc     string
+	WorkDir  string
+	Shell    string
+	RootDir  string
+	Register string
+	Cmd      string
+	Local    bool
+	TTY      bool
+	Envs     []string
 }
 
 // This is the struct that is added to the Task.TaskRefs
 type TaskRef struct {
-	Name    string
-	Desc    string
-	Cmd     string
-	WorkDir string
-	Shell   string
-	Task    string
-	Local   *bool
-	TTY     *bool
-	Envs    []string
+	Name     string
+	Desc     string
+	Cmd      string
+	WorkDir  string
+	Shell    string
+	Register string
+	Task     string
+	Local    *bool
+	TTY      *bool
+	Envs     []string
 }
 
 type Task struct {
@@ -82,15 +84,16 @@ type TaskYAML struct {
 
 // This is the struct that will be unmarsheld from YAML
 type TaskRefYAML struct {
-	Name    string    `yaml:"name"`
-	Desc    string    `yaml:"desc"`
-	WorkDir string    `yaml:"work_dir"`
-	Shell   string    `yaml:"shell"`
-	Cmd     string    `yaml:"cmd"`
-	Task    string    `yaml:"task"`
-	Local   *bool     `yaml:"local"`
-	TTY     *bool     `yaml:"tty"`
-	Env     yaml.Node `yaml:"env"`
+	Name     string    `yaml:"name"`
+	Desc     string    `yaml:"desc"`
+	WorkDir  string    `yaml:"work_dir"`
+	Shell    string    `yaml:"shell"`
+	Cmd      string    `yaml:"cmd"`
+	Task     string    `yaml:"task"`
+	Register string    `yaml:"register"`
+	Local    *bool     `yaml:"local"`
+	TTY      *bool     `yaml:"tty"`
+	Env      yaml.Node `yaml:"env"`
 }
 
 func (t Task) GetValue(key string, _ int) string {
@@ -324,13 +327,14 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			// Tasks References
 			for k := range taskYAML.Tasks {
 				tr := TaskRef{
-					Name:    taskYAML.Tasks[k].Name,
-					Desc:    taskYAML.Tasks[k].Desc,
-					WorkDir: taskYAML.Tasks[k].WorkDir,
-					Shell:   taskYAML.Tasks[k].Shell,
-					Local:   taskYAML.Tasks[k].Local,
-					TTY:     taskYAML.Tasks[k].TTY,
-					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
+					Name:     taskYAML.Tasks[k].Name,
+					Desc:     taskYAML.Tasks[k].Desc,
+					WorkDir:  taskYAML.Tasks[k].WorkDir,
+					Shell:    taskYAML.Tasks[k].Shell,
+					Register: taskYAML.Tasks[k].Register,
+					Local:    taskYAML.Tasks[k].Local,
+					TTY:      taskYAML.Tasks[k].TTY,
+					Envs:     ParseNodeEnv(taskYAML.Tasks[k].Env),
 				}
 
 				// Check that only cmd or task is defined
@@ -406,8 +410,6 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 	if limit > 0 {
 		if limit <= uint32(len(servers)) {
 			return servers[0:limit], nil
-		} else {
-			return []Server{}, &core.InvalidLimit{Max: len(servers), Limit: limit}
 		}
 	} else if limitp > 0 {
 		if limitp <= 100 {
