@@ -73,8 +73,8 @@ func PrintTaskBlock(tasks []dao.Task) {
 
 		fmt.Print(output)
 
-		PrintTargetBlocks([]dao.Target{task.Target}, true)
 		PrintSpecBlocks([]dao.Spec{task.Spec}, true, false)
+		PrintTargetBlocks([]dao.Target{task.Target}, true)
 
 		envs := task.GetNonDefaultEnvs()
 		if envs != nil {
@@ -106,20 +106,6 @@ func PrintTaskBlock(tasks []dao.Task) {
 	fmt.Println()
 }
 
-func printCmd(cmd string) {
-	scanner := bufio.NewScanner(strings.NewReader(cmd))
-	for scanner.Scan() {
-		fmt.Printf("%4s%s\n", " ", scanner.Text())
-	}
-}
-
-func printEnv(env []string) {
-	fmt.Printf("env: \n")
-	for _, env := range env {
-		fmt.Printf("%4s%s\n", " ", strings.Replace(strings.TrimSuffix(env, "\n"), "=", ": ", 1))
-	}
-}
-
 func PrintTargetBlocks(targets []dao.Target, indent bool) {
 	if len(targets) == 0 {
 		return
@@ -127,7 +113,9 @@ func PrintTargetBlocks(targets []dao.Target, indent bool) {
 
 	for i, target := range targets {
 		output := ""
+		output += printStringField("desc", target.Desc, indent)
 		output += printBoolField("all", target.All, indent)
+		output += printBoolField("invert", target.Invert, indent)
 		output += printSliceField("servers", target.Servers, indent)
 		output += printStringField("regex", target.Regex, indent)
 		output += printSliceField("tags", target.Tags, indent)
@@ -158,11 +146,13 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 
 	for i, spec := range specs {
 		output := ""
-		if name {
-			printStringField("name", spec.Name, indent)
-		}
+		output += printStringField("desc", spec.Desc, indent)
+		output += printStringField("strategy", spec.Strategy, indent)
+		output += printNumberField("batch", int(spec.Batch), indent)
+		output += printNumberField("batch_p", int(spec.BatchP), indent)
+		output += printNumberField("forks", int(spec.Forks), indent)
 		output += printStringField("output", spec.Output, indent)
-		output += printBoolField("parallel", spec.Parallel, indent)
+		output += printNumberField("max_fail_percentage", int(spec.MaxFailPercentage), indent)
 		output += printBoolField("any_errors_fatal", spec.AnyErrorsFatal, indent)
 		output += printBoolField("ignore_errors", spec.IgnoreErrors, indent)
 		output += printBoolField("ignore_unreachable", spec.IgnoreUnreachable, indent)
@@ -182,6 +172,20 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		if i < len(specs)-1 {
 			fmt.Printf("\n--\n\n")
 		}
+	}
+}
+
+func printCmd(cmd string) {
+	scanner := bufio.NewScanner(strings.NewReader(cmd))
+	for scanner.Scan() {
+		fmt.Printf("%4s%s\n", " ", scanner.Text())
+	}
+}
+
+func printEnv(env []string) {
+	fmt.Printf("env: \n")
+	for _, env := range env {
+		fmt.Printf("%4s%s\n", " ", strings.Replace(strings.TrimSuffix(env, "\n"), "=", ": ", 1))
 	}
 }
 

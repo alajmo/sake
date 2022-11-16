@@ -33,6 +33,8 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file for all servers")
 	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password for all servers")
 

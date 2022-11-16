@@ -29,7 +29,6 @@ var DefaultTimeout = 20 * time.Second
 // Client is a wrapper over the SSH connection/sessions.
 type SSHClient struct {
 	conn *ssh.Client
-	sess *ssh.Session
 
 	Name         string
 	User         string
@@ -39,11 +38,17 @@ type SSHClient struct {
 	Password     string
 	AuthMethod   []ssh.AuthMethod
 
-	connString   string
+	connString string
+	connOpened bool
+
+	Sessions []SSHSession
+}
+
+type SSHSession struct {
+	sess         *ssh.Session
 	remoteStdin  io.WriteCloser
 	remoteStdout io.Reader
 	remoteStderr io.Reader
-	connOpened   bool
 	sessOpened   bool
 	running      bool
 }
@@ -57,13 +62,23 @@ type Identity struct {
 type SSHDialFunc func(net, addr string, config *ssh.ClientConfig) (*ssh.Client, error)
 
 // Connect creates SSH connection to a specified host.
-func (c *SSHClient) Connect(disableVerifyHost bool, knownHostsFile string, mu *sync.Mutex, dialer SSHDialFunc) *ErrConnect {
+func (c *SSHClient) Connect(
+	dialer SSHDialFunc,
+	disableVerifyHost bool,
+	knownHostsFile string,
+	mu *sync.Mutex,
+) *ErrConnect {
 	return c.ConnectWith(dialer, disableVerifyHost, knownHostsFile, mu)
 }
 
 // ConnectWith creates a SSH connection to a specified host. It will use dialer to establish the
 // connection.
-func (c *SSHClient) ConnectWith(dialer SSHDialFunc, disableVerifyHost bool, knownHostsFile string, mu *sync.Mutex) *ErrConnect {
+func (c *SSHClient) ConnectWith(
+	dialer SSHDialFunc,
+	disableVerifyHost bool,
+	knownHostsFile string,
+	mu *sync.Mutex,
+) *ErrConnect {
 	if c.connOpened {
 		return &ErrConnect{
 			Name:   c.Name,
@@ -105,30 +120,31 @@ func (c *SSHClient) ConnectWith(dialer SSHDialFunc, disableVerifyHost bool, know
 }
 
 // Run runs a command remotely on c.host.
-func (c *SSHClient) Run(env []string, workDir string, shell string, cmdStr string) error {
-	if c.running {
-		return fmt.Errorf("Session already running")
-	}
-	if c.sessOpened {
-		return fmt.Errorf("Session already connected")
-	}
+func (c *SSHClient) Run(i int, env []string, workDir string, shell string, cmdStr string) error {
+	// TODO: What to do about these?
+	// if c.Sessions[i].running {
+	// 	return fmt.Errorf("Session already running")
+	// }
+	// if c.Sessions[i].sessOpened {
+	// 	return fmt.Errorf("Session already connected")
+	// }
 
 	sess, err := c.conn.NewSession()
 	if err != nil {
 		return err
 	}
 
-	c.remoteStdin, err = sess.StdinPipe()
+	c.Sessions[i].remoteStdin, err = sess.StdinPipe()
 	if err != nil {
 		return err
 	}
 
-	c.remoteStdout, err = sess.StdoutPipe()
+	c.Sessions[i].remoteStdout, err = sess.StdoutPipe()
 	if err != nil {
 		return err
 	}
 
-	c.remoteStderr, err = sess.StderrPipe()
+	c.Sessions[i].remoteStderr, err = sess.StderrPipe()
 	if err != nil {
 		return err
 	}
@@ -153,33 +169,33 @@ func (c *SSHClient) Run(env []string, workDir string, shell string, cmdStr strin
 		return err
 	}
 
-	c.sess = sess
-	c.sessOpened = true
-	c.running = true
+	c.Sessions[i].sess = sess
+	c.Sessions[i].sessOpened = true
+	c.Sessions[i].running = true
 
 	return nil
 }
 
 // Wait waits until the remote command finishes and exits.
 // It closes the SSH session.
-func (c *SSHClient) Wait() error {
-	if !c.running {
+func (c *SSHClient) Wait(i int) error {
+	if !c.Sessions[i].running {
 		return fmt.Errorf("Trying to wait on stopped session")
 	}
 
-	err := c.sess.Wait()
-	c.sess.Close()
-	c.running = false
-	c.sessOpened = false
+	err := c.Sessions[i].sess.Wait()
+	c.Sessions[i].sess.Close()
+	c.Sessions[i].running = false
+	c.Sessions[i].sessOpened = false
 
 	return err
 }
 
 // Close closes the underlying SSH connection and session.
-func (c *SSHClient) Close() error {
-	if c.sessOpened {
-		c.sess.Close()
-		c.sessOpened = false
+func (c *SSHClient) Close(i int) error {
+	if c.Sessions[i].sessOpened {
+		c.Sessions[i].sess.Close()
+		c.Sessions[i].sessOpened = false
 	}
 	if !c.connOpened {
 		return fmt.Errorf("Trying to close the already closed connection")
@@ -187,21 +203,21 @@ func (c *SSHClient) Close() error {
 
 	err := c.conn.Close()
 	c.connOpened = false
-	c.running = false
+	c.Sessions[i].running = false
 
 	return err
 }
 
-func (c *SSHClient) Stdin() io.WriteCloser {
-	return c.remoteStdin
+func (c *SSHClient) Stdin(i int) io.WriteCloser {
+	return c.Sessions[i].remoteStdin
 }
 
-func (c *SSHClient) Stderr() io.Reader {
-	return c.remoteStderr
+func (c *SSHClient) Stderr(i int) io.Reader {
+	return c.Sessions[i].remoteStderr
 }
 
-func (c *SSHClient) Stdout() io.Reader {
-	return c.remoteStdout
+func (c *SSHClient) Stdout(i int) io.Reader {
+	return c.Sessions[i].remoteStdout
 }
 
 // DialThrough will create a new connection from the ssh server c is connected to. DialThrough is an SSHDialer.
@@ -221,22 +237,22 @@ func (c *SSHClient) Prefix() string {
 	return c.Host
 }
 
-func (c *SSHClient) Write(p []byte) (n int, err error) {
-	return c.remoteStdin.Write(p)
+func (c *SSHClient) Write(i int, p []byte) (n int, err error) {
+	return c.Sessions[i].remoteStdin.Write(p)
 }
 
-func (c *SSHClient) WriteClose() error {
-	return c.remoteStdin.Close()
+func (c *SSHClient) WriteClose(i int) error {
+	return c.Sessions[i].remoteStdin.Close()
 }
 
-func (c *SSHClient) Signal(sig os.Signal) error {
-	if !c.sessOpened {
+func (c *SSHClient) Signal(i int, sig os.Signal) error {
+	if !c.Sessions[i].sessOpened {
 		return fmt.Errorf("session is not open")
 	}
 
 	switch sig {
 	case os.Interrupt:
-		return c.sess.Signal(ssh.SIGINT)
+		return c.Sessions[i].sess.Signal(ssh.SIGINT)
 	default:
 		return fmt.Errorf("%v not supported", sig)
 	}
@@ -338,10 +354,11 @@ func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile str
 
 // TODO: Replace this method with known_hosts Line method when issue with ip6 formats is fixed.
 // Supported Host formats:
-//   172.24.2.3
-//   172.24.2.3:333 # custom port
-//   2001:3984:3989::10
-//   [2001:3984:3989::10]:333 # custom port
+//
+//	172.24.2.3
+//	172.24.2.3:333 # custom port
+//	2001:3984:3989::10
+//	[2001:3984:3989::10]:333 # custom port
 func Line(address string, key ssh.PublicKey) string {
 	host, port, err := net.SplitHostPort(address)
 	if err != nil {

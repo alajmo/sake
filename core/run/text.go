@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 	"text/template"
+	"math"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
@@ -35,163 +36,437 @@ func (run *Run) Text(dryRun bool) error {
 	// Populate the rows (server name is first cell, then commands and cmd output is set to empty string)
 	for i, p := range servers {
 		dataExit.Rows = append(dataExit.Rows, dao.Row{Columns: []string{p.Name}})
-
 		for range task.Tasks {
 			dataExit.Rows[i].Columns = append(dataExit.Rows[i].Columns, "")
 		}
 	}
 
-	waitChan := make(chan struct{}, 100)
-	var wg sync.WaitGroup
-	for i := range servers {
-		wg.Add(1)
-		waitChan <- struct{}{}
-
-		if run.Task.Spec.Parallel {
-			go func(i int, wg *sync.WaitGroup) {
-				defer wg.Done()
-				// TODO: Handle errors when running tasks in parallel
-				_ = run.TextWork(i, prefixMaxLen, dryRun, dataExit, &dataMutex)
-				<-waitChan
-			}(i, &wg)
-		} else {
-			err := func(i int, wg *sync.WaitGroup) error {
-				defer wg.Done()
-				err := run.TextWork(i, prefixMaxLen, dryRun, dataExit, &dataMutex)
-				return err
-			}(i, &wg)
-
-			if err != nil {
-				switch err.(type) {
-				case *template.ExecError:
-					return err
-				case *core.TemplateParseError:
-					return err
-				default:
-					if run.Task.Spec.AnyErrorsFatal {
-						// Return proper exit code for failed tasks
-						switch err := err.(type) {
-						case *ssh.ExitError:
-							return &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
-						case *exec.ExitError:
-							return &core.ExecError{Err: err, ExitCode: err.ExitCode()}
-						default:
-							return err
-						}
-					}
-				}
-			}
-		}
+	var err error
+	switch task.Spec.Strategy {
+	case "free":
+		err = run.freeText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
+	case "column":
+		err = run.columnText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
+	default:
+		err = run.rowText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
 	}
 
-	wg.Wait()
-
-	return nil
-}
-
-func (run *Run) TextWork(rIndex int, prefixMaxLen int, dryRun bool, dataExit dao.TableOutput, dataMutex *sync.RWMutex) error {
-	config := run.Config
-	task := run.Task
-	server := run.Servers[rIndex]
-	prefix := getPrefixer(run.LocalClients[server.Name], rIndex, prefixMaxLen, task.Theme.Text, task.Spec.Parallel)
-
-	numTasks := len(task.Tasks)
-
-	var wg sync.WaitGroup
-	register := make(map[string]string)
-	var registers []string
-	for j, cmd := range task.Tasks {
-		var client Client
-		combinedEnvs := dao.MergeEnvs(cmd.Envs, server.Envs, registers)
-		if cmd.Local || server.Local {
-			client = run.LocalClients[server.Name]
-		} else {
-			client = run.RemoteClients[server.Name]
-		}
-
-		shell := dao.SelectFirstNonEmpty(cmd.Shell, server.Shell, config.Shell)
-		shell = core.FormatShell(shell)
-		workDir := getWorkDir(cmd, server)
-		args := TaskContext{
-			rIndex:   rIndex,
-			cIndex:   j,
-			client:   client,
-			dryRun:   dryRun,
-			env:      combinedEnvs,
-			workDir:  workDir,
-			shell:    shell,
-			cmd:      cmd.Cmd,
-			desc:     cmd.Desc,
-			name:     cmd.Name,
-			numTasks: numTasks,
-			tty:      cmd.TTY,
-		}
-
-		buf, bufOut, bufErr, err := RunTextCmd(args, task.Theme.Text, prefix, task.Spec.Parallel, dataExit, task.Tasks[j].Register, dataMutex, &wg)
-
-		// Add exit code to dataExit
-		var errCode int
+	if err != nil && run.Task.Spec.AnyErrorsFatal {
 		switch err := err.(type) {
 		case *ssh.ExitError:
-			errCode = err.ExitStatus()
+			return &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
 		case *exec.ExitError:
-			errCode = err.ExitCode()
-		}
-
-		dataExit.Rows[rIndex].Columns[j+1] = fmt.Sprint(errCode)
-
-		// variable
-		// stdout
-		// stderr
-		// rc
-		// failed
-		if task.Tasks[j].Register != "" {
-			register[task.Tasks[j].Register] = buf
-			register[task.Tasks[j].Register + "_stdout"] = bufOut
-			register[task.Tasks[j].Register + "_stderr"] = bufErr
-			register[task.Tasks[j].Register + "_rc"] = dataExit.Rows[rIndex].Columns[j+1]
-			if err != nil {
-				register[task.Tasks[j].Register + "_failed"] = "true"
-			} else {
-				register[task.Tasks[j].Register + "_failed"] = "false"
-			}
-			// TODO: Add skipped env variable
-
-			registers = []string{}
-			for  k, v := range register {
-				envStdout := fmt.Sprintf("%v=%v", k, v)
-				registers = append(registers, envStdout)
-			}
-		}
-
-		switch err.(type) {
-		case *template.ExecError:
-			return err
-		case *core.TemplateParseError:
-			return err
+			return &core.ExecError{Err: err, ExitCode: err.ExitCode()}
 		default:
-			if !task.Spec.IgnoreErrors && err != nil {
-				return err
-			}
+			return err
 		}
 	}
-
-	wg.Wait()
 
 	return nil
 }
 
-func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool, dataExit dao.TableOutput, register string, dataMutex *sync.RWMutex, wg *sync.WaitGroup) (string, string, string, error) {
+func (run *Run) freeText(
+	config *dao.Config,
+	prefixMaxLen int,
+	dataExit dao.TableOutput,
+	dataMutex *sync.RWMutex,
+	dryRun bool,
+) error {
+	serverLen := len(run.Servers)
+	taskLen := len(run.Task.Tasks)
+	batch := int(run.Task.Spec.Batch)
+	forks := CalcFreeForks(batch, taskLen, run.Task.Spec.Forks)
+	maxFailPercentage := run.Task.Spec.MaxFailPercentage
+
+	register := make(map[string]map[string]string)
+	var runs []ServerTask
+	for i := range run.Servers {
+		register[run.Servers[i].Name] = map[string]string{}
+		for j := range run.Task.Tasks {
+			runs = append(runs, ServerTask{
+				Server: &run.Servers[i],
+				Task:   run.Task,
+				Cmd:    &run.Task.Tasks[j],
+				i:      i,
+				j:      j,
+			})
+		}
+	}
+
+	// calculate how many total tasks
+	quotient, remainder := serverLen/batch, serverLen%batch
+
+	fmt.Printf("Batch: %v\n", batch)
+	fmt.Printf("Quotient: %v\n", quotient)
+	fmt.Printf("Remainder: %v\n\n", remainder)
+
+	if remainder > 0 {
+		quotient += 1
+	}
+
+	failedHosts := make(chan bool, serverLen*taskLen)
+	waitChan := make(chan struct{}, forks)
+	for k := 0; k < quotient; k++ {
+		var wg sync.WaitGroup
+		errCh := make(chan error, batch*taskLen)
+
+		start := k * batch * taskLen
+		end := start + batch*taskLen
+
+		if end > serverLen*taskLen {
+			end = start + remainder*taskLen
+		}
+
+		// For each server task
+		for i := range runs[start:end] {
+			wg.Add(1)
+			go func(
+				r ServerTask,
+				register map[string]string,
+				errCh chan<- error,
+				failedHosts chan<- bool,
+				wg *sync.WaitGroup,
+			) {
+				defer wg.Done()
+				waitChan <- struct{}{}
+
+				err := run.textWork(r, r.j, register, prefixMaxLen, dataExit, dataMutex, dryRun)
+				<-waitChan
+				if err != nil {
+					errCh <- err
+					failedHosts <- true
+				}
+			}(runs[start+i], register[runs[start+i].Server.Name], errCh, failedHosts, &wg)
+		}
+
+		wg.Wait()
+
+		percentageFailed := uint8(math.Floor(float64(len(failedHosts)) / float64(serverLen) * 100))
+		if percentageFailed > maxFailPercentage {
+			close(errCh)
+			return <-errCh
+		}
+
+		close(errCh)
+	}
+
+	return nil
+}
+
+func (run *Run) rowText(
+	config *dao.Config,
+	prefixMaxLen int,
+	dataExit dao.TableOutput,
+	dataMutex *sync.RWMutex,
+	dryRun bool,
+) error {
+	serverLen := len(run.Servers)
+	taskLen := len(run.Task.Tasks)
+	batch := int(run.Task.Spec.Batch)
+	forks := CalcForks(batch, run.Task.Spec.Forks)
+	maxFailPercentage := run.Task.Spec.MaxFailPercentage
+
+	register := make(map[string]map[string]string)
+	for i := range run.Servers {
+		register[run.Servers[i].Name] = map[string]string{}
+	}
+	var runs []ServerTask
+	for i := range run.Task.Tasks {
+		for j := range run.Servers {
+			runs = append(runs, ServerTask{
+				Server: &run.Servers[j],
+				Task:   run.Task,
+				Cmd:    &run.Task.Tasks[i],
+				i:      j,
+				j:      i,
+			})
+		}
+	}
+
+	// calculate how many total tasks
+	quotient, remainder := serverLen/batch, serverLen%batch
+
+	fmt.Printf("Batch: %v\n", batch)
+	fmt.Printf("Quotient: %v\n", quotient)
+	fmt.Printf("Remainder: %v\n\n", remainder)
+
+	if remainder > 0 {
+		quotient += 1
+	}
+
+	numFailed := 0
+	failedHosts := make(map[string]bool, serverLen)
+	waitChan := make(chan struct{}, forks)
+	for t := 0; t < taskLen; t++ {
+		var wg sync.WaitGroup
+
+		errCh := make(chan error, serverLen)
+
+		if run.Task.Theme.Text.Header != "" {
+			err := printHeader(t, taskLen, run.Task.Tasks[t].Name, run.Task.Tasks[t].Desc, run.Task.Theme.Text)
+			if err != nil {
+				return err
+			}
+		}
+
+		// Per batch
+		for k := 0; k < quotient; k++ {
+			failedHostsCh := make(chan struct {string; bool}, batch)
+
+			start := t*serverLen + k*batch
+			end := start + batch
+
+			if end > (t+1)*serverLen {
+				end = start + remainder
+			}
+
+			// Per task
+			for _, r := range runs[start:end] {
+				if failedHosts[r.Server.Name] {
+					continue
+				}
+
+				waitChan <- struct{}{}
+				wg.Add(1)
+
+				go func(
+					r ServerTask,
+					register map[string]string,
+					errCh chan<- error,
+					failedHosts chan<- struct {string; bool},
+					wg *sync.WaitGroup,
+				) {
+					defer wg.Done()
+
+					err := run.textWork(r, 0, register, prefixMaxLen, dataExit, dataMutex, dryRun)
+					<-waitChan
+					if err != nil {
+						errCh <- err
+						failedHostsCh <- struct {string; bool} {r.Server.Name, true}
+					} else {
+						failedHostsCh <- struct {string; bool} {r.Server.Name, false}
+					}
+				}(r, register[r.Server.Name], errCh, failedHostsCh, &wg)
+			}
+
+			wg.Wait()
+
+			close(failedHostsCh)
+			for p := range failedHostsCh {
+				failedHosts[p.string] = p.bool
+				if p.bool {
+					numFailed += 1
+				}
+			}
+
+			percentageFailed := uint8(math.Floor(float64(numFailed) / float64(serverLen) * 100))
+			if percentageFailed > maxFailPercentage {
+				close(errCh)
+				return <-errCh
+			}
+		}
+
+		close(errCh)
+	}
+
+	return nil
+}
+
+func (run *Run) columnText(
+	config *dao.Config,
+	prefixMaxLen int,
+	dataExit dao.TableOutput,
+	dataMutex *sync.RWMutex,
+	dryRun bool,
+) error {
+	serverLen := len(run.Servers)
+	taskLen := len(run.Task.Tasks)
+	batch := int(run.Task.Spec.Batch)
+	forks := CalcForks(batch, run.Task.Spec.Forks)
+	maxFailPercentage := run.Task.Spec.MaxFailPercentage
+
+	register := make(map[string]map[string]string)
+	var runs []ServerTask
+	for i := range run.Servers {
+		register[run.Servers[i].Name] = map[string]string{}
+		for j := range run.Task.Tasks {
+			runs = append(runs, ServerTask{
+				Server: &run.Servers[i],
+				Task:   run.Task,
+				Cmd:    &run.Task.Tasks[j],
+				i:      i,
+				j:      j,
+			})
+		}
+	}
+
+	// calculate how many total tasks
+	quotient, remainder := serverLen/batch, serverLen%batch
+
+	fmt.Printf("Batch: %v\n", batch)
+	fmt.Printf("Quotient: %v\n", quotient)
+	fmt.Printf("Remainder: %v\n\n", remainder)
+
+	if remainder > 0 {
+		quotient += 1
+	}
+
+	failedHosts := make(chan bool, serverLen)
+	waitChan := make(chan struct{}, forks)
+
+	// Per batch
+	for k := 0; k < quotient; k++ {
+		var wg sync.WaitGroup
+		errCh := make(chan error, batch)
+
+		start := k * batch * taskLen
+		end := start + batch*taskLen
+
+		if end > serverLen*taskLen {
+			end = start + remainder*taskLen
+		}
+
+		// Per server
+		for t := start; t < end; t = t + taskLen {
+			wg.Add(1)
+			go func(
+				r []ServerTask,
+				register map[string]map[string]string,
+				errCh chan<- error,
+				failedHosts chan<- bool,
+				wg *sync.WaitGroup,
+			) {
+				defer wg.Done()
+				for i, j := range r {
+					waitChan <- struct{}{}
+
+					if run.Task.Theme.Text.Header != "" && batch == 1 {
+						err := printHeader(i, taskLen, j.Cmd.Name, j.Cmd.Desc, run.Task.Theme.Text)
+						if err != nil {
+							fmt.Println(err)
+							// TODO: What to do here
+							// return err
+						}
+					}
+
+					err := run.textWork(j, 0, register[j.Server.Name], prefixMaxLen, dataExit, dataMutex, dryRun)
+					<-waitChan
+					if err != nil {
+						errCh <- err
+						failedHosts <- true
+						break
+					}
+				}
+			}(runs[t:t+taskLen], register, errCh, failedHosts, &wg)
+		}
+
+		wg.Wait()
+
+		percentageFailed := uint8(math.Floor(float64(len(failedHosts)) / float64(serverLen) * 100))
+		if percentageFailed > maxFailPercentage {
+			close(errCh)
+			return <-errCh
+		}
+
+		close(errCh)
+	}
+
+	return nil
+}
+
+func (run *Run) textWork(
+	r ServerTask,
+	si int,
+	register map[string]string,
+	prefixMaxLen int,
+	dataExit dao.TableOutput,
+	dataMutex *sync.RWMutex,
+	dryRun bool,
+) error {
+	prefix := getPrefixer(run.LocalClients[r.Server.Name], r.i, prefixMaxLen, r.Task.Theme.Text)
+
+	numTasks := len(r.Task.Tasks)
+
+	var registerEnvs []string
+	for k, v := range register {
+		envStdout := fmt.Sprintf("%v=%v", k, v)
+		registerEnvs = append(registerEnvs, envStdout)
+	}
+	combinedEnvs := dao.MergeEnvs(r.Cmd.Envs, r.Server.Envs, registerEnvs)
+	var client Client
+	if r.Cmd.Local || r.Server.Local {
+		client = run.LocalClients[r.Server.Name]
+	} else {
+		client = run.RemoteClients[r.Server.Name]
+	}
+
+	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
+	shell = core.FormatShell(shell)
+	workDir := getWorkDir(*r.Cmd, *r.Server)
+	t := TaskContext{
+		rIndex:   r.i,
+		cIndex:   r.j,
+		client:   client,
+		dryRun:   dryRun,
+		env:      combinedEnvs,
+		workDir:  workDir,
+		shell:    shell,
+		cmd:      r.Cmd.Cmd,
+		desc:     r.Cmd.Desc,
+		name:     r.Cmd.Name,
+		numTasks: numTasks,
+		tty:      r.Cmd.TTY,
+	}
+
+	var wg sync.WaitGroup
+	out, stdout, stderr, err := runTextCmd(si, t, r.Task.Theme.Text, prefix, r.Cmd.Register, &wg)
+
+	// Add exit code to dataExit
+	var errCode int
+	switch err := err.(type) {
+	case *ssh.ExitError:
+		errCode = err.ExitStatus()
+	case *exec.ExitError:
+		errCode = err.ExitCode()
+	case *template.ExecError:
+		return err
+	case *core.TemplateParseError:
+		return err
+	}
+
+	dataExit.Rows[r.i].Columns[r.j+1] = fmt.Sprint(errCode)
+
+	if r.Cmd.Register != "" {
+		register[r.Cmd.Register] = strings.TrimSuffix(out, "\n")
+		register[r.Cmd.Register+"_stdout"] = stdout
+		register[r.Cmd.Register+"_stderr"] = stderr
+		register[r.Cmd.Register+"_rc"] = dataExit.Rows[t.rIndex].Columns[r.j+1]
+		if err != nil {
+			register[r.Cmd.Register+"_failed"] = "true"
+		} else {
+			register[r.Cmd.Register+"_failed"] = "false"
+		}
+		// TODO: Add skipped env variable
+	}
+
+	if !r.Task.Spec.IgnoreErrors && err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func runTextCmd(
+	i int,
+	t TaskContext,
+	textStyle dao.Text,
+	prefix string,
+	register string,
+	wg *sync.WaitGroup,
+) (string, string, string, error) {
 	buf := new(bytes.Buffer)
 	bufOut := new(bytes.Buffer)
 	bufErr := new(bytes.Buffer)
-
-	if textStyle.Header != "" && !parallel {
-		err := printHeader(t.cIndex, t.numTasks, t.name, t.desc, textStyle)
-		if err != nil {
-			return buf.String(), bufOut.String(), bufErr.String(), err
-		}
-	}
 
 	if t.dryRun {
 		printCmd(prefix, t.cmd)
@@ -202,7 +477,7 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 		return buf.String(), bufOut.String(), bufErr.String(), ExecTTY(t.cmd, t.env)
 	}
 
-	err := t.client.Run(t.env, t.workDir, t.shell, t.cmd)
+	err := t.client.Run(i, t.env, t.workDir, t.shell, t.cmd)
 	if err != nil {
 		return buf.String(), bufOut.String(), bufErr.String(), err
 	}
@@ -214,13 +489,13 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 
 		if register == "" {
 			if prefix != "" {
-				_, err = io.Copy(os.Stdout, core.NewPrefixer(client.Stdout(), prefix))
+				_, err = io.Copy(os.Stdout, core.NewPrefixer(client.Stdout(i), prefix))
 			} else {
-				_, err = io.Copy(os.Stdout, client.Stdout())
+				_, err = io.Copy(os.Stdout, client.Stdout(i))
 			}
 		} else {
 			mw := io.MultiWriter(buf, bufOut)
-			r := io.TeeReader(client.Stdout(), mw)
+			r := io.TeeReader(client.Stdout(i), mw)
 			// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
 			if prefix != "" {
 				_, err = io.Copy(os.Stdout, core.NewPrefixer(r, prefix))
@@ -242,13 +517,13 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 
 		if register == "" {
 			if prefix != "" {
-				_, err = io.Copy(os.Stderr, core.NewPrefixer(client.Stderr(), prefix))
+				_, err = io.Copy(os.Stderr, core.NewPrefixer(client.Stderr(i), prefix))
 			} else {
-				_, err = io.Copy(os.Stderr, client.Stderr())
+				_, err = io.Copy(os.Stderr, client.Stderr(i))
 			}
 		} else {
 			mw := io.MultiWriter(buf, bufErr)
-			r := io.TeeReader(client.Stderr(), mw)
+			r := io.TeeReader(client.Stderr(i), mw)
 			if prefix != "" {
 				_, err = io.Copy(os.Stderr, core.NewPrefixer(r, prefix))
 			} else {
@@ -264,20 +539,20 @@ func RunTextCmd(t TaskContext, textStyle dao.Text, prefix string, parallel bool,
 
 	wg.Wait()
 
-	if err := t.client.Wait(); err != nil {
+	if err := t.client.Wait(i); err != nil {
 		if prefix != "" {
 			fmt.Printf("%s%s\n", prefix, err.Error())
 		} else {
 			fmt.Printf("%s\n", err.Error())
 		}
 
-		return buf.String(), bufOut.String(), bufErr.String(), nil
+		return buf.String(), bufOut.String(), bufErr.String(), err
 	}
 
 	return buf.String(), bufOut.String(), bufErr.String(), nil
 }
 
-func HeaderTemplate(header string, data HeaderData) (string, error) {
+func headerTemplate(header string, data HeaderData) (string, error) {
 	tmpl, err := template.New("header.tmpl").Parse(header)
 	if err != nil {
 		return "", &core.TemplateParseError{Msg: err.Error()}
@@ -329,7 +604,7 @@ func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) err
 		Index:    i + 1,
 		NumTasks: numTasks,
 	}
-	header, err := HeaderTemplate(ts.Header, data)
+	header, err := headerTemplate(ts.Header, data)
 	if err != nil {
 		return err
 	}
@@ -347,7 +622,7 @@ func printHeader(i int, numTasks int, name string, desc string, ts dao.Text) err
 	return nil
 }
 
-func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, parallel bool) string {
+func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text) string {
 	if !textStyle.Prefix {
 		return ""
 	}
@@ -361,7 +636,7 @@ func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, paralle
 		prefixColor = print.GetFg(textStyle.PrefixColors[i%len(textStyle.PrefixColors)])
 	}
 
-	if (textStyle.Header == "" || parallel) && len(prefix) < prefixMaxLen { // Left padding.
+	if textStyle.Header == "" && len(prefix) < prefixMaxLen { // Left padding.
 		prefixString := prefix + strings.Repeat(" ", prefixMaxLen-prefixLen) + " | "
 		if prefixColor != nil {
 			prefix = prefixColor.Sprintf(prefixString)

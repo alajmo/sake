@@ -1,10 +1,10 @@
 package dao
 
 import (
-	"errors"
+	// "errors"
+	"fmt"
 	"strconv"
 	"strings"
-	"fmt"
 
 	"gopkg.in/yaml.v3"
 
@@ -13,9 +13,13 @@ import (
 
 type Spec struct {
 	Name              string `yaml:"_"`
-	Desc			  string `yaml:"desc"`
+	Desc              *string `yaml:"desc"`
+	Strategy          string `yaml:"strategy"`
+	Batch             uint32 `yaml:"batch"`
+	BatchP			  uint8  `yaml:"batch_p"`
+	Forks             uint32 `yaml:"forks"`
 	Output            string `yaml:"output"`
-	Parallel          bool   `yaml:"parallel"`
+	MaxFailPercentage uint8  `yaml:"max_fail_percentage"`
 	AnyErrorsFatal    bool   `yaml:"any_errors_fatal"`
 	IgnoreErrors      bool   `yaml:"ignore_errors"`
 	IgnoreUnreachable bool   `yaml:"ignore_unreachable"`
@@ -38,10 +42,24 @@ func (s Spec) GetValue(key string, _ int) string {
 	switch lkey {
 	case "name", "spec":
 		return s.Name
+	case "desc", "Desc":
+		if s.Desc != nil {
+			return *s.Desc
+		} else {
+			return ""
+		}
+	case "strategy":
+		return s.Strategy
+	case "forks":
+		return strconv.Itoa(int(s.Forks))
+	case "batch":
+		return strconv.Itoa(int(s.Batch))
+	case "batch_p":
+		return strconv.Itoa(int(s.BatchP))
 	case "output":
 		return s.Output
-	case "parallel":
-		return strconv.FormatBool(s.Parallel)
+	case "max_fail_percentage":
+		return strconv.Itoa(int(s.MaxFailPercentage))
 	case "any_errors_fatal":
 		return strconv.FormatBool(s.AnyErrorsFatal)
 	case "ignore_errors":
@@ -64,26 +82,45 @@ func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 	j := -1
 	for i := 0; i < count; i += 2 {
 		j += 1
-		spec := &Spec{
-			Name:        c.Specs.Content[i].Value,
-			context:     c.Path,
-			contextLine: c.Specs.Content[i].Line,
-		}
+		spec, serr := c.DecodeSpec(c.Specs.Content[i].Value, *c.Specs.Content[i+1])
 		re := ResourceErrors[Spec]{Resource: spec, Errors: []error{}}
 		specErrors = append(specErrors, re)
 
-		err := c.Specs.Content[i+1].Decode(spec)
-		if err != nil {
-			for _, yerr := range err.(*yaml.TypeError).Errors {
-				specErrors[j].Errors = append(specErrors[j].Errors, errors.New(yerr))
-			}
-			continue
+		for _, e := range serr {
+			specErrors[j].Errors = append(specErrors[j].Errors, e)
 		}
-
 		specs = append(specs, *spec)
 	}
 
 	return specs, specErrors
+}
+
+func (c *ConfigYAML) DecodeSpec(name string, specYAML yaml.Node) (*Spec, []error) {
+	spec := &Spec{
+		Name: name,
+		context:     c.Path,
+		contextLine: specYAML.Line,
+	}
+
+	specErrors := []error{}
+	err := specYAML.Decode(spec)
+	if err != nil {
+		specErrors = append(specErrors, err)
+	}
+
+	if spec.AnyErrorsFatal && spec.MaxFailPercentage > 0 {
+		specErrors = append(specErrors, &core.MultipleFailSet{Name: name})
+	}
+
+	if spec.BatchP > 0 && spec.Batch > 0 {
+		specErrors = append(specErrors, &core.BatchMultipleDef{Name: name})
+	}
+
+	if spec.BatchP > 100 {
+		specErrors = append(specErrors, &core.InvalidPercentInput{Name: "batch_p"})
+	}
+
+	return spec, specErrors
 }
 
 func (c *Config) GetSpec(name string) (*Spec, error) {
@@ -99,8 +136,8 @@ func (c *Config) GetSpec(name string) (*Spec, error) {
 func (c *Config) GetSpecNames() []string {
 	names := []string{}
 	for _, spec := range c.Specs {
-		if spec.Desc != "" {
-			names = append(names, fmt.Sprintf("%s\t%s", spec.Name, spec.Desc))
+		if spec.Desc != nil {
+			names = append(names, fmt.Sprintf("%s\t%s", spec.Name, *spec.Desc))
 		} else {
 			names = append(names, spec.Name)
 		}

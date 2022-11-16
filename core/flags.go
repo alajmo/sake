@@ -52,6 +52,7 @@ type RunFlags struct {
 	Invert  bool
 	Limit   uint32
 	LimitP  uint8
+	Target  string
 
 	// Config
 	KnownHostsFile string
@@ -67,18 +68,22 @@ type RunFlags struct {
 	Password     string
 
 	// Spec
-	Parallel          bool
+	Spec			  string
 	AnyErrorsFatal    bool
+	MaxFailPercentage uint8
 	IgnoreErrors      bool
 	IgnoreUnreachable bool
 	OmitEmpty         bool
+	Forks             uint32
+	Batch             uint32
+	BatchP			  uint8
 	Output            string
+	Strategy          string
 }
 
 type SetRunFlags struct {
 	All               bool
 	Invert            bool
-	Parallel          bool
 	OmitEmpty         bool
 	Local             bool
 	TTY               bool

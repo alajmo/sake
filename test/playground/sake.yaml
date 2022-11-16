@@ -7,7 +7,7 @@ disable_verify_host: true
 servers:
   localhost:
     desc: localhost
-    host: localhost desc
+    host: localhost
     local: true
     tags: [local]
 
@@ -17,7 +17,8 @@ servers:
       - 172.24.2.2
       - 172.24.2.4
       - 172.24.2.5
-      - 2001:3984:3989::10
+      - 172.24.2.6
+      - 172.24.2.7
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi, many, list]
@@ -96,7 +97,10 @@ targets:
 
   limit_p:
     all: true
-    limit_p: 50
+    limit: 50
+
+  list:
+    servers: [list]
 
   regex:
     regex: 192
@@ -114,7 +118,6 @@ targets:
     servers: [server-1, range]
     tags: [remote]
     limit: 3
-    limit_p: 50
 
 specs:
   table:
@@ -126,31 +129,101 @@ specs:
   info:
     desc: Info
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
     any_errors_fatal: false
+
+  free:
+    desc: Free
+    strategy: free
+    batch: 2
+    # forks: 2
+    output: text
+    ignore_errors: false
+    ignore_unreachable: true
+    # any_errors_fatal: true
+    max_fail_percentage: 60
+
+  row:
+    desc: Row
+    strategy: row
+    # forks: 2
+    batch: 2
+    # batch_p: 50
+    output: text
+    ignore_errors: false
+    ignore_unreachable: true
+    # any_errors_fatal: true
+    max_fail_percentage: 59
+
+  column:
+    # desc: Column
+    strategy: column
+    # forks: 1
+    # batch: 1
+    # batch_p: 50
+    # output: text
+    # ignore_errors: false
+    # ignore_unreachable: true
+    ## any_errors_fatal: false
+    # max_fail_percentage: 59
 
 env:
   VERSION: v0.1.0
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
-  capture:
+  exit:
+    # target: all
+    spec: column
+    tasks:
+      - cmd: |
+          if [[ $SAKE_SERVER_NAME == "list-0" || $SAKE_SERVER_NAME == "list-2" ]]; then
+            exit 1
+          else
+            echo 123
+          fi
+          sleep 1
+      - cmd: |
+          if [[ $SAKE_SERVER_NAME == "list-1" || $SAKE_SERVER_NAME == "list-2" ]]; then
+            exit 1
+          else
+            echo 123
+          fi
+          sleep 1
+      - cmd: |
+          echo "DONE"
+
+          # for i in {1..5}
+          # do
+          #    sleep $(shuf -i1-4 -n1)
+          #    echo "$i"
+          # done
+          # exit 1
+
+  register:
     target: all
-    spec: info
+    spec: row
     desc: ping server
     tasks:
       - cmd: |
+          if [[ $SAKE_SERVER_HOST == "localhost" ]]; then
+            exit 1
+          else
+            sleep $(shuf -i1-2 -n1)
+            echo "$SAKE_SERVER_NAME"
+          fi
+
           >&2 echo "error"
           >&1 echo "stdout"
           >&2 echo "error"
-          exit 1
+          # sudo apt-get install htop -y
           # sleep 2 && >&2 echo "error"
           # >&1 echo "stdout"
           # sleep 2 && >&2 echo "error"
         register: hej
-      # - cmd: echo $hej
+      - cmd: echo $hej
+
       # - cmd: |
       #     echo 123
       #     echo 345
@@ -162,27 +235,30 @@ tasks:
       #       echo $SAKE_TASK_OUT
       #     fi
       #   register: kaka
-      - cmd: |
-          echo $hej
-          echo $hej_stdout
-          echo $hej_stderr
-          echo $hej_rc
-          echo $hej_failed
-          # echo
-          # echo $kaka
-          # echo $kaka_rc
-          # echo $kaka_failed
+      # - cmd: |
+      #     # echo $hej
+      #     # echo $hej_stdout
+      #     echo "$hej_stderr"
+      #     # echo $hej_rc
+      #     # echo $hej_failed
+      #     # echo
+      #     # echo $kaka
+      #     # echo $kaka_rc
+      #     # echo $kaka_failed
 
   # exit:
   #   # name: hej
   #   local: true
   #   cmd: exit 3
 
-  # ping:
-  #   target: all
-  #   spec: info
-  #   desc: ping server
-  #   cmd: echo pong
+  ping:
+    target: all
+    spec: column
+    desc: ping server
+    # cmd: echo pong
+    tasks:
+      - cmd: echo 123
+      - cmd: echo 321
 
   # sleep:
   #   desc: ping server

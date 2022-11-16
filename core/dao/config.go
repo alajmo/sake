@@ -30,16 +30,24 @@ var (
 		All:     false,
 		Servers: []string{},
 		Tags:    []string{},
+		Regex:   "",
+		Invert:  false,
+		Limit:   0,
+		LimitP:  0,
 	}
 
 	DEFAULT_SPEC = Spec{
 		Name:              "default",
+		Strategy:		   "row",
 		Output:            "text",
-		Parallel:          false,
-		AnyErrorsFatal:    false,
-		IgnoreUnreachable: false,
+		Forks:             10000,
+		MaxFailPercentage: 0,
+		AnyErrorsFatal:    true,
 		IgnoreErrors:      false,
+		IgnoreUnreachable: false,
 		OmitEmpty:         false,
+		Batch:			   0,
+		BatchP:			   0,
 	}
 )
 
@@ -526,11 +534,11 @@ tasks:
 
 func (c *Config) ParseInventory(userArgs []string) error {
 	var servers []Server
-    var shell = DEFAULT_SHELL
+	var shell = DEFAULT_SHELL
 	if c.Shell != "" {
 		shell = c.Shell
 	}
-    shell = core.FormatShell(shell)
+	shell = core.FormatShell(shell)
 
 	for _, s := range c.Servers {
 		if s.Inventory != "" {
@@ -558,6 +566,20 @@ func (c *Config) ParseInventory(userArgs []string) error {
 	}
 
 	c.Servers = servers
+
+	return nil
+}
+
+func (c *Config) FillDefaultSpec(taskID string) error {
+	fmt.Println(taskID)
+	t, err := c.GetTask(taskID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("----------------------")
+	fmt.Println(t.Spec.AnyErrorsFatal)
+	fmt.Println("----------------------")
 
 	return nil
 }

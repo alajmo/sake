@@ -72,7 +72,6 @@ Target:
     Tags:
 Spec:
     Output: table
-    Parallel: false
     AnyErrorsFatal: false
     IgnoreErrors: false
     IgnoreUnreachable: false

@@ -32,6 +32,7 @@ func describeSpecsCmd(config *dao.Config, configErr *error) *cobra.Command {
 		},
 		DisableAutoGenTag: true,
 	}
+	cmd.Flags().SortFlags = false
 
 	cmd.Flags().BoolVarP(&specFlags.Edit, "edit", "e", false, "edit spec")
 

@@ -49,6 +49,7 @@ func ExecTTY(cmd string, envs []string) error {
 	}
 
 	userEnv := append(os.Environ(), envs...)
+	// TODO: default shell
 	err = unix.Exec(execBin, []string{"bash", "-c", cmd}, userEnv)
 	if err != nil {
 		return err

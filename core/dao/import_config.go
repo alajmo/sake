@@ -83,12 +83,12 @@ func (c *FoundCyclicDependency) Error() string {
 // 2. Perform a depth-first search of imports and collect all specs, targets, themes, tasks, servers and store in intermediate struct ConfigResources
 //   - Nested tasks for tasks are saved as TaskRefYAML
 //   - Spec, Theme, Target are saved as references here as well, if they are specified
-// 3. If the default theme, spec, and target objects are not overwritten, then create them
-//   3.1. Create default Theme collection
-//   3.2. Create default Spec collection
-//   3.3. Create default Target collection
-// 4. Perform a depth-first search for task references and save them as T
-// 5. We check duplicate server hosts in the config collection
+//     3. If the default theme, spec, and target objects are not overwritten, then create them
+//     3.1. Create default Theme collection
+//     3.2. Create default Spec collection
+//     3.3. Create default Target collection
+//     4. Perform a depth-first search for task references and save them as T
+//     5. We check duplicate server hosts in the config collection
 //
 // Given config imports, use a Depth-first-search algorithm to recursively
 // check for resources (tasks, servers, dirs, themes, specs, targets).
@@ -150,6 +150,7 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 	// Create default spec if not exists
 	_, err = cr.GetSpec(DEFAULT_SPEC.Name)
 	if err != nil {
+		// TODO: Fill in all default values for spec
 		cr.Specs = append(cr.Specs, DEFAULT_SPEC)
 	}
 

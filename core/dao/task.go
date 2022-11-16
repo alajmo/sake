@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/alajmo/sake/core"
 )
+
+var REGISTER_REGEX = regexp.MustCompile("^[a-zA-Z_]+[a-zA-Z0-9_]*$")
 
 // This is the struct that is added to the Task.Tasks in import_task.go
 type TaskCmd struct {
@@ -158,16 +161,15 @@ func (t *Task) GetContextLine() int {
 // This function also sets task references.
 // Valid formats (only one is allowed):
 //
-//	 cmd: |
-//	   echo pong
+//	cmd: |
+//	  echo pong
 //
-//	 task: ping
+//	task: ping
 //
-//	 tasks:
-//	   - task: ping
-//	   - task: ping
-//	   - cmd: echo pong
-//
+//	tasks:
+//	  - task: ping
+//	  - task: ping
+//	  - cmd: echo pong
 func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 	var tasks []Task
 	count := len(c.Tasks.Content)
@@ -260,16 +262,12 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Spec
 		if len(taskYAML.Spec.Content) > 0 {
-			// Spec value
-			spec := &Spec{}
-			err := taskYAML.Spec.Decode(spec)
-			if err != nil {
-				for _, yerr := range err.(*yaml.TypeError).Errors {
-					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
-				}
-			} else {
-				task.Spec = *spec
+			// Inline Spec
+			spec, specErrors := c.DecodeSpec("", taskYAML.Spec)
+			for _, e := range specErrors {
+				taskErrors[j].Errors = append(taskErrors[j].Errors, e)
 			}
+			task.Spec = *spec
 		} else if taskYAML.Spec.Value != "" {
 			// Spec reference
 			task.SpecRef = taskYAML.Spec.Value
@@ -279,16 +277,12 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Target
 		if len(taskYAML.Target.Content) > 0 {
-			// Target value
-			target := &Target{}
-			err := taskYAML.Target.Decode(target)
-			if err != nil {
-				for _, yerr := range err.(*yaml.TypeError).Errors {
-					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
-				}
-			} else {
-				task.Target = *target
+			// Inline Target
+			target, targetErrors := c.DecodeTarget("", taskYAML.Target)
+			for _, e := range targetErrors {
+				taskErrors[j].Errors = append(taskErrors[j].Errors, e)
 			}
+			task.Target = *target
 		} else if taskYAML.Target.Value != "" {
 			// Target reference
 			task.TargetRef = taskYAML.Target.Value
@@ -298,7 +292,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Theme
 		if len(taskYAML.Theme.Content) > 0 {
-			// Theme value
+			// Inline Theme
 			theme := &Theme{}
 			err := taskYAML.Theme.Decode(theme)
 			if err != nil {
@@ -327,15 +321,34 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			// Tasks References
 			for k := range taskYAML.Tasks {
 				tr := TaskRef{
-					Name:     taskYAML.Tasks[k].Name,
-					Desc:     taskYAML.Tasks[k].Desc,
-					WorkDir:  taskYAML.Tasks[k].WorkDir,
-					Shell:    taskYAML.Tasks[k].Shell,
-					Register: taskYAML.Tasks[k].Register,
-					Local:    taskYAML.Tasks[k].Local,
-					TTY:      taskYAML.Tasks[k].TTY,
-					Envs:     ParseNodeEnv(taskYAML.Tasks[k].Env),
+					Name:    taskYAML.Tasks[k].Name,
+					Desc:    taskYAML.Tasks[k].Desc,
+					WorkDir: taskYAML.Tasks[k].WorkDir,
+					Shell:   taskYAML.Tasks[k].Shell,
+					Local:   taskYAML.Tasks[k].Local,
+					TTY:     taskYAML.Tasks[k].TTY,
+					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
 				}
+
+				if taskYAML.Tasks[k].Register != "" {
+					match := REGISTER_REGEX.MatchString(taskYAML.Tasks[k].Register)
+					if match {
+						tr.Register = taskYAML.Tasks[k].Register
+					} else {
+						taskErrors[j].Errors = append(taskErrors[j].Errors, &core.RegisterInvalidName{Value: taskYAML.Tasks[k].Register})
+						continue
+					}
+				}
+
+				// TODO: What about this?
+				// Find servers matching the flag
+				// var servers []Server
+				// for _, server := range c.Servers {
+				// 	match := pattern.MatchString(server.Host)
+				// 	if match {
+				// 		servers = append(servers, server)
+				// 	}
+				// }
 
 				// Check that only cmd or task is defined
 				if taskYAML.Tasks[k].Cmd != "" && taskYAML.Tasks[k].Task != "" {
@@ -385,6 +398,13 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 	// If any runtime target flags are used, disregard config specified task targets
 	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
 		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
+	} else if runFlags.Target != "" {
+		target, err := c.GetTarget(runFlags.Target)
+		if err != nil {
+			return []Server{}, err
+		}
+		task.Target = *target
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
 	} else {
 		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
 	}
@@ -416,7 +436,12 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 			tot := float64(len(servers))
 			percentage := float64(limitp) / float64(100)
 			limit := math.Floor(percentage * tot)
-			return servers[0:int(limit)], nil
+
+			if limit > 0 {
+				return servers[0:int(limit)], nil
+			} else {
+				return servers[0:1], nil
+			}
 		} else {
 			return []Server{}, &core.InvalidPercentInput{}
 		}

@@ -94,10 +94,56 @@ func (c *TaskMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for task `%s`: cmd, task, tasks", c.Name)
 }
 
-type InvalidPercentInput struct{}
+type LimitMultipleDef struct {
+	Name string
+}
+
+func (c *LimitMultipleDef) Error() string {
+	if c.Name != "" {
+		return fmt.Sprintf("can only define one of the following for target `%s`: limit, limit_p", c.Name)
+	}
+
+	return "can only define one of the following for target: limit, limit_p"
+}
+
+type MultipleFailSet struct {
+	Name string
+}
+
+func (c *MultipleFailSet) Error() string {
+	if c.Name != "" {
+		return fmt.Sprintf("can only define either `any_errors_fatal` or `max_fail_percentage` but not both spec `%s`", c.Name)
+	}
+
+	return "can only define either `any_errors_fatal` or `max_fail_percentage` but not both spec"
+}
+
+type BatchMultipleDef struct {
+	Name string
+}
+
+func (c *BatchMultipleDef) Error() string {
+	if c.Name != "" {
+		return fmt.Sprintf("can only define one of the following for spec `%s`: batch, batch_p", c.Name)
+	}
+
+	return "can only define one of the following for spec: batch, batch_p"
+}
+
+type InvalidPercentInput struct{
+	Name string
+}
 
 func (c *InvalidPercentInput) Error() string {
-	return "Percentage can only be between 0 and 100"
+	return fmt.Sprintf("percentage can only be between 0 and 100 for property `%s`", c.Name)
+}
+
+type RegisterInvalidName struct {
+	Value string
+}
+
+func (c *RegisterInvalidName) Error() string {
+	return fmt.Sprintf("invalid register variable name '%s', only alphanumeric characters and underscore are allowed and variable cannot start with a digit", c.Value)
 }
 
 type ServerMultipleDef struct {
@@ -184,6 +230,7 @@ func (c *NoEditorEnv) Error() string {
 	return "no environment variable `EDITOR` found"
 }
 
+// If there's a misconfiguration with golang templates (prefix/header for instance in text.go)
 type TemplateParseError struct {
 	Msg string
 }

@@ -14,7 +14,7 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 		Aliases: []string{"ls", "l"},
 		Use:     "list",
 		Short:   "List servers, tasks, tags, specs and targets",
-		Long:   "List servers, tasks, tags, specs and targets",
+		Long:    "List servers, tasks, tags, specs and targets",
 		Example: `  # List all servers
   sake list servers
 
@@ -25,6 +25,8 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
   sake list tags`,
 		DisableAutoGenTag: true,
 	}
+	cmd.PersistentFlags().SortFlags = false
+	cmd.Flags().SortFlags = false
 
 	cmd.AddCommand(
 		listServersCmd(config, configErr, &listFlags),
@@ -34,28 +36,26 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 		listSpecsCmd(config, configErr, &listFlags),
 	)
 
-	cmd.PersistentFlags().StringVar(&listFlags.Theme, "theme", "default", "set theme")
-	err := cmd.RegisterFlagCompletionFunc("theme", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "set table output [table|table-2|table-3|table-4|markdown|html|json|csv]")
+	err := cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
+		valid := []string{"text", "table", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv"}
+		return valid, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
 
+	cmd.PersistentFlags().StringVar(&listFlags.Theme, "theme", "default", "set theme")
+	err = cmd.RegisterFlagCompletionFunc("theme", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
 		names := config.GetThemeNames()
-
 		return names, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
 
-	cmd.PersistentFlags().StringVarP(&listFlags.Output, "output", "o", "table", "set table output [table|table-2|table-3|table-4|markdown|html]")
-	err = cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		if *configErr != nil {
-			return []string{}, cobra.ShellCompDirectiveDefault
-		}
-
-		valid := []string{"table", "table-2", "table-3", "table-4", "markdown", "html"}
-		return valid, cobra.ShellCompDirectiveDefault
-	})
-	core.CheckIfError(err)
 
 	return &cmd
 }

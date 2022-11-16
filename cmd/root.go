@@ -56,11 +56,16 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 
+	cobra.EnableCommandSorting = false
+
+	rootCmd.Flags().SortFlags = false
+	rootCmd.PersistentFlags().SortFlags = false
+
 	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "specify config")
 	rootCmd.PersistentFlags().StringVarP(&userConfigPath, "user-config", "u", "", "specify user config")
 	rootCmd.PersistentFlags().StringVarP(&sshConfigPath, "ssh-config", "U", "", "specify ssh config")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable color")
-	cobra.EnableCommandSorting = false
+
 	rootCmd.AddCommand(
 		initCmd(),
 		listCmd(&config, &configErr),

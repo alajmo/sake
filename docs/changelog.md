@@ -4,24 +4,32 @@
 
 ### Features
 
+- Add multiple task execution strategies: free, row, column
+- Add batch task execution
 - Add description to targets and specs
+- Add option to specify target and spec via flags
 - Add server identity to environment variables
 - Support csv/json output
 - Add output and exit code of previous task to environment variables for conditional task execution
+- Add ability to pass output from task to next tasks
+- Add option to display summary at end of tasks by using `--summary` or specifying it in `spec` definition
 
 ### Fixes
 
 - Fix omitting attribute `align` when creating a theme
+- Abort tasks prematurely when running in parallel and AnyErrorsFatal set to true
 - Fix server range (previously `[2:100]` didn't work as strings were compared)
-- Switch to default shell when evaluating inventory
 
 ### Changes
 
+- Switch to default shell when evaluating inventory
 - If no command name is set on nested tasks, assign `output-$i` instead of `output`
-- If `--limit` flag is higher than available hosts, then select all hosts filtered. Previously it threw an error
+- If `--limit` flag is higher than available hosts, then select all hosts filtered
 - Enable `CGO` to support cgo-based resolver (go resolver doesn't support all setups)
-  - Note, this may break Alpine builds
 - Building `sake` with go 1.19
+- Shorthand flag for silent is now `Q`
+- Deprecated the parallel flag, use instead batch/forks to manage parallel execution
+- Update flag sorting
 
 ## 0.12.1
 

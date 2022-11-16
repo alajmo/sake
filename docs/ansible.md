@@ -1,10 +1,16 @@
 # Ansible
 
+TODO: Ansible doesn't expose real-time execution (you have to use the async module)
+  - https://github.com/ansible/ansible/issues/3887#issuecomment-54672569
+  - https://github.com/ansible/proposals/issues/92
+
+TODO: Can't get attach to docker container on ssh
+
 Ansible is by far the most well-recognized software when it comes to configuring servers and/or running tasks and as such, warrants an in-depth comparison.
 
 Ansible and sake overlap in one segment, namely ad-hoc task execution over remote hosts using ssh. They both allow you to write server configurations in YAML and target multiple hosts in parallel. There's some small cosmetic differences in how they accomplish that.
 
-Where they notably differ is that Ansible has modules which allows you to easily write idempotent tasks for common use-cases , whereas with sake it's up to the developers to write tasks. Furthermore, Ansible is more opinionated than sake when it comes to structuring projects and is not as flexible. For instance, in Ansible roles require a specific structure. sake on the other hand is more bare-bone and opinionless.
+Where they notably differ is that Ansible has modules which allows you to easily write idempotent tasks for common use-cases , whereas with sake it's up to the developers to write tasks. Furthermore, Ansible is more opinionated than sake when it comes to structuring projects and is not as flexible. For instance, in Ansible roles require a specific structure. sake on the other hand is more bare-bone and hands-off.
 
 ## Comparison
 

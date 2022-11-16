@@ -35,6 +35,8 @@ func listTagsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().StringSliceVar(&tagFlags.Headers, "headers", tagHeaders, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {

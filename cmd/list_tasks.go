@@ -37,6 +37,8 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *core.ListFlag
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().BoolVarP(&taskFlags.AllHeaders, "all-headers", "H", false, "select all task headers")
 	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"task", "desc"}, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {

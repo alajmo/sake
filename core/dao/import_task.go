@@ -22,11 +22,12 @@ type TaskLink struct {
 // The following nomenclature is used:
 //
 // tasks: <-- root context
-// 	b: <-- root task
-// 		tasks: <-- child context
-// 			- task: a <-- child task
-// 			  env:
-// 			    foo: bar
+//
+//	b: <-- root task
+//		tasks: <-- child context
+//			- task: a <-- child task
+//			  env:
+//			    foo: bar
 func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLink, cr *ConfigResources) {
 	tn.Visiting = true
 
@@ -141,17 +142,17 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 
 				// TODO: Should task.Register be set here?
 				t := TaskCmd{
-					ID:      childTask.ID,
-					Name:    name,
-					Desc:    childTask.Desc,
-					RootDir: filepath.Dir(task.context),
-					WorkDir: workDir,
-					Shell:   shell,
-					Cmd:     childTask.Cmd,
+					ID:       childTask.ID,
+					Name:     name,
+					Desc:     childTask.Desc,
+					RootDir:  filepath.Dir(task.context),
+					WorkDir:  workDir,
+					Shell:    shell,
+					Cmd:      childTask.Cmd,
 					Register: tn.TaskRefs[i].Register,
-					Envs:    envs,
-					Local:   local,
-					TTY:     tty,
+					Envs:     envs,
+					Local:    local,
+					TTY:      tty,
 				}
 				task.Tasks = append(task.Tasks, t)
 			} else {

@@ -36,6 +36,8 @@ func describeTasksCmd(config *dao.Config, configErr *error) *cobra.Command {
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().BoolVarP(&taskFlags.Edit, "edit", "e", false, "edit task")
 
 	return &cmd

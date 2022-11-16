@@ -19,6 +19,7 @@ func genCmd() *cobra.Command {
 
 		DisableAutoGenTag: true,
 	}
+	cmd.Flags().SortFlags = false
 
 	cmd.Flags().StringVarP(&dir, "dir", "d", "./", "directory to save manpage to")
 	err := cmd.RegisterFlagCompletionFunc("dir", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {

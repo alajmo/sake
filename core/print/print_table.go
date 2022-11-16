@@ -1,8 +1,8 @@
 package print
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 
@@ -42,12 +42,15 @@ func PrintTable[T dao.Items](
 /*
 1 table, task names in 1st row
 
- Server | Host               | Hostname     | OS           | Kernel
---------+--------------------+--------------+--------------+--------
- ip6-1  | 2001:3984:3989::10 | 31cb8139dffd | Ubuntu 22.04 | 5.18.0
---------+--------------------+--------------+--------------+--------
- ip6-2  | 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
+	Server | Host               | Hostname     | OS           | Kernel
 
+--------+--------------------+--------------+--------------+--------
+
+	ip6-1  | 2001:3984:3989::10 | 31cb8139dffd | Ubuntu 22.04 | 5.18.0
+
+--------+--------------------+--------------+--------------+--------
+
+	ip6-2  | 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
 func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	t := CreateTable(options, headers)
@@ -95,15 +98,23 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 /*
 1 table, task names in 1st column
 
- Task     | Ip6-1              | Ip6-2
+	Task     | Ip6-1              | Ip6-2
+
 ----------+--------------------+--------------------
- Host     | 2001:3984:3989::10 | 2001:3984:3989::11
+
+	Host     | 2001:3984:3989::10 | 2001:3984:3989::11
+
 ----------+--------------------+--------------------
- Hostname | 31cb8139dffd       | 54666c1891fb
+
+	Hostname | 31cb8139dffd       | 54666c1891fb
+
 ----------+--------------------+--------------------
- OS       | Ubuntu 22.04       | Ubuntu 22.04
+
+	OS       | Ubuntu 22.04       | Ubuntu 22.04
+
 ----------+--------------------+--------------------
- Kernel   | 5.18.0             | 5.18.0
+
+	Kernel   | 5.18.0             | 5.18.0
 */
 func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	tableHeaders := table.Row{options.Resource}
@@ -147,19 +158,19 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 /*
 1 table per server, task names in 1st row
 
-                          ip6-1
+	                         ip6-1
 
-  Host               | Hostname     | OS           | Kernel
- --------------------+--------------+--------------+--------
-  2001:3984:3989::10 | 31cb8139dffd | Ubuntu 22.04 | 5.18.0
+	 Host               | Hostname     | OS           | Kernel
+	--------------------+--------------+--------------+--------
+	 2001:3984:3989::10 | 31cb8139dffd | Ubuntu 22.04 | 5.18.0
 
 
 
-                          ip6-2
+	                         ip6-2
 
-  Host               | Hostname     | OS           | Kernel
- --------------------+--------------+--------------+--------
-  2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
+	 Host               | Hostname     | OS           | Kernel
+	--------------------+--------------+--------------+--------
+	 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
 func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	var tableHeaders table.Row
@@ -203,25 +214,41 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 /*
 1 table per server, task names in 1st column
 
- Task     | Ip6-1
-----------+--------------------
- Host     | 2001:3984:3989::10
-----------+--------------------
- Hostname | 31cb8139dffd
-----------+--------------------
- OS       | Ubuntu 22.04
-----------+--------------------
- Kernel   | 5.18.0
+	Task     | Ip6-1
 
- Task     | Ip6-2
 ----------+--------------------
- Host     | 2001:3984:3989::11
+
+	Host     | 2001:3984:3989::10
+
 ----------+--------------------
- Hostname | 54666c1891fb
+
+	Hostname | 31cb8139dffd
+
 ----------+--------------------
- OS       | Ubuntu 22.04
+
+	OS       | Ubuntu 22.04
+
 ----------+--------------------
- Kernel   | 5.18.0
+
+	Kernel   | 5.18.0
+
+	Task     | Ip6-2
+
+----------+--------------------
+
+	Host     | 2001:3984:3989::11
+
+----------+--------------------
+
+	Hostname | 54666c1891fb
+
+----------+--------------------
+
+	OS       | Ubuntu 22.04
+
+----------+--------------------
+
+	Kernel   | 5.18.0
 */
 func table4[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	for _, s := range data {
@@ -308,14 +335,16 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 
 /*
 [
-  {
-    "ping": "pong"
-    "server": "list-0",
-  },
-  {
-    "ping": "pong"
-    "server": "list-1",
-  }
+
+	{
+	  "ping": "pong"
+	  "server": "list-0",
+	},
+	{
+	  "ping": "pong"
+	  "server": "list-1",
+	}
+
 ]
 */
 func printJSON[T dao.Items](data []T, options PrintTableOptions, headers []string) error {

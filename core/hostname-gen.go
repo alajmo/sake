@@ -27,7 +27,6 @@ func EvaluateInventory(shell string, context string, input string, serverEnvs []
 		return []string{}, &InventoryEvalFailed{Err: string(out)}
 	}
 
-
 	trimmedOutput := strings.TrimSpace(string(out))
 	trimmedOutput = strings.Trim(trimmedOutput, "\t")
 	trimmedOutput = strings.Trim(trimmedOutput, "\r")

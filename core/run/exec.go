@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"math"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -101,7 +102,7 @@ func (run *Run) RunTask(
 	clientCh := make(chan Client, numClients)
 	errCh := make(chan ErrConnect, numClients)
 
-	errConnect, err := run.SetClients(runFlags, numClients, clientCh, errCh)
+	errConnect, err := run.SetClients(task, runFlags, numClients, clientCh, errCh)
 	if err != nil {
 		return err
 	}
@@ -160,11 +161,7 @@ func (run *Run) RunTask(
 			spinner.Start(" Running", 500)
 		}
 
-		data, err := run.Table(runFlags.DryRun)
-		if err != nil {
-			return err
-		}
-
+		data, derr := run.Table(runFlags.DryRun)
 		options := print.PrintTableOptions{
 			Theme:                task.Theme,
 			OmitEmpty:            task.Spec.OmitEmpty,
@@ -179,6 +176,10 @@ func (run *Run) RunTask(
 		err = print.PrintTable(data.Rows, options, data.Headers)
 		if err != nil {
 			return err
+		}
+
+		if derr != nil {
+			return derr
 		}
 	default:
 		err := run.Text(runFlags.DryRun)
@@ -210,12 +211,13 @@ type Signers struct {
 
 // SetClients establishes connection to server
 func (run *Run) SetClients(
+	task *dao.Task,
 	runFlags *core.RunFlags,
 	numChannels int,
 	clientCh chan Client,
 	errCh chan ErrConnect,
 ) ([]ErrConnect, error) {
-	createLocalClient := func(server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createLocalClient := func(strategy string, numTasks int, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
 
 		local := &LocalhostClient{
@@ -224,10 +226,26 @@ func (run *Run) SetClients(
 			Host: server.Host,
 		}
 
+		switch strategy {
+		case "free":
+			for i := 0; i < numTasks; i++ {
+				local.Sessions = append(local.Sessions, LocalSession{})
+			}
+		default:
+			local.Sessions = append(local.Sessions, LocalSession{})
+		}
+
 		clientCh <- local
 	}
 
-	createRemoteClient := func(authMethod []ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createRemoteClient := func(
+		strategy string,
+		numTasks int,
+		authMethod []ssh.AuthMethod,
+		server dao.Server,
+		wg *sync.WaitGroup,
+		mu *sync.Mutex,
+	) {
 		defer wg.Done()
 
 		remote := &SSHClient{
@@ -236,6 +254,15 @@ func (run *Run) SetClients(
 			Host:       server.Host,
 			Port:       server.Port,
 			AuthMethod: authMethod,
+		}
+		// TODO: Create sessions if free strategy
+		switch strategy {
+		case "free":
+			for i := 0; i < numTasks; i++ {
+				remote.Sessions = append(remote.Sessions, SSHSession{})
+			}
+		default:
+			remote.Sessions = append(remote.Sessions, SSHSession{})
 		}
 
 		var bastion *SSHClient
@@ -247,18 +274,18 @@ func (run *Run) SetClients(
 				AuthMethod: authMethod,
 			}
 			// Connect to bastion
-			if err := bastion.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
 
 			// Connect to server through bastion
-			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, bastion.DialThrough); err != nil {
+			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
 		} else {
-			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
@@ -298,11 +325,11 @@ func (run *Run) SetClients(
 	// TODO: Dont create remote clients if task is set to local
 	for _, server := range run.Servers {
 		wg.Add(1)
-		go createLocalClient(server, &wg, &mu)
+		go createLocalClient(task.Spec.Strategy, len(task.Tasks), server, &wg, &mu)
 		if !server.Local {
 			wg.Add(1)
 			authMethods := getAuthMethod(server, &signers)
-			go createRemoteClient(authMethods, server, &wg, &mu)
+			go createRemoteClient(task.Spec.Strategy, len(task.Tasks), authMethods, server, &wg, &mu)
 		}
 	}
 	wg.Wait()
@@ -345,9 +372,21 @@ func (run *Run) CleanupClients() {
 				return
 			}
 			for _, c := range clients {
-				err := c.Signal(sig)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "%v", err)
+				switch c := c.(type) {
+				case *SSHClient:
+					for i := range c.Sessions {
+						err := c.Signal(i, sig)
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "%v", err)
+						}
+					}
+				case *LocalhostClient:
+					for i := range c.Sessions {
+						err := c.Signal(i, sig)
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "%v", err)
+						}
+					}
 				}
 			}
 		}
@@ -360,7 +399,9 @@ func (run *Run) CleanupClients() {
 	// Close remote connections
 	for _, c := range clients {
 		if remote, ok := c.(*SSHClient); ok {
-			remote.Close()
+			for i := range c.(*SSHClient).Sessions {
+				remote.Close(i)
+			}
 		}
 	}
 }
@@ -515,7 +556,12 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.R
 	return errConnects, err
 }
 
-func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) error {
+func (run *Run) ParseTask(
+	configEnv []string,
+	userArgs []string,
+	runFlags *core.RunFlags,
+	setRunFlags *core.SetRunFlags,
+) error {
 	// Update theme property if user flag is provided
 	if runFlags.Theme != "" {
 		theme, err := run.Config.GetTheme(runFlags.Theme)
@@ -524,6 +570,39 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		}
 
 		run.Task.Theme = *theme
+	}
+
+	if runFlags.Spec != "" {
+		spec, err := run.Config.GetSpec(runFlags.Spec)
+		if err != nil {
+			return err
+		}
+
+		run.Task.Spec = *spec
+	}
+
+	if run.Task.Spec.Forks == 0 {
+		run.Task.Spec.Forks = 10000
+	}
+
+	// Batch or BatchP must be > 0
+	if run.Task.Spec.Batch == 0 && run.Task.Spec.BatchP == 0 {
+		run.Task.Spec.Batch = uint32(len(run.Servers))
+	} else if run.Task.Spec.BatchP > 0 {
+		tot := float64(len(run.Servers))
+		percentage := float64(run.Task.Spec.BatchP) / float64(100)
+		batch := uint32(math.Floor(percentage * tot))
+
+		if batch > 0 {
+			run.Task.Spec.Batch = batch
+		} else {
+			run.Task.Spec.Batch = 1
+		}
+	}
+
+	// Update strategy property if user flag is provided
+	if runFlags.Strategy != "" {
+		run.Task.Spec.Strategy = runFlags.Strategy
 	}
 
 	// Update output property if user flag is provided
@@ -536,14 +615,13 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		run.Task.Spec.OmitEmpty = runFlags.OmitEmpty
 	}
 
-	// If parallel flag is set to true, then update task specs
-	if setRunFlags.Parallel {
-		run.Task.Spec.Parallel = runFlags.Parallel
-	}
-
 	// If AnyErrorsFatal flag is set to true, then tasks execution will stop if error is encountered for all servers
 	if setRunFlags.AnyErrorsFatal {
 		run.Task.Spec.AnyErrorsFatal = runFlags.AnyErrorsFatal
+	}
+
+	if run.Task.Spec.AnyErrorsFatal {
+		run.Task.Spec.MaxFailPercentage = 0
 	}
 
 	// If IgnoreErrors flag is set to true, then tasks will run regardless of error
@@ -724,4 +802,19 @@ func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 	}
 
 	return authMethods
+}
+
+func CalcFreeForks(batch int, tasks int, forks uint32) int {
+	tot := batch * tasks
+	if tot < int(forks) {
+		return tot
+	}
+	return int(forks)
+}
+
+func CalcForks(batch int, forks uint32) int {
+	if batch < int(forks) {
+		return batch
+	}
+	return int(forks)
 }
