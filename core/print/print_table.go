@@ -3,9 +3,11 @@ package print
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 
+	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
 
@@ -22,20 +24,24 @@ func PrintTable[T dao.Items](
 	data []T,
 	options PrintTableOptions,
 	headers []string,
+	footers []string,
 ) error {
+
 	switch options.Output {
+	case "table", "table-1":
+		return table1(data, options, headers, footers)
 	case "table-2":
-		return table2(data, options, headers)
+		return table2(data, options, headers, footers)
 	case "table-3":
-		return table3(data, options, headers)
+		return table3(data, options, headers, footers)
 	case "table-4":
-		return table4(data, options, headers)
+		return table4(data, options, headers, footers)
 	case "csv":
-		return printCSV(data, options, headers)
+		return printCSV(data, options, headers, footers)
 	case "json":
 		return printJSON(data, options, headers)
 	default:
-		return table1(data, options, headers)
+		return &core.OutputFormatNotFound{Name: options.Output}
 	}
 }
 
@@ -52,7 +58,7 @@ func PrintTable[T dao.Items](
 
 	ip6-2  | 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
-func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func table1[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -86,6 +92,12 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 		t.AppendRow(row)
 	}
 
+	var tableFooter table.Row
+	for _, h := range footers {
+		tableFooter = append(tableFooter, h)
+	}
+	t.AppendFooter(tableFooter)
+
 	if options.Title != "" {
 		t.SetTitle(options.Title)
 	}
@@ -116,7 +128,7 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 
 	Kernel   | 5.18.0             | 5.18.0
 */
-func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func table2[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
 	tableHeaders := table.Row{options.Resource}
 	rh := []string{options.Resource}
 	for _, h := range data {
@@ -172,7 +184,7 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 	--------------------+--------------+--------------+--------
 	 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
-func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func table3[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
 	var tableHeaders table.Row
 	for _, h := range headers[1:] {
 		tableHeaders = append(tableHeaders, h)
@@ -250,7 +262,7 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string) 
 
 	Kernel   | 5.18.0
 */
-func table4[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func table4[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
 	for _, s := range data {
 		val := s.GetValue(fmt.Sprintf("%v", s), 0)
 		t := CreateTable(options, []string{options.Resource, val})
@@ -290,7 +302,7 @@ server,host
 ip6-1,2001:3984:3989::10
 ip6-2,2001:3984:3989::11
 */
-func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -305,7 +317,14 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 		var row []any
 		for i, h := range headers {
 			value := item.GetValue(fmt.Sprintf("%v", h), i)
-			row = append(row, value)
+			switch h {
+			case "tags":
+				t := strings.Split(value, "\n")
+				v := strings.Join(t, ",")
+				row = append(row, v)
+			default:
+				row = append(row, value)
+			}
 		}
 
 		if options.OmitEmpty {
@@ -348,11 +367,21 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 ]
 */
 func printJSON[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
-	var out []map[string]string
+	var out []map[string]any
 	for _, v := range data {
-		m := make(map[string]string)
+		m := make(map[string]any)
 		for j, k := range headers {
-			m[k] = v.GetValue(k, j)
+			value := v.GetValue(k, j)
+			switch k {
+			case "servers":
+				s := core.SplitString(value, "\n")
+				m[k] = s
+			case "tags":
+				t := core.SplitString(value, "\n")
+				m[k] = t
+			default:
+				m[k] = value
+			}
 		}
 		out = append(out, m)
 	}

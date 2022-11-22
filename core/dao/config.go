@@ -38,7 +38,7 @@ var (
 
 	DEFAULT_SPEC = Spec{
 		Name:              "default",
-		Strategy:		   "row",
+		Strategy:          "row",
 		Output:            "text",
 		Forks:             10000,
 		MaxFailPercentage: 0,
@@ -46,8 +46,9 @@ var (
 		IgnoreErrors:      false,
 		IgnoreUnreachable: false,
 		OmitEmpty:         false,
-		Batch:			   0,
-		BatchP:			   0,
+		Batch:             0,
+		BatchP:            0,
+		Report:            []string{"basic"},
 	}
 )
 
@@ -566,20 +567,6 @@ func (c *Config) ParseInventory(userArgs []string) error {
 	}
 
 	c.Servers = servers
-
-	return nil
-}
-
-func (c *Config) FillDefaultSpec(taskID string) error {
-	fmt.Println(taskID)
-	t, err := c.GetTask(taskID)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("----------------------")
-	fmt.Println(t.Spec.AnyErrorsFatal)
-	fmt.Println("----------------------")
 
 	return nil
 }

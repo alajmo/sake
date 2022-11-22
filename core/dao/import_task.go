@@ -58,7 +58,6 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 
 		if tn.TaskRefs[i].Cmd != "" {
 			// name: <name> <-- task
-			// cmd: echo 123
 			// tasks:
 			//   - cmd: <cmd> <-- tn.TaskRefs[i].Cmd
 
@@ -72,24 +71,29 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				tty = *tn.TaskRefs[i].TTY
 			}
 
+			ignoreErrors := task.Spec.IgnoreErrors
+			if tn.TaskRefs[i].IgnoreErrors != nil {
+				ignoreErrors = *tn.TaskRefs[i].IgnoreErrors
+			}
+
 			envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs)
 
 			workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir)
 			shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell)
 
-			// TODO: Add task register here, where else?
 			childTask := TaskCmd{
-				ID:       tn.TaskRefs[i].Task,
-				Name:     tn.TaskRefs[i].Name,
-				Desc:     tn.TaskRefs[i].Desc,
-				Register: tn.TaskRefs[i].Register,
-				RootDir:  filepath.Dir(task.context),
-				WorkDir:  workDir,
-				Shell:    shell,
-				Cmd:      tn.TaskRefs[i].Cmd,
-				Envs:     envs,
-				Local:    local,
-				TTY:      tty,
+				ID:           tn.TaskRefs[i].Task,
+				Name:         tn.TaskRefs[i].Name,
+				Desc:         tn.TaskRefs[i].Desc,
+				Register:     tn.TaskRefs[i].Register,
+				RootDir:      filepath.Dir(task.context),
+				WorkDir:      workDir,
+				Shell:        shell,
+				Cmd:          tn.TaskRefs[i].Cmd,
+				Envs:         envs,
+				Local:        local,
+				TTY:          tty,
+				IgnoreErrors: ignoreErrors,
 			}
 			task.Tasks = append(task.Tasks, childTask)
 		} else {
@@ -132,6 +136,11 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					tty = *tn.TaskRefs[i].TTY
 				}
 
+				ignoreErrors := childTask.Spec.IgnoreErrors
+				if tn.TaskRefs[i].IgnoreErrors != nil {
+					ignoreErrors = *tn.TaskRefs[i].IgnoreErrors
+				}
+
 				envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs, childTask.Envs)
 
 				// The child task default envs like SAKE_TASK_ID should take precedence
@@ -142,17 +151,18 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 
 				// TODO: Should task.Register be set here?
 				t := TaskCmd{
-					ID:       childTask.ID,
-					Name:     name,
-					Desc:     childTask.Desc,
-					RootDir:  filepath.Dir(task.context),
-					WorkDir:  workDir,
-					Shell:    shell,
-					Cmd:      childTask.Cmd,
-					Register: tn.TaskRefs[i].Register,
-					Envs:     envs,
-					Local:    local,
-					TTY:      tty,
+					ID:           childTask.ID,
+					Name:         name,
+					Desc:         childTask.Desc,
+					RootDir:      filepath.Dir(task.context),
+					WorkDir:      workDir,
+					Shell:        shell,
+					Cmd:          childTask.Cmd,
+					Register:     tn.TaskRefs[i].Register,
+					Envs:         envs,
+					Local:        local,
+					TTY:          tty,
+					IgnoreErrors: ignoreErrors,
 				}
 				task.Tasks = append(task.Tasks, t)
 			} else {
@@ -186,6 +196,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					//       env: <-- tn.TaskRefs[i].Envs, takes first precedence
 					//         foo: foo
 
+					// TODO: May need to add IgnoreErrors here
 					tnn.TaskRefs = append(tnn.TaskRefs, k)
 					tnn.TaskRefs[j].Envs = MergeEnvs(tn.TaskRefs[i].Envs, tnn.TaskRefs[j].Envs, childTask.Envs)
 					tnn.TaskRefs[j].WorkDir = SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, tnn.TaskRefs[j].WorkDir, childTask.WorkDir)

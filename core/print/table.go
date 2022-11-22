@@ -29,10 +29,10 @@ func CreateTable(
 		hh := table.ColumnConfig{
 			Number:       i + 1,
 			AlignHeader:  GetAlign(*theme.Table.Header.Align),
+			Align:        GetAlign(*theme.Table.Row.Align),
 			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
-
-			Align:  GetAlign(*theme.Table.Row.Align),
-			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+			Colors:       combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+			ColorsFooter: combineColors(theme.Table.Footer.Fg, theme.Table.Footer.Bg, theme.Table.Footer.Attr),
 		}
 
 		headers = append(headers, hh)
@@ -51,6 +51,7 @@ func FormatTable(theme dao.Theme) table.Style {
 		Format: table.FormatOptions{
 			Header: GetFormat(*theme.Table.Header.Format),
 			Row:    GetFormat(*theme.Table.Row.Format),
+			Footer: GetFormat(*theme.Table.Footer.Format),
 		},
 
 		Options: table.Options{
@@ -58,6 +59,7 @@ func FormatTable(theme dao.Theme) table.Style {
 			SeparateColumns: *theme.Table.Options.SeparateColumns,
 			SeparateHeader:  *theme.Table.Options.SeparateHeader,
 			SeparateRows:    *theme.Table.Options.SeparateRows,
+			SeparateFooter:  *theme.Table.Options.SeparateFooter,
 		},
 
 		Title: table.TitleOptions{

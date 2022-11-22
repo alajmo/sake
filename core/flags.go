@@ -43,6 +43,9 @@ type RunFlags struct {
 	Describe bool
 	Silent   bool
 
+	// Reports
+	Report []string
+
 	// Target
 	All     bool
 	Regex   string
@@ -65,10 +68,11 @@ type RunFlags struct {
 
 	// Server
 	IdentityFile string
+	User		 string
 	Password     string
 
 	// Spec
-	Spec			  string
+	Spec              string
 	AnyErrorsFatal    bool
 	MaxFailPercentage uint8
 	IgnoreErrors      bool
@@ -76,12 +80,15 @@ type RunFlags struct {
 	OmitEmpty         bool
 	Forks             uint32
 	Batch             uint32
-	BatchP			  uint8
+	BatchP            uint8
 	Output            string
 	Strategy          string
 }
 
 type SetRunFlags struct {
+	Silent            bool
+	Describe          bool
+	Attach            bool
 	All               bool
 	Invert            bool
 	OmitEmpty         bool
@@ -90,4 +97,5 @@ type SetRunFlags struct {
 	AnyErrorsFatal    bool
 	IgnoreErrors      bool
 	IgnoreUnreachable bool
+	Report			  bool
 }

@@ -3,11 +3,13 @@ package dao
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"math"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/alajmo/sake/core"
 )
@@ -16,31 +18,33 @@ var REGISTER_REGEX = regexp.MustCompile("^[a-zA-Z_]+[a-zA-Z0-9_]*$")
 
 // This is the struct that is added to the Task.Tasks in import_task.go
 type TaskCmd struct {
-	ID       string
-	Name     string
-	Desc     string
-	WorkDir  string
-	Shell    string
-	RootDir  string
-	Register string
-	Cmd      string
-	Local    bool
-	TTY      bool
-	Envs     []string
+	ID           string
+	Name         string
+	Desc         string
+	WorkDir      string
+	Shell        string
+	RootDir      string
+	Register     string
+	Cmd          string
+	Local        bool
+	TTY          bool
+	IgnoreErrors bool
+	Envs         []string
 }
 
 // This is the struct that is added to the Task.TaskRefs
 type TaskRef struct {
-	Name     string
-	Desc     string
-	Cmd      string
-	WorkDir  string
-	Shell    string
-	Register string
-	Task     string
-	Local    *bool
-	TTY      *bool
-	Envs     []string
+	Name         string
+	Desc         string
+	Cmd          string
+	WorkDir      string
+	Shell        string
+	Register     string
+	Task         string
+	Local        *bool
+	TTY          *bool
+	IgnoreErrors *bool
+	Envs         []string
 }
 
 type Task struct {
@@ -68,6 +72,7 @@ type Task struct {
 	contextLine int    // defined at
 }
 
+// Unmarshaled from YAML
 type TaskYAML struct {
 	Name    string        `yaml:"name"`
 	Desc    string        `yaml:"desc"`
@@ -85,18 +90,19 @@ type TaskYAML struct {
 	Theme   yaml.Node     `yaml:"theme"`
 }
 
-// This is the struct that will be unmarsheld from YAML
+// Unmarshaled from YAML
 type TaskRefYAML struct {
-	Name     string    `yaml:"name"`
-	Desc     string    `yaml:"desc"`
-	WorkDir  string    `yaml:"work_dir"`
-	Shell    string    `yaml:"shell"`
-	Cmd      string    `yaml:"cmd"`
-	Task     string    `yaml:"task"`
-	Register string    `yaml:"register"`
-	Local    *bool     `yaml:"local"`
-	TTY      *bool     `yaml:"tty"`
-	Env      yaml.Node `yaml:"env"`
+	Name         string    `yaml:"name"`
+	Desc         string    `yaml:"desc"`
+	WorkDir      string    `yaml:"work_dir"`
+	Shell        string    `yaml:"shell"`
+	Cmd          string    `yaml:"cmd"`
+	Task         string    `yaml:"task"`
+	Register     string    `yaml:"register"`
+	Local        *bool     `yaml:"local"`
+	IgnoreErrors *bool	   `yaml:"ignore_errors"`
+	TTY          *bool     `yaml:"tty"`
+	Env          yaml.Node `yaml:"env"`
 }
 
 func (t Task) GetValue(key string, _ int) string {
@@ -321,13 +327,14 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			// Tasks References
 			for k := range taskYAML.Tasks {
 				tr := TaskRef{
-					Name:    taskYAML.Tasks[k].Name,
-					Desc:    taskYAML.Tasks[k].Desc,
-					WorkDir: taskYAML.Tasks[k].WorkDir,
-					Shell:   taskYAML.Tasks[k].Shell,
-					Local:   taskYAML.Tasks[k].Local,
-					TTY:     taskYAML.Tasks[k].TTY,
-					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
+					Name:         taskYAML.Tasks[k].Name,
+					Desc:         taskYAML.Tasks[k].Desc,
+					WorkDir:      taskYAML.Tasks[k].WorkDir,
+					Shell:        taskYAML.Tasks[k].Shell,
+					Local:        taskYAML.Tasks[k].Local,
+					TTY:          taskYAML.Tasks[k].TTY,
+					IgnoreErrors: taskYAML.Tasks[k].IgnoreErrors,
+					Envs:         ParseNodeEnv(taskYAML.Tasks[k].Env),
 				}
 
 				if taskYAML.Tasks[k].Register != "" {
@@ -520,4 +527,49 @@ func (c *Config) GetTask(id string) (*Task, error) {
 	}
 
 	return nil, &core.TaskNotFound{IDs: []string{id}}
+}
+
+type TaskStatus int64
+
+const (
+	Skipped TaskStatus = iota
+	Ok
+	Failed
+	Ignored
+	Unreachable
+)
+
+type Report struct {
+	ReturnCode int
+	Duration   time.Duration
+	Status     TaskStatus
+}
+
+type ReportRow struct {
+	Name   string
+	Status map[TaskStatus]int
+	Rows   []Report
+}
+
+type ReportData struct {
+	Headers []string
+	Tasks   []ReportRow
+	Status  map[TaskStatus]int
+}
+
+func (s TaskStatus) String() string {
+	switch s {
+	case Ok:
+		return "ok"
+	case Failed:
+		return "failed"
+	case Skipped:
+		return "skipped"
+	case Ignored:
+		return "ignored"
+	case Unreachable:
+		return "unreachable"
+	}
+
+	return ""
 }

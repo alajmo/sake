@@ -75,6 +75,7 @@ type Row struct {
 type TableOutput struct {
 	Headers []string
 	Rows    []Row
+	Footers []string
 }
 
 func (t *Theme) GetContext() string {
@@ -216,7 +217,7 @@ var DefaultTable = Table{
 		Fg:     core.Ptr(""),
 		Bg:     core.Ptr(""),
 		Align:  core.Ptr(""),
-		Attr:   core.Ptr("bold"),
+		Attr:   core.Ptr("normal"),
 		Format: core.Ptr("default"),
 	},
 
@@ -224,7 +225,7 @@ var DefaultTable = Table{
 		Fg:     core.Ptr(""),
 		Bg:     core.Ptr(""),
 		Align:  core.Ptr(""),
-		Attr:   core.Ptr("bold"),
+		Attr:   core.Ptr("normal"),
 		Format: core.Ptr("default"),
 	},
 }

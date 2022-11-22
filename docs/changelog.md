@@ -12,7 +12,10 @@
 - Support csv/json output
 - Add output and exit code of previous task to environment variables for conditional task execution
 - Add ability to pass output from task to next tasks
-- Add option to display summary at end of tasks by using `--summary` or specifying it in `spec` definition
+- Add option to display reports at end of tasks by using `--report` flag or specifying it in `spec` definition
+- Add silent/describe attribute to spec definition
+- Add option to ignore errors for indiviual tasks
+- Add ssh user flag option
 
 ### Fixes
 

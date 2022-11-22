@@ -38,6 +38,8 @@ func (t Target) GetValue(key string, _ int) string {
 	switch lkey {
 	case "name", "target":
 		return t.Name
+	case "desc", "Desc":
+		return t.Desc
 	case "all":
 		return strconv.FormatBool(t.All)
 	case "servers":
@@ -82,7 +84,7 @@ func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 
 func (c *ConfigYAML) DecodeTarget(name string, targetYAML yaml.Node) (*Target, []error) {
 	target := &Target{
-		Name: name,
+		Name:        name,
 		context:     c.Path,
 		contextLine: targetYAML.Line,
 	}

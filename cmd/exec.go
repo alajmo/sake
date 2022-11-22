@@ -35,6 +35,8 @@ before the command gets executed in each directory.`,
 
 			// This is necessary since cobra doesn't support pointers for bools
 			// (that would allow us to use nil as default value)
+			setRunFlags.Silent = cmd.Flags().Changed("silent")
+			setRunFlags.Attach = cmd.Flags().Changed("attach")
 			setRunFlags.All = cmd.Flags().Changed("all")
 			setRunFlags.Invert = cmd.Flags().Changed("invert")
 			setRunFlags.Local = cmd.Flags().Changed("local")
@@ -43,6 +45,7 @@ before the command gets executed in each directory.`,
 			setRunFlags.AnyErrorsFatal = cmd.Flags().Changed("any-errors-fatal")
 			setRunFlags.IgnoreErrors = cmd.Flags().Changed("ignore-error")
 			setRunFlags.IgnoreUnreachable = cmd.Flags().Changed("ignore_unreachable")
+			setRunFlags.Report = cmd.Flags().Changed("report")
 
 			maxFailPercentage, err := cmd.Flags().GetUint8("max-fail-percentage")
 			core.CheckIfError(err)
@@ -173,7 +176,17 @@ before the command gets executed in each directory.`,
 	cmd.Flags().BoolVar(&runFlags.Local, "local", false, "run command on localhost")
 	cmd.MarkFlagsMutuallyExclusive("tty", "attach", "local")
 
+	cmd.Flags().StringSliceVarP(&runFlags.Report, "report", "R", []string{"basic"}, "reports to show")
+	err = cmd.RegisterFlagCompletionFunc("report", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
+		return reports, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
+
 	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file for all servers")
+	cmd.Flags().StringVarP(&runFlags.User, "user", "U", "", "set ssh user")
 	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password for all servers")
 	cmd.Flags().StringVar(&runFlags.KnownHostsFile, "known-hosts-file", "", "set known hosts file")
 

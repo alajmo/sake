@@ -53,6 +53,7 @@ func ParseReader(r io.Reader, cfg string) ([]*Endpoint, error) {
 			if err != nil {
 				return err
 			}
+
 			g, err := glob.Compile(k)
 			if err != nil {
 				return fmt.Errorf("%s: invalid Host: %q: %w", cfg, k, err)
@@ -61,6 +62,7 @@ func ParseReader(r io.Reader, cfg string) ([]*Endpoint, error) {
 			if g.Match(name) || (info.HostName != "" && g.Match(info.HostName)) {
 				info = mergeHostinfo(info, v)
 			}
+
 			return nil
 		}); err != nil {
 			return err

@@ -9,66 +9,78 @@ import (
 	"golang.org/x/exp/slices"
 	"golang.org/x/term"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
 	"text/template"
-	"math"
+	"time"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 	"github.com/alajmo/sake/core/print"
 )
 
-func (run *Run) Text(dryRun bool) error {
+func (run *Run) Text(dryRun bool) (dao.ReportData, error) {
 	task := run.Task
 	servers := run.Servers
 	prefixMaxLen := calcMaxPrefixLength(run.LocalClients)
 
-	var dataExit dao.TableOutput
+	// TODO: reportData should be pointer?
+	var reportData dao.ReportData
 	var dataMutex = sync.RWMutex{}
-	dataExit.Headers = append(dataExit.Headers, "server")
+	reportData.Headers = append(reportData.Headers, "server")
 	// Append Command names if set
 	for _, subTask := range task.Tasks {
-		dataExit.Headers = append(dataExit.Headers, subTask.Name)
+		reportData.Headers = append(reportData.Headers, subTask.Name)
 	}
 	// Populate the rows (server name is first cell, then commands and cmd output is set to empty string)
 	for i, p := range servers {
-		dataExit.Rows = append(dataExit.Rows, dao.Row{Columns: []string{p.Name}})
+		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Name, Rows: []dao.Report{}})
 		for range task.Tasks {
-			dataExit.Rows[i].Columns = append(dataExit.Rows[i].Columns, "")
+			reportData.Tasks[i].Rows = append(reportData.Tasks[i].Rows, dao.Report{})
 		}
 	}
 
 	var err error
 	switch task.Spec.Strategy {
 	case "free":
-		err = run.freeText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
+		err = run.freeText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
 	case "column":
-		err = run.columnText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
+		err = run.columnText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
 	default:
-		err = run.rowText(&run.Config, prefixMaxLen, dataExit, &dataMutex, dryRun)
+		err = run.rowText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
+	}
+
+	reportData.Status = make(map[dao.TaskStatus]int, 5)
+	for i := range reportData.Tasks {
+		reportData.Tasks[i].Status = make(map[dao.TaskStatus]int, 5)
+		for j := range reportData.Tasks[i].Rows {
+			status := reportData.Tasks[i].Rows[j].Status
+			reportData.Tasks[i].Status[status] += 1
+			reportData.Status[status] += 1
+		}
 	}
 
 	if err != nil && run.Task.Spec.AnyErrorsFatal {
 		switch err := err.(type) {
 		case *ssh.ExitError:
-			return &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
+			return reportData, &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
 		case *exec.ExitError:
-			return &core.ExecError{Err: err, ExitCode: err.ExitCode()}
+			return reportData, &core.ExecError{Err: err, ExitCode: err.ExitCode()}
 		default:
-			return err
+			return reportData, err
 		}
 	}
 
-	return nil
+	return reportData, nil
 }
 
 func (run *Run) freeText(
 	config *dao.Config,
 	prefixMaxLen int,
-	dataExit dao.TableOutput,
+	reportData dao.ReportData,
 	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
@@ -96,9 +108,10 @@ func (run *Run) freeText(
 	// calculate how many total tasks
 	quotient, remainder := serverLen/batch, serverLen%batch
 
-	fmt.Printf("Batch: %v\n", batch)
-	fmt.Printf("Quotient: %v\n", quotient)
-	fmt.Printf("Remainder: %v\n\n", remainder)
+	// TODO: Remove
+	// fmt.Printf("Batch: %v\n", batch)
+	// fmt.Printf("Quotient: %v\n", quotient)
+	// fmt.Printf("Remainder: %v\n\n", remainder)
 
 	if remainder > 0 {
 		quotient += 1
@@ -130,7 +143,7 @@ func (run *Run) freeText(
 				defer wg.Done()
 				waitChan <- struct{}{}
 
-				err := run.textWork(r, r.j, register, prefixMaxLen, dataExit, dataMutex, dryRun)
+				err := run.textWork(r, r.j, register, prefixMaxLen, reportData, dataMutex, dryRun)
 				<-waitChan
 				if err != nil {
 					errCh <- err
@@ -156,7 +169,7 @@ func (run *Run) freeText(
 func (run *Run) rowText(
 	config *dao.Config,
 	prefixMaxLen int,
-	dataExit dao.TableOutput,
+	reportData dao.ReportData,
 	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
@@ -186,9 +199,10 @@ func (run *Run) rowText(
 	// calculate how many total tasks
 	quotient, remainder := serverLen/batch, serverLen%batch
 
-	fmt.Printf("Batch: %v\n", batch)
-	fmt.Printf("Quotient: %v\n", quotient)
-	fmt.Printf("Remainder: %v\n\n", remainder)
+	// TODO: Remove
+	// fmt.Printf("Batch: %v\n", batch)
+	// fmt.Printf("Quotient: %v\n", quotient)
+	// fmt.Printf("Remainder: %v\n\n", remainder)
 
 	if remainder > 0 {
 		quotient += 1
@@ -211,7 +225,10 @@ func (run *Run) rowText(
 
 		// Per batch
 		for k := 0; k < quotient; k++ {
-			failedHostsCh := make(chan struct {string; bool}, batch)
+			failedHostsCh := make(chan struct {
+				string
+				bool
+			}, batch)
 
 			start := t*serverLen + k*batch
 			end := start + batch
@@ -233,18 +250,27 @@ func (run *Run) rowText(
 					r ServerTask,
 					register map[string]string,
 					errCh chan<- error,
-					failedHosts chan<- struct {string; bool},
+					failedHosts chan<- struct {
+						string
+						bool
+					},
 					wg *sync.WaitGroup,
 				) {
 					defer wg.Done()
 
-					err := run.textWork(r, 0, register, prefixMaxLen, dataExit, dataMutex, dryRun)
+					err := run.textWork(r, 0, register, prefixMaxLen, reportData, dataMutex, dryRun)
 					<-waitChan
 					if err != nil {
 						errCh <- err
-						failedHostsCh <- struct {string; bool} {r.Server.Name, true}
+						failedHostsCh <- struct {
+							string
+							bool
+						}{r.Server.Name, true}
 					} else {
-						failedHostsCh <- struct {string; bool} {r.Server.Name, false}
+						failedHostsCh <- struct {
+							string
+							bool
+						}{r.Server.Name, false}
 					}
 				}(r, register[r.Server.Name], errCh, failedHostsCh, &wg)
 			}
@@ -275,7 +301,7 @@ func (run *Run) rowText(
 func (run *Run) columnText(
 	config *dao.Config,
 	prefixMaxLen int,
-	dataExit dao.TableOutput,
+	reportData dao.ReportData,
 	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
@@ -303,9 +329,10 @@ func (run *Run) columnText(
 	// calculate how many total tasks
 	quotient, remainder := serverLen/batch, serverLen%batch
 
-	fmt.Printf("Batch: %v\n", batch)
-	fmt.Printf("Quotient: %v\n", quotient)
-	fmt.Printf("Remainder: %v\n\n", remainder)
+	// TODO: Remove
+	// fmt.Printf("Batch: %v\n", batch)
+	// fmt.Printf("Quotient: %v\n", quotient)
+	// fmt.Printf("Remainder: %v\n\n", remainder)
 
 	if remainder > 0 {
 		quotient += 1
@@ -349,7 +376,7 @@ func (run *Run) columnText(
 						}
 					}
 
-					err := run.textWork(j, 0, register[j.Server.Name], prefixMaxLen, dataExit, dataMutex, dryRun)
+					err := run.textWork(j, 0, register[j.Server.Name], prefixMaxLen, reportData, dataMutex, dryRun)
 					<-waitChan
 					if err != nil {
 						errCh <- err
@@ -379,7 +406,7 @@ func (run *Run) textWork(
 	si int,
 	register map[string]string,
 	prefixMaxLen int,
-	dataExit dao.TableOutput,
+	reportData dao.ReportData,
 	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
@@ -418,10 +445,12 @@ func (run *Run) textWork(
 		tty:      r.Cmd.TTY,
 	}
 
+	start := time.Now()
 	var wg sync.WaitGroup
 	out, stdout, stderr, err := runTextCmd(si, t, r.Task.Theme.Text, prefix, r.Cmd.Register, &wg)
+	reportData.Tasks[r.i].Rows[r.j].Duration = time.Since(start)
 
-	// Add exit code to dataExit
+	// Add exit code to reportData
 	var errCode int
 	switch err := err.(type) {
 	case *ssh.ExitError:
@@ -434,13 +463,13 @@ func (run *Run) textWork(
 		return err
 	}
 
-	dataExit.Rows[r.i].Columns[r.j+1] = fmt.Sprint(errCode)
+	reportData.Tasks[r.i].Rows[r.j].ReturnCode = errCode
 
 	if r.Cmd.Register != "" {
 		register[r.Cmd.Register] = strings.TrimSuffix(out, "\n")
 		register[r.Cmd.Register+"_stdout"] = stdout
 		register[r.Cmd.Register+"_stderr"] = stderr
-		register[r.Cmd.Register+"_rc"] = dataExit.Rows[t.rIndex].Columns[r.j+1]
+		register[r.Cmd.Register+"_rc"] = fmt.Sprint(reportData.Tasks[t.rIndex].Rows[r.j+1].ReturnCode)
 		if err != nil {
 			register[r.Cmd.Register+"_failed"] = "true"
 		} else {
@@ -449,9 +478,17 @@ func (run *Run) textWork(
 		// TODO: Add skipped env variable
 	}
 
-	if !r.Task.Spec.IgnoreErrors && err != nil {
-		return err
+	if err != nil {
+		if r.Task.Spec.IgnoreErrors || r.Cmd.IgnoreErrors {
+			reportData.Tasks[r.i].Rows[r.j].Status = dao.Ignored
+			return nil
+		} else {
+			reportData.Tasks[r.i].Rows[r.j].Status = dao.Failed
+			return err
+		}
 	}
+
+	reportData.Tasks[r.i].Rows[r.j].Status = dao.Ok
 
 	return nil
 }

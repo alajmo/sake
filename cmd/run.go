@@ -11,6 +11,14 @@ import (
 	"github.com/alajmo/sake/core/run"
 )
 
+var reports = []string{
+	"basic\tshow basic report",
+	"rc\tshow return code for each server and task",
+	"task\tshow report status for each server and task",
+	"time\tshow time report for each server and task",
+	"all\tshow all available reports",
+}
+
 func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	var runFlags core.RunFlags
 	var setRunFlags core.SetRunFlags
@@ -33,6 +41,9 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 			// This is necessary since cobra doesn't support pointers for bools
 			// (that would allow us to use nil as default value)
+			setRunFlags.Describe = cmd.Flags().Changed("describe")
+			setRunFlags.Silent = cmd.Flags().Changed("silent")
+			setRunFlags.Attach = cmd.Flags().Changed("attach")
 			setRunFlags.All = cmd.Flags().Changed("all")
 			setRunFlags.Invert = cmd.Flags().Changed("invert")
 			setRunFlags.Local = cmd.Flags().Changed("local")
@@ -41,6 +52,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 			setRunFlags.AnyErrorsFatal = cmd.Flags().Changed("any-errors-fatal")
 			setRunFlags.IgnoreErrors = cmd.Flags().Changed("ignore-errors")
 			setRunFlags.IgnoreUnreachable = cmd.Flags().Changed("ignore-unreachable")
+			setRunFlags.Report = cmd.Flags().Changed("report")
 
 			maxFailPercentage, err := cmd.Flags().GetUint8("max-fail-percentage")
 			core.CheckIfError(err)
@@ -181,8 +193,18 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd.MarkFlagsMutuallyExclusive("tty", "attach", "local")
 	cmd.Flags().BoolVarP(&runFlags.Edit, "edit", "e", false, "edit task")
 
-	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file for all servers")
-	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password for all servers")
+	cmd.Flags().StringSliceVarP(&runFlags.Report, "report", "R", []string{"basic"}, "reports to show")
+	err = cmd.RegisterFlagCompletionFunc("report", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
+		return reports, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
+
+	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file")
+	cmd.Flags().StringVarP(&runFlags.User, "user", "U", "", "set ssh user")
+	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password")
 	cmd.Flags().StringVar(&runFlags.KnownHostsFile, "known-hosts-file", "", "set known hosts file")
 
 	return &cmd
@@ -223,9 +245,6 @@ func runTask(
 			core.CheckIfError(err)
 
 			servers, err := config.GetTaskServers(task, runFlags, setRunFlags)
-			core.CheckIfError(err)
-
-			err = config.FillDefaultSpec(taskID)
 			core.CheckIfError(err)
 
 			if len(servers) == 0 {

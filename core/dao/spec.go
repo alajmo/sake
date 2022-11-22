@@ -12,18 +12,21 @@ import (
 )
 
 type Spec struct {
-	Name              string `yaml:"_"`
-	Desc              *string `yaml:"desc"`
-	Strategy          string `yaml:"strategy"`
-	Batch             uint32 `yaml:"batch"`
-	BatchP			  uint8  `yaml:"batch_p"`
-	Forks             uint32 `yaml:"forks"`
-	Output            string `yaml:"output"`
-	MaxFailPercentage uint8  `yaml:"max_fail_percentage"`
-	AnyErrorsFatal    bool   `yaml:"any_errors_fatal"`
-	IgnoreErrors      bool   `yaml:"ignore_errors"`
-	IgnoreUnreachable bool   `yaml:"ignore_unreachable"`
-	OmitEmpty         bool   `yaml:"omit_empty"`
+	Name              string   `yaml:"_"`
+	Desc              string   `yaml:"desc"`
+	Describe          bool     `yaml:"describe"`
+	Silent            bool     `yaml:"silent"`
+	Strategy          string   `yaml:"strategy"`
+	Batch             uint32   `yaml:"batch"`
+	BatchP            uint8    `yaml:"batch_p"`
+	Forks             uint32   `yaml:"forks"`
+	Output            string   `yaml:"output"`
+	MaxFailPercentage uint8    `yaml:"max_fail_percentage"`
+	AnyErrorsFatal    bool     `yaml:"any_errors_fatal"`
+	IgnoreErrors      bool     `yaml:"ignore_errors"`
+	IgnoreUnreachable bool     `yaml:"ignore_unreachable"`
+	OmitEmpty         bool     `yaml:"omit_empty"`
+	Report            []string `yaml:"report"`
 
 	context     string // config path
 	contextLine int    // defined at
@@ -43,11 +46,11 @@ func (s Spec) GetValue(key string, _ int) string {
 	case "name", "spec":
 		return s.Name
 	case "desc", "Desc":
-		if s.Desc != nil {
-			return *s.Desc
-		} else {
-			return ""
-		}
+		return s.Desc
+	case "describe", "Describe":
+		return strconv.FormatBool(s.Describe)
+	case "silent", "Silent":
+		return strconv.FormatBool(s.Silent)
 	case "strategy":
 		return s.Strategy
 	case "forks":
@@ -68,6 +71,8 @@ func (s Spec) GetValue(key string, _ int) string {
 		return strconv.FormatBool(s.IgnoreUnreachable)
 	case "omit_empty":
 		return strconv.FormatBool(s.OmitEmpty)
+	case "report", "Report":
+		return strings.Join(s.Report, "\n")
 	default:
 		return ""
 	}
@@ -97,7 +102,7 @@ func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 
 func (c *ConfigYAML) DecodeSpec(name string, specYAML yaml.Node) (*Spec, []error) {
 	spec := &Spec{
-		Name: name,
+		Name:        name,
 		context:     c.Path,
 		contextLine: specYAML.Line,
 	}
@@ -120,6 +125,10 @@ func (c *ConfigYAML) DecodeSpec(name string, specYAML yaml.Node) (*Spec, []error
 		specErrors = append(specErrors, &core.InvalidPercentInput{Name: "batch_p"})
 	}
 
+	if len(spec.Report) == 0 {
+		spec.Report = []string{"basic"}
+	}
+
 	return spec, specErrors
 }
 
@@ -136,8 +145,8 @@ func (c *Config) GetSpec(name string) (*Spec, error) {
 func (c *Config) GetSpecNames() []string {
 	names := []string{}
 	for _, spec := range c.Specs {
-		if spec.Desc != nil {
-			names = append(names, fmt.Sprintf("%s\t%s", spec.Name, *spec.Desc))
+		if spec.Desc != "" {
+			names = append(names, fmt.Sprintf("%s\t%s", spec.Name, spec.Desc))
 		} else {
 			names = append(names, spec.Name)
 		}

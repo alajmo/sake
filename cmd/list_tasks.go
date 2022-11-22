@@ -84,7 +84,7 @@ func listTasks(
 		}
 
 		rows := dao.GetTableData(tasks, headers)
-		err := print.PrintTable(rows, options, headers)
+		err := print.PrintTable(rows, options, headers, []string{})
 		core.CheckIfError(err)
 	}
 }

@@ -86,6 +86,14 @@ func (c *TaskNotFound) Error() string {
 	return fmt.Sprintf("cannot find tasks %s", tasks)
 }
 
+type OutputFormatNotFound struct {
+	Name string
+}
+
+func (c *OutputFormatNotFound) Error() string {
+	return fmt.Sprintf("output option `%s` not found", c.Name)
+}
+
 type TaskMultipleDef struct {
 	Name string
 }
@@ -130,7 +138,7 @@ func (c *BatchMultipleDef) Error() string {
 	return "can only define one of the following for spec: batch, batch_p"
 }
 
-type InvalidPercentInput struct{
+type InvalidPercentInput struct {
 	Name string
 }
 

@@ -1,56 +1,48 @@
 # Ansible
 
-TODO: Ansible doesn't expose real-time execution (you have to use the async module)
-  - https://github.com/ansible/ansible/issues/3887#issuecomment-54672569
-  - https://github.com/ansible/proposals/issues/92
-
-TODO: Can't get attach to docker container on ssh
-
 Ansible is by far the most well-recognized software when it comes to configuring servers and/or running tasks and as such, warrants an in-depth comparison.
 
-Ansible and sake overlap in one segment, namely ad-hoc task execution over remote hosts using ssh. They both allow you to write server configurations in YAML and target multiple hosts in parallel. There's some small cosmetic differences in how they accomplish that.
+Ansible and sake overlap in one segment, namely ad-hoc task execution over remote hosts using ssh. They both allow you to write commands in YAML and target multiple hosts in parallel.
 
-Where they notably differ is that Ansible has modules which allows you to easily write idempotent tasks for common use-cases , whereas with sake it's up to the developers to write tasks. Furthermore, Ansible is more opinionated than sake when it comes to structuring projects and is not as flexible. For instance, in Ansible roles require a specific structure. sake on the other hand is more bare-bone and hands-off.
+Where they notably differ is that Ansible has modules which allows you to easily write idempotent tasks for common use-cases , whereas with sake it's up to the developers to write tasks. Furthermore, Ansible is more opinionated than sake when it comes to structuring projects. For instance, Ansible roles require a specific directory/file structure, whereas sake on the other hand, is more bare-bone and hands-off.
 
 ## Comparison
 
 |  | sake | Ansible
 ---|---|---
- Dependencies | Single Binary | Python runtime on control node and hosts
+ Dependencies | Single Portable Binary | Python runtime on control node and hosts
  Host Filtering | sake can filter on name, range, tags, and regex via config or CLI | Ansible can filter on name, group, range, regex via config or CLI
  Tasks | User writes tasks | Provides declarative idempotent modules
+ Real-time output | Yes | No, however, there's some workarounds with async actions/polling
  Templating | No built-in templating | Jinja templates
  Auto-completion | Rich | Limited
- Config Format | YAML | YAML/Jinja + INI inventory
- Community | no | Big community and lots of resources
- Stable | no | yes
- Opionated | no | yes
- Learning curve | sake has less concepts to learn but puts more work on the user | While not complex, it's safe to say you'll be revisiting Ansible docs even after you've mastered it
- Documentation | yes | yes, has more stackoverflow posts, etc.
- Performance | [sake is around 4-8 times faster than Ansible depending on the number of hosts ](/performance) | Requires optimization
+ Config Format | YAML, same file for sake config, tasks, and inventory | YAML/Jinja + INI inventory, separate files for Ansible config, tasks, and inventory
+ Community | Non-existent community | Big community
+ Stable | No, and 1 core developer | Yes, and a lot of core developers
+ Opionated | No | Yes
+ Learning curve | sake has less concepts to learn but puts more work on the user | While not complex, it's safe to say you'll be revisiting Ansible docs
+ Documentation | Yes | Yes, Ansible has a lot more Stackoverflow posts, blogs, etc.
+ Performance | [sake is around 4-8 times faster than Ansible depending on the number of hosts ](/performance) | Lacking, however there's a lot of optimization configurations you can do to increase performance
 
 ## Should I use Ansible or Sake?
 
-If any of the following is true:
+You can use Ansible and sake side by side, perhaps using Ansible playbooks/roles for configuring your servers, and leveraging sakes performance for running ad-hoc tasks.
 
-- you prefer or mostly rely on shell scripts
-- you find that you're fighting with Jinja templates a bit too much
-- you are tired of reading Ansible documentation
-- you are using software which is already idempotent and prefer sakes simplicity
+That said, if you wish to use only one:
 
-then sake can be an alternative to Ansible.
+- Choose **sake** when:
+  - you prefer or mostly rely on shell scripts
+  - you want real-time output
+  - you are tired of reading Ansible documentation
+  - you want the most performant task runner
+  - you prefer sakes simplicity
 
-However, if you:
-
-- are already familiar with Ansible, and don't find any of sakes features particularly useful
-- want to use established software
-- want to use idempotent and declarative configurations
-- work in a big team and/or want industry relevant skills
-- manage many and very complex infrastructure
-
-then go with Ansible.
-
-With that said, nothing is preventing you from using Ansible and sake side by side, perhaps using Ansible playbooks/roles for configuring your servers, and leveraging sakes performance for running ad-hoc tasks.
+- Choose **Ansible** when:
+  - you are already familiar with Ansible, and don't find any of sakes features particularly useful
+  - you want to use established software
+  - you want to use idempotent and declarative configurations
+  - you want industry relevant skills
+  - you manage a very complex infrastructure
 
 ## Introduction
 
@@ -74,23 +66,23 @@ Almost all Ansible modules are idempotent, meaning that if you run the same play
 >
 > [docs.ansible.com](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#id2)
 
-This makes sense for multiple reasons. First, it gives developers a common language to configure servers and removes yak-shaving to a degree because there are enforced decisions on how you're supposed to structure projects, and secondly, you can easily switch between projects that use Ansible.
+This makes sense for multiple reasons. First, it gives developers a common language to configure servers and removes yak-shaving because there are enforced decisions on how you're supposed to structure projects, and secondly, you can easily switch between projects that use Ansible.
 
 There are some drawbacks though, the user has to become familiar with the opinionated and implicit file structure of Ansible, and there's a lot of boilerplate (more than 8 directories/files per role that you can use to customize roles: tasks, handlers, templates, files, vars, defaults, meta, module_utils, lookup_plugins, library, etc.).
 
 ## What is sake
 
-> sake is a task runner for remote hosts
+> sake is a task runner for remote and local hosts
 
 That's it basically. Its focus is the `ad-hoc task execution` segment that Ansible also does, but it tries to do it a bit better and more performant. You can use it to configure, deploy, and automate tasks, just like Ansible, but it's not as capable or robust as Ansible in that sense.
 
 Sake provides only one module, namely the `shell` module. The `shell` module allows you to write commands in your preferred language that you then execute for many hosts.
 
-Similar to Ansible, the configuration files in sake are written in YAML but without any support for Jinja templates. Instead, all the conditional logic is handled inside the task definitions.
+Similar to Ansible, the configuration files in sake are written in YAML but without any support for Jinja templates. Instead, all conditional logic is handled inside the task definitions.
 
 So, as you can see, sake doesn't have as valiant a goal as Ansible, since to accomplish what Ansible has, you'd have to write over 3387 (and counting) modules! The benefit is that if you already have basic shell knowledge, you don't have to learn another software to set up your infrastructure, except of course for how to write tasks in sake, but that's quite simple.
 
-Furthermore, there is no best-practice setup of how you organize your configuration files, that's all up to the user. The benefit is you don't have to try to shoehorn your project to fit a defined structure.
+Furthermore, there is no best-practice setup of how you organize your configuration files, that's all up to the user.
 
 When it comes to idempotency, sake doesn't provide any guarantee that the tasks you write are idempotent (this is similar to Ansible if you use the `shell` module). Instead, that responsibility falls on the developer and the software you use. Fortunately, a lot of software is already idempotent by default:
 
@@ -103,9 +95,10 @@ When it comes to idempotency, sake doesn't provide any guarantee that the tasks 
 
 Both sake and Ansible are agentless; they don't have to be installed on the remote hosts for them to work.
 
-Sake is delivered as a single static library that uses the ssh protocol to execute tasks on remote nodes.
+Sake is delivered as a single static library that uses the ssh protocol to execute tasks on remote nodes. The remote nodes don't require `sake` to be installed.
 
-Ansible requires Python to be installed on the control node and utilizes the ssh protocol to transfer your playbooks to the remote node, where it then runs the playbooks (using python) and removes them after execution. Python also has to be installed on the remote nodes if you wish to utilize Ansible modules, otherwise, you can use the `shell` module which doesn't require Python to be installed.
+Ansible requires Python to be installed on the control node and utilizes the ssh protocol to execute tasks on the remote nodes.
+If you use Ansible modules then the Python runtime has to be installed on the remote nodes as well. The only Ansible module which doesn't require Python to be installed on the remote nodes is the `shell` module.
 
 ## Inventory
 
@@ -198,7 +191,7 @@ $ sake list servers
 
 You can define dynamic inventories in both Ansible and sake.
 
-The only difference between sake and Ansible is how hosts belonging to multiple groups work. In Ansible you have to create a new group and specify the hosts belonging to it, whereas in sake you simply add a tag to hosts.
+The only difference between sake and Ansible is how hosts belonging to multiple groups work. In Ansible you have to create a new group and specify the hosts belonging to it, whereas in sake you simply add a tag to the hosts.
 
 ## Modules and Idempotency
 
@@ -256,8 +249,9 @@ PLAY RECAP *********************************************************************
 
 To get the `pong` output, there are multiple ways:
 
-1. Add `stdout_callback = minimal` to Ansible config
+1. Add `stdout_callback = minimal` to Ansible config or define a custom callback
 2. Add debug task and register out variable
+3. Using debug flags `-v`
 
 There are probably other ways, but I think it shows that it's quite bothersome to execute singular tasks and show the output of the task without resorting to editing the configs.
 
@@ -274,13 +268,13 @@ $ sake run ping --output table
 
  Server | Ping
 --------+------
- kaka   | pong
+ 172.24.2.9 | pong
 
 $ sake run ping --output markdown
 
 | server | ping |
 |:--- |:--- |
-| kaka | pong |
+| 172.24.2.9 | pong |
 ```
 
 ## Host Filtering
@@ -323,19 +317,16 @@ The big difference is that with sake you get auto-completion for all the hosts a
 
 ## Directory Structure
 
-In Ansible you define hosts, playbooks, and optionally, roles.
+In Ansible you define hosts, playbooks, and optionally, roles. We've covered hosts already, but let's look at playbooks and roles:
 
-We've covered hosts already, but let's look at playbooks and roles.
-
-Playbooks are simply a collection of tasks that you define to run for a set of hosts.
-
-Roles are a collection of tasks, files, templates, handlers, and a bunch of other stuff, which you can define to improve reusability.
+- Playbooks are simply a collection of tasks that you define to run for a set of hosts.
+- Roles are a collection of tasks, files, templates, handlers, and a bunch of other stuff, which you can define to improve reusability.
 
 What you normally do is define one or multiple playbooks that are entry points to configuring servers. The playbook then refers to a set of roles, that further define the tasks, handlers, files, etc. that you use to configure your server.
 
 The roles have an opinionated and strict directory structure that you must adhere to (for instance, the `tasks` directory must have a `main.yaml`file for it to be picked up).
 
-One limitation with Ansible tasks is that you can only import task files, not individual tasks from a file. What you can do instead is define a tag for that specific task and then run the playbook with the `--tags` flag. I'm not sure why Ansible doesn't allow you to import specific tasks only. Also, be aware of cyclic dependencies, it seems Ansible doesn't detect them so you can an infinitive loop.
+One limitation with Ansible tasks is that you can only import task files, not individual tasks from a file. What you can do instead is define a tag for that specific task and then run the playbook with the `--tags` flag. I'm not sure why Ansible doesn't allow you to import specific tasks only. Also, be aware of cyclic dependencies, Ansible doesn't detect them so you can end up with infinitive loops.
 
 sake on the other hand is like any other programming language, you import config files and can then reference specific tasks you intend to use. So you're free to structure your project any way you see fit.
 
@@ -347,7 +338,7 @@ There's also autocompletion for running modules ad-hoc on the command line, howe
 
 sake supports rich autocompletion for both commands, flags, and values for hosts, tasks, tags, etc.
 
-For instance, when I type `sake run <TAB> --server <TAB> --tags <TAB>` I get the following autocompletions:
+For instance, when you type `sake run <TAB> --server <TAB> --tags <TAB>`, you get the following autocompletions:
 
 - first `<TAB>` autocompletes all available tasks
 - second `<TAB>` autocompletes all available hosts
@@ -371,10 +362,12 @@ Sake has a list of quality-of-life features that I've not found in Ansible:
 - `sake ssh <TAB>` gives me a list of all the hosts and the ability to ssh into them
 - `sake run <task> --edit` opens up the editor and navigates to the line where the task is defined, this is quite helpful when you're debugging a task
 - `sake describe/list servers --tags web` lists/describes all the servers that have the tag `web`
+- `sake run <task> --attach <server>` will run the task, then ssh into the server and give you a tty
+- `sake run <task> --tty <server> container=my-container`, enables you to replace the current process and attach to a Docker container running on a remote server. The `<task>` can be defined as `ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $container"`
 
 ## Performance
 
-Ansible is not known for its performance, in fact, just performing a simple ping to a single host over LAN takes over a second, whereas sake only takes 200 ms. And it gets worse when you increase the number of hosts, for 100 hosts it took Ansible around 3.5 seconds to complete (Pipelining enabled, gather facts off and forks set to 10), and for sake only 350 ms.
+Ansible is not known for its performance, in fact, just performing a simple ping to a single host over LAN takes over a second, whereas sake only takes 200 ms. And it gets worse when you increase the number of hosts, for instance, running ping on 100 hosts takes Ansible around 3.5 seconds to complete (Pipelining enabled, gather facts off and forks set to 10), and for sake only 350 ms.
 Additionally, I found sake to consume less memory and CPU.
 
 Some more extensive benchmarks can be found [here](/performance).

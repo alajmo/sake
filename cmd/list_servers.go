@@ -58,7 +58,7 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 	core.CheckIfError(err)
 
 	cmd.Flags().BoolVarP(&serverFlags.AllHeaders, "all-headers", "H", false, "select all server headers")
-	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "desc"}, "set headers")
+	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tags", "desc"}, "set headers")
 	err = cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if err != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
@@ -117,7 +117,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 		}
 
 		rows := dao.GetTableData(servers, headers)
-		err := print.PrintTable(rows, options, headers)
+		err := print.PrintTable(rows, options, headers, []string{})
 		core.CheckIfError(err)
 	}
 }

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/ssh"
+	"math"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
-	"math"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -83,7 +83,7 @@ func (run *Run) RunTask(
 			SuppressEmptyColumns: false,
 			Title:                "Parse Errors",
 		}
-		err = print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
+		err = print.PrintTable(parseOutput.Rows, options, parseOutput.Headers, []string{})
 		if err != nil {
 			return err
 		}
@@ -124,7 +124,7 @@ func (run *Run) RunTask(
 			SuppressEmptyColumns: false,
 			Title:                "\nUnreachable Hosts\n",
 		}
-		err := print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
+		err := print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers, []string{})
 		if err != nil {
 			return err
 		}
@@ -150,18 +150,18 @@ func (run *Run) RunTask(
 	run.Servers = reachableServers
 
 	// Describe task
-	if runFlags.Describe {
+	if task.Spec.Describe {
 		print.PrintTaskBlock([]dao.Task{*task})
 	}
 
 	switch task.Spec.Output {
 	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv":
 		spinner := core.GetSpinner()
-		if !runFlags.Silent {
+		if !task.Spec.Silent {
 			spinner.Start(" Running", 500)
 		}
 
-		data, derr := run.Table(runFlags.DryRun)
+		data, reportData, derr := run.Table(runFlags.DryRun)
 		options := print.PrintTableOptions{
 			Theme:                task.Theme,
 			OmitEmpty:            task.Spec.OmitEmpty,
@@ -170,27 +170,41 @@ func (run *Run) RunTask(
 			Resource:             "task",
 		}
 		run.CleanupClients()
-		if !runFlags.Silent {
+		if !task.Spec.Silent {
 			spinner.Stop()
 		}
-		err = print.PrintTable(data.Rows, options, data.Headers)
+		err = print.PrintTable(data.Rows, options, data.Headers, []string{})
 		if err != nil {
 			return err
+		}
+
+		if true {
+			err := print.PrintReport(&run.Task.Theme, reportData, task.Spec)
+			if err != nil {
+				return err
+			}
 		}
 
 		if derr != nil {
 			return derr
 		}
 	default:
-		err := run.Text(runFlags.DryRun)
+		reportData, err := run.Text(runFlags.DryRun)
 		run.CleanupClients()
+
+		if true {
+			err := print.PrintReport(&run.Task.Theme, reportData, task.Spec)
+			if err != nil {
+				return err
+			}
+		}
 
 		if err != nil {
 			return err
 		}
 	}
 
-	if runFlags.Attach || task.Attach {
+	if task.Attach {
 		server, err := dao.GetFirstRemoteServer(servers)
 		if err != nil {
 			return err
@@ -406,11 +420,17 @@ func (run *Run) CleanupClients() {
 	}
 }
 
-// ParseServers resolves host, port, proxyjump in users ssh config
+// ParseServers resolves host, port, proxyjump in user ssh config
 func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.RunFlags) ([]ErrConnect, error) {
 	if runFlags.IdentityFile != "" {
 		for i := range *servers {
 			(*servers)[i].IdentityFile = &runFlags.IdentityFile
+		}
+	}
+
+	if runFlags.User != "" {
+		for i := range *servers {
+			(*servers)[i].User = runFlags.User
 		}
 	}
 
@@ -577,7 +597,6 @@ func (run *Run) ParseTask(
 		if err != nil {
 			return err
 		}
-
 		run.Task.Spec = *spec
 	}
 
@@ -598,6 +617,26 @@ func (run *Run) ParseTask(
 		} else {
 			run.Task.Spec.Batch = 1
 		}
+	}
+
+	// Report
+	if setRunFlags.Report {
+		run.Task.Spec.Report = runFlags.Report
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Describe {
+		run.Task.Spec.Describe = runFlags.Describe
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Silent {
+		run.Task.Spec.Silent = runFlags.Silent
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Attach {
+		run.Task.Attach = runFlags.Attach
 	}
 
 	// Update strategy property if user flag is provided
@@ -644,7 +683,7 @@ func (run *Run) ParseTask(
 
 		// If command name is not set, set one
 		if run.Task.Tasks[j].Name == "" {
-			run.Task.Tasks[j].Name = fmt.Sprintf("output-%d", j)
+			run.Task.Tasks[j].Name = fmt.Sprintf("task-%d", j)
 		}
 
 		// If local flag is set to true, then cmd will run locally instead of on remote server

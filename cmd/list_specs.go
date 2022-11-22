@@ -8,7 +8,7 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
-var specHeaders = []string{"spec", "output", "parallel", "any_errors_fatal", "ignore_errors", "ignore_unreachable", "omit_empty"}
+var specHeaders = []string{"spec", "desc", "describe", "silent", "strategy", "batch", "batch_p", "forks", "output", "any_errors_fatal", "max_fail_percentage", "ignore_errors", "ignore_unreachable", "omit_empty", "report"}
 
 func listSpecsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var specFlags core.SpecFlags
@@ -79,7 +79,7 @@ func listSpecs(
 
 	if len(specs) > 0 {
 		rows := dao.GetTableData(specs, specFlags.Headers)
-		err := print.PrintTable(rows, options, specFlags.Headers)
+		err := print.PrintTable(rows, options, specFlags.Headers, []string{})
 		core.CheckIfError(err)
 	}
 }

@@ -56,6 +56,5 @@ func listCmd(config *dao.Config, configErr *error) *cobra.Command {
 	})
 	core.CheckIfError(err)
 
-
 	return &cmd
 }

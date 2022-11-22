@@ -147,6 +147,7 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 	for i, spec := range specs {
 		output := ""
 		output += printStringField("desc", spec.Desc, indent)
+		output += printBoolField("describe", spec.Describe, indent)
 		output += printStringField("strategy", spec.Strategy, indent)
 		output += printNumberField("batch", int(spec.Batch), indent)
 		output += printNumberField("batch_p", int(spec.BatchP), indent)
@@ -157,6 +158,7 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		output += printBoolField("ignore_errors", spec.IgnoreErrors, indent)
 		output += printBoolField("ignore_unreachable", spec.IgnoreUnreachable, indent)
 		output += printBoolField("omit_empty", spec.OmitEmpty, indent)
+		output += printSliceField("report", spec.Report, indent)
 
 		if output == "" {
 			continue

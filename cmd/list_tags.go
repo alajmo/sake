@@ -81,7 +81,7 @@ func listTags(
 		core.CheckIfError(err)
 
 		if len(tags) > 0 {
-			err := print.PrintTable(tags, options, tagFlags.Headers)
+			err := print.PrintTable(tags, options, tagFlags.Headers, []string{})
 			core.CheckIfError(err)
 		}
 	} else {
@@ -89,7 +89,7 @@ func listTags(
 		core.CheckIfError(err)
 		if len(tags) > 0 {
 			rows := dao.GetTableData(tags, tagFlags.Headers)
-			err := print.PrintTable(rows, options, tagFlags.Headers)
+			err := print.PrintTable(rows, options, tagFlags.Headers, []string{})
 			core.CheckIfError(err)
 		}
 	}

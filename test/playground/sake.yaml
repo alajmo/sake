@@ -21,7 +21,7 @@ servers:
       - 172.24.2.7
     user: test
     identity_file: ../keys/id_ed25519_pem_no
-    tags: [remote, pi, many, list]
+    tags: [remote, pi, many, list, "hej san"]
     env:
       hello: world
       host: 172.24.2.4
@@ -89,6 +89,7 @@ servers:
 
 targets:
   all:
+    desc: Select all
     all: true
 
   limit:
@@ -122,6 +123,8 @@ targets:
 specs:
   table:
     output: table
+    # describe: true
+    silent: true
 
   text:
     output: text
@@ -152,9 +155,10 @@ specs:
     # batch_p: 50
     output: text
     ignore_errors: false
-    ignore_unreachable: true
+    ignore_unreachable: false
     # any_errors_fatal: true
-    max_fail_percentage: 59
+    max_fail_percentage: 60
+    report: [basic]
 
   column:
     # desc: Column
@@ -175,7 +179,7 @@ env:
 tasks:
   exit:
     # target: all
-    spec: column
+    # spec: column
     tasks:
       - cmd: |
           if [[ $SAKE_SERVER_NAME == "list-0" || $SAKE_SERVER_NAME == "list-2" ]]; then
@@ -183,14 +187,16 @@ tasks:
           else
             echo 123
           fi
-          sleep 1
+          # sleep 1
+        ignore_errors: true
       - cmd: |
           if [[ $SAKE_SERVER_NAME == "list-1" || $SAKE_SERVER_NAME == "list-2" ]]; then
             exit 1
           else
             echo 123
           fi
-          sleep 1
+          # sleep 1
+        ignore_errors: true
       - cmd: |
           echo "DONE"
 
@@ -201,107 +207,107 @@ tasks:
           # done
           # exit 1
 
-  register:
-    target: all
-    spec: row
-    desc: ping server
-    tasks:
-      - cmd: |
-          if [[ $SAKE_SERVER_HOST == "localhost" ]]; then
-            exit 1
-          else
-            sleep $(shuf -i1-2 -n1)
-            echo "$SAKE_SERVER_NAME"
-          fi
-
-          >&2 echo "error"
-          >&1 echo "stdout"
-          >&2 echo "error"
-          # sudo apt-get install htop -y
-          # sleep 2 && >&2 echo "error"
-          # >&1 echo "stdout"
-          # sleep 2 && >&2 echo "error"
-        register: hej
-      - cmd: echo $hej
-
-      # - cmd: |
-      #     echo 123
-      #     echo 345
-      #   register: kaka
-      # - cmd: |
-      #     if [[ $SAKE_TASK_EXIT == 1 ]]; then
-      #       echo $SAKE_TASK_EXIT
-      #     else
-      #       echo $SAKE_TASK_OUT
-      #     fi
-      #   register: kaka
-      # - cmd: |
-      #     # echo $hej
-      #     # echo $hej_stdout
-      #     echo "$hej_stderr"
-      #     # echo $hej_rc
-      #     # echo $hej_failed
-      #     # echo
-      #     # echo $kaka
-      #     # echo $kaka_rc
-      #     # echo $kaka_failed
-
-  # exit:
-  #   # name: hej
-  #   local: true
-  #   cmd: exit 3
-
-  ping:
-    target: all
-    spec: column
-    desc: ping server
-    # cmd: echo pong
-    tasks:
-      - cmd: echo 123
-      - cmd: echo 321
-
-  # sleep:
+  # register:
+  #   target: all
+  #   spec: row
   #   desc: ping server
-  #   cmd: sleep 2 & echo done
-
-  # info:
-  #   name: Info
-  #   desc: print info
-  #   target: all
   #   tasks:
-  #     - task: print-host
-  #     - task: print-hostname
-  #     - task: print-os
-  #     - task: print-kernel
+  #     - cmd: |
+  #         if [[ $SAKE_SERVER_HOST == "localhost" ]]; then
+  #           exit 1
+  #         else
+  #           sleep $(shuf -i1-2 -n1)
+  #           echo "$SAKE_SERVER_NAME"
+  #         fi
 
-  # # Info
-  # print-host:
-  #   name: Host
-  #   desc: print host
-  #   spec: info
-  #   target: all
-  #   cmd: echo $SAKE_SERVER_HOST
+  #         >&2 echo "error"
+  #         >&1 echo "stdout"
+  #         >&2 echo "error"
+  #         # sudo apt-get install htop -y
+  #         # sleep 2 && >&2 echo "error"
+  #         # >&1 echo "stdout"
+  #         # sleep 2 && >&2 echo "error"
+  #       register: hej
+  #     - cmd: echo $hej
 
-  # print-hostname:
-  #   name: Hostname
-  #   desc: print hostname
-  #   spec: info
-  #   target: all
-  #   cmd: hostname
+  #     # - cmd: |
+  #     #     echo 123
+  #     #     echo 345
+  #     #   register: kaka
+  #     # - cmd: |
+  #     #     if [[ $SAKE_TASK_EXIT == 1 ]]; then
+  #     #       echo $SAKE_TASK_EXIT
+  #     #     else
+  #     #       echo $SAKE_TASK_OUT
+  #     #     fi
+  #     #   register: kaka
+  #     # - cmd: |
+  #     #     # echo $hej
+  #     #     # echo $hej_stdout
+  #     #     echo "$hej_stderr"
+  #     #     # echo $hej_rc
+  #     #     # echo $hej_failed
+  #     #     # echo
+  #     #     # echo $kaka
+  #     #     # echo $kaka_rc
+  #     #     # echo $kaka_failed
 
-  # print-os:
-  #   name: OS
-  #   desc: print OS
-  #   spec: info
-  #   target: all
-  #   cmd: |
-  #     os=$(lsb_release -si)
-  #     release=$(lsb_release -sr)
-  #     echo "$os $release"
+  # # exit:
+  # #   # name: hej
+  # #   local: true
+  # #   cmd: exit 3
 
-  # print-kernel:
-  #   name: Kernel
-  #   desc: Print kernel version
-  #   spec: info
+  # ping:
   #   target: all
-  #   cmd: uname -r | awk -v FS='-' '{print $1}'
+  #   spec: column
+  #   desc: ping server
+  #   # cmd: echo pong
+  #   tasks:
+  #     - cmd: echo 123
+  #     - cmd: echo 321
+
+  # # sleep:
+  # #   desc: ping server
+  # #   cmd: sleep 2 & echo done
+
+  # # info:
+  # #   name: Info
+  # #   desc: print info
+  # #   target: all
+  # #   tasks:
+  # #     - task: print-host
+  # #     - task: print-hostname
+  # #     - task: print-os
+  # #     - task: print-kernel
+
+  # # # Info
+  # # print-host:
+  # #   name: Host
+  # #   desc: print host
+  # #   spec: info
+  # #   target: all
+  # #   cmd: echo $SAKE_SERVER_HOST
+
+  # # print-hostname:
+  # #   name: Hostname
+  # #   desc: print hostname
+  # #   spec: info
+  # #   target: all
+  # #   cmd: hostname
+
+  # # print-os:
+  # #   name: OS
+  # #   desc: print OS
+  # #   spec: info
+  # #   target: all
+  # #   cmd: |
+  # #     os=$(lsb_release -si)
+  # #     release=$(lsb_release -sr)
+  # #     echo "$os $release"
+
+  # # print-kernel:
+  # #   name: Kernel
+  # #   desc: Print kernel version
+  # #   spec: info
+  # #   target: all
+  # #   cmd: uname -r | awk -v FS='-' '{print $1}'
