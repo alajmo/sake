@@ -49,6 +49,7 @@
 - Deprecated the parallel flag, use batch/batch_p/forks instead
 - Update flag sorting
 - Rename `--omit-empty` to `--omit-empty-rowss`
+- [BREAKING CHANGE]: Rename default environment variables from `SAKE_SERVER_*` to `S_*`, and remove task default environment variables
 
 ### Minor
 

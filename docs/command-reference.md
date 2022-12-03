@@ -79,15 +79,15 @@ run <task> [flags]
       --list-hosts                  print hosts that will be targetted
   -V, --verbose                     enable all diagnostics
   -S, --strategy string             set execution strategy [linear|host_pinned|free]
-  -f, --forks uint32                set maximal number of processes to run in parallel (default 10000)
+  -f, --forks uint32                max number of concurrent processes (default 10000)
   -b, --batch uint32                set number of hosts to run in parallel
-  -B, --batch-p uint8               set percentage of servers to run in parallel [0-100]
-  -a, --all                         target all servers
-  -v, --invert                      invert matching on servers
-  -r, --regex string                target servers on host regex
+  -B, --batch-p uint8               set percentage of hosts to run in parallel [0-100]
+  -a, --all                         target all hosts
+  -v, --invert                      invert matching on hosts
+  -r, --regex string                target hosts on host regex
   -s, --servers strings             target servers by names
-  -t, --tags strings                target servers by tags
-  -T, --target string               target servers by target name
+  -t, --tags strings                target hosts by tags
+  -T, --target string               target hosts by target name
       --order string                order hosts
   -l, --limit uint32                set limit of servers to target
   -L, --limit-p uint8               set percentage of servers to target [0-100]
@@ -97,7 +97,8 @@ run <task> [flags]
       --ignore-errors               continue task execution on errors
   -J, --spec string                 set spec
   -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
-      --omit-empty                  omit empty results for table output
+      --omit-empty-rows             omit empty row for table output
+      --omit-empty-columns          omit empty column for table output
   -q, --silent                      omit showing loader when running tasks
       --confirm                     confirm root task before running
       --step                        confirm each task before running
@@ -148,7 +149,7 @@ exec <command> [flags]
       --list-hosts                  print hosts that will be targetted
   -V, --verbose                     enable all diagnostics
   -S, --strategy string             set execution strategy [linear|host_pinned|free]
-  -f, --forks uint32                set maximal number of processes to run in parallel (default 10000)
+  -f, --forks uint32                max number of concurrent processes (default 10000)
   -b, --batch uint32                set number of hosts to run in parallel
   -B, --batch-p uint8               set percentage of servers to run in parallel [0-100]
   -a, --all                         target all servers
@@ -166,7 +167,8 @@ exec <command> [flags]
       --ignore-errors               continue task execution on errors
   -J, --spec string                 set spec
   -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
-      --omit-empty                  omit empty results for table output
+      --omit-empty-rows             omit empty row for table output
+      --omit-empty-columns          omit empty column for table output
   -q, --silent                      omit showing loader when running tasks
       --confirm                     confirm root task before running
       --step                        confirm each task before running
@@ -383,7 +385,7 @@ list servers [servers] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|html|markdown|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -420,7 +422,7 @@ list tasks [tasks] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|html|markdown|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -453,7 +455,7 @@ list tags [tags] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|html|markdown|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -486,7 +488,7 @@ list targets [targets] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|html|markdown|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -519,7 +521,7 @@ list specs [specs] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|html|markdown|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 

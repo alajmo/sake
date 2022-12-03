@@ -216,12 +216,12 @@ tasks:
   #   cmd: echo pong
 
   ping:
-    desc: Pong
     target:
       tags: [kaka]
     # cmd: echo pong
     tasks:
       - cmd: echo pong
+      # - cmd: echo pong
 
   # exit:
   #   # name: Exit

@@ -61,17 +61,15 @@ $ sake list servers
 # Describe task
 $ sake describe task print-host
 
-Task: print-host
-Name: Host
-Desc: print host
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: table
-Cmd:
+task: print-host
+name: Host
+desc: print host
+theme: default
+target:
+    all: true
+spec:
+    output: table
+cmd:
     echo $S_HOST
 
 

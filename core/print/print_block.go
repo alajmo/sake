@@ -19,8 +19,8 @@ func PrintServerList(servers []dao.Server) error {
 	options := PrintTableOptions{
 		Theme:            theme,
 		Output:           "table",
-		OmitEmptyRows:    false,
-		OmitEmptyColumns: false,
+		OmitEmptyRows:    true,
+		OmitEmptyColumns: true,
 	}
 
 	headers := []string{"Server", "Host", "Bastion", "Tags"}

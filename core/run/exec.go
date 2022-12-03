@@ -214,7 +214,7 @@ func (run *Run) RunTask(
 			return derr
 		}
 	default:
-		if len(run.Servers) > 0 && len(run.Task.Tasks) > 1 {
+		if (len(run.Servers) > 0 && len(run.Task.Tasks) > 1) || run.Task.Spec.Strategy != "linear" {
 			PrintHeader("TASKS ", run.Task.Theme.Text, true)
 		} else {
 			fmt.Println()

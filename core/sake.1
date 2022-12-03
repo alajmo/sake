@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2022-11-30T11:02:02CET" "v0.13.0" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-12-03T18:59:02CET" "v0.13.0" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a task runner for local and remote hosts
 
@@ -58,31 +58,31 @@ enable all diagnostics
 set execution strategy [linear|host_pinned|free]
 .TP
 \fB-f, --forks=10000\fR
-set maximal number of processes to run in parallel
+max number of concurrent processes
 .TP
 \fB-b, --batch=0\fR
 set number of hosts to run in parallel
 .TP
 \fB-B, --batch-p=0\fR
-set percentage of servers to run in parallel [0-100]
+set percentage of hosts to run in parallel [0-100]
 .TP
 \fB-a, --all[=false]\fR
-target all servers
+target all hosts
 .TP
 \fB-v, --invert[=false]\fR
-invert matching on servers
+invert matching on hosts
 .TP
 \fB-r, --regex=""\fR
-target servers on host regex
+target hosts on host regex
 .TP
 \fB-s, --servers=[]\fR
 target servers by names
 .TP
 \fB-t, --tags=[]\fR
-target servers by tags
+target hosts by tags
 .TP
 \fB-T, --target=""\fR
-target servers by target name
+target hosts by target name
 .TP
 \fB--order=""\fR
 order hosts
@@ -111,8 +111,11 @@ set spec
 \fB-o, --output=""\fR
 set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
 .TP
-\fB--omit-empty[=false]\fR
-omit empty results for table output
+\fB--omit-empty-rows[=false]\fR
+omit empty row for table output
+.TP
+\fB--omit-empty-columns[=false]\fR
+omit empty column for table output
 .TP
 \fB-q, --silent[=false]\fR
 omit showing loader when running tasks
@@ -183,7 +186,7 @@ enable all diagnostics
 set execution strategy [linear|host_pinned|free]
 .TP
 \fB-f, --forks=10000\fR
-set maximal number of processes to run in parallel
+max number of concurrent processes
 .TP
 \fB-b, --batch=0\fR
 set number of hosts to run in parallel
@@ -236,8 +239,11 @@ set spec
 \fB-o, --output=""\fR
 set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
 .TP
-\fB--omit-empty[=false]\fR
-omit empty results for table output
+\fB--omit-empty-rows[=false]\fR
+omit empty row for table output
+.TP
+\fB--omit-empty-columns[=false]\fR
+omit empty column for table output
 .TP
 \fB-q, --silent[=false]\fR
 omit showing loader when running tasks
@@ -325,7 +331,7 @@ select all server headers
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html|json|csv]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -348,7 +354,7 @@ select all task headers
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html|json|csv]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -368,7 +374,7 @@ List tags.
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html|json|csv]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -388,7 +394,7 @@ List targets.
 set headers. Available headers: name, regex
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html|json|csv]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -408,7 +414,7 @@ List specs.
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html|json|csv]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -747,22 +753,22 @@ Below is a config file detailing all of the available options and their defaults
      # Max number of tasks to fail before aborting
      max_fail_percentage: 100
 
-     # Report [recap|rc|task|time|all]
-     report: ["recap"]
-
      # Ignore unreachable hosts
      ignore_unreachable: false
 
-     # Omit empty results for table output
-     omit_empty: false
+     # Omit empty rows for table output
+     omit_empty_rows: false
+
+     # Omit empty columns for table output
+     omit_empty_columns: false
 
      # Show task reports [recap|rc|task|time|all]
-     report: recap
+     report: [recap]
 
      # Verbose turns on describe, list_hosts and report set to all
      verbose: false
 
-     # Confirm task before running
+     # Confirm invoked task before running
      confirm: false
 
      # Confirm each task before running
@@ -771,6 +777,9 @@ Below is a config file detailing all of the available options and their defaults
  # List of targets [optional]
  targets:
    default:
+     # Target description
+     desc: ""
+
      # Target all hosts
      all: false
 
@@ -784,7 +793,7 @@ Below is a config file detailing all of the available options and their defaults
      limit: 0
 
      # Limit number of hosts to target in percentage
-     limit_p: 0
+     limit_p: 100
 
      # Invert matching on hosts
      invert: false
@@ -827,7 +836,8 @@ Below is a config file detailing all of the available options and their defaults
        ignore_errors: true
        ignore_unreachable: true
        any_errors_fatal: false
-       omit_empty: true
+       omit_empty_rows: true
+       omit_empty_columns: true
 
      # Target reference [optional]
      # target: default
@@ -848,16 +858,15 @@ Below is a config file detailing all of the available options and their defaults
        num_lines: $(ls -1 | wc -l)
 
        # The following variables are available by default:
-       #   SAKE_DIR
-       #   SAKE_PATH
-       #
-       #
+       #   S_NAME
        #   S_HOST
        #   S_USER
        #   S_PORT
        #   S_BASTION
        #   S_TAGS
        #   S_IDENTITY
+       #   SAKE_DIR
+       #   SAKE_PATH
 
      # Run on localhost [optional]
      local: false
@@ -871,7 +880,7 @@ Below is a config file detailing all of the available options and their defaults
      # Each task can only define:
      # - a single cmd
      # - or a single task reference
-     # - or a list of task references or commands
+     # - or a list of task references and commands
 
      # Single command
      cmd: |
@@ -948,21 +957,19 @@ Describe a task
 .B ~ $ sake describe task ping
 
 .nf
-Task: ping
-Name: ping
-Desc: ping server
-Local: false
-WorkDir:
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: text
-    IgnoreUnreachable: true
-    OmitEmpty: true
-Cmd:
+name: ping
+desc: ping server
+local: false
+work_dir:
+theme: default
+target:
+    all: true
+spec:
+    output: text
+    ignore_unreachable: true
+    omit_empty_rows: true
+    omit_empty_columns: true
+cmd:
     echo pong
 .fi
 

@@ -233,22 +233,22 @@ specs:
    # Max number of tasks to fail before aborting
    max_fail_percentage: 100
 
-   # Report [recap|rc|task|time|all]
-   report: ["recap"]
-
    # Ignore unreachable hosts
    ignore_unreachable: false
 
-   # Omit empty results for table output
-   omit_empty: false
+   # Omit empty rows for table output
+   omit_empty_rows: false
+
+   # Omit empty columns for table output
+   omit_empty_columns: false
 
    # Show task reports [recap|rc|task|time|all]
-   report: recap
+   report: [recap]
 
    # Verbose turns on describe, list_hosts and report set to all
    verbose: false
 
-   # Confirm task before running
+   # Confirm invoked task before running
    confirm: false
 
    # Confirm each task before running
@@ -257,6 +257,9 @@ specs:
 # List of targets [optional]
 targets:
  default:
+   # Target description
+   desc: ""
+
    # Target all hosts
    all: false
 
@@ -270,7 +273,7 @@ targets:
    limit: 0
 
    # Limit number of hosts to target in percentage
-   limit_p: 0
+   limit_p: 100
 
    # Invert matching on hosts
    invert: false
@@ -313,7 +316,8 @@ tasks:
      ignore_errors: true
      ignore_unreachable: true
      any_errors_fatal: false
-     omit_empty: true
+     omit_empty_rows: true
+     omit_empty_columns: true
 
    # Target reference [optional]
    # target: default
@@ -334,16 +338,15 @@ tasks:
      num_lines: $(ls -1 | wc -l)
 
      # The following variables are available by default:
-     #   SAKE_DIR
-     #   SAKE_PATH
-     #
-     #
+     #   S_NAME
      #   S_HOST
      #   S_USER
      #   S_PORT
      #   S_BASTION
      #   S_TAGS
      #   S_IDENTITY
+     #   SAKE_DIR
+     #   SAKE_PATH
 
    # Run on localhost [optional]
    local: false
@@ -357,7 +360,7 @@ tasks:
    # Each task can only define:
    # - a single cmd
    # - or a single task reference
-   # - or a list of task references or commands
+   # - or a list of task references and commands
 
    # Single command
    cmd: |

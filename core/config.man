@@ -240,9 +240,6 @@ Below is a config file detailing all of the available options and their defaults
      # Max number of tasks to fail before aborting
      max_fail_percentage: 100
 
-     # Report [recap|rc|task|time|all]
-     report: ["recap"]
-
      # Ignore unreachable hosts
      ignore_unreachable: false
 
@@ -253,12 +250,12 @@ Below is a config file detailing all of the available options and their defaults
      omit_empty_columns: false
 
      # Show task reports [recap|rc|task|time|all]
-     report: recap
+     report: [recap]
 
      # Verbose turns on describe, list_hosts and report set to all
      verbose: false
 
-     # Confirm task before running
+     # Confirm invoked task before running
      confirm: false
 
      # Confirm each task before running
@@ -267,6 +264,9 @@ Below is a config file detailing all of the available options and their defaults
  # List of targets [optional]
  targets:
    default:
+     # Target description
+     desc: ""
+
      # Target all hosts
      all: false
 
@@ -280,7 +280,7 @@ Below is a config file detailing all of the available options and their defaults
      limit: 0
 
      # Limit number of hosts to target in percentage
-     limit_p: 0
+     limit_p: 100
 
      # Invert matching on hosts
      invert: false
@@ -345,16 +345,15 @@ Below is a config file detailing all of the available options and their defaults
        num_lines: $(ls -1 | wc -l)
 
        # The following variables are available by default:
-       #   SAKE_DIR
-       #   SAKE_PATH
-       #
-       #
+       #   S_NAME
        #   S_HOST
        #   S_USER
        #   S_PORT
        #   S_BASTION
        #   S_TAGS
        #   S_IDENTITY
+       #   SAKE_DIR
+       #   SAKE_PATH
 
      # Run on localhost [optional]
      local: false
@@ -368,7 +367,7 @@ Below is a config file detailing all of the available options and their defaults
      # Each task can only define:
      # - a single cmd
      # - or a single task reference
-     # - or a list of task references or commands
+     # - or a list of task references and commands
 
      # Single command
      cmd: |
@@ -445,22 +444,19 @@ Describe a task
 .B ~ $ sake describe task ping
 
 .nf
-Task: ping
-Name: ping
-Desc: ping server
-Local: false
-WorkDir:
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: text
-    IgnoreUnreachable: true
-    OmitEmptyRowss: true
-    OmitEmptyColumnss: true
-Cmd:
+name: ping
+desc: ping server
+local: false
+work_dir:
+theme: default
+target:
+    all: true
+spec:
+    output: text
+    ignore_unreachable: true
+    omit_empty_rows: true
+    omit_empty_columns: true
+cmd:
     echo pong
 .fi
 
