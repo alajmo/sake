@@ -1,6 +1,6 @@
 Index: 31
 Name: unreachable false
-Cmd: go run ../../main.go run unreachable -S -a
+Cmd: go run ../../main.go run unreachable -q -a
 WantErr: true
 
 ---

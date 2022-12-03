@@ -38,17 +38,26 @@ var (
 
 	DEFAULT_SPEC = Spec{
 		Name:              "default",
-		Strategy:          "row",
+		Desc:              "the default spec",
+		Describe:          false,
+		ListHosts:         false,
+		Order:             "inventory",
+		Silent:            false,
+		Strategy:          "linear",
 		Output:            "text",
 		Forks:             10000,
 		MaxFailPercentage: 0,
 		AnyErrorsFatal:    true,
 		IgnoreErrors:      false,
 		IgnoreUnreachable: false,
-		OmitEmpty:         false,
+		OmitEmptyRows:     false,
+		OmitEmptyColumns:  false,
 		Batch:             0,
 		BatchP:            0,
-		Report:            []string{"basic"},
+		Report:            []string{"recap"},
+		Verbose:           false,
+		Confirm:           false,
+		Step:              false,
 	}
 )
 
@@ -158,6 +167,7 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 		re := ResourceErrors[ConfigYAML]{Resource: &configYAML, Errors: []error{err}}
 		return Config{}, FormatErrors(re.Resource, re.Errors)
 	}
+
 
 	config, configErr := configYAML.parseConfig()
 	config.SSHConfigFile = sshConfigPath

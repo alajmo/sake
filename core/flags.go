@@ -38,10 +38,14 @@ type TaskFlags struct {
 
 type RunFlags struct {
 	// Flags
-	Edit     bool
-	DryRun   bool
-	Describe bool
-	Silent   bool
+	Edit      bool
+	DryRun    bool
+	Describe  bool
+	ListHosts bool
+	Silent    bool
+	Confirm   bool
+	Step      bool
+	Verbose   bool
 
 	// Reports
 	Report []string
@@ -56,6 +60,7 @@ type RunFlags struct {
 	Limit   uint32
 	LimitP  uint8
 	Target  string
+	Order   string
 
 	// Config
 	KnownHostsFile string
@@ -68,7 +73,7 @@ type RunFlags struct {
 
 	// Server
 	IdentityFile string
-	User		 string
+	User         string
 	Password     string
 
 	// Spec
@@ -77,7 +82,8 @@ type RunFlags struct {
 	MaxFailPercentage uint8
 	IgnoreErrors      bool
 	IgnoreUnreachable bool
-	OmitEmpty         bool
+	OmitEmptyRows     bool
+	OmitEmptyColumns  bool
 	Forks             uint32
 	Batch             uint32
 	BatchP            uint8
@@ -88,14 +94,27 @@ type RunFlags struct {
 type SetRunFlags struct {
 	Silent            bool
 	Describe          bool
+	ListHosts         bool
 	Attach            bool
 	All               bool
 	Invert            bool
-	OmitEmpty         bool
+	OmitEmptyRows     bool
+	OmitEmptyColumns  bool
 	Local             bool
 	TTY               bool
 	AnyErrorsFatal    bool
 	IgnoreErrors      bool
 	IgnoreUnreachable bool
-	Report			  bool
+	Order             bool
+	Report            bool
+	Batch             bool
+	BatchP            bool
+	Servers           bool
+	Tags              bool
+	Regex             bool
+	Limit             bool
+	LimitP            bool
+	Verbose           bool
+	Confirm           bool
+	Step              bool
 }

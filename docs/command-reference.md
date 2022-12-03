@@ -2,11 +2,11 @@
 
 ## sake
 
-sake is a command runner for local and remote hosts
+sake is a task runner for local and remote hosts
 
 ### Synopsis
 
-sake is a command runner for local and remote hosts.
+sake is a task runner for local and remote hosts.
 
 You define servers and tasks in a sake.yaml config file and then run the tasks on the servers.
 
@@ -15,10 +15,10 @@ You define servers and tasks in a sake.yaml config file and then run the tasks o
 
 ```
   -c, --config string        specify config
-  -h, --help                 help for sake
-      --no-color             disable color
-  -U, --ssh-config string    specify ssh config
   -u, --user-config string   specify user config
+      --ssh-config string    specify ssh config
+      --no-color             disable color
+  -h, --help                 help for sake
 ```
 
 ## check
@@ -74,31 +74,44 @@ run <task> [flags]
 ### Options
 
 ```
-  -a, --all                       target all servers
-      --any-errors-fatal          stop task execution on all servers on error
-      --attach                    ssh to server after command
-      --describe                  print task information
-      --dry-run                   print the task to see what will be executed
-  -e, --edit                      edit task
-  -h, --help                      help for run
-  -i, --identity-file string      set identity file for all servers
-      --ignore-errors             continue task execution on errors
-      --ignore-unreachable        ignore unreachable hosts
-  -v, --invert                    invert matching on servers
-      --known-hosts-file string   set known hosts file
-  -l, --limit uint32              set limit of servers to target
-  -L, --limit-p uint8             set percentage of servers to target [0-100]
-      --local                     run task on localhost
-      --omit-empty                omit empty results for table output
-  -o, --output string             set task output [text|table|table-2|table-3|table-4|html|markdown]
-  -p, --parallel                  run server tasks in parallel
-      --password string           set ssh password for all servers
-  -r, --regex string              filter servers on host regex
-  -s, --servers strings           target servers by names
-  -S, --silent                    omit showing loader when running tasks
-  -t, --tags strings              target servers by tags
-      --theme string              set theme
-      --tty                       replace the current process
+      --dry-run                     print the task to see what will be executed
+      --describe                    print task information
+      --list-hosts                  print hosts that will be targetted
+  -V, --verbose                     enable all diagnostics
+  -S, --strategy string             set execution strategy [linear|host_pinned|free]
+  -f, --forks uint32                set maximal number of processes to run in parallel (default 10000)
+  -b, --batch uint32                set number of hosts to run in parallel
+  -B, --batch-p uint8               set percentage of servers to run in parallel [0-100]
+  -a, --all                         target all servers
+  -v, --invert                      invert matching on servers
+  -r, --regex string                target servers on host regex
+  -s, --servers strings             target servers by names
+  -t, --tags strings                target servers by tags
+  -T, --target string               target servers by target name
+      --order string                order hosts
+  -l, --limit uint32                set limit of servers to target
+  -L, --limit-p uint8               set percentage of servers to target [0-100]
+      --ignore-unreachable          ignore unreachable hosts
+  -M, --max-fail-percentage uint8   stop task execution on all servers when threshold reached
+      --any-errors-fatal            stop task execution on all servers on error
+      --ignore-errors               continue task execution on errors
+  -J, --spec string                 set spec
+  -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+      --omit-empty                  omit empty results for table output
+  -q, --silent                      omit showing loader when running tasks
+      --confirm                     confirm root task before running
+      --step                        confirm each task before running
+      --tty                         replace the current process
+      --attach                      ssh to server after command
+      --local                       run task on localhost
+      --theme string                set theme (default "default")
+  -e, --edit                        edit task
+  -R, --report strings              reports to show (default [recap])
+  -i, --identity-file string        set identity file
+  -U, --user string                 set ssh user
+      --password string             set ssh password
+      --known-hosts-file string     set known hosts file
+  -h, --help                        help for run
 ```
 
 ## exec
@@ -130,29 +143,43 @@ exec <command> [flags]
 ### Options
 
 ```
-  -a, --all                       target all servers
-      --any-errors-fatal          stop task execution on all servers on error
-      --attach                    ssh to server after command
-      --dry-run                   prints the command to see what will be executed
-  -h, --help                      help for exec
-  -i, --identity-file string      set identity file for all servers
-      --ignore-errors             continue task execution on errors
-      --ignore-unreachable        ignore unreachable hosts
-  -v, --invert                    invert matching on servers
-      --known-hosts-file string   set known hosts file
-  -l, --limit uint32              set limit of servers to target
-  -L, --limit-p uint8             set percentage of servers to target
-      --local                     run command on localhost
-      --omit-empty                omit empty results for table output
-  -o, --output string             set task output [text|table|table-2|table-3|table-4|html|markdown]
-  -p, --parallel                  run server tasks in parallel
-      --password string           set ssh password for all servers
-  -r, --regex string              filter servers on host regex
-  -s, --servers strings           target servers by names
-  -S, --silent                    omit showing loader when running tasks
-  -t, --tags strings              target servers by tags
-      --theme string              set theme (default "default")
-      --tty                       replace the current process
+      --dry-run                     prints the command to see what will be executed
+      --describe                    print task information
+      --list-hosts                  print hosts that will be targetted
+  -V, --verbose                     enable all diagnostics
+  -S, --strategy string             set execution strategy [linear|host_pinned|free]
+  -f, --forks uint32                set maximal number of processes to run in parallel (default 10000)
+  -b, --batch uint32                set number of hosts to run in parallel
+  -B, --batch-p uint8               set percentage of servers to run in parallel [0-100]
+  -a, --all                         target all servers
+  -v, --invert                      invert matching on servers
+  -r, --regex string                filter servers on host regex
+  -s, --servers strings             target servers by names
+  -t, --tags strings                target servers by tags
+  -T, --target string               target servers by target name
+      --order string                order hosts
+  -l, --limit uint32                set limit of servers to target
+  -L, --limit-p uint8               set percentage of servers to target
+      --ignore-unreachable          ignore unreachable hosts
+  -M, --max-fail-percentage uint8   stop task execution on all servers when threshold reached
+      --any-errors-fatal            stop task execution on all servers on error
+      --ignore-errors               continue task execution on errors
+  -J, --spec string                 set spec
+  -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+      --omit-empty                  omit empty results for table output
+  -q, --silent                      omit showing loader when running tasks
+      --confirm                     confirm root task before running
+      --step                        confirm each task before running
+      --tty                         replace the current process
+      --attach                      ssh to server after command
+      --local                       run command on localhost
+      --theme string                set theme (default "default")
+  -R, --report strings              reports to show (default [recap])
+  -i, --identity-file string        set identity file for all servers
+  -U, --user string                 set ssh user
+      --password string             set ssh password for all servers
+      --known-hosts-file string     set known hosts file
+  -h, --help                        help for exec
 ```
 
 ## init
@@ -345,117 +372,18 @@ list servers [servers] [flags]
 ### Options
 
 ```
-  -H, --all-headers       select all server headers
-      --headers strings   set headers (default [server,host,tag,desc])
-  -h, --help              help for servers
   -v, --invert            invert matching on servers
   -r, --regex string      filter servers on host regex
   -t, --tags strings      filter servers by tags
+  -H, --all-headers       select all server headers
+      --headers strings   set headers (default [server,host,tags,desc])
+  -h, --help              help for servers
 ```
 
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
-      --theme string    set theme (default "default")
-```
-
-## list specs
-
-List specs
-
-### Synopsis
-
-List specs.
-
-```
-list specs [specs] [flags]
-```
-
-### Examples
-
-```
-  # List all specs
-  sake list specs
-```
-
-### Options
-
-```
-      --headers strings   set headers (default [spec,output,parallel,any_errors_fatal,ignore_errors,ignore_unreachable,omit_empty])
-  -h, --help              help for specs
-```
-
-### Options inherited from parent commands
-
-```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
-      --theme string    set theme (default "default")
-```
-
-## list tags
-
-List tags
-
-### Synopsis
-
-List tags.
-
-```
-list tags [tags] [flags]
-```
-
-### Examples
-
-```
-  # List all tags
-  sake list tags
-```
-
-### Options
-
-```
-      --headers strings   set headers (default [tag,server])
-  -h, --help              help for tags
-```
-
-### Options inherited from parent commands
-
-```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
-      --theme string    set theme (default "default")
-```
-
-## list targets
-
-List targets
-
-### Synopsis
-
-List targets.
-
-```
-list targets [targets] [flags]
-```
-
-### Examples
-
-```
-  # List all targets
-  sake list targets
-```
-
-### Options
-
-```
-      --headers strings   set headers. Available headers: name, regex (default [target,all,servers,tags,regex,invert,limit,limit_p])
-  -h, --help              help for targets
-```
-
-### Options inherited from parent commands
-
-```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -492,7 +420,106 @@ list tasks [tasks] [flags]
 ### Options inherited from parent commands
 
 ```
-  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html] (default "table")
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+      --theme string    set theme (default "default")
+```
+
+## list tags
+
+List tags
+
+### Synopsis
+
+List tags.
+
+```
+list tags [tags] [flags]
+```
+
+### Examples
+
+```
+  # List all tags
+  sake list tags
+```
+
+### Options
+
+```
+      --headers strings   set headers (default [tag,server])
+  -h, --help              help for tags
+```
+
+### Options inherited from parent commands
+
+```
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+      --theme string    set theme (default "default")
+```
+
+## list targets
+
+List targets
+
+### Synopsis
+
+List targets.
+
+```
+list targets [targets] [flags]
+```
+
+### Examples
+
+```
+  # List all targets
+  sake list targets
+```
+
+### Options
+
+```
+      --headers strings   set headers. Available headers: name, regex (default [target,desc,all,servers,tags,regex,invert,limit,limit_p])
+  -h, --help              help for targets
+```
+
+### Options inherited from parent commands
+
+```
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
+      --theme string    set theme (default "default")
+```
+
+## list specs
+
+List specs
+
+### Synopsis
+
+List specs.
+
+```
+list specs [specs] [flags]
+```
+
+### Examples
+
+```
+  # List all specs
+  sake list specs
+```
+
+### Options
+
+```
+      --headers strings   set headers (default [spec,desc,describe,list_hosts,order,silent,strategy,batch,batch_p,forks,output,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report])
+  -h, --help              help for specs
+```
+
+### Options inherited from parent commands
+
+```
+  -o, --output string   set table output [table|table-2|table-3|table-4|markdown|html|json|csv] (default "table")
       --theme string    set theme (default "default")
 ```
 
@@ -521,63 +548,11 @@ describe servers [servers] [flags]
 ### Options
 
 ```
+  -t, --tags strings   filter servers by their tag
+  -r, --regex string   filter servers on host regex
+  -v, --invert         invert matching on servers
   -e, --edit           edit server
   -h, --help           help for servers
-  -v, --invert         invert matching on servers
-  -r, --regex string   filter servers on host regex
-  -t, --tags strings   filter servers by their tag
-```
-
-## describe specs
-
-Describe specs
-
-### Synopsis
-
-Describe specs.
-
-```
-describe specs [specs] [flags]
-```
-
-### Examples
-
-```
-  # Describe all specs
-  sake describe specs
-```
-
-### Options
-
-```
-  -e, --edit   edit spec
-  -h, --help   help for specs
-```
-
-## describe targets
-
-Describe targets
-
-### Synopsis
-
-Describe targets.
-
-```
-describe targets [targets] [flags]
-```
-
-### Examples
-
-```
-  # Describe all targets
-  sake describe targets
-```
-
-### Options
-
-```
-  -e, --edit   edit target
-  -h, --help   help for targets
 ```
 
 ## describe tasks
@@ -609,6 +584,58 @@ describe tasks [tasks] [flags]
   -h, --help   help for tasks
 ```
 
+## describe targets
+
+Describe targets
+
+### Synopsis
+
+Describe targets.
+
+```
+describe targets [targets] [flags]
+```
+
+### Examples
+
+```
+  # Describe all targets
+  sake describe targets
+```
+
+### Options
+
+```
+  -e, --edit   edit target
+  -h, --help   help for targets
+```
+
+## describe specs
+
+Describe specs
+
+### Synopsis
+
+Describe specs.
+
+```
+describe specs [specs] [flags]
+```
+
+### Examples
+
+```
+  # Describe all specs
+  sake describe specs
+```
+
+### Options
+
+```
+  -e, --edit   edit spec
+  -h, --help   help for specs
+```
+
 ## ssh
 
 ssh to server
@@ -631,9 +658,9 @@ ssh <server> [flags]
 ### Options
 
 ```
-  -h, --help                   help for ssh
   -i, --identity-file string   set identity file for all servers
       --password string        set ssh password for all servers
+  -h, --help                   help for ssh
 ```
 
 ## gen

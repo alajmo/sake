@@ -57,6 +57,15 @@ The following workflow is used for releasing a new `sake` version:
    - Create a git tag with release notes
    - Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
 
+## Overview of How Sake Works
+
+1. Parse & validate CLI arguments
+2. Parse `sake` config files and create config, inventory, tasks, specs, and target states
+3. Create clients for remote and local task execution for the selected hosts/tasks
+4. Execute tasks on remote/local hosts
+6. Disconnect from remote hosts
+7. Print any output (results, reports, errors, etc.)
+
 ## Dependency Graph
 
 Create SVG dependency graphs using graphviz and [goda](https://github.com/loov/goda).

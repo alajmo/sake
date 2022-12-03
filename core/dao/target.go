@@ -72,9 +72,7 @@ func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 		re := ResourceErrors[Target]{Resource: target, Errors: []error{}}
 		targetErrors = append(targetErrors, re)
 
-		for _, e := range terr {
-			targetErrors[j].Errors = append(targetErrors[j].Errors, e)
-		}
+		targetErrors[j].Errors = append(targetErrors[j].Errors, terr...)
 
 		targets = append(targets, *target)
 	}

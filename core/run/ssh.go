@@ -507,5 +507,8 @@ func GetSigner(server dao.Server) (ssh.Signer, error) {
 	}
 
 	return signer, nil
+}
 
+func (c *SSHClient) Connected() bool {
+	return c.connOpened
 }

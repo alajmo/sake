@@ -60,11 +60,11 @@ func listTargets(
 	core.CheckIfError(err)
 
 	options := print.PrintTableOptions{
-		Output:               listFlags.Output,
-		Theme:                *theme,
-		OmitEmpty:            false,
-		SuppressEmptyColumns: true,
-		Resource:             "target",
+		Output:           listFlags.Output,
+		Theme:            *theme,
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: true,
+		Resource:         "target",
 	}
 
 	var targets []dao.Target
@@ -78,7 +78,7 @@ func listTargets(
 
 	if len(targets) > 0 {
 		rows := dao.GetTableData(targets, targetFlags.Headers)
-		err := print.PrintTable(rows, options, targetFlags.Headers, []string{})
+		err := print.PrintTable(rows, options, targetFlags.Headers, []string{}, true, true)
 		core.CheckIfError(err)
 	}
 }

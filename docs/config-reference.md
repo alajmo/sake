@@ -7,7 +7,7 @@ The sake.yaml config is based on the following concepts:
 - **specs** are configs that alter **task** execution and output
 - **targets** are configs that provide shorthand filtering of **servers** when executing **tasks**
 - **themes** are used to modify the output of `sake` commands
-- **envs** are environment variables that can be defined globally, per server and per task
+- **env** are environment variables that can be defined globally, per server and per task
 
 **Specs**, **targets** and **themes** come with a default setting that the user can override.
 
@@ -18,7 +18,7 @@ Below is a config file detailing all of the available options and their defaults
 ```yaml
 # Import servers/tasks/env/specs/themes/targets from other configs [optional]
 import:
-  - ./some-dir/sake.yaml
+ - ./some-dir/sake.yaml
 
 # Verify SSH host connections. Set this to true if you wish to circumvent verify host [optional]
 disable_verify_host: false
@@ -34,316 +34,362 @@ shell: bash
 
 # List of Servers
 servers:
-  # Server name [required]
-  media:
-    # Server description [optional]
-    desc: media server
+ # Server name [required]
+ media:
+   # Server description [optional]
+   desc: media server
 
-    # Host [required]
-    host: media.lan
-    # one-line for setting user and port
-    # host: samir@media.lan:22
+   # Host [required]
+   host: media.lan
+   # one-line for setting user and port
+   # host: samir@media.lan:22
 
-    # Specify multiple hosts:
-    # hosts:
-    # - samir@192.168.0.1:22
-    # - samir@l92.168.1.1:22
+   # Specify multiple hosts:
+   # hosts:
+   # - samir@192.168.0.1:22
+   # - samir@l92.168.1.1:22
 
-    # or use a host range generator
-    # hosts: samir@192.168.[0:1].1:22
+   # or use a host range generator
+   # hosts: samir@192.168.[0:1].1:22
 
-    # generate hosts by local command
-    # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
+   # generate hosts by local command
+   # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
 
-    # Bastion [optional]
-    bastion: samir@192.168.1.1:2222
+   # Bastion [optional]
+   bastion: samir@192.168.1.1:2222
 
-    # User to connect as. It defaults to the current user [optional]
-    user: samir
+   # User to connect as. It defaults to the current user [optional]
+   user: samir
 
-    # Port for ssh [optional]
-    port: 22
+   # Port for ssh [optional]
+   port: 22
 
-    # Shell used for commands [optional]
-    shell: bash
+   # Shell used for commands [optional]
+   shell: bash
 
-    # Run on localhost [optional]
-    local: false
+   # Run on localhost [optional]
+   local: false
 
-    # Set default working directory for task execution [optional]
-    work_dir: ""
+   # Set default working directory for task execution [optional]
+   work_dir: ""
 
-    # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
-    # sake respects users ssh config, so you can set auth credentials in the users ssh config
-    identity_file: ./id_rsa
+   # Set identity file. By default it will attempt to establish a connection using a SSH auth agent [optional]
+   # sake respects users ssh config, so you can set auth credentials in the users ssh config
+   identity_file: ./id_rsa
 
-    # Set password. Accepts either a string or a shell command [optional]
-    password: $(echo $MY_SECRET_PASSWORD)
+   # Set password. Accepts either a string or a shell command [optional]
+   password: $(echo $MY_SECRET_PASSWORD)
 
-    # List of tags [optional]
-    tags: [remote]
+   # List of tags [optional]
+   tags: [remote]
 
-    # List of server specific environment variables [optional]
-    env:
-      # Simple string value
-      key: value
+   # List of server specific environment variables [optional]
+   env:
+     # Simple string value
+     key: value
 
-      # Shell command substitution (evaluated on localhost)
-      date: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+     # Shell command substitution (evaluated on localhost)
+     date: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 # List of environment variables that are available to all tasks
 env:
-  # Simple string value
-  AUTHOR: "alajmo"
+ # Simple string value
+ AUTHOR: "alajmo"
 
-  # Shell command substitution (evaluated on localhost)
-  DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
+ # Shell command substitution (evaluated on localhost)
+ DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 # List of themes
 themes:
-  # Theme name
-  default:
-    # Text options [optional]
-    text:
-      # Include server name prefix for each line [optional]
-      prefix: true
+ # Theme name
+ default:
+   # Text options [optional]
+   text:
+     # Include server name prefix for each line [optional]
+     prefix: true
 
-      # Colors to alternate between for each server prefix [optional]
-      # Available options: green, blue, red, yellow, magenta, cyan
-      prefix_colors: ["green", "blue", "red", "yellow", "magenta", "cyan"]
+     # Colors to alternate between for each server prefix [optional]
+     # Available options: green, blue, red, yellow, magenta, cyan
+     prefix_colors: ["green", "blue", "red", "yellow", "magenta", "cyan"]
 
-      # Customize the task header that is printed before each task when output is set to text (to opt out, set it to empty string) [optional]
-      # Available variables: `.Name`, `.Desc`, `.Index`, `.NumTasks`
-      # Available methods: `.Style`, which takes in 1 or more parameters, first is the string to be styled, and the rest are styling options
-      # Available styling options:
-      #   Colors (prefix with `fg_` for foreground, and `bg_` for background): black, red, green, yellow, blue, magenta, cyan, white, hi_black, hi_red, hi_green, hi_yellow, hi_blue, hi_magenta, hi_cyan, hi_white
-      #   Attributes: normal, bold, faint, italic, underline crossed_out
-      header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
+     # Customize the task header that is printed before each task when output is set to text (to opt out, set it to empty string) [optional]
+     # Available variables: `.Name`, `.Desc`, `.Index`, `.NumTasks`
+     # Available methods: `.Style`, which takes in 1 or more parameters, first is the string to be styled, and the rest are styling options
+     # Available styling options:
+     #   Colors (prefix with `fg_` for foreground, and `bg_` for background): black, red, green, yellow, blue, magenta, cyan, white, hi_black, hi_red, hi_green, hi_yellow, hi_blue, hi_magenta, hi_cyan, hi_white
+     #   Attributes: normal, bold, faint, italic, underline crossed_out
+     header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
 
-      # Fill remaining spaces with a character after the header, if set to empty string, no filler characters will be displayed [optional]
-      header_filler: "*"
+     # Fill remaining spaces with a character after the header, if set to empty string, no filler characters will be displayed [optional]
+     header_filler: "*"
 
-    # Table options [optional]
-    table:
-      # Table style [optional]
-      # Available options: ascii, connected-light
-      style: ascii
+   # Table options [optional]
+   table:
+     # Table style [optional]
+     # Available options: ascii, connected-light
+     style: ascii
 
-      # Border options for table output [optional]
-      options:
-        draw_border: false
-        separate_columns: true
-        separate_header: true
-        separate_rows: false
-        separate_footer: false
+     # Border options for table output [optional]
+     options:
+       draw_border: false
+       separate_columns: true
+       separate_header: true
+       separate_rows: false
+       separate_footer: false
 
-      # Color, attr, align, and format options [optional]
-      # Available options for fg/bg: green, blue, red, yellow, magenta, cyan, hi_green, hi_blue, hi_red, hi_yellow, hi_magenta, hi_cyan
-      # Available options for align: left, center, justify, right
-      # Available options for attr: normal, bold, faint, italic, underline, crossed_out
-      # Available options for format: default, lower, title, upper
-      title:
-        fg:
-        bg:
-        align:
-        attr:
-        format:
+     # Color, attr, align, and format options [optional]
+     # Available options for fg/bg: green, blue, red, yellow, magenta, cyan, hi_green, hi_blue, hi_red, hi_yellow, hi_magenta, hi_cyan
+     # Available options for align: left, center, justify, right
+     # Available options for attr: normal, bold, faint, italic, underline, crossed_out
+     # Available options for format: default, lower, title, upper
+     title:
+       fg:
+       bg:
+       align:
+       attr:
+       format:
 
-      header:
-        fg:
-        bg:
-        align:
-        attr:
-        format:
+     header:
+       fg:
+       bg:
+       align:
+       attr:
+       format:
 
-      row:
-        fg:
-        bg:
-        align:
-        attr:
-        format:
+     row:
+       fg:
+       bg:
+       align:
+       attr:
+       format:
 
-      footer:
-        fg:
-        bg:
-        align:
-        attr:
-        format:
+     footer:
+       fg:
+       bg:
+       align:
+       attr:
+       format:
 
-      border:
-        header:
-          fg:
-          bg:
-          attr:
+     border:
+       header:
+         fg:
+         bg:
+         attr:
 
-        row:
-          fg:
-          bg:
-          attr:
+       row:
+         fg:
+         bg:
+         attr:
 
-        row_alt:
-          fg:
-          bg:
-          attr:
+       row_alt:
+         fg:
+         bg:
+         attr:
 
-        footer:
-          fg:
-          bg:
-          attr:
+       footer:
+         fg:
+         bg:
+         attr:
 
 # List of Specs [optional]
 specs:
-  default:
-    # Set task output [text|table|html|markdown]
-    output: text
+ default:
+   # Spec description
+   desc: default spec
 
-    # Run server tasks in parallel
-    parallel: false
+   # Print task description
+   describe: false
 
-    # Continue task execution on errors
-    ignore_errors: true
+   # Print list of hosts that will be targetted
+   list_hosts: false
 
-    # Stop task execution on all servers on error
-    any_errors_fatal: false
+   # Order hosts [inventory|reverse_inventory|sorted|reverse_sorted|random]
+   order: inventory
 
-    # Ignore unreachable hosts
-    ignore_unreachable: false
+   # Omit showing loader when running tasks
+   silent: false
 
-    # Omit empty results for table output
-    omit_empty: false
+   # Execution strategy [linear|host_pinned|free]
+   strategy: linear
+
+   # Number of hosts to run in parallel
+   batch: 1
+
+   # Number of hosts in percentage to run in parallel [0-100]
+   # batch_p: 100
+
+   # Max number of forks
+   forks: 10000
+
+   # Set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+   output: text
+
+   # Continue task execution on errors
+   ignore_errors: true
+
+   # Stop task execution on any error
+   any_errors_fatal: false
+
+   # Max number of tasks to fail before aborting
+   max_fail_percentage: 100
+
+   # Report [recap|rc|task|time|all]
+   report: ["recap"]
+
+   # Ignore unreachable hosts
+   ignore_unreachable: false
+
+   # Omit empty results for table output
+   omit_empty: false
+
+   # Show task reports [recap|rc|task|time|all]
+   report: recap
+
+   # Verbose turns on describe, list_hosts and report set to all
+   verbose: false
+
+   # Confirm task before running
+   confirm: false
+
+   # Confirm each task before running
+   step: false
 
 # List of targets [optional]
 targets:
-  default:
-    # Target all servers
-    all: false
+ default:
+   # Target all hosts
+   all: false
 
-    # Specify servers via server name
-    servers: []
+   # Specify hosts via server name
+   servers: []
 
-    # Specify servers via server tags
-    tags: []
+   # Specify hosts via server tags
+   tags: []
 
-    # Limit of servers to target
-    limit: 0
+   # Limit number of hosts to target
+   limit: 0
 
-    # Limit of servers to target in percentage
-    limit_p: 0
+   # Limit number of hosts to target in percentage
+   limit_p: 0
+
+   # Invert matching on hosts
+   invert: false
+
+   # Specify host regex
+   regex: ""
 
 # List of tasks
 tasks:
-  # Command ID [required]
-  simple-1:
-    # The name that will be displayed when executing or listing tasks. Defaults to task ID [optional]
-    name: Simple
+ # Command ID [required]
+ simple-1:
+   # The name that will be displayed when executing or listing tasks. Defaults to task ID [optional]
+   name: Simple
 
-    # Script to run
-    cmd: |
-      echo "hello world"
-    desc: simple command 1
+   # Script to run
+   cmd: |
+     echo "hello world"
+   desc: simple command 1
 
-  # Short-form for a command
-  simple-2: echo "hello world"
+ # Short-form for a command
+ simple-2: echo "hello world"
 
-  # Command ID [required]
-  advanced-command:
-    # The name that will be displayed when executing or listing tasks. Defaults to task ID [optional]
-    name: Advanced Command
+ # Command ID [required]
+ advanced-command:
+   # The name that will be displayed when executing or listing tasks. Defaults to task ID [optional]
+   name: Advanced Command
 
-    # Task description [optional]
-    desc: Advanced task
+   # Task description [optional]
+   desc: Advanced task
 
-    # Specify theme [optional]
-    theme: default
+   # Specify theme [optional]
+   theme: default
 
-    # Spec reference [optional]
-    # spec: default
+   # Spec reference [optional]
+   # spec: default
 
-    # Or specify specs inline
-    spec:
-      output: table
-      parallel: true
-      ignore_errors: true
-      ignore_unreachable: true
-      any_errors_fatal: false
-      omit_empty: true
+   # Or specify specs inline
+   spec:
+     output: table
+     ignore_errors: true
+     ignore_unreachable: true
+     any_errors_fatal: false
+     omit_empty: true
 
-    # Target reference [optional]
-    # target: default
+   # Target reference [optional]
+   # target: default
 
-    # Or specify targets inline
-    target:
-      all: true
-      servers: [media]
-      tags: [remote]
-      limit: 1
-      limit_p: 100
+   # Or specify targets inline
+   target:
+     all: true
+     servers: [media]
+     tags: [remote]
+     limit: 1
 
-    # List of environment variables [optional]
-    env:
-      # Simple string value
-      release: v1.0.0
+   # List of environment variables [optional]
+   env:
+     # Simple string value
+     release: v1.0.0
 
-      # Shell command substitution
-      num_lines: $(ls -1 | wc -l)
+     # Shell command substitution
+     num_lines: $(ls -1 | wc -l)
 
-      # The following variables are available by default:
-      #   SAKE_DIR
-      #   SAKE_PATH
-      #
-      #   SAKE_TASK_ID
-      #   SAKE_TASK_NAME
-      #   SAKE_TASK_DESC
-      #   SAKE_TASK_LOCAL
-      #
-      #   SAKE_SERVER_NAME
-      #   SAKE_SERVER_DESC
-      #   SAKE_SERVER_TAGS
-      #   SAKE_SERVER_HOST
-      #   SAKE_SERVER_USER
-      #   SAKE_SERVER_PORT
-      #   SAKE_SERVER_BASTION
-      #   SAKE_SERVER_LOCAL
+     # The following variables are available by default:
+     #   SAKE_DIR
+     #   SAKE_PATH
+     #
+     #
+     #   S_HOST
+     #   S_USER
+     #   S_PORT
+     #   S_BASTION
+     #   S_TAGS
+     #   S_IDENTITY
 
-    # Run on localhost [optional]
-    local: false
+   # Run on localhost [optional]
+   local: false
 
-    # Set default working directory for task [optional]
-    work_dir: ""
+   # Set default working directory for task [optional]
+   work_dir: ""
 
-    # Shell used for commands [optional]
-    shell: bash
+   # Shell used for commands [optional]
+   shell: bash
 
-    # Each task can only define:
-    # - a single cmd
-    # - or a single task reference
-    # - or a list of task references or commands
+   # Each task can only define:
+   # - a single cmd
+   # - or a single task reference
+   # - or a list of task references or commands
 
-    # Single command
-    cmd: |
-      echo complex
-      echo command
+   # Single command
+   cmd: |
+     echo complex
+     echo command
 
-    # Task reference. work_dir and env variables are passed down
-    task: simple-1
+   # Task reference. work_dir and env variables are passed down
+   task: simple-1
 
-    # List of task references or commands
-    tasks:
-      # Command
-      - name: inline-command
-        cmd: echo "Hello World"
-        work_dir: /tmp
-        shell: bash
-        env:
-          foo: bar
+   # List of task references or commands
+   tasks:
+     # Command
+     - name: inline-command
+       cmd: echo "Hello World"
+       ignore_errors: true
+       work_dir: /tmp
+       shell: bash
+       env:
+         foo: bar
 
-      # Task reference. work_dir and env variables are passed down.
-      # Nested task referencing is supported and will result in a
-      # flat list of commands
-      - task: simple-1
-        work_dir: /tmp
-        env:
-          foo: bar
+     # Task reference. work_dir and env variables are passed down.
+     # Nested task referencing is supported and will result in a
+     # flat list of commands
+     - task: simple-1
+       ignore_errors: true
+       work_dir: /tmp
+       register: results
+       env:
+         foo: bar
+
+     - name: output
+       cmd: echo $results_stdout
 ```
 
 ## Files
@@ -371,9 +417,6 @@ SAKE_SSH_CONFIG
 
 SAKE_KNOWN_HOSTS_FILE
     Override known_hosts file path
-
-SAKE_PASSWORD
-    Override SSH password
 
 NO_COLOR
     If this env variable is set (regardless of value) then all colors will be disabled

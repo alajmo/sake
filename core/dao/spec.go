@@ -15,6 +15,8 @@ type Spec struct {
 	Name              string   `yaml:"_"`
 	Desc              string   `yaml:"desc"`
 	Describe          bool     `yaml:"describe"`
+	ListHosts         bool     `yaml:"list_hosts"`
+	Order             string   `yaml:"order"`
 	Silent            bool     `yaml:"silent"`
 	Strategy          string   `yaml:"strategy"`
 	Batch             uint32   `yaml:"batch"`
@@ -25,8 +27,12 @@ type Spec struct {
 	AnyErrorsFatal    bool     `yaml:"any_errors_fatal"`
 	IgnoreErrors      bool     `yaml:"ignore_errors"`
 	IgnoreUnreachable bool     `yaml:"ignore_unreachable"`
-	OmitEmpty         bool     `yaml:"omit_empty"`
+	OmitEmptyRows     bool     `yaml:"omit_empty_rows"`
+	OmitEmptyColumns  bool     `yaml:"omit_empty_columns"`
 	Report            []string `yaml:"report"`
+	Verbose           bool     `yaml:"verbose"`
+	Confirm           bool     `yaml:"confirm"`
+	Step              bool     `yaml:"step"`
 
 	context     string // config path
 	contextLine int    // defined at
@@ -49,6 +55,8 @@ func (s Spec) GetValue(key string, _ int) string {
 		return s.Desc
 	case "describe", "Describe":
 		return strconv.FormatBool(s.Describe)
+	case "list_hosts":
+		return strconv.FormatBool(s.ListHosts)
 	case "silent", "Silent":
 		return strconv.FormatBool(s.Silent)
 	case "strategy":
@@ -69,10 +77,14 @@ func (s Spec) GetValue(key string, _ int) string {
 		return strconv.FormatBool(s.IgnoreErrors)
 	case "ignore_unreachable":
 		return strconv.FormatBool(s.IgnoreUnreachable)
-	case "omit_empty":
-		return strconv.FormatBool(s.OmitEmpty)
+	case "omit_empty_rows":
+		return strconv.FormatBool(s.OmitEmptyRows)
+	case "omit_empty_columns":
+		return strconv.FormatBool(s.OmitEmptyColumns)
 	case "report", "Report":
 		return strings.Join(s.Report, "\n")
+	case "order", "Order":
+		return s.Order
 	default:
 		return ""
 	}
@@ -91,9 +103,7 @@ func (c *ConfigYAML) ParseSpecsYAML() ([]Spec, []ResourceErrors[Spec]) {
 		re := ResourceErrors[Spec]{Resource: spec, Errors: []error{}}
 		specErrors = append(specErrors, re)
 
-		for _, e := range serr {
-			specErrors[j].Errors = append(specErrors[j].Errors, e)
-		}
+		specErrors[j].Errors = append(specErrors[j].Errors, serr...)
 		specs = append(specs, *spec)
 	}
 
@@ -126,7 +136,7 @@ func (c *ConfigYAML) DecodeSpec(name string, specYAML yaml.Node) (*Spec, []error
 	}
 
 	if len(spec.Report) == 0 {
-		spec.Report = []string{"basic"}
+		spec.Report = []string{"recap"}
 	}
 
 	return spec, specErrors

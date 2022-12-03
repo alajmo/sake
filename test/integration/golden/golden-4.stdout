@@ -5,8 +5,8 @@ WantErr: false
 
 ---
 
- server  | host       | desc                   
----------+------------+------------------------
- range-0 | 172.24.2.2 | many hosts using range 
- range-1 | 172.24.2.4 | many hosts using range 
+ server  | host       | tags                        | desc                   
+---------+------------+-----------------------------+------------------------
+ range-0 | 172.24.2.2 | remote,prod,range,reachable | many hosts using range 
+ range-1 | 172.24.2.4 | remote,prod,range,reachable | many hosts using range 
 

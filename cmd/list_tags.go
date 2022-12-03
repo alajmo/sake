@@ -61,11 +61,11 @@ func listTags(
 	core.CheckIfError(err)
 
 	options := print.PrintTableOptions{
-		Output:               listFlags.Output,
-		Theme:                *theme,
-		OmitEmpty:            false,
-		SuppressEmptyColumns: true,
-		Resource:             "tag",
+		Output:           listFlags.Output,
+		Theme:            *theme,
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: true,
+		Resource:         "tag",
 	}
 
 	allTags := config.GetTags()
@@ -81,7 +81,7 @@ func listTags(
 		core.CheckIfError(err)
 
 		if len(tags) > 0 {
-			err := print.PrintTable(tags, options, tagFlags.Headers, []string{})
+			err := print.PrintTable(tags, options, tagFlags.Headers, []string{}, true, true)
 			core.CheckIfError(err)
 		}
 	} else {
@@ -89,7 +89,7 @@ func listTags(
 		core.CheckIfError(err)
 		if len(tags) > 0 {
 			rows := dao.GetTableData(tags, tagFlags.Headers)
-			err := print.PrintTable(rows, options, tagFlags.Headers, []string{})
+			err := print.PrintTable(rows, options, tagFlags.Headers, []string{}, true, true)
 			core.CheckIfError(err)
 		}
 	}

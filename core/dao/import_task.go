@@ -143,9 +143,6 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 
 				envs := MergeEnvs(tn.TaskRefs[i].Envs, task.Envs, childTask.Envs)
 
-				// The child task default envs like SAKE_TASK_ID should take precedence
-				envs = MergeEnvs(childTask.GetDefaultEnvs(), envs)
-
 				workDir := SelectFirstNonEmpty(tn.TaskRefs[i].WorkDir, task.WorkDir, childTask.WorkDir)
 				shell := SelectFirstNonEmpty(tn.TaskRefs[i].Shell, task.Shell, childTask.Shell)
 

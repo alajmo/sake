@@ -44,13 +44,19 @@ func (c *LocalhostClient) Run(i int, env []string, workDir string, shell string,
 		shell = dao.DEFAULT_SHELL
 	}
 
+	var cmdString string
+	if workDir != "" {
+		cmdString = fmt.Sprintf("cd %s; %s", workDir, cmdStr)
+	} else {
+		cmdString = cmdStr
+	}
+
 	args := strings.SplitN(shell, " ", 2)
 	shellProgram := args[0]
-	shellFlag := append(args[1:], cmdStr)
+	shellArgs := append(args[1:], cmdString)
 
-	cmd := exec.Command(shellProgram, shellFlag...)
+	cmd := exec.Command(shellProgram, shellArgs...)
 	cmd.Env = append(userEnv, env...)
-	cmd.Dir = workDir
 	c.Sessions[i].cmd = cmd
 
 	c.Sessions[i].stdout, err = cmd.StdoutPipe()
@@ -119,4 +125,8 @@ func (c *LocalhostClient) Signal(i int, sig os.Signal) error {
 
 func (c *LocalhostClient) GetName() string {
 	return c.Name
+}
+
+func (c *LocalhostClient) Connected() bool {
+	return true
 }

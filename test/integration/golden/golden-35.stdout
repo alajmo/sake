@@ -1,26 +1,47 @@
 Index: 35
 Name: output
-Cmd: go run ../../main.go run output -S -t reachable
+Cmd: go run ../../main.go run output -q -t reachable
 WantErr: false
 
 ---
 
- server    | output      | output    | output            
------------+-------------+-----------+-------------------
- localhost | Hello world | Bye world | Hello again world 
- list-0    | Hello world | Bye world | Hello again world 
- list-1    | Hello world | Bye world | Hello again world 
- range-0   | Hello world | Bye world | Hello again world 
- range-1   | Hello world | Bye world | Hello again world 
- inv-0     | Hello world | Bye world | Hello again world 
- inv-1     | Hello world | Bye world | Hello again world 
- server-1  | Hello world | Bye world | Hello again world 
- server-2  | Hello world | Bye world | Hello again world 
- server-3  | Hello world | Bye world | Hello again world 
- server-4  | Hello world | Bye world | Hello again world 
- server-5  | Hello world | Bye world | Hello again world 
- server-6  | Hello world | Bye world | Hello again world 
- server-7  | Hello world | Bye world | Hello again world 
- server-8  | Hello world | Bye world | Hello again world 
- server-9  | Hello world | Bye world | Hello again world 
+TASKS 
+
+ host               | task-0      | task-1    | task-2            
+--------------------+-------------+-----------+-------------------
+ localhost          | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.3         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.5         | Hello world | Bye world | Hello again world 
+ 172.24.2.6         | Hello world | Bye world | Hello again world 
+ 172.24.2.7         | Hello world | Bye world | Hello again world 
+ 172.24.2.8         | Hello world | Bye world | Hello again world 
+ 172.24.2.9         | Hello world | Bye world | Hello again world 
+ 2001:3984:3989::10 | Hello world | Bye world | Hello again world 
+                                                                              
+ localhost               ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=48  unreachable=0  ignored=0  failed=0  skipped=0 
 

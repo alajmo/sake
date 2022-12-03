@@ -46,7 +46,7 @@ func ssh(args []string, config *dao.Config, runFlags *core.RunFlags) {
 	core.CheckIfError(err)
 	servers := []dao.Server{*server}
 
-	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers, runFlags)
+	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers, runFlags, "inventory")
 	if len(errConnect) > 0 {
 		core.Exit(&errConnect[0])
 	}

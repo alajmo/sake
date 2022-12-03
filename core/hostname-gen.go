@@ -11,7 +11,13 @@ import (
 )
 
 // Separate hosts with newline and space/tab
-func EvaluateInventory(shell string, context string, input string, serverEnvs []string, userEnvs []string) ([]string, error) {
+func EvaluateInventory(
+	shell string,
+	context string,
+	input string,
+	serverEnvs []string,
+	userEnvs []string,
+) ([]string, error) {
 	args := strings.SplitN(shell, " ", 2)
 	shellProgram := args[0]
 	shellFlag := append(args[1:], input)

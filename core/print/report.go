@@ -26,32 +26,44 @@ func PrintReport(
 	reportTheme.Table.Options.SeparateRows = core.Ptr(false)
 	reportTheme.Table.Options.SeparateHeader = core.Ptr(true)
 	reportTheme.Table.Options.SeparateFooter = core.Ptr(false)
-
 	options := PrintTableOptions{
-		Theme:                reportTheme,
-		Output:               "table",
-		OmitEmpty:            false,
-		SuppressEmptyColumns: false,
+		Theme:            reportTheme,
+		Output:           "table",
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: false,
+	}
+
+	summaryTheme := dao.DEFAULT_THEME
+	summaryTheme.Table.Options.DrawBorder = core.Ptr(false)
+	summaryTheme.Table.Options.SeparateColumns = core.Ptr(false)
+	summaryTheme.Table.Options.SeparateRows = core.Ptr(false)
+	summaryTheme.Table.Options.SeparateHeader = core.Ptr(true)
+	summaryTheme.Table.Options.SeparateFooter = core.Ptr(false)
+	summaryOptions := PrintTableOptions{
+		Theme:            summaryTheme,
+		Output:           "table",
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: false,
 	}
 
 	if core.StringInSlice("all", spec.Report) {
-		printRecapHeader("RETURN CODES REPORT ")
+		printRecapHeader("RETURN CODES ", theme.Text.HeaderFiller)
 		err := PrintExitReport(&reportTheme, options, reportData)
 		if err != nil {
 			return err
 		}
-		printRecapHeader("TASK STATUS REPORT ")
+		printRecapHeader("TASK STATUS ", theme.Text.HeaderFiller)
 		err = PrintTaskReport(&reportTheme, options, reportData)
 		if err != nil {
 			return err
 		}
-		printRecapHeader("TIME REPORT ")
+		printRecapHeader("TIME ", theme.Text.HeaderFiller)
 		err = PrintProfileReport(&reportTheme, options, reportData)
 		if err != nil {
 			return err
 		}
-		printRecapHeader("REPORT ")
-		err = PrintSummaryReport(&reportTheme, options, reportData)
+		printRecapHeader("RECAP ", theme.Text.HeaderFiller)
+		err = PrintSummaryReport(&summaryTheme, summaryOptions, reportData)
 		if err != nil {
 			return err
 		}
@@ -61,26 +73,26 @@ func PrintReport(
 
 	for _, v := range spec.Report {
 		switch v {
-		case "basic":
-			printRecapHeader("REPORT ")
-			err := PrintSummaryReport(&reportTheme, options, reportData)
+		case "recap":
+			printRecapHeader("RECAP ", theme.Text.HeaderFiller)
+			err := PrintSummaryReport(&summaryTheme, summaryOptions, reportData)
 			if err != nil {
 				return err
 			}
 		case "rc":
-			printRecapHeader("RETURN CODES REPORT ")
+			printRecapHeader("RETURN CODES ", theme.Text.HeaderFiller)
 			err := PrintExitReport(&reportTheme, options, reportData)
 			if err != nil {
 				return err
 			}
 		case "task":
-			printRecapHeader("TASK STATUS REPORT ")
+			printRecapHeader("TASK STATUS ", theme.Text.HeaderFiller)
 			err := PrintTaskReport(&reportTheme, options, reportData)
 			if err != nil {
 				return err
 			}
 		case "time":
-			printRecapHeader("TIME REPORT ")
+			printRecapHeader("TIME ", theme.Text.HeaderFiller)
 			err := PrintProfileReport(&reportTheme, options, reportData)
 			if err != nil {
 				return err
@@ -103,7 +115,11 @@ func PrintReport(
 	list-3      0         0         0
 	list-4      0         0         0
 */
-func PrintExitReport(theme *dao.Theme, options PrintTableOptions, reportData dao.ReportData) error {
+func PrintExitReport(
+	theme *dao.Theme,
+	options PrintTableOptions,
+	reportData dao.ReportData,
+) error {
 	theme.Table.Options.SeparateFooter = core.Ptr(false)
 	var data dao.TableOutput
 	data.Headers = reportData.Headers
@@ -126,7 +142,7 @@ func PrintExitReport(theme *dao.Theme, options PrintTableOptions, reportData dao
 		}
 	}
 
-	err := PrintTable(data.Rows, options, reportData.Headers, []string{})
+	err := PrintTable(data.Rows, options, reportData.Headers, []string{}, true, false)
 	if err != nil {
 		return err
 	}
@@ -145,10 +161,14 @@ func PrintExitReport(theme *dao.Theme, options PrintTableOptions, reportData dao
 	list-3  1.01 s    0.00 s    0.00 s
 	list-4  1.01 s    0.00 s    0.00 s
 */
-func PrintProfileReport(theme *dao.Theme, options PrintTableOptions, reportData dao.ReportData) error {
+func PrintProfileReport(
+	theme *dao.Theme,
+	options PrintTableOptions,
+	reportData dao.ReportData,
+) error {
 	theme.Table.Options.SeparateFooter = core.Ptr(true)
 	var data dao.TableOutput
-	data.Headers = append(reportData.Headers, "total")
+	data.Headers = append(reportData.Headers, "Total")
 
 	var taskDuration []time.Duration
 	for i := 1; i < len(reportData.Headers); i++ {
@@ -176,7 +196,7 @@ func PrintProfileReport(theme *dao.Theme, options PrintTableOptions, reportData 
 
 	// Don't calculate total if only 1 server
 	if len(reportData.Tasks) > 1 {
-		footerName := getStatusName("total", reportData.Status)
+		footerName := getStatusName("Total", reportData.Status)
 		data.Footers = append(data.Footers, footerName)
 		var tot time.Duration
 		for _, t := range taskDuration {
@@ -187,7 +207,7 @@ func PrintProfileReport(theme *dao.Theme, options PrintTableOptions, reportData 
 		data.Footers = append(data.Footers, NormalPrint.Sprintf("%.2f s", tot.Seconds()))
 	}
 
-	err := PrintTable(data.Rows, options, data.Headers, data.Footers)
+	err := PrintTable(data.Rows, options, data.Headers, data.Footers, true, false)
 	if err != nil {
 		return err
 	}
@@ -207,7 +227,11 @@ func PrintProfileReport(theme *dao.Theme, options PrintTableOptions, reportData 
 	list-3      ok        ok        ok
 	list-4      ok        ok        ok
 */
-func PrintTaskReport(theme *dao.Theme, options PrintTableOptions, reportData dao.ReportData) error {
+func PrintTaskReport(
+	theme *dao.Theme,
+	options PrintTableOptions,
+	reportData dao.ReportData,
+) error {
 	theme.Table.Options.SeparateFooter = core.Ptr(false)
 	var data dao.TableOutput
 	data.Headers = reportData.Headers
@@ -234,7 +258,7 @@ func PrintTaskReport(theme *dao.Theme, options PrintTableOptions, reportData dao
 		}
 	}
 
-	err := PrintTable(data.Rows, options, reportData.Headers, []string{})
+	err := PrintTable(data.Rows, options, reportData.Headers, []string{}, true, false)
 	if err != nil {
 		return err
 	}
@@ -253,12 +277,19 @@ list-2      ok=1  ignored=2  failed=0  skipped=0
 list-3      ok=3  ignored=0  failed=0  skipped=0
 list-4      ok=3  ignored=0  failed=0  skipped=0
 */
-func PrintSummaryReport(theme *dao.Theme, options PrintTableOptions, reportData dao.ReportData) error {
-	theme.Table.Options.SeparateFooter = core.Ptr(true)
+func PrintSummaryReport(
+	theme *dao.Theme,
+	options PrintTableOptions,
+	reportData dao.ReportData,
+) error {
+	theme.Table.Options.SeparateHeader = core.Ptr(false)
+	theme.Table.Options.SeparateFooter = core.Ptr(false)
+
 	var data dao.TableOutput
-	data.Headers = []string{"server", "ok", "ignored", "failed", "skipped"}
+	data.Headers = []string{"", "", "", "", "", ""}
 	var taskStatuses = []dao.TaskStatus{
 		dao.Ok,
+		dao.Unreachable,
 		dao.Ignored,
 		dao.Failed,
 		dao.Skipped,
@@ -276,13 +307,16 @@ func PrintSummaryReport(theme *dao.Theme, options PrintTableOptions, reportData 
 
 	// Don't calculate total if only 1 server
 	if len(reportData.Tasks) > 1 {
-		if reportData.Status[dao.Failed] == 0 {
-			tot := OkPrint.Sprintf("%s\t", "total")
+		theme.Table.Options.SeparateFooter = core.Ptr(true)
+		if reportData.Status[dao.Failed] == 0 && reportData.Status[dao.Unreachable] == 0 {
+			tot := OkPrint.Sprintf("%s", "Total")
 			data.Footers = append(data.Footers, tot)
+		} else if reportData.Status[dao.Unreachable] > 0 {
+			data.Footers = append(data.Footers, FailedPrint.Sprintf("%s", "Total"))
 		} else if reportData.Status[dao.Ok] == 0 {
-			data.Footers = append(data.Footers, SkippedPrint.Sprintf("%s\t", "total"))
+			data.Footers = append(data.Footers, SkippedPrint.Sprintf("%s", "Total"))
 		} else {
-			data.Footers = append(data.Footers, FailedPrint.Sprintf("%s\t", "total"))
+			data.Footers = append(data.Footers, FailedPrint.Sprintf("%s", "Total"))
 		}
 		for _, s := range taskStatuses {
 			val := getTotalStatus(s, reportData.Status)
@@ -290,7 +324,7 @@ func PrintSummaryReport(theme *dao.Theme, options PrintTableOptions, reportData 
 		}
 	}
 
-	err := PrintTable(data.Rows, options, data.Headers, data.Footers)
+	err := PrintTable(data.Rows, options, data.Headers, data.Footers, false, true)
 	if err != nil {
 		return err
 	}
@@ -298,19 +332,19 @@ func PrintSummaryReport(theme *dao.Theme, options PrintTableOptions, reportData 
 	return nil
 }
 
-func printRecapHeader(h string) {
+func printRecapHeader(h string, filler string) {
 	hh := text.Bold.Sprintf(h)
 	width, _, _ := term.GetSize(0)
 	headerLength := len(core.Strip(hh))
 	if width > 0 {
-		header := fmt.Sprintf("\n%s%s", hh, strings.Repeat("*", width-headerLength-1))
+		header := fmt.Sprintf("\n%s%s", hh, strings.Repeat(filler, width-headerLength-1))
 		fmt.Println(header)
 	}
 }
 
 func getStatusName(name string, status map[dao.TaskStatus]int) string {
 	var out string
-	if status[dao.Failed] > 0 {
+	if status[dao.Failed] > 0 || status[dao.Unreachable] > 0 {
 		out = FailedPrint.Sprintf("%s\t", name)
 	} else if status[dao.Ok] == 0 && status[dao.Skipped] > 0 {
 		out = SkippedPrint.Sprintf("%s\t", name)
@@ -336,9 +370,11 @@ func getTotalStatus(s dao.TaskStatus, status map[dao.TaskStatus]int) string {
 			val = IgnoredPrint.Sprintf("%s=%s", s, v)
 		case dao.Failed:
 			val = FailedPrint.Sprintf("%s=%s", s, v)
+		case dao.Unreachable:
+			val = FailedPrint.Sprintf("%s=%s", s, v)
 		}
 	} else {
-		val = NormalPrint.Sprintf("%s=%s", s, v)
+		val = ZeroPrint.Sprintf("%s=%s", s, v)
 	}
 
 	return val

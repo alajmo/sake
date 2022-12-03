@@ -69,11 +69,11 @@ func listTasks(
 
 	if len(tasks) > 0 {
 		options := print.PrintTableOptions{
-			Output:               listFlags.Output,
-			Theme:                *theme,
-			OmitEmpty:            false,
-			SuppressEmptyColumns: true,
-			Resource:             "task",
+			Output:           listFlags.Output,
+			Theme:            *theme,
+			OmitEmptyRows:    false,
+			OmitEmptyColumns: true,
+			Resource:         "task",
 		}
 
 		var headers []string
@@ -84,7 +84,7 @@ func listTasks(
 		}
 
 		rows := dao.GetTableData(tasks, headers)
-		err := print.PrintTable(rows, options, headers, []string{})
+		err := print.PrintTable(rows, options, headers, []string{}, true, true)
 		core.CheckIfError(err)
 	}
 }

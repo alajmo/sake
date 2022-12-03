@@ -9,7 +9,7 @@ import (
 func TestEvaluateInventory(t *testing.T) {
 	// IP inventory 1 host
 	input := `echo 192.168.0.1`
-	hosts, err := EvaluateInventory("", input, []string{}, []string{})
+	hosts, err := EvaluateInventory("sh -c", "", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted := []string{"192.168.0.1"}
 	for i := range wanted {
@@ -18,7 +18,7 @@ func TestEvaluateInventory(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on space
 	input = `echo "192.168.0.1 192.168.0.2"`
-	hosts, err = EvaluateInventory("", input, []string{}, []string{})
+	hosts, err = EvaluateInventory("sh -c", "", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -27,7 +27,7 @@ func TestEvaluateInventory(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on newline
 	input = `echo "192.168.0.1\n192.168.0.2"`
-	hosts, err = EvaluateInventory("", input, []string{}, []string{})
+	hosts, err = EvaluateInventory("sh -c", "", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {
@@ -36,7 +36,7 @@ func TestEvaluateInventory(t *testing.T) {
 
 	// IP inventory 2 hosts splitted on tab
 	input = `echo "192.168.0.1\t192.168.0.2"`
-	hosts, err = EvaluateInventory("", input, []string{}, []string{})
+	hosts, err = EvaluateInventory("sh -c", "", input, []string{}, []string{})
 	test.CheckErr(t, err)
 	wanted = []string{"192.168.0.1", "192.168.0.2"}
 	for i := range wanted {

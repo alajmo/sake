@@ -11,12 +11,26 @@ import (
 	"github.com/alajmo/sake/core/run"
 )
 
+var strategies = []string{
+	"linear\texecute task for each host before proceeding to the next task (default)",
+	"host_pinned\texecutes tasks (serial) for a host before proceeding to the next host",
+	"free\texecutes tasks without waiting for other tasks",
+}
+
+var orders = []string{
+	"inventory\tThe order is as provided by the inventory",
+	"reverse_inventory\tThe order is the reverse of the inventory",
+	"sorted\tHosts are alphabetically sorted by host",
+	"reverse_sorted\tHosts are sorted by host in reverse alphabetical order",
+	"random\tHosts are randomly ordered",
+}
+
 var reports = []string{
-	"basic\tshow basic report",
-	"rc\tshow return code for each server and task",
-	"task\tshow report status for each server and task",
-	"time\tshow time report for each server and task",
-	"all\tshow all available reports",
+	"recap\tshow basic report",
+	"rc\tshow return code for each host and task",
+	"task\tshow task status for each host and task",
+	"time\tshow time report for each host and task",
+	"all\tshow available reports",
 }
 
 func runCmd(config *dao.Config, configErr *error) *cobra.Command {
@@ -41,18 +55,31 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 			// This is necessary since cobra doesn't support pointers for bools
 			// (that would allow us to use nil as default value)
-			setRunFlags.Describe = cmd.Flags().Changed("describe")
-			setRunFlags.Silent = cmd.Flags().Changed("silent")
-			setRunFlags.Attach = cmd.Flags().Changed("attach")
 			setRunFlags.All = cmd.Flags().Changed("all")
-			setRunFlags.Invert = cmd.Flags().Changed("invert")
-			setRunFlags.Local = cmd.Flags().Changed("local")
-			setRunFlags.TTY = cmd.Flags().Changed("tty")
-			setRunFlags.OmitEmpty = cmd.Flags().Changed("omit-empty")
 			setRunFlags.AnyErrorsFatal = cmd.Flags().Changed("any-errors-fatal")
+			setRunFlags.Attach = cmd.Flags().Changed("attach")
+			setRunFlags.Batch = cmd.Flags().Changed("batch")
+			setRunFlags.BatchP = cmd.Flags().Changed("batch-p")
+			setRunFlags.Describe = cmd.Flags().Changed("describe")
 			setRunFlags.IgnoreErrors = cmd.Flags().Changed("ignore-errors")
 			setRunFlags.IgnoreUnreachable = cmd.Flags().Changed("ignore-unreachable")
+			setRunFlags.Invert = cmd.Flags().Changed("invert")
+			setRunFlags.Limit = cmd.Flags().Changed("limit")
+			setRunFlags.LimitP = cmd.Flags().Changed("limit-p")
+			setRunFlags.ListHosts = cmd.Flags().Changed("list-hosts")
+			setRunFlags.Order = cmd.Flags().Changed("order")
+			setRunFlags.Local = cmd.Flags().Changed("local")
+			setRunFlags.OmitEmptyRows = cmd.Flags().Changed("omit-empty-rows")
+			setRunFlags.OmitEmptyColumns = cmd.Flags().Changed("omit-empty-columns")
+			setRunFlags.Regex = cmd.Flags().Changed("regex")
 			setRunFlags.Report = cmd.Flags().Changed("report")
+			setRunFlags.Servers = cmd.Flags().Changed("servers")
+			setRunFlags.Silent = cmd.Flags().Changed("silent")
+			setRunFlags.Confirm = cmd.Flags().Changed("confirm")
+			setRunFlags.Step = cmd.Flags().Changed("step")
+			setRunFlags.TTY = cmd.Flags().Changed("tty")
+			setRunFlags.Tags = cmd.Flags().Changed("tags")
+			setRunFlags.Verbose = cmd.Flags().Changed("verbose")
 
 			maxFailPercentage, err := cmd.Flags().GetUint8("max-fail-percentage")
 			core.CheckIfError(err)
@@ -94,26 +121,27 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 
 	cmd.Flags().BoolVar(&runFlags.DryRun, "dry-run", false, "print the task to see what will be executed")
 	cmd.Flags().BoolVar(&runFlags.Describe, "describe", false, "print task information")
+	cmd.Flags().BoolVar(&runFlags.ListHosts, "list-hosts", false, "print hosts that will be targetted")
+	cmd.Flags().BoolVarP(&runFlags.Verbose, "verbose", "V", false, "enable all diagnostics")
 
-	cmd.Flags().StringVarP(&runFlags.Strategy, "strategy", "S", "", "set execution strategy [free|row|column]")
+	cmd.Flags().StringVarP(&runFlags.Strategy, "strategy", "S", "", "set execution strategy [linear|host_pinned|free]")
 	err := cmd.RegisterFlagCompletionFunc("strategy", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 
-		valid := []string{"free", "row", "column"}
-		return valid, cobra.ShellCompDirectiveDefault
+		return strategies, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().Uint32P("forks", "f", 10000, "set maximal number of processes to run in parallel")
+	cmd.Flags().Uint32P("forks", "f", 10000, "max number of concurrent processes")
 	cmd.Flags().Uint32P("batch", "b", 0, "set number of hosts to run in parallel")
-	cmd.Flags().Uint8P("batch-p", "B", 0, "set percentage of servers to run in parallel [0-100]")
+	cmd.Flags().Uint8P("batch-p", "B", 0, "set percentage of hosts to run in parallel [0-100]")
 	cmd.MarkFlagsMutuallyExclusive("batch", "batch-p")
 
-	cmd.Flags().BoolVarP(&runFlags.All, "all", "a", false, "target all servers")
-	cmd.Flags().BoolVarP(&runFlags.Invert, "invert", "v", false, "invert matching on servers")
-	cmd.Flags().StringVarP(&runFlags.Regex, "regex", "r", "", "target servers on host regex")
+	cmd.Flags().BoolVarP(&runFlags.All, "all", "a", false, "target all hosts")
+	cmd.Flags().BoolVarP(&runFlags.Invert, "invert", "v", false, "invert matching on hosts")
+	cmd.Flags().StringVarP(&runFlags.Regex, "regex", "r", "", "target hosts on host regex")
 
 	cmd.Flags().StringSliceVarP(&runFlags.Servers, "servers", "s", []string{}, "target servers by names")
 	err = cmd.RegisterFlagCompletionFunc("servers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -125,7 +153,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().StringSliceVarP(&runFlags.Tags, "tags", "t", []string{}, "target servers by tags")
+	cmd.Flags().StringSliceVarP(&runFlags.Tags, "tags", "t", []string{}, "target hosts by tags")
 	err = cmd.RegisterFlagCompletionFunc("tags", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
@@ -135,13 +163,22 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().StringVarP(&runFlags.Target, "target", "T", "", "target servers by target name")
+	cmd.Flags().StringVarP(&runFlags.Target, "target", "T", "", "target hosts by target name")
 	err = cmd.RegisterFlagCompletionFunc("target", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
 		values := config.GetTargetNames()
 		return values, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
+
+	cmd.Flags().StringVar(&runFlags.Order, "order", "", "order hosts")
+	err = cmd.RegisterFlagCompletionFunc("order", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
+		return orders, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
 
@@ -165,18 +202,21 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv]")
+	cmd.Flags().StringVarP(&runFlags.Output, "output", "o", "", "set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]")
 	err = cmd.RegisterFlagCompletionFunc("output", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
 		}
-		valid := []string{"text", "table", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv"}
+		valid := []string{"text", "table", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv", "none"}
 		return valid, cobra.ShellCompDirectiveDefault
 	})
 	core.CheckIfError(err)
 
-	cmd.Flags().BoolVar(&runFlags.OmitEmpty, "omit-empty", false, "omit empty results for table output")
+	cmd.Flags().BoolVar(&runFlags.OmitEmptyRows, "omit-empty-rows", false, "omit empty row for table output")
+	cmd.Flags().BoolVar(&runFlags.OmitEmptyColumns, "omit-empty-columns", false, "omit empty column for table output")
 	cmd.Flags().BoolVarP(&runFlags.Silent, "silent", "q", false, "omit showing loader when running tasks")
+	cmd.Flags().BoolVar(&runFlags.Confirm, "confirm", false, "confirm root task before running")
+	cmd.Flags().BoolVar(&runFlags.Step, "step", false, "confirm each task before running")
 	cmd.PersistentFlags().StringVar(&runFlags.Theme, "theme", "default", "set theme")
 	err = cmd.RegisterFlagCompletionFunc("theme", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
@@ -193,7 +233,7 @@ func runCmd(config *dao.Config, configErr *error) *cobra.Command {
 	cmd.MarkFlagsMutuallyExclusive("tty", "attach", "local")
 	cmd.Flags().BoolVarP(&runFlags.Edit, "edit", "e", false, "edit task")
 
-	cmd.Flags().StringSliceVarP(&runFlags.Report, "report", "R", []string{"basic"}, "reports to show")
+	cmd.Flags().StringSliceVarP(&runFlags.Report, "report", "R", []string{"recap"}, "reports to show")
 	err = cmd.RegisterFlagCompletionFunc("report", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault

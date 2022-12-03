@@ -28,13 +28,14 @@ type ServerTask struct {
 func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 	task := run.Task
 	servers := run.Servers
+	uServers := run.UnreachableServers
 
 	// TODO: data, reportData should be pointer?
 	var data dao.TableOutput
 	var reportData dao.ReportData
 	var dataMutex = sync.RWMutex{}
-	data.Headers = append(reportData.Headers, "server")
-	reportData.Headers = append(reportData.Headers, "server")
+	data.Headers = append(reportData.Headers, "host")
+	reportData.Headers = append(reportData.Headers, "host")
 	// Append Command names if set
 	for _, subTask := range task.Tasks {
 		data.Headers = append(data.Headers, subTask.Name)
@@ -42,11 +43,18 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 	}
 	// Populate the rows (server name is first cell, then commands and cmd output is set to empty string)
 	for i, p := range servers {
-		data.Rows = append(data.Rows, dao.Row{Columns: []string{p.Name}})
-		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Name, Rows: []dao.Report{}})
+		data.Rows = append(data.Rows, dao.Row{Columns: []string{p.Host}})
+		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Host, Rows: []dao.Report{}})
 		for range task.Tasks {
 			data.Rows[i].Columns = append(data.Rows[i].Columns, "")
 			reportData.Tasks[i].Rows = append(reportData.Tasks[i].Rows, dao.Report{})
+		}
+	}
+	k := len(servers)
+	for i, p := range uServers {
+		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Host, Rows: []dao.Report{}})
+		for range task.Tasks {
+			reportData.Tasks[k+i].Rows = append(reportData.Tasks[k+i].Rows, dao.Report{Status: dao.Unreachable})
 		}
 	}
 
@@ -54,23 +62,30 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 	switch task.Spec.Strategy {
 	case "free":
 		err = run.free(&run.Config, data, reportData, &dataMutex, dryRun)
-	case "column":
-		err = run.column(&run.Config, data, reportData, &dataMutex, dryRun)
+	case "host_pinned":
+		err = run.hostPinned(&run.Config, data, reportData, &dataMutex, dryRun)
 	default:
-		err = run.row(&run.Config, data, reportData, &dataMutex, dryRun)
+		err = run.linear(&run.Config, data, reportData, &dataMutex, dryRun)
 	}
 
 	reportData.Status = make(map[dao.TaskStatus]int, 5)
 	for i := range reportData.Tasks {
 		reportData.Tasks[i].Status = make(map[dao.TaskStatus]int, 5)
 		for j := range reportData.Tasks[i].Rows {
-			status := reportData.Tasks[i].Rows[j].Status
-			reportData.Tasks[i].Status[status] += 1
-			reportData.Status[status] += 1
+			if reportData.Tasks[i].Rows[j].Status == dao.Unreachable {
+				status := reportData.Tasks[i].Rows[j].Status
+				reportData.Tasks[i].Status[status] = 1
+				reportData.Status[status] += 1
+				break
+			} else {
+				status := reportData.Tasks[i].Rows[j].Status
+				reportData.Tasks[i].Status[status] += 1
+				reportData.Status[status] += 1
+			}
 		}
 	}
 
-	if err != nil && run.Task.Spec.AnyErrorsFatal {
+	if err != nil {
 		switch err := err.(type) {
 		case *ssh.ExitError:
 			return data, reportData, &core.ExecError{Err: err, ExitCode: err.ExitStatus()}
@@ -94,8 +109,13 @@ func (run *Run) free(
 	serverLen := len(run.Servers)
 	taskLen := len(run.Task.Tasks)
 	batch := int(run.Task.Spec.Batch)
-	forks := CalcFreeForks(batch, taskLen, run.Task.Spec.Forks)
 	maxFailPercentage := run.Task.Spec.MaxFailPercentage
+	var forks int
+	if run.Task.Spec.Step {
+		forks = 1
+	} else {
+		forks = CalcForks(batch, run.Task.Spec.Forks)
+	}
 
 	register := make(map[string]map[string]string)
 	var runs []ServerTask
@@ -119,7 +139,9 @@ func (run *Run) free(
 		quotient += 1
 	}
 
+	taskContinue := false
 	failedHosts := make(chan bool, serverLen*taskLen)
+	var mu sync.Mutex
 	waitChan := make(chan struct{}, forks)
 	for k := 0; k < quotient; k++ {
 		var wg sync.WaitGroup
@@ -144,6 +166,22 @@ func (run *Run) free(
 				defer wg.Done()
 				waitChan <- struct{}{}
 
+				if run.Task.Spec.Step && !taskContinue {
+					taskOption, err := StepTaskExecute(r.Cmd.Name, r.Server.Host, &mu)
+					if err != nil {
+						errCh <- err
+						failedHosts <- true
+					}
+					switch taskOption {
+					case Yes:
+					case No:
+						<-waitChan
+						return
+					case Continue:
+						taskContinue = true
+					}
+				}
+
 				err := run.tableWork(r, r.j, register, data, reportData, dataMutex, dryRun)
 				<-waitChan
 				if err != nil {
@@ -167,7 +205,7 @@ func (run *Run) free(
 	return nil
 }
 
-func (run *Run) row(
+func (run *Run) linear(
 	config *dao.Config,
 	data dao.TableOutput,
 	reportData dao.ReportData,
@@ -177,7 +215,12 @@ func (run *Run) row(
 	serverLen := len(run.Servers)
 	taskLen := len(run.Task.Tasks)
 	batch := int(run.Task.Spec.Batch)
-	forks := CalcForks(batch, run.Task.Spec.Forks)
+	var forks int
+	if run.Task.Spec.Step {
+		forks = 1
+	} else {
+		forks = CalcForks(batch, run.Task.Spec.Forks)
+	}
 	maxFailPercentage := run.Task.Spec.MaxFailPercentage
 
 	register := make(map[string]map[string]string)
@@ -205,8 +248,10 @@ func (run *Run) row(
 	}
 
 	numFailed := 0
+	taskContinue := false
 	failedHosts := make(map[string]bool, serverLen)
 	waitChan := make(chan struct{}, forks)
+	var mu sync.Mutex
 	for t := 0; t < taskLen; t++ {
 		var wg sync.WaitGroup
 
@@ -231,6 +276,22 @@ func (run *Run) row(
 				}
 
 				waitChan <- struct{}{}
+
+				if run.Task.Spec.Step && !taskContinue {
+					taskOption, err := StepTaskExecute(run.Task.Tasks[t].Name, r.Server.Host, &mu)
+					if err != nil {
+						return err
+					}
+					switch taskOption {
+					case Yes:
+					case No:
+						<-waitChan
+						continue
+					case Continue:
+						taskContinue = true
+					}
+				}
+
 				wg.Add(1)
 
 				go func(
@@ -285,7 +346,7 @@ func (run *Run) row(
 	return nil
 }
 
-func (run *Run) column(
+func (run *Run) hostPinned(
 	config *dao.Config,
 	data dao.TableOutput,
 	reportData dao.ReportData,
@@ -295,7 +356,12 @@ func (run *Run) column(
 	serverLen := len(run.Servers)
 	taskLen := len(run.Task.Tasks)
 	batch := int(run.Task.Spec.Batch)
-	forks := CalcForks(batch, run.Task.Spec.Forks)
+	var forks int
+	if run.Task.Spec.Step {
+		forks = 1
+	} else {
+		forks = CalcForks(batch, run.Task.Spec.Forks)
+	}
 	maxFailPercentage := run.Task.Spec.MaxFailPercentage
 
 	register := make(map[string]map[string]string)
@@ -320,8 +386,10 @@ func (run *Run) column(
 		quotient += 1
 	}
 
+	taskContinue := false
 	failedHosts := make(chan bool, serverLen)
 	waitChan := make(chan struct{}, forks)
+	var mu sync.Mutex
 	for k := 0; k < quotient; k++ {
 		var wg sync.WaitGroup
 		errCh := make(chan error, batch)
@@ -345,6 +413,23 @@ func (run *Run) column(
 				defer wg.Done()
 				for _, j := range r {
 					waitChan <- struct{}{}
+
+					if run.Task.Spec.Step && !taskContinue {
+						taskOption, err := StepTaskExecute(j.Cmd.Name, j.Server.Host, &mu)
+						if err != nil {
+							errCh <- err
+							failedHosts <- true
+							break
+						}
+						switch taskOption {
+						case Yes:
+						case No:
+							<-waitChan
+							continue
+						case Continue:
+							taskContinue = true
+						}
+					}
 
 					err := run.tableWork(j, 0, register[j.Server.Name], data, reportData, dataMutex, dryRun)
 					<-waitChan
@@ -397,7 +482,7 @@ func (run *Run) tableWork(
 
 	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
 	shell = core.FormatShell(shell)
-	workDir := getWorkDir(*r.Cmd, *r.Server)
+	workDir := getWorkDir((*r.Cmd).Local, (*r.Server).Local, (*r.Cmd).WorkDir, (*r.Server).WorkDir, (*r.Cmd).RootDir, (*r.Server).RootDir)
 	t := TaskContext{
 		rIndex:  r.i,
 		cIndex:  r.j + 1, // first index (0) is server name
@@ -434,6 +519,7 @@ func (run *Run) tableWork(
 
 	reportData.Tasks[r.i].Rows[r.j].ReturnCode = errCode
 
+	// TODO: Add skipped env variable
 	if r.Cmd.Register != "" {
 		register[r.Cmd.Register] = strings.TrimSuffix(out, "\n")
 		register[r.Cmd.Register+"_stdout"] = stdout
@@ -441,10 +527,15 @@ func (run *Run) tableWork(
 		register[r.Cmd.Register+"_rc"] = fmt.Sprint(reportData.Tasks[t.rIndex].Rows[r.j+1].ReturnCode)
 		if err != nil {
 			register[r.Cmd.Register+"_failed"] = "true"
+			if r.Task.Spec.IgnoreErrors || r.Cmd.IgnoreErrors {
+				register[r.Cmd.Register+"_status"] = "ignored"
+			} else {
+				register[r.Cmd.Register+"_status"] = "failed"
+			}
 		} else {
 			register[r.Cmd.Register+"_failed"] = "false"
+			register[r.Cmd.Register+"_status"] = "ok"
 		}
-		// TODO: Add skipped env variable
 	}
 
 	if err != nil {

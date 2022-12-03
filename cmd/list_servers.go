@@ -102,11 +102,11 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 
 	if len(servers) > 0 {
 		options := print.PrintTableOptions{
-			Output:               listFlags.Output,
-			Theme:                *theme,
-			OmitEmpty:            false,
-			SuppressEmptyColumns: true,
-			Resource:             "server",
+			Output:           listFlags.Output,
+			Theme:            *theme,
+			OmitEmptyRows:    false,
+			OmitEmptyColumns: true,
+			Resource:         "server",
 		}
 
 		var headers []string
@@ -117,7 +117,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 		}
 
 		rows := dao.GetTableData(servers, headers)
-		err := print.PrintTable(rows, options, headers, []string{})
+		err := print.PrintTable(rows, options, headers, []string{}, true, true)
 		core.CheckIfError(err)
 	}
 }

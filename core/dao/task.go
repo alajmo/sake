@@ -100,7 +100,7 @@ type TaskRefYAML struct {
 	Task         string    `yaml:"task"`
 	Register     string    `yaml:"register"`
 	Local        *bool     `yaml:"local"`
-	IgnoreErrors *bool	   `yaml:"ignore_errors"`
+	IgnoreErrors *bool     `yaml:"ignore_errors"`
 	TTY          *bool     `yaml:"tty"`
 	Env          yaml.Node `yaml:"env"`
 }
@@ -131,28 +131,6 @@ func (t Task) GetValue(key string, _ int) string {
 	default:
 		return ""
 	}
-}
-
-func (t *Task) GetDefaultEnvs() []string {
-	var defaultEnvs []string
-	for _, env := range t.Envs {
-		if strings.Contains(env, "SAKE_TASK_") {
-			defaultEnvs = append(defaultEnvs, env)
-		}
-	}
-
-	return defaultEnvs
-}
-
-func (t *Task) GetNonDefaultEnvs() []string {
-	var envs []string
-	for _, env := range t.Envs {
-		if !strings.Contains(env, "SAKE_TASK_") {
-			envs = append(envs, env)
-		}
-	}
-
-	return envs
 }
 
 func (t *Task) GetContext() string {
@@ -242,18 +220,6 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 		task.Shell = taskYAML.Shell
 		task.Attach = taskYAML.Attach
 
-		defaultEnvs := []string{
-			fmt.Sprintf("SAKE_TASK_ID=%s", task.ID),
-			fmt.Sprintf("SAKE_TASK_NAME=%s", taskYAML.Name),
-			fmt.Sprintf("SAKE_TASK_DESC=%s", taskYAML.Desc),
-		}
-
-		if taskYAML.Local {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local))
-		}
-
-		task.Envs = append(task.Envs, defaultEnvs...)
-
 		if !IsNullNode(taskYAML.Env) {
 			err := CheckIsMappingNode(taskYAML.Env)
 			if err != nil {
@@ -270,9 +236,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 		if len(taskYAML.Spec.Content) > 0 {
 			// Inline Spec
 			spec, specErrors := c.DecodeSpec("", taskYAML.Spec)
-			for _, e := range specErrors {
-				taskErrors[j].Errors = append(taskErrors[j].Errors, e)
-			}
+			taskErrors[j].Errors = append(taskErrors[j].Errors, specErrors...)
 			task.Spec = *spec
 		} else if taskYAML.Spec.Value != "" {
 			// Spec reference
@@ -285,9 +249,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 		if len(taskYAML.Target.Content) > 0 {
 			// Inline Target
 			target, targetErrors := c.DecodeTarget("", taskYAML.Target)
-			for _, e := range targetErrors {
-				taskErrors[j].Errors = append(taskErrors[j].Errors, e)
-			}
+			taskErrors[j].Errors = append(taskErrors[j].Errors, targetErrors...)
 			task.Target = *target
 		} else if taskYAML.Target.Value != "" {
 			// Target reference
@@ -405,6 +367,9 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 	// If any runtime target flags are used, disregard config specified task targets
 	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
 		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
+		if err != nil {
+			return []Server{}, err
+		}
 	} else if runFlags.Target != "" {
 		target, err := c.GetTarget(runFlags.Target)
 		if err != nil {
@@ -412,12 +377,14 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 		}
 		task.Target = *target
 		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
+		if err != nil {
+			return []Server{}, err
+		}
 	} else {
 		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
-	}
-
-	if err != nil {
-		return []Server{}, err
+		if err != nil {
+			return []Server{}, err
+		}
 	}
 
 	var limit uint32

@@ -19,6 +19,7 @@ type Client interface {
 	Signal(int, os.Signal) error
 	GetName() string
 	Prefix() string
+	Connected() bool
 }
 
 type ErrConnect struct {

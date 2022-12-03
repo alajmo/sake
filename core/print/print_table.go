@@ -12,12 +12,12 @@ import (
 )
 
 type PrintTableOptions struct {
-	Title                string
-	Output               string
-	Theme                dao.Theme
-	Resource             string
-	OmitEmpty            bool
-	SuppressEmptyColumns bool
+	Title            string
+	Output           string
+	Theme            dao.Theme
+	Resource         string
+	OmitEmptyRows    bool
+	OmitEmptyColumns bool
 }
 
 func PrintTable[T dao.Items](
@@ -25,23 +25,25 @@ func PrintTable[T dao.Items](
 	options PrintTableOptions,
 	headers []string,
 	footers []string,
+	padTop bool,
+	padBottom bool,
 ) error {
 
 	switch options.Output {
 	case "table", "table-1":
-		return table1(data, options, headers, footers)
+		return table1(data, options, headers, footers, padTop, padBottom)
 	case "table-2":
-		return table2(data, options, headers, footers)
+		return table2(data, options, headers, footers, padTop, padBottom)
 	case "table-3":
-		return table3(data, options, headers, footers)
+		return table3(data, options, headers, footers, padTop, padBottom)
 	case "table-4":
-		return table4(data, options, headers, footers)
+		return table4(data, options, headers, footers, padTop, padBottom)
 	case "csv":
 		return printCSV(data, options, headers, footers)
 	case "json":
 		return printJSON(data, options, headers)
 	default:
-		return &core.OutputFormatNotFound{Name: options.Output}
+		return table1(data, options, headers, footers, padTop, padBottom)
 	}
 }
 
@@ -58,7 +60,14 @@ func PrintTable[T dao.Items](
 
 	ip6-2  | 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
-func table1[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
+func table1[T dao.Items](
+	data []T,
+	options PrintTableOptions,
+	headers []string,
+	footers []string,
+	padTop bool,
+	padBottom bool,
+) error {
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -76,7 +85,7 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 			row = append(row, value)
 		}
 
-		if options.OmitEmpty {
+		if options.OmitEmptyRows {
 			empty := true
 			for _, v := range row[1:] {
 				if v != "" {
@@ -102,7 +111,7 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 		t.SetTitle(options.Title)
 	}
 
-	RenderTable(t, options.Output)
+	RenderTable(t, options.Output, padTop, padBottom)
 
 	return nil
 }
@@ -128,7 +137,14 @@ func table1[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 
 	Kernel   | 5.18.0             | 5.18.0
 */
-func table2[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
+func table2[T dao.Items](
+	data []T,
+	options PrintTableOptions,
+	headers []string,
+	footers []string,
+	padTop bool,
+	padBottom bool,
+) error {
 	tableHeaders := table.Row{options.Resource}
 	rh := []string{options.Resource}
 	for _, h := range data {
@@ -147,7 +163,7 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 			row = append(row, value)
 		}
 
-		if options.OmitEmpty {
+		if options.OmitEmptyRows {
 			empty := true
 			for _, v := range row[1:] {
 				if v != "" {
@@ -162,7 +178,7 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 		t.AppendRow(row)
 	}
 
-	RenderTable(t, options.Output)
+	RenderTable(t, options.Output, padTop, padBottom)
 
 	return nil
 }
@@ -184,7 +200,14 @@ func table2[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 	--------------------+--------------+--------------+--------
 	 2001:3984:3989::11 | 54666c1891fb | Ubuntu 22.04 | 5.18.0
 */
-func table3[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
+func table3[T dao.Items](
+	data []T,
+	options PrintTableOptions,
+	headers []string,
+	footers []string,
+	padTop bool,
+	padBottom bool,
+) error {
 	var tableHeaders table.Row
 	for _, h := range headers[1:] {
 		tableHeaders = append(tableHeaders, h)
@@ -205,7 +228,7 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 		}
 		t.AppendRow(row)
 
-		if options.OmitEmpty {
+		if options.OmitEmptyRows {
 			empty := true
 			for _, v := range row {
 				if v != "" {
@@ -217,7 +240,7 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 			}
 		}
 
-		RenderTable(t, options.Output)
+		RenderTable(t, options.Output, padTop, padBottom)
 	}
 
 	return nil
@@ -262,7 +285,14 @@ func table3[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 
 	Kernel   | 5.18.0
 */
-func table4[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
+func table4[T dao.Items](
+	data []T,
+	options PrintTableOptions,
+	headers []string,
+	footers []string,
+	padTop bool,
+	padBottom bool,
+) error {
 	for _, s := range data {
 		val := s.GetValue(fmt.Sprintf("%v", s), 0)
 		t := CreateTable(options, []string{options.Resource, val})
@@ -276,7 +306,7 @@ func table4[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 			row = append(row, h)
 			row = append(row, value)
 
-			if options.OmitEmpty {
+			if options.OmitEmptyRows {
 				empty := true
 				for _, v := range row[1:] {
 					if v != "" {
@@ -291,7 +321,7 @@ func table4[T dao.Items](data []T, options PrintTableOptions, headers []string, 
 			t.AppendRow(row)
 		}
 
-		RenderTable(t, options.Output)
+		RenderTable(t, options.Output, padTop, padBottom)
 	}
 
 	return nil
@@ -327,7 +357,7 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 			}
 		}
 
-		if options.OmitEmpty {
+		if options.OmitEmptyRows {
 			empty := true
 			for _, v := range row[1:] {
 				if v != "" {
@@ -347,7 +377,7 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 		t.SetTitle(options.Title)
 	}
 
-	RenderTable(t, options.Output)
+	RenderTable(t, options.Output, true, true)
 
 	return nil
 }

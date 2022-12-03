@@ -11,6 +11,11 @@ targets:
     all: true
 
 specs:
+  default:
+      output: table
+      strategy: free
+      batch: 1
+
   table:
     output: table
 
@@ -19,7 +24,7 @@ specs:
 
   info:
       output: table
-      parallel: true
+      strategy: free
       ignore_errors: true
       ignore_unreachable: true
       any_errors_fatal: false

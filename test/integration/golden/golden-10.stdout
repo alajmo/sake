@@ -8,10 +8,13 @@ WantErr: false
 name: ping
 desc: ping server
 theme: default
+spec:
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 target:
     all: true
-spec:
-    output: text
 cmd: 
     echo pong
 
@@ -21,12 +24,15 @@ name: real-ping
 desc: ping server
 theme: default
 local: true
+spec:
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 target:
     all: true
-spec:
-    output: text
 cmd: 
-    ping $SAKE_SERVER_HOST -c 2
+    ping $S_HOST -c 2
 
 --
 
@@ -34,15 +40,16 @@ task: print-host
 name: Host
 desc: print host
 theme: default
-target:
-    all: true
 spec:
+    strategy: free
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 cmd: 
-    echo $SAKE_SERVER_HOST
+    echo $S_HOST
 
 --
 
@@ -50,13 +57,14 @@ task: print-hostname
 name: Hostname
 desc: print hostname
 theme: default
-target:
-    all: true
 spec:
+    strategy: free
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 cmd: 
     hostname
 
@@ -66,13 +74,14 @@ task: print-os
 name: OS
 desc: print OS
 theme: default
-target:
-    all: true
 spec:
+    strategy: free
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 cmd: 
     echo OS
 
@@ -82,13 +91,14 @@ task: print-kernel
 name: Kernel
 desc: Print kernel version
 theme: default
-target:
-    all: true
 spec:
+    strategy: free
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 cmd: 
     echo kernel
 
@@ -97,13 +107,14 @@ cmd:
 name: info
 desc: get remote info
 theme: default
-target:
-    all: true
 spec:
+    strategy: free
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 tasks: 
     - OS: print OS
     - Kernel: Print kernel version
@@ -112,10 +123,11 @@ tasks:
 
 name: env
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 env: 
     foo: xyz
     task: local
@@ -130,10 +142,11 @@ cmd:
 
 name: env-ref
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 env: 
     task: 123
     xyz: xyz
@@ -149,10 +162,11 @@ cmd:
 
 name: env-complex
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 env: 
     foo: xyz
     task: local
@@ -164,37 +178,27 @@ tasks:
 
 name: env-default
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 cmd: 
     echo "# SERVER"
-    echo "SAKE_SERVER_NAME $SAKE_SERVER_NAME"
-    echo "SAKE_SERVER_DESC $SAKE_SERVER_DESC"
-    echo "SAKE_SERVER_TAGS $SAKE_SERVER_TAGS"
-    echo "SAKE_SERVER_HOST $SAKE_SERVER_HOST"
-    echo "SAKE_SERVER_USER $SAKE_SERVER_USER"
-    echo "SAKE_SERVER_PORT $SAKE_SERVER_PORT"
-    echo "SAKE_SERVER_LOCAL $SAKE_SERVER_LOCAL"
-    
-    echo
-    echo "# TASK"
-    echo "SAKE_TASK_ID $SAKE_TASK_ID"
-    echo "SAKE_TASK_NAME $SAKE_TASK_NAME"
-    echo "SAKE_TASK_DESC $SAKE_TASK_DESC"
-    echo "SAKE_TASK_LOCAL $SAKE_TASK_LOCAL"
-    
-    echo
-    echo "# CONFIG"
-    echo "SAKE_KNOWN_HOSTS_FILE $SAKE_KNOWN_HOSTS_FILE"
+    echo "S_TAGS $S_TAGS"
+    echo "S_HOST $S_HOST"
+    echo "S_USER $S_USER"
+    echo "S_PORT $S_PORT"
 
 --
 
 name: a
 theme: default
 spec:
-    output: text
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 tasks: 
     - ping: ping server
 
@@ -203,7 +207,10 @@ tasks:
 name: b
 theme: default
 spec:
-    output: text
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 tasks: 
     - ping: ping server
     - ping: ping server
@@ -213,7 +220,10 @@ tasks:
 name: c
 theme: default
 spec:
-    output: text
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 tasks: 
     - ping: ping server
     - ping: ping server
@@ -223,10 +233,11 @@ tasks:
 
 name: d
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 tasks: 
     - ping: ping server
     - ping: ping server
@@ -242,7 +253,10 @@ name: ref
 theme: default
 work_dir: /usr
 spec:
-    output: text
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 cmd: 
     pwd
 
@@ -252,7 +266,10 @@ task: work-nested
 name: nested
 theme: default
 spec:
-    output: text
+    strategy: free
+    batch: 1
+    output: table
+    report: recap
 tasks: 
     - ref
 
@@ -261,10 +278,11 @@ tasks:
 name: work-dir-1
 theme: default
 work_dir: /home
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 tasks: 
     - ref
     - Override inline ref
@@ -275,10 +293,11 @@ tasks:
 
 name: work-dir-2
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 tasks: 
     - ref
     - Override inline ref
@@ -289,10 +308,11 @@ tasks:
 
 name: work-dir-3
 theme: default
-target:
-    all: true
 spec:
     output: table
+    report: recap
+target:
+    all: true
 tasks: 
     - ref
     - ref
@@ -301,10 +321,11 @@ tasks:
 
 name: fatal
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
+    report: recap
+target:
+    tags: reachable
 cmd: 
     exit 1
 
@@ -312,11 +333,12 @@ cmd:
 
 name: fatal-true
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
     any_errors_fatal: true
+    report: recap
+target:
+    tags: reachable
 cmd: 
     exit 1
 
@@ -324,33 +346,37 @@ cmd:
 
 name: errors
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
+    report: recap
+target:
+    tags: reachable
 tasks: 
-    - cmd
-    - cmd
-    - cmd
+    - task-0
+    - task-1
+    - task-2
 
 --
 
 name: errors-true
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
     ignore_errors: true
+    report: recap
+target:
+    tags: reachable
 tasks: 
-    - cmd
-    - cmd
-    - cmd
+    - task-0
+    - task-1
+    - task-2
 
 --
 
 name: unreachable
 theme: default
+spec:
+    report: recap
 target:
     all: true
 cmd: 
@@ -360,10 +386,11 @@ cmd:
 
 name: unreachable-true
 theme: default
-target:
-    all: true
 spec:
     ignore_unreachable: true
+    report: recap
+target:
+    all: true
 cmd: 
     echo 123
 
@@ -371,10 +398,11 @@ cmd:
 
 name: empty
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
+    report: recap
+target:
+    tags: reachable
 cmd: 
     if [[ -d ".ssh" ]]
     then
@@ -385,11 +413,12 @@ cmd:
 
 name: empty-true
 theme: default
-target:
-    tags: reachable
 spec:
     output: table
-    omit_empty: true
+    omit_empty_rows: true
+    report: recap
+target:
+    tags: reachable
 cmd: 
     if [[ -d ".ssh" ]]
     then
@@ -402,8 +431,9 @@ name: output
 theme: default
 spec:
     output: table
+    report: recap
 tasks: 
-    - cmd
-    - cmd
-    - cmd
+    - task-0
+    - task-1
+    - task-2
 

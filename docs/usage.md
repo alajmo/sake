@@ -58,7 +58,7 @@ TASK ping: Pong ************
 0.0.0.0 | pong
 
 # Count number of files in each servers in parallel
-$ sake exec --all --output table --parallel 'find . -type f | wc -l'
+$ sake exec --all --output table --strategy=free 'find . -type f | wc -l'
 
  Server    | Output
 -----------+--------

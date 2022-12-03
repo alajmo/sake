@@ -20,7 +20,7 @@ func CreateTable(
 	t.SetOutputMirror(os.Stdout)
 
 	t.SetStyle(FormatTable(theme))
-	if options.SuppressEmptyColumns {
+	if options.OmitEmptyColumns {
 		t.SuppressEmptyColumns()
 	}
 
@@ -77,7 +77,12 @@ func FormatTable(theme dao.Theme) table.Style {
 	}
 }
 
-func RenderTable(t table.Writer, output string) {
+func RenderTable(
+	t table.Writer,
+	output string,
+	padTop bool,
+	padBottom bool,
+) {
 	switch output {
 	case "markdown":
 		t.RenderMarkdown()
@@ -86,8 +91,12 @@ func RenderTable(t table.Writer, output string) {
 	case "csv":
 		t.RenderCSV()
 	default:
-		fmt.Println()
+		if padTop {
+			fmt.Println()
+		}
 		t.Render()
-		fmt.Println()
+		if padBottom {
+			fmt.Println()
+		}
 	}
 }
