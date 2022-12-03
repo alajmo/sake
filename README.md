@@ -151,6 +151,7 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)
 
+
 - Documentation
   - [Inventory](docs/inventory.md)
   - [Task Execution](docs/task-execution.md)
@@ -159,11 +160,13 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
   - [Working Directory](docs/work-dir.md)
   - [Output](docs/output.md)
 
+
 - Project
   - [Background](docs/background.md)
   - [Roadmap](docs/roadmap.md)
   - [Ansible](docs/ansible.md)
   - [Performance](docs/performance.md)
+
 
 - Development
   - [Development](docs/development.md)
