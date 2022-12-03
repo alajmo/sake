@@ -168,7 +168,6 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 		return Config{}, FormatErrors(re.Resource, re.Errors)
 	}
 
-
 	config, configErr := configYAML.parseConfig()
 	config.SSHConfigFile = sshConfigPath
 	config.CheckConfigNoColor()

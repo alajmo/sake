@@ -11,15 +11,6 @@ servers:
     local: true
     tags: [local]
 
-  remote:
-    host: 0.0.0.0
-    # host: 172.24.2.2
-    local: true
-    # user: test
-    # identity_file: ../keys/id_ed25519_pem_no
-    # work_dir: does_not_exist
-    tags: [kaka]
-
   list:
     desc: many hosts using list of hosts
     hosts:
@@ -209,67 +200,59 @@ tasks:
           echo "out:"
           echo "$out"
 
-  # ping:
-  #   target: all
-  #   spec: host_pinned
-  #   desc: ping server
-  #   cmd: echo pong
-
   ping:
-    target:
-      tags: [kaka]
-    # cmd: echo pong
+    target: all
+    spec: host_pinned
+    desc: ping server
+    cmd: echo pong
+
+  exit:
+    # name: Exit
+    local: true
+    cmd: exit 3
+
+  sleep:
+    desc: ping server
+    cmd: sleep 2 & echo done
+
+  info:
+    name: Info
+    desc: print info
+    target: all
     tasks:
-      - cmd: echo pong
-      # - cmd: echo pong
+      - task: print-host
+      - task: print-hostname
+      - task: print-os
+      - task: print-kernel
 
-  # exit:
-  #   # name: Exit
-  #   local: true
-  #   cmd: exit 3
+  # Info
+  print-host:
+    name: Host
+    desc: print host
+    spec: info
+    target: all
+    cmd: echo $S_HOST
 
-  # sleep:
-  #   desc: ping server
-  #   cmd: sleep 2 & echo done
+  print-hostname:
+    name: Hostname
+    desc: print hostname
+    spec: info
+    target: all
+    cmd: hostname
 
-  # info:
-  #   name: Info
-  #   desc: print info
-  #   target: all
-  #   tasks:
-  #     - task: print-host
-  #     - task: print-hostname
-  #     - task: print-os
-  #     - task: print-kernel
+  print-os:
+    name: OS
+    desc: print OS
+    spec: info
+    target: all
+    cmd: |
+      os=$(lsb_release -si)
+      release=$(lsb_release -sr)
+      echo "$os $release"
 
-  # # Info
-  # print-host:
-  #   name: Host
-  #   desc: print host
-  #   spec: info
-  #   target: all
-  #   cmd: echo $S_HOST
-
-  # print-hostname:
-  #   name: Hostname
-  #   desc: print hostname
-  #   spec: info
-  #   target: all
-  #   cmd: hostname
-
-  # print-os:
-  #   name: OS
-  #   desc: print OS
-  #   spec: info
-  #   target: all
-  #   cmd: |
-  #     os=$(lsb_release -si)
-  #     release=$(lsb_release -sr)
-  #     echo "$os $release"
-
-  # print-kernel:
-  #   name: Kernel
-  #   desc: Print kernel version
-  #   spec: info
-  #   target: all
-  #   cmd: uname -r | awk -v FS='-' '{print $1}'
+  print-kernel:
+    name: Kernel
+    desc: Print kernel version
+    spec: info
+    target: all
+    cmd: uname -r | awk -v FS='-' '{print $1}'

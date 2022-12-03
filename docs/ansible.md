@@ -469,15 +469,15 @@ Note, you can create a generic task for the commands, and then reference them li
 
 ```yaml
 tasks:
-  upload-file:
+  upload:
     local: true
     cmd: scp -P "$S_PORT" "$from" $S_USER@$S_HOST:"$to"
     env:
       from:
       to: /home/test
 
-  upload-txt:
-    task: upload-file
+  upload-file:
+    task: upload
     env:
       from: file.txt
       to: /home/test
