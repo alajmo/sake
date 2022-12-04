@@ -20,7 +20,7 @@ func CreateTable(
 	t.SetOutputMirror(os.Stdout)
 
 	t.SetStyle(FormatTable(theme))
-	if options.SuppressEmptyColumns {
+	if options.OmitEmptyColumns {
 		t.SuppressEmptyColumns()
 	}
 
@@ -29,10 +29,10 @@ func CreateTable(
 		hh := table.ColumnConfig{
 			Number:       i + 1,
 			AlignHeader:  GetAlign(*theme.Table.Header.Align),
+			Align:        GetAlign(*theme.Table.Row.Align),
 			ColorsHeader: combineColors(theme.Table.Header.Fg, theme.Table.Header.Bg, theme.Table.Header.Attr),
-
-			Align:  GetAlign(*theme.Table.Row.Align),
-			Colors: combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+			Colors:       combineColors(theme.Table.Row.Fg, theme.Table.Row.Bg, theme.Table.Row.Attr),
+			ColorsFooter: combineColors(theme.Table.Footer.Fg, theme.Table.Footer.Bg, theme.Table.Footer.Attr),
 		}
 
 		headers = append(headers, hh)
@@ -51,6 +51,7 @@ func FormatTable(theme dao.Theme) table.Style {
 		Format: table.FormatOptions{
 			Header: GetFormat(*theme.Table.Header.Format),
 			Row:    GetFormat(*theme.Table.Row.Format),
+			Footer: GetFormat(*theme.Table.Footer.Format),
 		},
 
 		Options: table.Options{
@@ -58,6 +59,7 @@ func FormatTable(theme dao.Theme) table.Style {
 			SeparateColumns: *theme.Table.Options.SeparateColumns,
 			SeparateHeader:  *theme.Table.Options.SeparateHeader,
 			SeparateRows:    *theme.Table.Options.SeparateRows,
+			SeparateFooter:  *theme.Table.Options.SeparateFooter,
 		},
 
 		Title: table.TitleOptions{
@@ -75,15 +77,26 @@ func FormatTable(theme dao.Theme) table.Style {
 	}
 }
 
-func RenderTable(t table.Writer, output string) {
-	fmt.Println()
+func RenderTable(
+	t table.Writer,
+	output string,
+	padTop bool,
+	padBottom bool,
+) {
 	switch output {
 	case "markdown":
 		t.RenderMarkdown()
 	case "html":
 		t.RenderHTML()
+	case "csv":
+		t.RenderCSV()
 	default:
+		if padTop {
+			fmt.Println()
+		}
 		t.Render()
+		if padBottom {
+			fmt.Println()
+		}
 	}
-	fmt.Println()
 }

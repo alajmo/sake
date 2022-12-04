@@ -22,7 +22,7 @@
 
 ## Building From Source
 
-Requires [go 1.18 or above](https://golang.org/doc/install).
+Requires [go 1.19 or above](https://golang.org/doc/install).
 
 1. Clone the repo
 2. Build and run the executable

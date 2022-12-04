@@ -1,5 +1,5 @@
 import:
-  - ./tasks.yaml
+  - ./tasks/tasks.yaml
 
 known_hosts_file: known_hosts
 disable_verify_host: true
@@ -7,9 +7,18 @@ disable_verify_host: true
 servers:
   localhost:
     desc: localhost
-    host: localhost desc
+    host: 0.0.0.0
     local: true
     tags: [local]
+
+  # performance:
+  #   user: test
+  #   identity_file: ../keys/id_ed25519_pem_no
+  #   inventory: |
+  #     num_hosts=$((9999 + $SAKE_NUM_HOSTS))
+  #     for port in $(seq 10000 $num_hosts); do echo "0.0.0.0:$port"; done
+  #   env:
+  #     SAKE_NUM_HOSTS: 1
 
   list:
     desc: many hosts using list of hosts
@@ -17,10 +26,11 @@ servers:
       - 172.24.2.2
       - 172.24.2.4
       - 172.24.2.5
-      - 2001:3984:3989::10
+      - 172.24.2.6
+      - 172.24.2.7
     user: test
     identity_file: ../keys/id_ed25519_pem_no
-    tags: [remote, pi, many, list]
+    tags: [remote, pi, many, list, "hej san"]
     env:
       hello: world
       host: 172.24.2.4
@@ -48,13 +58,13 @@ servers:
   server-1:
     desc: server-1 desc
     host: sake-resolve
-    tags: [remote, pi]
+    tags: [remote, pi, bastion]
     work_dir: /tmp
 
   server-2:
     desc: server-2 desc
     host: sake-resolve
-    tags: [remote, pi]
+    tags: [remote, pi, bastion]
 
   server-3:
     desc: server-3 desc
@@ -62,6 +72,8 @@ servers:
     user: test
     identity_file: ../keys/id_ed25519_pem_no
     tags: [remote, pi, pihole]
+    env:
+      FOO: 123
 
   server-4:
     desc: server-4 desc
@@ -88,6 +100,7 @@ servers:
 
 targets:
   all:
+    desc: Select all
     all: true
 
   limit:
@@ -96,7 +109,10 @@ targets:
 
   limit_p:
     all: true
-    limit_p: 50
+    limit: 50
+
+  list:
+    servers: [list]
 
   regex:
     regex: 192
@@ -108,46 +124,88 @@ targets:
     tags: [remote, reachable]
 
   mult:
+    desc: Info
     all: true
     regex: 192
     servers: [server-1, range]
     tags: [remote]
     limit: 3
-    limit_p: 50
 
 specs:
   table:
     output: table
+    # describe: true
+    silent: true
 
   text:
     output: text
 
   info:
+    desc: Info
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
     any_errors_fatal: false
 
-  # default:
-  #   output: text
-    # parallel: true
+  linear:
+    desc: Linear
+    strategy: linear
+    # forks: 2
+    batch: 2
+    # batch_p: 50
+    output: text
+    ignore_errors: true
+    ignore_unreachable: false
+    any_errors_fatal: true
+    # max_fail_percentage: 60
+    report: [recap]
+
+  host_pinned:
+    desc: Host Pinned
+    strategy: host_pinned
+    order: sorted
+    # forks: 2
+    batch: 2
+    # batch_p: 50
+    output: text
+    ignore_errors: true
+    ignore_unreachable: true
+    # any_errors_fatal: false
+    max_fail_percentage: 60
+    report: [recap]
+
+  free:
+    desc: Free
+    strategy: free
+    batch: 2
+    # forks: 2
+    output: text
+    ignore_errors: false
+    ignore_unreachable: true
+    # any_errors_fatal: true
+    max_fail_percentage: 60
+
+# themes:
+#   default:
+#     text:
+#       header: '{{ .Style "TASK" "bold" }} {{ .Name }}'
+#       header_filler: "-"
 
 env:
   VERSION: v0.1.0
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
-  exit:
-    # name: hej
-    local: true
-    cmd: exit 3
-
   ping:
     target: all
-    spec: info
+    spec: host_pinned
     desc: ping server
     cmd: echo pong
+
+  exit:
+    # name: Exit
+    local: true
+    cmd: exit 3
 
   sleep:
     desc: ping server
@@ -169,7 +227,7 @@ tasks:
     desc: print host
     spec: info
     target: all
-    cmd: echo $SAKE_SERVER_HOST
+    cmd: echo $S_HOST
 
   print-hostname:
     name: Hostname
@@ -194,3 +252,39 @@ tasks:
     spec: info
     target: all
     cmd: uname -r | awk -v FS='-' '{print $1}'
+
+  register:
+    tasks:
+      - cmd: echo "foo" && >&2 echo "error"
+        register: out
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+          echo "out: $out"
+
+      - cmd: echo "xyz" && >&2 echo "error 2"
+        register: out2
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+          echo "out: $out"
+
+          echo "-------------"
+
+          echo "status: $out2_status"
+          echo "rc: $out2_rc"
+          echo "failed: $out2_failed"
+          echo "stdout: $out2_stdout"
+          echo "stderr: $out2_stderr"
+          echo "out: $out2"
+
+  register2:
+    tasks:
+      - cmd: echo "foo" && >&2 echo "error"
+        register: out

@@ -56,7 +56,7 @@ servers:
     password: testing
     tags: [remote,prod,reachable]
     env:
-        host: 172.24.2.2
+      host: 172.24.2.2
 
   server-2:
     desc: server-2

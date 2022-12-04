@@ -5,8 +5,30 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
 )
+
+func PrintServerList(servers []dao.Server) error {
+	theme := dao.DEFAULT_THEME
+	theme.Table.Options.DrawBorder = core.Ptr(false)
+	theme.Table.Options.SeparateColumns = core.Ptr(false)
+	theme.Table.Options.SeparateRows = core.Ptr(false)
+	theme.Table.Options.SeparateHeader = core.Ptr(true)
+	theme.Table.Options.SeparateFooter = core.Ptr(false)
+	options := PrintTableOptions{
+		Theme:            theme,
+		Output:           "table",
+		OmitEmptyRows:    true,
+		OmitEmptyColumns: true,
+	}
+
+	headers := []string{"Server", "Host", "Bastion", "Tags"}
+	rows := dao.GetTableData(servers, headers)
+	err := PrintTable(rows, options, headers, []string{}, true, false)
+
+	return err
+}
 
 func PrintServerBlocks(servers []dao.Server) {
 	if len(servers) == 0 {
@@ -73,12 +95,11 @@ func PrintTaskBlock(tasks []dao.Task) {
 
 		fmt.Print(output)
 
-		PrintTargetBlocks([]dao.Target{task.Target}, true)
 		PrintSpecBlocks([]dao.Spec{task.Spec}, true, false)
+		PrintTargetBlocks([]dao.Target{task.Target}, true)
 
-		envs := task.GetNonDefaultEnvs()
-		if envs != nil {
-			printEnv(envs)
+		if task.Envs != nil {
+			printEnv(task.Envs)
 		}
 
 		if task.Cmd != "" {
@@ -86,7 +107,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 			printCmd(task.Cmd)
 		} else if len(task.Tasks) > 0 {
 			fmt.Printf("tasks: \n")
-			for _, st := range task.Tasks {
+			for i, st := range task.Tasks {
 				if st.Name != "" {
 					if st.Desc != "" {
 						fmt.Printf("%3s - %s: %s\n", " ", st.Name, st.Desc)
@@ -94,7 +115,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 						fmt.Printf("%3s - %s\n", " ", st.Name)
 					}
 				} else {
-					fmt.Printf("%3s - %s\n", " ", "cmd")
+					fmt.Printf("%3s - %s-%d\n", " ", "task", i)
 				}
 			}
 		}
@@ -103,20 +124,9 @@ func PrintTaskBlock(tasks []dao.Task) {
 			fmt.Print("\n--\n\n")
 		}
 	}
-	fmt.Println()
-}
 
-func printCmd(cmd string) {
-	scanner := bufio.NewScanner(strings.NewReader(cmd))
-	for scanner.Scan() {
-		fmt.Printf("%4s%s\n", " ", scanner.Text())
-	}
-}
-
-func printEnv(env []string) {
-	fmt.Printf("env: \n")
-	for _, env := range env {
-		fmt.Printf("%4s%s\n", " ", strings.Replace(strings.TrimSuffix(env, "\n"), "=", ": ", 1))
+	if len(tasks) != 1 {
+		fmt.Println()
 	}
 }
 
@@ -127,7 +137,9 @@ func PrintTargetBlocks(targets []dao.Target, indent bool) {
 
 	for i, target := range targets {
 		output := ""
+		output += printStringField("desc", target.Desc, indent)
 		output += printBoolField("all", target.All, indent)
+		output += printBoolField("invert", target.Invert, indent)
 		output += printSliceField("servers", target.Servers, indent)
 		output += printStringField("regex", target.Regex, indent)
 		output += printSliceField("tags", target.Tags, indent)
@@ -158,15 +170,22 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 
 	for i, spec := range specs {
 		output := ""
-		if name {
-			printStringField("name", spec.Name, indent)
-		}
+		output += printStringField("desc", spec.Desc, indent)
+		output += printBoolField("describe", spec.Describe, indent)
+		output += printBoolField("list_hosts", spec.ListHosts, indent)
+		output += printStringField("order", spec.Order, indent)
+		output += printStringField("strategy", spec.Strategy, indent)
+		output += printNumberField("batch", int(spec.Batch), indent)
+		output += printNumberField("batch_p", int(spec.BatchP), indent)
+		output += printNumberField("forks", int(spec.Forks), indent)
 		output += printStringField("output", spec.Output, indent)
-		output += printBoolField("parallel", spec.Parallel, indent)
+		output += printNumberField("max_fail_percentage", int(spec.MaxFailPercentage), indent)
 		output += printBoolField("any_errors_fatal", spec.AnyErrorsFatal, indent)
 		output += printBoolField("ignore_errors", spec.IgnoreErrors, indent)
 		output += printBoolField("ignore_unreachable", spec.IgnoreUnreachable, indent)
-		output += printBoolField("omit_empty", spec.OmitEmpty, indent)
+		output += printBoolField("omit_empty_rows", spec.OmitEmptyRows, indent)
+		output += printBoolField("omit_empty_columns", spec.OmitEmptyColumns, indent)
+		output += printSliceField("report", spec.Report, indent)
 
 		if output == "" {
 			continue
@@ -182,6 +201,20 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		if i < len(specs)-1 {
 			fmt.Printf("\n--\n\n")
 		}
+	}
+}
+
+func printCmd(cmd string) {
+	scanner := bufio.NewScanner(strings.NewReader(cmd))
+	for scanner.Scan() {
+		fmt.Printf("%4s%s\n", " ", scanner.Text())
+	}
+}
+
+func printEnv(env []string) {
+	fmt.Printf("env: \n")
+	for _, env := range env {
+		fmt.Printf("%4s%s\n", " ", strings.Replace(strings.TrimSuffix(env, "\n"), "=", ": ", 1))
 	}
 }
 

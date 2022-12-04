@@ -10,12 +10,16 @@ import (
 	"sync"
 )
 
-// Client is a wrapper over the SSH connection/sessions.
+// Client is a wrapper over the SSH connection/Sessions.
 type LocalhostClient struct {
 	Name string
 	User string
 	Host string
 
+	Sessions []LocalSession
+}
+
+type LocalSession struct {
 	stdin   io.WriteCloser
 	cmd     *exec.Cmd
 	stdout  io.Reader
@@ -23,14 +27,14 @@ type LocalhostClient struct {
 	running bool
 }
 
-func (c *LocalhostClient) Connect(_ bool, _ string, mu *sync.Mutex, dialer SSHDialFunc) *ErrConnect {
+func (c *LocalhostClient) Connect(dialer SSHDialFunc, _ bool, _ string, mu *sync.Mutex) *ErrConnect {
 	return nil
 }
 
-func (c *LocalhostClient) Run(env []string, workDir string, shell string, cmdStr string) error {
+func (c *LocalhostClient) Run(i int, env []string, workDir string, shell string, cmdStr string) error {
 	var err error
 
-	if c.running {
+	if c.Sessions[i].running {
 		return fmt.Errorf("Command already running")
 	}
 
@@ -40,79 +44,89 @@ func (c *LocalhostClient) Run(env []string, workDir string, shell string, cmdStr
 		shell = dao.DEFAULT_SHELL
 	}
 
+	var cmdString string
+	if workDir != "" {
+		cmdString = fmt.Sprintf("cd %s; %s", workDir, cmdStr)
+	} else {
+		cmdString = cmdStr
+	}
+
 	args := strings.SplitN(shell, " ", 2)
 	shellProgram := args[0]
-	shellFlag := append(args[1:], cmdStr)
+	shellArgs := append(args[1:], cmdString)
 
-	cmd := exec.Command(shellProgram, shellFlag...)
+	cmd := exec.Command(shellProgram, shellArgs...)
 	cmd.Env = append(userEnv, env...)
-	cmd.Dir = workDir
-	c.cmd = cmd
+	c.Sessions[i].cmd = cmd
 
-	c.stdout, err = cmd.StdoutPipe()
+	c.Sessions[i].stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		return err
 	}
 
-	c.stderr, err = cmd.StderrPipe()
+	c.Sessions[i].stderr, err = cmd.StderrPipe()
 	if err != nil {
 		return err
 	}
 
-	c.stdin, err = cmd.StdinPipe()
+	c.Sessions[i].stdin, err = cmd.StdinPipe()
 	if err != nil {
 		return err
 	}
 
-	if err := c.cmd.Start(); err != nil {
+	if err := c.Sessions[i].cmd.Start(); err != nil {
 		return err
 	}
 
-	c.running = true
+	c.Sessions[i].running = true
 	return nil
 }
 
-func (c *LocalhostClient) Wait() error {
-	if !c.running {
+func (c *LocalhostClient) Wait(i int) error {
+	if !c.Sessions[i].running {
 		return fmt.Errorf("Trying to wait on stopped command")
 	}
-	err := c.cmd.Wait()
-	c.running = false
+	err := c.Sessions[i].cmd.Wait()
+	c.Sessions[i].running = false
 	return err
 }
 
-func (c *LocalhostClient) Close() error {
+func (c *LocalhostClient) Close(i int) error {
 	return nil
 }
 
-func (c *LocalhostClient) Stdin() io.WriteCloser {
-	return c.stdin
+func (c *LocalhostClient) Stdin(i int) io.WriteCloser {
+	return c.Sessions[i].stdin
 }
 
-func (c *LocalhostClient) Write(p []byte) (n int, err error) {
-	return c.stdin.Write(p)
+func (c *LocalhostClient) Write(i int, p []byte) (n int, err error) {
+	return c.Sessions[i].stdin.Write(p)
 }
 
-func (c *LocalhostClient) WriteClose() error {
-	return c.stdin.Close()
+func (c *LocalhostClient) WriteClose(i int) error {
+	return c.Sessions[i].stdin.Close()
 }
 
-func (c *LocalhostClient) Stderr() io.Reader {
-	return c.stderr
+func (c *LocalhostClient) Stderr(i int) io.Reader {
+	return c.Sessions[i].stderr
 }
 
-func (c *LocalhostClient) Stdout() io.Reader {
-	return c.stdout
+func (c *LocalhostClient) Stdout(i int) io.Reader {
+	return c.Sessions[i].stdout
 }
 
 func (c *LocalhostClient) Prefix() string {
 	return c.Host
 }
 
-func (c *LocalhostClient) Signal(sig os.Signal) error {
-	return c.cmd.Process.Signal(sig)
+func (c *LocalhostClient) Signal(i int, sig os.Signal) error {
+	return c.Sessions[i].cmd.Process.Signal(sig)
 }
 
 func (c *LocalhostClient) GetName() string {
 	return c.Name
+}
+
+func (c *LocalhostClient) Connected() bool {
+	return true
 }

@@ -1,11 +1,15 @@
 Index: 13
 Name: Filter by hosts server using server name
-Cmd: go run ../../main.go run info -S -s list-1
+Cmd: go run ../../main.go run info -q -s list-1
 WantErr: false
 
 ---
 
- server | OS | Kernel 
---------+----+--------
- list-1 | OS | kernel 
+TASKS 
+
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.4 | OS | kernel 
+                                                                     
+ 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
 

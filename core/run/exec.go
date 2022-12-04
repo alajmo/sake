@@ -1,9 +1,11 @@
 package run
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/ssh"
+	"math"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -19,11 +21,12 @@ import (
 )
 
 type Run struct {
-	LocalClients  map[string]Client
-	RemoteClients map[string]Client
-	Servers       []dao.Server
-	Task          *dao.Task
-	Config        dao.Config
+	LocalClients       map[string]Client
+	RemoteClients      map[string]Client
+	Servers            []dao.Server
+	UnreachableServers []dao.Server
+	Task               *dao.Task
+	Config             dao.Config
 }
 
 type TaskContext struct {
@@ -60,7 +63,13 @@ func (run *Run) RunTask(
 		return err
 	}
 
-	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers, runFlags)
+	err = run.ParseTask(configEnv, userArgs, runFlags, setRunFlags)
+	if err != nil {
+		return err
+	}
+	run.CheckTaskNoColor()
+
+	errConnects, err := ParseServers(run.Config.SSHConfigFile, &run.Servers, runFlags, run.Task.Spec.Order)
 	if err != nil {
 		return err
 	}
@@ -76,29 +85,26 @@ func (run *Run) RunTask(
 		}
 
 		options := print.PrintTableOptions{
-			Theme:                task.Theme,
-			OmitEmpty:            task.Spec.OmitEmpty,
-			Output:               task.Spec.Output,
-			SuppressEmptyColumns: false,
-			Title:                "Parse Errors",
+			Theme:            task.Theme,
+			OmitEmptyRows:    task.Spec.OmitEmptyRows,
+			OmitEmptyColumns: false,
+			Output:           task.Spec.Output,
+			Title:            "Parse Errors",
 		}
-		print.PrintTable(parseOutput.Rows, options, parseOutput.Headers)
+		err = print.PrintTable(parseOutput.Rows, options, parseOutput.Headers, []string{}, true, true)
+		if err != nil {
+			return err
+		}
 
 		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
 	}
-
-	err = run.ParseTask(configEnv, userArgs, runFlags, setRunFlags)
-	if err != nil {
-		return err
-	}
-	run.CheckTaskNoColor()
 
 	// Remote + Local clients
 	numClients := len(servers) * 2
 	clientCh := make(chan Client, numClients)
 	errCh := make(chan ErrConnect, numClients)
 
-	errConnect, err := run.SetClients(runFlags, numClients, clientCh, errCh)
+	errConnect, err := run.SetClients(task, runFlags, numClients, clientCh, errCh)
 	if err != nil {
 		return err
 	}
@@ -114,13 +120,16 @@ func (run *Run) RunTask(
 		}
 
 		options := print.PrintTableOptions{
-			Theme:                task.Theme,
-			OmitEmpty:            task.Spec.OmitEmpty,
-			Output:               "table",
-			SuppressEmptyColumns: false,
-			Title:                "\nUnreachable Hosts\n",
+			Theme:            task.Theme,
+			OmitEmptyRows:    task.Spec.OmitEmptyRows,
+			OmitEmptyColumns: false,
+			Output:           "table",
+			Title:            "\nUnreachable Hosts\n",
 		}
-		print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers)
+		err := print.PrintTable(unreachableOutput.Rows, options, unreachableOutput.Headers, []string{}, true, true)
+		if err != nil {
+			return err
+		}
 
 		if !task.Spec.IgnoreUnreachable {
 			return &core.ExecError{Err: err, ExitCode: 4}
@@ -129,6 +138,7 @@ func (run *Run) RunTask(
 
 	// Get reachable servers
 	var reachableServers []dao.Server
+	var unreachableServers []dao.Server
 	for _, server := range servers {
 		if server.Local {
 			reachableServers = append(reachableServers, server)
@@ -138,49 +148,97 @@ func (run *Run) RunTask(
 		_, reachable := run.RemoteClients[server.Name]
 		if reachable {
 			reachableServers = append(reachableServers, server)
+		} else {
+			unreachableServers = append(unreachableServers, server)
 		}
 	}
 	run.Servers = reachableServers
+	run.UnreachableServers = unreachableServers
 
 	// Describe task
-	if runFlags.Describe {
+	if task.Spec.Describe {
+		PrintHeader("TASK DESCRIPTION ", run.Task.Theme.Text, false)
 		print.PrintTaskBlock([]dao.Task{*task})
 	}
 
-	switch task.Spec.Output {
-	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown":
-		spinner := core.GetSpinner()
-		if !runFlags.Silent {
-			spinner.Start(" Running", 500)
-		}
-
-		data, err := run.Table(runFlags.DryRun)
-		options := print.PrintTableOptions{
-			Theme:                task.Theme,
-			OmitEmpty:            task.Spec.OmitEmpty,
-			Output:               task.Spec.Output,
-			SuppressEmptyColumns: false,
-			Resource:             "task",
-		}
-		run.CleanupClients()
-		if !runFlags.Silent {
-			spinner.Stop()
-		}
-		print.PrintTable(data.Rows, options, data.Headers)
-
-		if err != nil {
-			return err
-		}
-	default:
-		err := run.Text(runFlags.DryRun)
-		run.CleanupClients()
-
+	// Describe Servers
+	if task.Spec.ListHosts {
+		PrintHeader("HOSTS ", run.Task.Theme.Text, false)
+		err := print.PrintServerList(servers)
 		if err != nil {
 			return err
 		}
 	}
 
-	if runFlags.Attach || task.Attach {
+	if runFlags.Confirm && !confirmExecute(run.Task.Name) {
+		return nil
+	}
+
+	switch task.Spec.Output {
+	case "table", "table-1", "table-2", "table-3", "table-4", "html", "markdown", "json", "csv", "none":
+		spinner := core.GetSpinner()
+		if !task.Spec.Silent && !task.Spec.Step && !task.Spec.Confirm {
+			spinner.Start(" Running", 500)
+		}
+
+		data, reportData, derr := run.Table(runFlags.DryRun)
+		options := print.PrintTableOptions{
+			Theme:            task.Theme,
+			OmitEmptyRows:    task.Spec.OmitEmptyRows,
+			OmitEmptyColumns: task.Spec.OmitEmptyColumns,
+			Output:           task.Spec.Output,
+			Resource:         "task",
+		}
+		run.CleanupClients()
+		if !task.Spec.Silent && !task.Spec.Step && !task.Spec.Confirm {
+			spinner.Stop()
+		}
+
+		if len(run.Servers) > 0 && task.Spec.Output != "none" {
+			if strings.Contains(task.Spec.Output, "table") {
+				PrintHeader("TASKS ", run.Task.Theme.Text, true)
+			}
+
+			err = print.PrintTable(data.Rows, options, data.Headers, []string{}, false, false)
+			if err != nil {
+				return err
+			}
+		}
+
+		err := print.PrintReport(&run.Task.Theme, reportData, task.Spec)
+		if err != nil {
+			return err
+		}
+
+		if derr != nil {
+			return derr
+		}
+	default:
+		if (len(run.Servers) > 0 && len(run.Task.Tasks) > 1) || run.Task.Spec.Strategy != "linear" {
+			PrintHeader("TASKS ", run.Task.Theme.Text, true)
+		} else {
+			fmt.Println()
+		}
+
+		reportData, derr := run.Text(runFlags.DryRun)
+
+		run.CleanupClients()
+
+		err = print.PrintReport(&run.Task.Theme, reportData, task.Spec)
+		if err != nil {
+			return err
+		}
+
+		if err != nil {
+			return err
+		}
+
+		if derr != nil {
+			return derr
+		}
+	}
+
+	if task.Attach {
 		server, err := dao.GetFirstRemoteServer(servers)
 		if err != nil {
 			return err
@@ -201,12 +259,13 @@ type Signers struct {
 
 // SetClients establishes connection to server
 func (run *Run) SetClients(
+	task *dao.Task,
 	runFlags *core.RunFlags,
 	numChannels int,
 	clientCh chan Client,
 	errCh chan ErrConnect,
 ) ([]ErrConnect, error) {
-	createLocalClient := func(server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createLocalClient := func(strategy string, numTasks int, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
 		defer wg.Done()
 
 		local := &LocalhostClient{
@@ -215,10 +274,26 @@ func (run *Run) SetClients(
 			Host: server.Host,
 		}
 
+		switch strategy {
+		case "free":
+			for i := 0; i < numTasks; i++ {
+				local.Sessions = append(local.Sessions, LocalSession{})
+			}
+		default:
+			local.Sessions = append(local.Sessions, LocalSession{})
+		}
+
 		clientCh <- local
 	}
 
-	createRemoteClient := func(authMethod []ssh.AuthMethod, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createRemoteClient := func(
+		strategy string,
+		numTasks int,
+		authMethod []ssh.AuthMethod,
+		server dao.Server,
+		wg *sync.WaitGroup,
+		mu *sync.Mutex,
+	) {
 		defer wg.Done()
 
 		remote := &SSHClient{
@@ -228,28 +303,37 @@ func (run *Run) SetClients(
 			Port:       server.Port,
 			AuthMethod: authMethod,
 		}
+		switch strategy {
+		case "free":
+			for i := 0; i < numTasks; i++ {
+				remote.Sessions = append(remote.Sessions, SSHSession{})
+			}
+		default:
+			remote.Sessions = append(remote.Sessions, SSHSession{})
+		}
 
 		var bastion *SSHClient
 		if server.BastionHost != "" {
 			bastion = &SSHClient{
+				Name:       "Bastion",
 				Host:       server.BastionHost,
 				User:       server.BastionUser,
 				Port:       server.BastionPort,
 				AuthMethod: authMethod,
 			}
 			// Connect to bastion
-			if err := bastion.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
 
 			// Connect to server through bastion
-			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, bastion.DialThrough); err != nil {
+			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
 		} else {
-			if err := remote.Connect(run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu, ssh.Dial); err != nil {
+			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
 				errCh <- *err
 				return
 			}
@@ -286,13 +370,14 @@ func (run *Run) SetClients(
 		}
 	}
 
+	// TODO: Dont create remote clients if task is set to local
 	for _, server := range run.Servers {
 		wg.Add(1)
-		go createLocalClient(server, &wg, &mu)
+		go createLocalClient(task.Spec.Strategy, len(task.Tasks), server, &wg, &mu)
 		if !server.Local {
 			wg.Add(1)
 			authMethods := getAuthMethod(server, &signers)
-			go createRemoteClient(authMethods, server, &wg, &mu)
+			go createRemoteClient(task.Spec.Strategy, len(task.Tasks), authMethods, server, &wg, &mu)
 		}
 	}
 	wg.Wait()
@@ -335,9 +420,21 @@ func (run *Run) CleanupClients() {
 				return
 			}
 			for _, c := range clients {
-				err := c.Signal(sig)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "%v", err)
+				switch c := c.(type) {
+				case *SSHClient:
+					for i := range c.Sessions {
+						err := c.Signal(i, sig)
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "%v", err)
+						}
+					}
+				case *LocalhostClient:
+					for i := range c.Sessions {
+						err := c.Signal(i, sig)
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "%v", err)
+						}
+					}
 				}
 			}
 		}
@@ -350,16 +447,31 @@ func (run *Run) CleanupClients() {
 	// Close remote connections
 	for _, c := range clients {
 		if remote, ok := c.(*SSHClient); ok {
-			remote.Close()
+			for i := range c.(*SSHClient).Sessions {
+				remote.Close(i)
+			}
 		}
 	}
 }
 
-// ParseServers resolves host, port, proxyjump in users ssh config
-func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.RunFlags) ([]ErrConnect, error) {
+// ParseServers resolves host, port, proxyjump in user ssh config
+func ParseServers(
+	sshConfigFile *string,
+	servers *[]dao.Server,
+	runFlags *core.RunFlags,
+	order string,
+) ([]ErrConnect, error) {
+	dao.SortServers(order, servers)
+
 	if runFlags.IdentityFile != "" {
 		for i := range *servers {
 			(*servers)[i].IdentityFile = &runFlags.IdentityFile
+		}
+	}
+
+	if runFlags.User != "" {
+		for i := range *servers {
+			(*servers)[i].User = runFlags.User
 		}
 	}
 
@@ -505,7 +617,12 @@ func ParseServers(sshConfigFile *string, servers *[]dao.Server, runFlags *core.R
 	return errConnects, err
 }
 
-func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) error {
+func (run *Run) ParseTask(
+	configEnv []string,
+	userArgs []string,
+	runFlags *core.RunFlags,
+	setRunFlags *core.SetRunFlags,
+) error {
 	// Update theme property if user flag is provided
 	if runFlags.Theme != "" {
 		theme, err := run.Config.GetTheme(runFlags.Theme)
@@ -516,24 +633,109 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		run.Task.Theme = *theme
 	}
 
+	if runFlags.Spec != "" {
+		spec, err := run.Config.GetSpec(runFlags.Spec)
+		if err != nil {
+			return err
+		}
+		run.Task.Spec = *spec
+	}
+
+	if run.Task.Spec.Forks == 0 {
+		run.Task.Spec.Forks = 10000
+	}
+
+	if setRunFlags.Batch {
+		run.Task.Spec.Batch = runFlags.Batch
+	} else if setRunFlags.BatchP {
+		tot := float64(len(run.Servers))
+		percentage := float64(run.Task.Spec.BatchP) / float64(100)
+		batch := uint32(math.Floor(percentage * tot))
+
+		if batch > 0 {
+			run.Task.Spec.Batch = batch
+		} else {
+			run.Task.Spec.Batch = 1
+		}
+	} else {
+		// Batch or BatchP must be > 0
+		if run.Task.Spec.Batch == 0 && run.Task.Spec.BatchP == 0 {
+			run.Task.Spec.Batch = uint32(len(run.Servers))
+		} else if run.Task.Spec.BatchP > 0 {
+			tot := float64(len(run.Servers))
+			percentage := float64(run.Task.Spec.BatchP) / float64(100)
+			batch := uint32(math.Floor(percentage * tot))
+
+			if batch > 0 {
+				run.Task.Spec.Batch = batch
+			} else {
+				run.Task.Spec.Batch = 1
+			}
+		}
+	}
+
+	if setRunFlags.Order {
+		run.Task.Spec.Order = runFlags.Order
+	}
+
+	// Report
+	if setRunFlags.Report {
+		run.Task.Spec.Report = runFlags.Report
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Describe {
+		run.Task.Spec.Describe = runFlags.Describe
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.ListHosts {
+		run.Task.Spec.ListHosts = runFlags.ListHosts
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Silent {
+		run.Task.Spec.Silent = runFlags.Silent
+	}
+
+	// Update describe property if user flag is provided
+	if setRunFlags.Attach {
+		run.Task.Attach = runFlags.Attach
+	}
+
+	// Update strategy property if user flag is provided
+	if runFlags.Strategy != "" {
+		run.Task.Spec.Strategy = runFlags.Strategy
+	}
+
 	// Update output property if user flag is provided
 	if runFlags.Output != "" {
 		run.Task.Spec.Output = runFlags.Output
 	}
 
-	// Omit servers which provide empty output
-	if setRunFlags.OmitEmpty {
-		run.Task.Spec.OmitEmpty = runFlags.OmitEmpty
+	// Omit empty row
+	if setRunFlags.OmitEmptyRows {
+		run.Task.Spec.OmitEmptyRows = runFlags.OmitEmptyRows
 	}
 
-	// If parallel flag is set to true, then update task specs
-	if setRunFlags.Parallel {
-		run.Task.Spec.Parallel = runFlags.Parallel
+	// Omit empty column
+	if setRunFlags.OmitEmptyColumns {
+		run.Task.Spec.OmitEmptyColumns = runFlags.OmitEmptyColumns
 	}
 
 	// If AnyErrorsFatal flag is set to true, then tasks execution will stop if error is encountered for all servers
 	if setRunFlags.AnyErrorsFatal {
 		run.Task.Spec.AnyErrorsFatal = runFlags.AnyErrorsFatal
+
+		if run.Task.Spec.AnyErrorsFatal {
+			run.Task.Spec.MaxFailPercentage = 0
+		} else {
+			run.Task.Spec.MaxFailPercentage = 100
+		}
+	}
+
+	if run.Task.Spec.AnyErrorsFatal {
+		run.Task.Spec.MaxFailPercentage = 0
 	}
 
 	// If IgnoreErrors flag is set to true, then tasks will run regardless of error
@@ -551,8 +753,23 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		run.Task.TTY = runFlags.TTY
 	}
 
+	// Confirm
+	if setRunFlags.Confirm {
+		run.Task.Spec.Confirm = runFlags.Confirm
+	}
+
+	if setRunFlags.Step {
+		run.Task.Spec.Step = runFlags.Step
+	}
+
 	// Update sub-commands
 	for j := range run.Task.Tasks {
+
+		// If command name is not set, set one
+		if run.Task.Tasks[j].Name == "" {
+			run.Task.Tasks[j].Name = fmt.Sprintf("task-%d", j)
+		}
+
 		// If local flag is set to true, then cmd will run locally instead of on remote server
 		if setRunFlags.Local {
 			run.Task.Tasks[j].Local = runFlags.Local
@@ -565,7 +782,42 @@ func (run *Run) ParseTask(configEnv []string, userArgs []string, runFlags *core.
 		run.Task.Tasks[j].Envs = envs
 	}
 
+	run.ParseTaskTarget(runFlags, setRunFlags)
+
+	if setRunFlags.Verbose || run.Task.Spec.Verbose {
+		run.Task.Spec.Describe = true
+		run.Task.Spec.ListHosts = true
+		run.Task.Spec.Report = []string{"all"}
+	}
+
 	return nil
+}
+
+func (run *Run) ParseTaskTarget(
+	runFlags *core.RunFlags,
+	setRunFlags *core.SetRunFlags,
+) {
+	if setRunFlags.All {
+		run.Task.Target.All = runFlags.All
+	}
+	if setRunFlags.Servers {
+		run.Task.Target.Servers = runFlags.Servers
+	}
+	if setRunFlags.Tags {
+		run.Task.Target.Tags = runFlags.Tags
+	}
+	if setRunFlags.Regex {
+		run.Task.Target.Regex = runFlags.Regex
+	}
+	if setRunFlags.Invert {
+		run.Task.Target.Invert = runFlags.Invert
+	}
+	if setRunFlags.Limit {
+		run.Task.Target.Limit = runFlags.Limit
+	}
+	if setRunFlags.LimitP {
+		run.Task.Target.LimitP = runFlags.LimitP
+	}
 }
 
 func (run *Run) CheckTaskNoColor() {
@@ -592,32 +844,90 @@ func (run *Run) setKnownHostsFile(knownHostsFileFlag string) error {
 	return nil
 }
 
-func getWorkDir(cmd dao.TaskCmd, server dao.Server) string {
-	if cmd.Local || server.Local {
-		rootDir := os.ExpandEnv(cmd.RootDir)
-		if cmd.WorkDir != "" {
-			workDir := os.ExpandEnv(cmd.WorkDir)
-			if filepath.IsAbs(workDir) {
-				return workDir
-			} else {
-				return filepath.Join(rootDir, workDir)
-			}
-		} else if server.WorkDir != "" {
-			workDir := os.ExpandEnv(server.WorkDir)
-			if filepath.IsAbs(workDir) {
-				return workDir
-			} else {
-				return filepath.Join(rootDir, workDir)
-			}
-		} else {
-			return rootDir
+func getWorkDir(
+	cmdLocal bool,
+	serverLocal bool,
+	cmdWD string,
+	serverWD string,
+	cmdDir string,
+	serverDir string,
+) string {
+	cmdWDTrue := false
+	if cmdWD != "" {
+		cmdWDTrue = true
+	}
+
+	serverWDTrue := false
+	if serverWD != "" {
+		serverWDTrue = true
+	}
+
+	// Remote
+
+	if !cmdLocal && !serverLocal {
+		if !cmdWDTrue && !serverWDTrue {
+			return ""
 		}
-	} else if cmd.WorkDir != "" {
-		// task work_dir
-		return cmd.WorkDir
-	} else if server.WorkDir != "" {
-		// server work_dir
-		return server.WorkDir
+
+		if cmdWDTrue && !serverWDTrue {
+			return cmdWD
+		}
+
+		if !cmdWDTrue && serverWDTrue {
+			return serverWD
+		}
+
+		// cmdWD relative to serverWD
+		if cmdWDTrue && serverWDTrue {
+			if filepath.IsAbs(cmdWD) {
+				return cmdWD
+			}
+			return filepath.Join(serverWD, cmdWD)
+		}
+	}
+
+	// Local
+
+	// cmd context
+	if (cmdLocal && serverLocal && !cmdWDTrue && !serverWDTrue) ||
+		(cmdLocal && !serverLocal && !cmdWDTrue && !serverWDTrue) ||
+		(cmdLocal && !serverLocal && !cmdWDTrue && serverWDTrue) ||
+		(!cmdLocal && serverLocal && !cmdWDTrue && !serverWDTrue) {
+		return cmdDir
+	}
+
+	// cmdWD relative to serverWD and serverDir
+	if (cmdLocal && serverLocal && cmdWDTrue && serverWDTrue) ||
+		(!cmdLocal && serverLocal && cmdWDTrue && serverWDTrue) {
+		if filepath.IsAbs(cmdWD) {
+			return cmdWD
+		}
+
+		if filepath.IsAbs(serverWD) {
+			return filepath.Join(serverWD, cmdWD)
+		}
+
+		return filepath.Join(serverDir, serverWD, cmdWD)
+	}
+
+	// cmdWD relative to cmd context
+	if (cmdLocal && !serverLocal && cmdWDTrue && !serverWDTrue) ||
+		(cmdLocal && !serverLocal && cmdWDTrue && serverWDTrue) ||
+		(cmdLocal && serverLocal && cmdWDTrue && !serverWDTrue) ||
+		(!cmdLocal && serverLocal && cmdWDTrue && !serverWDTrue) {
+		if filepath.IsAbs(cmdWD) {
+			return cmdWD
+		}
+		return filepath.Join(cmdDir, cmdWD)
+	}
+
+	// serverWD relative to server context
+	if (!cmdLocal && serverLocal && !cmdWDTrue && serverWDTrue) ||
+		(cmdLocal && serverLocal && !cmdWDTrue && serverWDTrue) {
+		if filepath.IsAbs(serverWD) {
+			return serverWD
+		}
+		return filepath.Join(serverDir, serverWD)
 	}
 
 	return ""
@@ -709,3 +1019,77 @@ func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 
 	return authMethods
 }
+
+func CalcFreeForks(batch int, tasks int, forks uint32) int {
+	tot := batch * tasks
+	if tot < int(forks) {
+		return tot
+	}
+	return int(forks)
+}
+
+func CalcForks(batch int, forks uint32) int {
+	if batch < int(forks) {
+		return batch
+	}
+	return int(forks)
+}
+
+func confirmExecute(taskName string) bool {
+	var mu sync.Mutex
+
+	mu.Lock()
+
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf("\nPerform task `%s`: (y)es/(n)o: ", taskName)
+
+	a, err := reader.ReadString('\n')
+	if err != nil {
+		return false
+	}
+
+	mu.Unlock()
+
+	return strings.ToLower(strings.TrimSpace(a)) == "yes" || strings.ToLower(strings.TrimSpace(a)) == "y"
+}
+
+// TODO: Prompt again when invalid answer
+func StepTaskExecute(task string, host string, mu *sync.Mutex) (TaskOption, error) {
+	mu.Lock()
+
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf("Perform task `%s` on host `%s`: (y)es/(n)o/(c)ontinue: ", task, host)
+
+	a, err := reader.ReadString('\n')
+	if err != nil {
+		return Yes, err
+	}
+
+	option := strings.ToLower(strings.TrimSpace(a))
+	var value TaskOption
+
+	switch option {
+	case "yes", "y":
+		value = Yes
+	case "no", "n":
+		value = No
+	case "continue", "c":
+		value = Continue
+	default:
+		value = No
+	}
+
+	mu.Unlock()
+
+	return value, nil
+}
+
+type TaskOption int
+
+const (
+	No = iota
+	Yes
+	Continue
+)

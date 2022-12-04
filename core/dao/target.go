@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -12,6 +12,7 @@ import (
 
 type Target struct {
 	Name    string   `yaml:"name"`
+	Desc    string   `yaml:"desc"`
 	All     bool     `yaml:"all"`
 	Servers []string `yaml:"servers"`
 	Tags    []string `yaml:"tags"`
@@ -37,6 +38,8 @@ func (t Target) GetValue(key string, _ int) string {
 	switch lkey {
 	case "name", "target":
 		return t.Name
+	case "desc", "Desc":
+		return t.Desc
 	case "all":
 		return strconv.FormatBool(t.All)
 	case "servers":
@@ -65,31 +68,40 @@ func (c *ConfigYAML) ParseTargetsYAML() ([]Target, []ResourceErrors[Target]) {
 	j := -1
 	for i := 0; i < count; i += 2 {
 		j += 1
-		target := &Target{
-			context:     c.Path,
-			contextLine: c.Targets.Content[i].Line,
-		}
+		target, terr := c.DecodeTarget(c.Targets.Content[i].Value, *c.Targets.Content[i+1])
 		re := ResourceErrors[Target]{Resource: target, Errors: []error{}}
 		targetErrors = append(targetErrors, re)
 
-		err := c.Targets.Content[i+1].Decode(target)
-		if err != nil {
-			for _, yerr := range err.(*yaml.TypeError).Errors {
-				targetErrors[j].Errors = append(targetErrors[j].Errors, errors.New(yerr))
-			}
-			continue
-		}
-
-		target.Name = c.Targets.Content[i].Value
-
-		if target.LimitP > 100 {
-			targetErrors[j].Errors = append(targetErrors[j].Errors, &core.InvalidPercentInput{})
-		}
+		targetErrors[j].Errors = append(targetErrors[j].Errors, terr...)
 
 		targets = append(targets, *target)
 	}
 
 	return targets, targetErrors
+}
+
+func (c *ConfigYAML) DecodeTarget(name string, targetYAML yaml.Node) (*Target, []error) {
+	target := &Target{
+		Name:        name,
+		context:     c.Path,
+		contextLine: targetYAML.Line,
+	}
+
+	targetErrors := []error{}
+	err := targetYAML.Decode(target)
+	if err != nil {
+		targetErrors = append(targetErrors, err)
+	}
+
+	if target.LimitP > 0 && target.Limit > 0 {
+		targetErrors = append(targetErrors, &core.LimitMultipleDef{Name: name})
+	}
+
+	if target.LimitP > 100 {
+		targetErrors = append(targetErrors, &core.InvalidPercentInput{Name: "limit_p"})
+	}
+
+	return target, targetErrors
 }
 
 func (c *Config) GetTarget(name string) (*Target, error) {
@@ -105,7 +117,11 @@ func (c *Config) GetTarget(name string) (*Target, error) {
 func (c *Config) GetTargetNames() []string {
 	names := []string{}
 	for _, target := range c.Targets {
-		names = append(names, target.Name)
+		if target.Desc != "" {
+			names = append(names, fmt.Sprintf("%s\t%s", target.Name, target.Desc))
+		} else {
+			names = append(names, target.Name)
+		}
 	}
 
 	return names

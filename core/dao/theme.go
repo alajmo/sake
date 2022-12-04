@@ -75,6 +75,7 @@ type Row struct {
 type TableOutput struct {
 	Headers []string
 	Rows    []Row
+	Footers []string
 }
 
 func (t *Theme) GetContext() string {
@@ -216,7 +217,7 @@ var DefaultTable = Table{
 		Fg:     core.Ptr(""),
 		Bg:     core.Ptr(""),
 		Align:  core.Ptr(""),
-		Attr:   core.Ptr("bold"),
+		Attr:   core.Ptr("normal"),
 		Format: core.Ptr("default"),
 	},
 
@@ -224,7 +225,7 @@ var DefaultTable = Table{
 		Fg:     core.Ptr(""),
 		Bg:     core.Ptr(""),
 		Align:  core.Ptr(""),
-		Attr:   core.Ptr("bold"),
+		Attr:   core.Ptr("normal"),
 		Format: core.Ptr("default"),
 	},
 }
@@ -375,8 +376,14 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 				if themes[i].Table.Title.Bg == nil {
 					themes[i].Table.Title.Bg = DefaultTable.Title.Bg
 				}
+				if themes[i].Table.Title.Align == nil {
+					themes[i].Table.Title.Align = DefaultTable.Title.Align
+				}
 				if themes[i].Table.Title.Attr == nil {
 					themes[i].Table.Title.Attr = DefaultTable.Title.Attr
+				}
+				if themes[i].Table.Title.Format == nil {
+					themes[i].Table.Title.Format = DefaultTable.Title.Format
 				}
 			}
 		}
@@ -394,6 +401,9 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 				}
 				if themes[i].Table.Header.Bg == nil {
 					themes[i].Table.Header.Bg = DefaultTable.Header.Bg
+				}
+				if themes[i].Table.Header.Align == nil {
+					themes[i].Table.Header.Align = DefaultTable.Header.Align
 				}
 				if themes[i].Table.Header.Attr == nil {
 					themes[i].Table.Header.Attr = DefaultTable.Header.Attr
@@ -418,6 +428,9 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 				if themes[i].Table.Row.Bg == nil {
 					themes[i].Table.Row.Bg = DefaultTable.Row.Bg
 				}
+				if themes[i].Table.Row.Align == nil {
+					themes[i].Table.Row.Align = DefaultTable.Row.Align
+				}
 				if themes[i].Table.Row.Attr == nil {
 					themes[i].Table.Row.Attr = DefaultTable.Row.Attr
 				}
@@ -440,6 +453,9 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 				}
 				if themes[i].Table.Footer.Bg == nil {
 					themes[i].Table.Footer.Bg = DefaultTable.Footer.Bg
+				}
+				if themes[i].Table.Footer.Align == nil {
+					themes[i].Table.Footer.Align = DefaultTable.Footer.Align
 				}
 				if themes[i].Table.Footer.Attr == nil {
 					themes[i].Table.Footer.Attr = DefaultTable.Footer.Attr

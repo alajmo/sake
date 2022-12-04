@@ -37,6 +37,8 @@ func listTasksCmd(config *dao.Config, configErr *error, listFlags *core.ListFlag
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().BoolVarP(&taskFlags.AllHeaders, "all-headers", "H", false, "select all task headers")
 	cmd.Flags().StringSliceVar(&taskFlags.Headers, "headers", []string{"task", "desc"}, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -67,11 +69,11 @@ func listTasks(
 
 	if len(tasks) > 0 {
 		options := print.PrintTableOptions{
-			Output:               listFlags.Output,
-			Theme:                *theme,
-			OmitEmpty:            false,
-			SuppressEmptyColumns: true,
-			Resource:             "task",
+			Output:           listFlags.Output,
+			Theme:            *theme,
+			OmitEmptyRows:    false,
+			OmitEmptyColumns: true,
+			Resource:         "task",
 		}
 
 		var headers []string
@@ -82,6 +84,7 @@ func listTasks(
 		}
 
 		rows := dao.GetTableData(tasks, headers)
-		print.PrintTable(rows, options, headers)
+		err := print.PrintTable(rows, options, headers, []string{}, true, true)
+		core.CheckIfError(err)
 	}
 }

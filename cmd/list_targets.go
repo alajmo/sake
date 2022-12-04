@@ -8,7 +8,7 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
-var targetHeaders = []string{"target", "all", "servers", "tags", "regex", "invert", "limit", "limit_p"}
+var targetHeaders = []string{"target", "desc", "all", "servers", "tags", "regex", "invert", "limit", "limit_p"}
 
 func listTargetsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var targetFlags core.TargetFlags
@@ -34,6 +34,7 @@ func listTargetsCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 		},
 		DisableAutoGenTag: true,
 	}
+	cmd.Flags().SortFlags = false
 
 	cmd.Flags().StringSliceVar(&targetFlags.Headers, "headers", targetHeaders, "set headers. Available headers: name, regex")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -59,11 +60,11 @@ func listTargets(
 	core.CheckIfError(err)
 
 	options := print.PrintTableOptions{
-		Output:               listFlags.Output,
-		Theme:                *theme,
-		OmitEmpty:            false,
-		SuppressEmptyColumns: true,
-		Resource:             "target",
+		Output:           listFlags.Output,
+		Theme:            *theme,
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: true,
+		Resource:         "target",
 	}
 
 	var targets []dao.Target
@@ -77,6 +78,7 @@ func listTargets(
 
 	if len(targets) > 0 {
 		rows := dao.GetTableData(targets, targetFlags.Headers)
-		print.PrintTable(rows, options, targetFlags.Headers)
+		err := print.PrintTable(rows, options, targetFlags.Headers, []string{}, true, true)
+		core.CheckIfError(err)
 	}
 }

@@ -181,65 +181,112 @@ Below is a config file detailing all of the available options and their defaults
          header:
            fg:
            bg:
-           align:
            attr:
 
          row:
            fg:
            bg:
-           align:
            attr:
 
          row_alt:
            fg:
            bg:
-           align:
            attr:
 
          footer:
            fg:
            bg:
-           align:
            attr:
 
  # List of Specs [optional]
  specs:
    default:
-     # Set task output [text|table|html|markdown]
-     output: text
+     # Spec description
+     desc: default spec
 
-     # Run server tasks in parallel
-     parallel: false
+     # Print task description
+     describe: false
+
+     # Print list of hosts that will be targetted
+     list_hosts: false
+
+     # Order hosts [inventory|reverse_inventory|sorted|reverse_sorted|random]
+     order: inventory
+
+     # Omit showing loader when running tasks
+     silent: false
+
+     # Execution strategy [linear|host_pinned|free]
+     strategy: linear
+
+     # Number of hosts to run in parallel
+     batch: 1
+
+     # Number of hosts in percentage to run in parallel [0-100]
+     # batch_p: 100
+
+     # Max number of forks
+     forks: 10000
+
+     # Set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+     output: text
 
      # Continue task execution on errors
      ignore_errors: true
 
-     # Stop task execution on all servers on error
+     # Stop task execution on any error
      any_errors_fatal: false
+
+     # Max number of tasks to fail before aborting
+     max_fail_percentage: 100
 
      # Ignore unreachable hosts
      ignore_unreachable: false
 
-     # Omit empty results for table output
-     omit_empty: false
+     # Omit empty rows for table output
+     omit_empty_rows: false
+
+     # Omit empty columns for table output
+     omit_empty_columns: false
+
+     # Show task reports [recap|rc|task|time|all]
+     report: [recap]
+
+     # Verbose turns on describe, list_hosts and report set to all
+     verbose: false
+
+     # Confirm invoked task before running
+     confirm: false
+
+     # Confirm each task before running
+     step: false
 
  # List of targets [optional]
  targets:
    default:
-     # Target all servers
+     # Target description
+     desc: ""
+
+     # Target all hosts
      all: false
 
-     # Specify servers via server name
+     # Specify hosts via server name
      servers: []
 
-     # Specify servers via server tags
+     # Specify hosts via server tags
      tags: []
 
-     # Limit of servers to target
+     # Limit number of hosts to target
      limit: 0
 
-     # Limit of servers to target in percentage
-     limit_p: 0
+     # Limit number of hosts to target in percentage
+     limit_p: 100
+
+     # Invert matching on hosts
+     invert: false
+
+     # Specify host regex
+     regex: ""
 
  # List of tasks
  tasks:
@@ -273,11 +320,11 @@ Below is a config file detailing all of the available options and their defaults
      # Or specify specs inline
      spec:
        output: table
-       parallel: true
        ignore_errors: true
        ignore_unreachable: true
        any_errors_fatal: false
-       omit_empty: true
+       omit_empty_rows: true
+       omit_empty_columns: true
 
      # Target reference [optional]
      # target: default
@@ -288,7 +335,6 @@ Below is a config file detailing all of the available options and their defaults
        servers: [media]
        tags: [remote]
        limit: 1
-       limit_p: 100
 
      # List of environment variables [optional]
      env:
@@ -299,22 +345,15 @@ Below is a config file detailing all of the available options and their defaults
        num_lines: $(ls -1 | wc -l)
 
        # The following variables are available by default:
+       #   S_NAME
+       #   S_HOST
+       #   S_USER
+       #   S_PORT
+       #   S_BASTION
+       #   S_TAGS
+       #   S_IDENTITY
        #   SAKE_DIR
        #   SAKE_PATH
-       #
-       #   SAKE_TASK_ID
-       #   SAKE_TASK_NAME
-       #   SAKE_TASK_DESC
-       #   SAKE_TASK_LOCAL
-       #
-       #   SAKE_SERVER_NAME
-       #   SAKE_SERVER_DESC
-       #   SAKE_SERVER_TAGS
-       #   SAKE_SERVER_HOST
-       #   SAKE_SERVER_USER
-       #   SAKE_SERVER_PORT
-       #   SAKE_SERVER_BASTION
-       #   SAKE_SERVER_LOCAL
 
      # Run on localhost [optional]
      local: false
@@ -328,7 +367,7 @@ Below is a config file detailing all of the available options and their defaults
      # Each task can only define:
      # - a single cmd
      # - or a single task reference
-     # - or a list of task references or commands
+     # - or a list of task references and commands
 
      # Single command
      cmd: |
@@ -343,6 +382,7 @@ Below is a config file detailing all of the available options and their defaults
        # Command
        - name: inline-command
          cmd: echo "Hello World"
+         ignore_errors: true
          work_dir: /tmp
          shell: bash
          env:
@@ -352,9 +392,14 @@ Below is a config file detailing all of the available options and their defaults
        # Nested task referencing is supported and will result in a
        # flat list of commands
        - task: simple-1
+         ignore_errors: true
          work_dir: /tmp
+         register: results
          env:
            foo: bar
+
+       - name: output
+         cmd: echo $results_stdout
 .RE
 
 .SH EXAMPLES
@@ -399,29 +444,19 @@ Describe a task
 .B ~ $ sake describe task ping
 
 .nf
-Task: ping
-Name: ping
-Desc: ping server
-Local: false
-WorkDir:
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: text
-    Parallel: false
-    AnyErrorsFatal: false
-    IgnoreErrors: false
-    IgnoreUnreachable: false
-    OmitEmpty: false
-Env:
-    SAKE_TASK_ID: ping
-    SAKE_TASK_NAME:
-    SAKE_TASK_DESC: ping server
-    SAKE_TASK_LOCAL: false
-Cmd:
+name: ping
+desc: ping server
+local: false
+work_dir:
+theme: default
+target:
+    all: true
+spec:
+    output: text
+    ignore_unreachable: true
+    omit_empty_rows: true
+    omit_empty_columns: true
+cmd:
     echo pong
 .fi
 

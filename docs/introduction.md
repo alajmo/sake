@@ -52,7 +52,7 @@ tasks:
   print-host:
     name: Host
     desc: print host
-    cmd: echo $SAKE_SERVER_HOST
+    cmd: echo $S_HOST
 
   print-os:
     name: OS
@@ -73,7 +73,7 @@ tasks:
       tags: [remote]
     spec:
       output: table
-      parallel: true
+      strategy: free
       ignore_errors: true
       ignore_unreachable: true
     tasks:

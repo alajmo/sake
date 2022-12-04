@@ -61,13 +61,14 @@ func FindFileInParentDirs(path string, files []string) (string, error) {
 
 // Get the absolute path
 // Need to support following path types:
-//		lala/land
-//		./lala/land
-//		../lala/land
-//		/lala/land
-//		$HOME/lala/land
-//		~/lala/land
-//		~root/lala/land
+//
+//	lala/land
+//	./lala/land
+//	../lala/land
+//	/lala/land
+//	$HOME/lala/land
+//	~/lala/land
+//	~root/lala/land
 func GetAbsolutePath(configDir string, path string, name string) (string, error) {
 	path = os.ExpandEnv(path)
 
@@ -268,4 +269,11 @@ func IsDigit(s string) bool {
 		}
 	}
 	return true
+}
+
+func SplitString(s, sep string) []string {
+	if len(s) == 0 {
+		return []string{}
+	}
+	return strings.Split(s, sep)
 }

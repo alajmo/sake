@@ -32,7 +32,7 @@ tasks:
       output: table
     target:
       all: true
-    cmd: echo $SAKE_SERVER_HOST
+    cmd: echo $S_HOST
 
   info:
     desc: get remote info
@@ -61,29 +61,16 @@ $ sake list servers
 # Describe task
 $ sake describe task print-host
 
-Task: print-host
-Name: Host
-Desc: print host
-Local: false
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: table
-    Parallel: false
-    AnyErrorsFatal: false
-    IgnoreErrors: false
-    IgnoreUnreachable: false
-    OmitEmpty: false
-Env:
-    SAKE_TASK_ID: print-host
-    SAKE_TASK_NAME: Host
-    SAKE_TASK_DESC: print host
-    SAKE_TASK_LOCAL: false
-Cmd:
-    echo $SAKE_HOST
+task: print-host
+name: Host
+desc: print host
+theme: default
+target:
+    all: true
+spec:
+    output: table
+cmd:
+    echo $S_HOST
 
 
 # Run a task targeting servers with tag `local`
@@ -116,7 +103,7 @@ TASK (3/3) Command ********************
 localhost | Done
 
 # Run runtime defined command for all servers
-$ sake exec --all --output table --parallel 'cd ~ && ls -al | wc -l'
+$ sake exec --all --output table --strategy=free 'cd ~ && ls -al | wc -l'
 
  Server    | Output
 -----------+--------
@@ -181,10 +168,11 @@ specs:
   info:
     output: table
     ignore_errors: true
-    omit_empty: true
+    omit_empty_rows: true
+    omit_empty_columns: true
     any_fatal_errors: false
     ignore_unreachable: true
-    parallel: true
+    strategy: free
 
 targets:
   all:
@@ -204,7 +192,7 @@ tasks:
     name: Host
     desc: print host
     target: all
-    cmd: echo $SAKE_SERVER_HOST
+    cmd: echo $S_HOST
 
   print-hostname:
     name: Hostname
@@ -312,7 +300,7 @@ targets:
 specs:
   info:
       output: table
-      parallel: true
+      strategy: free
       ignore_errors: true
       ignore_unreachable: true
       any_errors_fatal: false
@@ -328,7 +316,7 @@ tasks:
     desc: ping server
     target: all
     local: true
-    cmd: ping $SAKE_SERVER_HOST -c 2
+    cmd: ping $S_HOST -c 2
 
   # Setup
   setup-pi:
@@ -458,7 +446,7 @@ tasks:
     desc: print host
     spec: info
     target: all
-    cmd: echo $SAKE_SERVER_HOST
+    cmd: echo $S_HOST
 
   print-hostname:
     name: Hostname
@@ -558,7 +546,7 @@ tasks:
       SRC: ""
       DEST: ""
     local: true
-    cmd: rsync --recursive --verbose --archive --update $SRC $SAKE_SERVER_HOST:$DEST
+    cmd: rsync --recursive --verbose --archive --update $SRC $S_HOST:$DEST
 
   # Docker
 
@@ -567,7 +555,7 @@ tasks:
     env:
       NAME: ""
     tty: true
-    cmd: ssh -t $SAKE_SERVER_USER@$SAKE_SERVER_HOST "docker exec -it $NAME bash"
+    cmd: ssh -t $S_USER@$S_HOST "docker exec -it $NAME bash"
 
   docker-start:
     desc: create and start services
@@ -637,7 +625,7 @@ tasks:
 
 ### docker-compose.yaml
 
-This is a docker-compose file used to start multiple Docker containers. Currently three servies are ran `syncthing`, `mealie`, and `Node-RED`.
+This is a docker-compose file used to start multiple Docker containers. Currently three services are ran `syncthing`, `mealie`, and `Node-RED`.
 
 ```yaml title="docker-compose.yaml"
 version: "3.9"

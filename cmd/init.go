@@ -36,10 +36,10 @@ func PrintServerInit(servers []dao.Server) {
 	}
 
 	options := print.PrintTableOptions{
-		Theme:                theme,
-		OmitEmpty:            true,
-		Output:               "table",
-		SuppressEmptyColumns: false,
+		Theme:            theme,
+		OmitEmptyRows:    true,
+		OmitEmptyColumns: false,
+		Output:           "table",
 	}
 
 	data := dao.TableOutput{
@@ -52,5 +52,6 @@ func PrintServerInit(servers []dao.Server) {
 	}
 
 	fmt.Println("\nFollowing servers were added to sake.yaml")
-	print.PrintTable(data.Rows, options, data.Headers)
+	err := print.PrintTable(data.Rows, options, data.Headers, []string{}, true, true)
+	core.CheckIfError(err)
 }

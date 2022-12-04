@@ -3,13 +3,16 @@ package dao
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 	"os/user"
 	"path"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"gopkg.in/yaml.v3"
 
@@ -38,6 +41,7 @@ type Server struct {
 	Group   string
 	PubFile *string
 
+	RootDir     string // config dir
 	context     string // config path
 	contextLine int    // defined at
 }
@@ -88,7 +92,7 @@ func (s Server) GetValue(key string, _ int) string {
 			return ""
 		}
 	case "tags":
-		return strings.Join(s.Tags, "\n")
+		return strings.Join(s.Tags, ",")
 	}
 
 	return ""
@@ -105,7 +109,7 @@ func (s *Server) GetContextLine() int {
 func (s *Server) GetNonDefaultEnvs() []string {
 	var envs []string
 	for _, env := range s.Envs {
-		if !strings.Contains(env, "SAKE_SERVER_") {
+		if !strings.Contains(env, "S_") {
 			envs = append(envs, env)
 		}
 	}
@@ -181,17 +185,14 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		}
 
 		defaultEnvs := []string{}
-		if serverYAML.Desc != "" {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_DESC=%s", serverYAML.Desc))
+		if serverYAML.IdentityFile != nil {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_IDENTITY=%s", *serverYAML.IdentityFile))
 		}
 		if len(serverYAML.Tags) > 0 {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_TAGS=%s", strings.Join(serverYAML.Tags, ",")))
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_TAGS=%s", strings.Join(serverYAML.Tags, ",")))
 		}
 		if serverYAML.Bastion != "" {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_BASTION=%s", serverYAML.Bastion))
-		}
-		if serverYAML.Local {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_SERVER_LOCAL=%t", serverYAML.Local))
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_BASTION=%s", serverYAML.Bastion))
 		}
 
 		// Same for all servers
@@ -268,10 +269,10 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 
 			serverEnvs := append(defaultEnvs, []string{
-				fmt.Sprintf("SAKE_SERVER_NAME=%s", c.Servers.Content[i].Value),
-				fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
-				fmt.Sprintf("SAKE_SERVER_USER=%s", user),
-				fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+				fmt.Sprintf("S_NAME=%s", c.Servers.Content[i].Value),
+				fmt.Sprintf("S_HOST=%s", host),
+				fmt.Sprintf("S_USER=%s", user),
+				fmt.Sprintf("S_PORT=%d", port),
 			}...)
 			serverEnvs = append(serverEnvs, envs...)
 
@@ -294,6 +295,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				PubFile:      pubKeyFile,
 				Password:     password,
 
+				RootDir:     filepath.Dir(c.Path),
 				context:     c.Path,
 				contextLine: c.Servers.Content[i].Line,
 			}
@@ -310,10 +312,10 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				}
 
 				serverEnvs := append(defaultEnvs, []string{
-					fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", c.Servers.Content[i].Value, k),
-					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
-					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
-					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+					fmt.Sprintf("S_NAME=%s-%d", c.Servers.Content[i].Value, k),
+					fmt.Sprintf("S_HOST=%s", host),
+					fmt.Sprintf("S_USER=%s", user),
+					fmt.Sprintf("S_PORT=%d", port),
 				}...)
 				serverEnvs = append(serverEnvs, envs...)
 
@@ -336,6 +338,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					PubFile:      pubKeyFile,
 					Password:     password,
 
+					RootDir:     filepath.Dir(c.Path),
 					context:     c.Path,
 					contextLine: c.Servers.Content[i].Line,
 				}
@@ -357,10 +360,10 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				}
 
 				serverEnvs := append(defaultEnvs, []string{
-					fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", c.Servers.Content[i].Value, k),
-					fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
-					fmt.Sprintf("SAKE_SERVER_USER=%s", user),
-					fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+					fmt.Sprintf("S_NAME=%s-%d", c.Servers.Content[i].Value, k),
+					fmt.Sprintf("S_HOST=%s", host),
+					fmt.Sprintf("S_USER=%s", user),
+					fmt.Sprintf("S_PORT=%d", port),
 				}...)
 				serverEnvs = append(serverEnvs, envs...)
 
@@ -383,6 +386,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					PubFile:      pubKeyFile,
 					Password:     password,
 
+					RootDir:     filepath.Dir(c.Path),
 					context:     c.Path,
 					contextLine: c.Servers.Content[i].Line,
 				}
@@ -410,6 +414,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				PubFile:      pubKeyFile,
 				Password:     password,
 
+				RootDir:     filepath.Dir(c.Path),
 				context:     c.Path,
 				contextLine: c.Servers.Content[i].Line,
 			}
@@ -930,10 +935,9 @@ func CreateInventoryServers(inputHost string, i int, server Server, userArgs []s
 	}
 
 	serverEnvs := append(server.Envs, []string{
-		fmt.Sprintf("SAKE_SERVER_NAME=%s-%d", server.Name, i),
-		fmt.Sprintf("SAKE_SERVER_HOST=%s", host),
-		fmt.Sprintf("SAKE_SERVER_USER=%s", user),
-		fmt.Sprintf("SAKE_SERVER_PORT=%d", port),
+		fmt.Sprintf("S_HOST=%s", host),
+		fmt.Sprintf("S_USER=%s", user),
+		fmt.Sprintf("S_PORT=%d", port),
 	}...)
 	serverEnvs = append(serverEnvs, userArgs...)
 
@@ -961,4 +965,25 @@ func CreateInventoryServers(inputHost string, i int, server Server, userArgs []s
 	}
 
 	return *iServer, nil
+}
+
+func SortServers(order string, servers *[]Server) {
+	switch order {
+	case "inventory":
+	case "reverse_inventory":
+		for i, j := 0, len(*servers)-1; i < j; i, j = i+1, j-1 {
+			(*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i]
+		}
+	case "sorted":
+		sort.Slice(*servers, func(i, j int) bool {
+			return (*servers)[i].Host < (*servers)[j].Host
+		})
+	case "reverse_sorted":
+		sort.Slice(*servers, func(i, j int) bool {
+			return (*servers)[i].Host > (*servers)[j].Host
+		})
+	case "random":
+		rand.Seed(time.Now().UnixNano())
+		rand.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
+	}
 }

@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,16 +30,34 @@ var (
 		All:     false,
 		Servers: []string{},
 		Tags:    []string{},
+		Regex:   "",
+		Invert:  false,
+		Limit:   0,
+		LimitP:  0,
 	}
 
 	DEFAULT_SPEC = Spec{
 		Name:              "default",
+		Desc:              "the default spec",
+		Describe:          false,
+		ListHosts:         false,
+		Order:             "inventory",
+		Silent:            false,
+		Strategy:          "linear",
 		Output:            "text",
-		Parallel:          false,
-		AnyErrorsFatal:    false,
-		IgnoreUnreachable: false,
+		Forks:             10000,
+		MaxFailPercentage: 0,
+		AnyErrorsFatal:    true,
 		IgnoreErrors:      false,
-		OmitEmpty:         false,
+		IgnoreUnreachable: false,
+		OmitEmptyRows:     false,
+		OmitEmptyColumns:  false,
+		Batch:             0,
+		BatchP:            0,
+		Report:            []string{"recap"},
+		Verbose:           false,
+		Confirm:           false,
+		Step:              false,
 	}
 )
 
@@ -133,7 +150,7 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 		configPath = filename
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -289,7 +306,7 @@ func (c *Config) EditTask(name string) error {
 		configPath = task.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -332,7 +349,7 @@ func (c *Config) EditServer(name string) error {
 		configPath = server.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -373,7 +390,7 @@ func (c *Config) EditTarget(name string) error {
 		configPath = target.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -414,7 +431,7 @@ func (c *Config) EditSpec(name string) error {
 		configPath = spec.context
 	}
 
-	dat, err := ioutil.ReadFile(configPath)
+	dat, err := os.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
@@ -527,9 +544,15 @@ tasks:
 
 func (c *Config) ParseInventory(userArgs []string) error {
 	var servers []Server
+	var shell = DEFAULT_SHELL
+	if c.Shell != "" {
+		shell = c.Shell
+	}
+	shell = core.FormatShell(shell)
+
 	for _, s := range c.Servers {
 		if s.Inventory != "" {
-			hosts, err := core.EvaluateInventory(s.context, s.Inventory, s.Envs, userArgs)
+			hosts, err := core.EvaluateInventory(shell, s.context, s.Inventory, s.Envs, userArgs)
 			if err != nil {
 				return err
 			}

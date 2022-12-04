@@ -6,7 +6,6 @@ import (
 	"log"
 	"strings"
 
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -51,7 +50,7 @@ func clearGolden(file string) {
 }
 
 func clearTmp() {
-	files, _ := ioutil.ReadDir(".")
+	files, _ := os.ReadDir(".")
 	for _, f := range files {
 		filepath := path.Join(tmpDir, f.Name())
 		os.Remove(filepath)
@@ -115,7 +114,7 @@ func Run(t *testing.T, tt TemplateTest) {
 	}
 
 	// Write output to tmp file which will be used to compare with golden files
-	err = ioutil.WriteFile(tt.Golden, tt.GoldenOutput(output), 0644)
+	err = os.WriteFile(tt.Golden, tt.GoldenOutput(output), 0644)
 	if err != nil {
 		t.Fatalf("could not write %s: %v", tt.Golden, err)
 	}
@@ -125,17 +124,17 @@ func Run(t *testing.T, tt TemplateTest) {
 		clearGolden(goldenFilePath)
 
 		// Write stdout of test command to golden file
-		err = ioutil.WriteFile(goldenFilePath, tt.GoldenOutput(output), os.ModePerm)
+		err = os.WriteFile(goldenFilePath, tt.GoldenOutput(output), os.ModePerm)
 		if err != nil {
 			t.Fatalf("could not write %s: %v", goldenFilePath, err)
 		}
 	} else {
-		actual, err := ioutil.ReadFile(tt.Golden)
+		actual, err := os.ReadFile(tt.Golden)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
 
-		expected, err := ioutil.ReadFile(goldenFilePath)
+		expected, err := os.ReadFile(goldenFilePath)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}

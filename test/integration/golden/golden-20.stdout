@@ -1,90 +1,111 @@
 Index: 20
 Name: Simple Envs
-Cmd: go run ../../main.go run env -S -t reachable
+Cmd: go run ../../main.go run env -q -t reachable
 WantErr: false
 
 ---
 
- server    | env         
------------+-------------
- localhost | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- list-0    | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- list-1    | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- range-0   | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- range-1   | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- inv-0     | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- inv-1     | foo xyz     
-           | hello world 
-           | cookie      
-           | release     
-           | task local  
- server-1  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-2  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-3  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-4  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-5  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-6  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-7  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-8  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
- server-9  | foo xyz     
-           | hello       
-           | cookie      
-           | release     
-           | task local  
+TASKS 
+
+ host               | env         
+--------------------+-------------
+ localhost          | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.2         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.4         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.2         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.4         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.2         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.4         | foo xyz     
+                    | hello world 
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.2         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.3         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.4         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.5         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.6         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.7         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.8         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 172.24.2.9         | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+ 2001:3984:3989::10 | foo xyz     
+                    | hello       
+                    | cookie      
+                    | release     
+                    | task local  
+                                                                              
+ localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

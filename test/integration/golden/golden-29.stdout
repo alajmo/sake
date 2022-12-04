@@ -1,42 +1,64 @@
 Index: 29
-Name: ignore_errors false
-Cmd: go run ../../main.go run errors -S -t reachable
-WantErr: false
+Name: fatal false
+Cmd: go run ../../main.go run fatal -q -t reachable
+WantErr: true
 
 ---
 
- server    | output | output                        | output 
------------+--------+-------------------------------+--------
- localhost | 123    |                               |        
-           |        | exit status 65                |        
- list-0    | 123    |                               |        
-           |        | Process exited with status 65 |        
- list-1    | 123    |                               |        
-           |        | Process exited with status 65 |        
- range-0   | 123    |                               |        
-           |        | Process exited with status 65 |        
- range-1   | 123    |                               |        
-           |        | Process exited with status 65 |        
- inv-0     | 123    |                               |        
-           |        | Process exited with status 65 |        
- inv-1     | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-1  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-2  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-3  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-4  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-5  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-6  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-7  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-8  | 123    |                               |        
-           |        | Process exited with status 65 |        
- server-9  | 123    |                               |        
-           |        | Process exited with status 65 |        
+TASKS 
 
+ host               | fatal                        
+--------------------+------------------------------
+ localhost          |                              
+                    | exit status 1                
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.3         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.5         |                              
+                    | Process exited with status 1 
+ 172.24.2.6         |                              
+                    | Process exited with status 1 
+ 172.24.2.7         |                              
+                    | Process exited with status 1 
+ 172.24.2.8         |                              
+                    | Process exited with status 1 
+ 172.24.2.9         |                              
+                    | Process exited with status 1 
+ 2001:3984:3989::10 |                              
+                    | Process exited with status 1 
+                                                                              
+ localhost               ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.3              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.5              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.6              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.7              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.8              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.9              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 2001:3984:3989::10      ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=0  unreachable=0  ignored=0  failed=16  skipped=0 
+
+exit status 1

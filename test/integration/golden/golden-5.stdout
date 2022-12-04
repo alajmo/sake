@@ -5,8 +5,8 @@ WantErr: false
 
 ---
 
- server | host       | desc                       
---------+------------+----------------------------
- inv-0  | 172.24.2.2 | many hosts using inventory 
- inv-1  | 172.24.2.4 | many hosts using inventory 
+ server | host       | tags                      | desc                       
+--------+------------+---------------------------+----------------------------
+ inv-0  | 172.24.2.2 | remote,prod,inv,reachable | many hosts using inventory 
+ inv-1  | 172.24.2.4 | remote,prod,inv,reachable | many hosts using inventory 
 

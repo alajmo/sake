@@ -32,6 +32,7 @@ func describeTargetsCmd(config *dao.Config, configErr *error) *cobra.Command {
 		},
 		DisableAutoGenTag: true,
 	}
+	cmd.Flags().SortFlags = false
 
 	cmd.Flags().BoolVarP(&targetFlags.Edit, "edit", "e", false, "edit target")
 

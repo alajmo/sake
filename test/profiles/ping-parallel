@@ -1,4 +1,4 @@
-Benchmark 1: ../dist/sake run ping -p -t reachable
-  Time (mean ± σ):     510.9 ms ±  43.9 ms    [User: 351.5 ms, System: 30.6 ms]
-  Range (min … max):   459.1 ms … 573.6 ms    5 runs
+Benchmark 1: ../dist/sake run ping --strategy=free -t reachable
+  Time (mean ± σ):     548.0 ms ±  40.0 ms    [User: 324.8 ms, System: 39.7 ms]
+  Range (min … max):   471.7 ms … 603.9 ms    10 runs
  

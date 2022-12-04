@@ -42,11 +42,10 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 		},
 		DisableAutoGenTag: true,
 	}
-
-	cmd.Flags().StringVarP(&serverFlags.Regex, "regex", "r", "", "filter servers on host regex")
+	cmd.Flags().SortFlags = false
 
 	cmd.Flags().BoolVarP(&serverFlags.Invert, "invert", "v", false, "invert matching on servers")
-
+	cmd.Flags().StringVarP(&serverFlags.Regex, "regex", "r", "", "filter servers on host regex")
 	cmd.Flags().StringSliceVarP(&serverFlags.Tags, "tags", "t", []string{}, "filter servers by tags")
 	err := cmd.RegisterFlagCompletionFunc("tags", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
@@ -59,7 +58,7 @@ func listServersCmd(config *dao.Config, configErr *error, listFlags *core.ListFl
 	core.CheckIfError(err)
 
 	cmd.Flags().BoolVarP(&serverFlags.AllHeaders, "all-headers", "H", false, "select all server headers")
-	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tag", "desc"}, "set headers")
+	cmd.Flags().StringSliceVar(&serverFlags.Headers, "headers", []string{"server", "host", "tags", "desc"}, "set headers")
 	err = cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if err != nil {
 			return []string{}, cobra.ShellCompDirectiveDefault
@@ -103,11 +102,11 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 
 	if len(servers) > 0 {
 		options := print.PrintTableOptions{
-			Output:               listFlags.Output,
-			Theme:                *theme,
-			OmitEmpty:            false,
-			SuppressEmptyColumns: true,
-			Resource:             "server",
+			Output:           listFlags.Output,
+			Theme:            *theme,
+			OmitEmptyRows:    false,
+			OmitEmptyColumns: true,
+			Resource:         "server",
 		}
 
 		var headers []string
@@ -118,6 +117,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 		}
 
 		rows := dao.GetTableData(servers, headers)
-		print.PrintTable(rows, options, headers)
+		err := print.PrintTable(rows, options, headers, []string{}, true, true)
+		core.CheckIfError(err)
 	}
 }

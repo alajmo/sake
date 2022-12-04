@@ -7,18 +7,19 @@ import (
 )
 
 type Client interface {
-	Connect(bool, string, *sync.Mutex, SSHDialFunc) *ErrConnect
-	Run([]string, string, string, string) error
-	Wait() error
-	Close() error
-	Prefix() string
-	Write(p []byte) (n int, err error)
-	WriteClose() error
-	Stdin() io.WriteCloser
-	Stderr() io.Reader
-	Stdout() io.Reader
-	Signal(os.Signal) error
+	Connect(SSHDialFunc, bool, string, *sync.Mutex) *ErrConnect
+	Run(int, []string, string, string, string) error
+	Wait(int) error
+	Close(int) error
+	Write(int, []byte) (n int, err error)
+	WriteClose(int) error
+	Stdin(int) io.WriteCloser
+	Stderr(int) io.Reader
+	Stdout(int) io.Reader
+	Signal(int, os.Signal) error
 	GetName() string
+	Prefix() string
+	Connected() bool
 }
 
 type ErrConnect struct {

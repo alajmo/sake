@@ -1,12 +1,12 @@
-.TH "SAKE" "1" "2022-10-16T08:03:53CEST" "v0.12.1" "Sake Manual" "sake"
+.TH "SAKE" "1" "2022-12-04T21:04:49CET" "v0.13.0" "Sake Manual" "sake"
 .SH NAME
-sake - sake is a command runner for local and remote hosts
+sake - sake is a task runner for local and remote hosts
 
 .SH SYNOPSIS
 .B sake [command] [flags]
 
 .SH DESCRIPTION
-sake is a command runner for local and remote hosts.
+sake is a task runner for local and remote hosts.
 
 You define servers and tasks in a sake.yaml config file and then run the tasks on the servers.
 
@@ -16,17 +16,17 @@ You define servers and tasks in a sake.yaml config file and then run the tasks o
 \fB-c, --config=""\fR
 specify config
 .TP
-\fB-h, --help[=false]\fR
-help for sake
+\fB-u, --user-config=""\fR
+specify user config
+.TP
+\fB--ssh-config=""\fR
+specify ssh config
 .TP
 \fB--no-color[=false]\fR
 disable color
 .TP
-\fB-U, --ssh-config=""\fR
-specify ssh config
-.TP
-\fB-u, --user-config=""\fR
-specify user config
+\fB-h, --help[=false]\fR
+help for sake
 .SH
 COMMANDS
 .TP
@@ -42,38 +42,50 @@ Run tasks specified in a sake.yaml file.
 .RS
 .RS
 .TP
-\fB-a, --all[=false]\fR
-target all servers
-.TP
-\fB--any-errors-fatal[=false]\fR
-stop task execution on all servers on error
-.TP
-\fB--attach[=false]\fR
-ssh to server after command
+\fB--dry-run[=false]\fR
+print the task to see what will be executed
 .TP
 \fB--describe[=false]\fR
 print task information
 .TP
-\fB--dry-run[=false]\fR
-print the task to see what will be executed
+\fB--list-hosts[=false]\fR
+print hosts that will be targetted
 .TP
-\fB-e, --edit[=false]\fR
-edit task
+\fB-V, --verbose[=false]\fR
+enable all diagnostics
 .TP
-\fB-i, --identity-file=""\fR
-set identity file for all servers
+\fB-S, --strategy=""\fR
+set execution strategy [linear|host_pinned|free]
 .TP
-\fB--ignore-errors[=false]\fR
-continue task execution on errors
+\fB-f, --forks=10000\fR
+max number of concurrent processes
 .TP
-\fB--ignore-unreachable[=false]\fR
-ignore unreachable hosts
+\fB-b, --batch=0\fR
+set number of hosts to run in parallel
+.TP
+\fB-B, --batch-p=0\fR
+set percentage of hosts to run in parallel [0-100]
+.TP
+\fB-a, --all[=false]\fR
+target all hosts
 .TP
 \fB-v, --invert[=false]\fR
-invert matching on servers
+invert matching on hosts
 .TP
-\fB--known-hosts-file=""\fR
-set known hosts file
+\fB-r, --regex=""\fR
+target hosts on host regex
+.TP
+\fB-s, --servers=[]\fR
+target servers by names
+.TP
+\fB-t, --tags=[]\fR
+target hosts by tags
+.TP
+\fB-T, --target=""\fR
+target hosts by target name
+.TP
+\fB--order=""\fR
+order hosts
 .TP
 \fB-l, --limit=0\fR
 set limit of servers to target
@@ -81,38 +93,68 @@ set limit of servers to target
 \fB-L, --limit-p=0\fR
 set percentage of servers to target [0-100]
 .TP
-\fB--local[=false]\fR
-run task on localhost
+\fB--ignore-unreachable[=false]\fR
+ignore unreachable hosts
 .TP
-\fB--omit-empty[=false]\fR
-omit empty results for table output
+\fB-M, --max-fail-percentage=0\fR
+stop task execution on all servers when threshold reached
+.TP
+\fB--any-errors-fatal[=false]\fR
+stop task execution on all servers on error
+.TP
+\fB--ignore-errors[=false]\fR
+continue task execution on errors
+.TP
+\fB-J, --spec=""\fR
+set spec
 .TP
 \fB-o, --output=""\fR
-set task output [text|table|table-2|table-3|table-4|html|markdown]
+set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
 .TP
-\fB-p, --parallel[=false]\fR
-run server tasks in parallel
+\fB--omit-empty-rows[=false]\fR
+omit empty row for table output
 .TP
-\fB--password=""\fR
-set ssh password for all servers
+\fB--omit-empty-columns[=false]\fR
+omit empty column for table output
 .TP
-\fB-r, --regex=""\fR
-filter servers on host regex
-.TP
-\fB-s, --servers=[]\fR
-target servers by names
-.TP
-\fB-S, --silent[=false]\fR
+\fB-q, --silent[=false]\fR
 omit showing loader when running tasks
 .TP
-\fB-t, --tags=[]\fR
-target servers by tags
+\fB--confirm[=false]\fR
+confirm root task before running
 .TP
-\fB--theme=""\fR
-set theme
+\fB--step[=false]\fR
+confirm each task before running
 .TP
 \fB--tty[=false]\fR
 replace the current process
+.TP
+\fB--attach[=false]\fR
+ssh to server after command
+.TP
+\fB--local[=false]\fR
+run task on localhost
+.TP
+\fB--theme="default"\fR
+set theme
+.TP
+\fB-e, --edit[=false]\fR
+edit task
+.TP
+\fB-R, --report=[recap]\fR
+reports to show
+.TP
+\fB-i, --identity-file=""\fR
+set identity file
+.TP
+\fB-U, --user=""\fR
+set ssh user
+.TP
+\fB--password=""\fR
+set ssh password
+.TP
+\fB--known-hosts-file=""\fR
+set known hosts file
 .RE
 .RE
 .TP
@@ -128,53 +170,35 @@ before the command gets executed in each directory.
 .RS
 .RS
 .TP
-\fB-a, --all[=false]\fR
-target all servers
-.TP
-\fB--any-errors-fatal[=false]\fR
-stop task execution on all servers on error
-.TP
-\fB--attach[=false]\fR
-ssh to server after command
-.TP
 \fB--dry-run[=false]\fR
 prints the command to see what will be executed
 .TP
-\fB-i, --identity-file=""\fR
-set identity file for all servers
+\fB--describe[=false]\fR
+print task information
 .TP
-\fB--ignore-errors[=false]\fR
-continue task execution on errors
+\fB--list-hosts[=false]\fR
+print hosts that will be targetted
 .TP
-\fB--ignore-unreachable[=false]\fR
-ignore unreachable hosts
+\fB-V, --verbose[=false]\fR
+enable all diagnostics
+.TP
+\fB-S, --strategy=""\fR
+set execution strategy [linear|host_pinned|free]
+.TP
+\fB-f, --forks=10000\fR
+max number of concurrent processes
+.TP
+\fB-b, --batch=0\fR
+set number of hosts to run in parallel
+.TP
+\fB-B, --batch-p=0\fR
+set percentage of servers to run in parallel [0-100]
+.TP
+\fB-a, --all[=false]\fR
+target all servers
 .TP
 \fB-v, --invert[=false]\fR
 invert matching on servers
-.TP
-\fB--known-hosts-file=""\fR
-set known hosts file
-.TP
-\fB-l, --limit=0\fR
-set limit of servers to target
-.TP
-\fB-L, --limit-p=0\fR
-set percentage of servers to target
-.TP
-\fB--local[=false]\fR
-run command on localhost
-.TP
-\fB--omit-empty[=false]\fR
-omit empty results for table output
-.TP
-\fB-o, --output=""\fR
-set task output [text|table|table-2|table-3|table-4|html|markdown]
-.TP
-\fB-p, --parallel[=false]\fR
-run server tasks in parallel
-.TP
-\fB--password=""\fR
-set ssh password for all servers
 .TP
 \fB-r, --regex=""\fR
 filter servers on host regex
@@ -182,17 +206,80 @@ filter servers on host regex
 \fB-s, --servers=[]\fR
 target servers by names
 .TP
-\fB-S, --silent[=false]\fR
-omit showing loader when running tasks
-.TP
 \fB-t, --tags=[]\fR
 target servers by tags
+.TP
+\fB-T, --target=""\fR
+target servers by target name
+.TP
+\fB--order=""\fR
+order hosts
+.TP
+\fB-l, --limit=0\fR
+set limit of servers to target
+.TP
+\fB-L, --limit-p=0\fR
+set percentage of servers to target
+.TP
+\fB--ignore-unreachable[=false]\fR
+ignore unreachable hosts
+.TP
+\fB-M, --max-fail-percentage=0\fR
+stop task execution on all servers when threshold reached
+.TP
+\fB--any-errors-fatal[=false]\fR
+stop task execution on all servers on error
+.TP
+\fB--ignore-errors[=false]\fR
+continue task execution on errors
+.TP
+\fB-J, --spec=""\fR
+set spec
+.TP
+\fB-o, --output=""\fR
+set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+.TP
+\fB--omit-empty-rows[=false]\fR
+omit empty row for table output
+.TP
+\fB--omit-empty-columns[=false]\fR
+omit empty column for table output
+.TP
+\fB-q, --silent[=false]\fR
+omit showing loader when running tasks
+.TP
+\fB--confirm[=false]\fR
+confirm root task before running
+.TP
+\fB--step[=false]\fR
+confirm each task before running
+.TP
+\fB--tty[=false]\fR
+replace the current process
+.TP
+\fB--attach[=false]\fR
+ssh to server after command
+.TP
+\fB--local[=false]\fR
+run command on localhost
 .TP
 \fB--theme="default"\fR
 set theme
 .TP
-\fB--tty[=false]\fR
-replace the current process
+\fB-R, --report=[recap]\fR
+reports to show
+.TP
+\fB-i, --identity-file=""\fR
+set identity file for all servers
+.TP
+\fB-U, --user=""\fR
+set ssh user
+.TP
+\fB--password=""\fR
+set ssh password for all servers
+.TP
+\fB--known-hosts-file=""\fR
+set known hosts file
 .RE
 .RE
 .TP
@@ -208,16 +295,16 @@ Open up sake config file in $EDITOR.
 Open up sake config file in $EDITOR and go to servers section.
 
 .TP
-.B edit spec [spec]
-Open up sake config file in $EDITOR and go to specs section.
+.B edit task [task]
+Open up sake config file in $EDITOR and go to tasks section.
 
 .TP
 .B edit target [target]
 Open up sake config file in $EDITOR and go to targets section.
 
 .TP
-.B edit task [task]
-Open up sake config file in $EDITOR and go to tasks section.
+.B edit spec [spec]
+Open up sake config file in $EDITOR and go to specs section.
 
 .TP
 .B list servers [servers] [flags]
@@ -228,12 +315,6 @@ List servers.
 .RS
 .RS
 .TP
-\fB-H, --all-headers[=false]\fR
-select all server headers
-.TP
-\fB--headers=[server,host,tag,desc]\fR
-set headers
-.TP
 \fB-v, --invert[=false]\fR
 invert matching on servers
 .TP
@@ -243,68 +324,14 @@ filter servers on host regex
 \fB-t, --tags=[]\fR
 filter servers by tags
 .TP
-\fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html]
+\fB-H, --all-headers[=false]\fR
+select all server headers
 .TP
-\fB--theme="default"\fR
-set theme
-
-.RE
-.RE
-.TP
-.B list specs [specs] [flags]
-List specs.
-
-
-.B Available Options:
-.RS
-.RS
-.TP
-\fB--headers=[spec,output,parallel,any_errors_fatal,ignore_errors,ignore_unreachable,omit_empty]\fR
+\fB--headers=[server,host,tags,desc]\fR
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html]
-.TP
-\fB--theme="default"\fR
-set theme
-
-.RE
-.RE
-.TP
-.B list tags [tags] [flags]
-List tags.
-
-
-.B Available Options:
-.RS
-.RS
-.TP
-\fB--headers=[tag,server]\fR
-set headers
-.TP
-\fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html]
-.TP
-\fB--theme="default"\fR
-set theme
-
-.RE
-.RE
-.TP
-.B list targets [targets] [flags]
-List targets.
-
-
-.B Available Options:
-.RS
-.RS
-.TP
-\fB--headers=[target,all,servers,tags,regex,invert,limit,limit_p]\fR
-set headers. Available headers: name, regex
-.TP
-\fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -327,7 +354,67 @@ select all task headers
 set headers
 .TP
 \fB-o, --output="table"\fR
-set table output [table|table-2|table-3|table-4|markdown|html]
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
+.TP
+\fB--theme="default"\fR
+set theme
+
+.RE
+.RE
+.TP
+.B list tags [tags] [flags]
+List tags.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB--headers=[tag,server]\fR
+set headers
+.TP
+\fB-o, --output="table"\fR
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
+.TP
+\fB--theme="default"\fR
+set theme
+
+.RE
+.RE
+.TP
+.B list targets [targets] [flags]
+List targets.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB--headers=[target,desc,all,servers,tags,regex,invert,limit,limit_p]\fR
+set headers. Available headers: name, regex
+.TP
+\fB-o, --output="table"\fR
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
+.TP
+\fB--theme="default"\fR
+set theme
+
+.RE
+.RE
+.TP
+.B list specs [specs] [flags]
+List specs.
+
+
+.B Available Options:
+.RS
+.RS
+.TP
+\fB--headers=[spec,desc,describe,list_hosts,order,silent,strategy,batch,batch_p,forks,output,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report]\fR
+set headers
+.TP
+\fB-o, --output="table"\fR
+set table output [table|table-2|table-3|table-4|html|markdown|json|csv]
 .TP
 \fB--theme="default"\fR
 set theme
@@ -343,22 +430,22 @@ Describe servers.
 .RS
 .RS
 .TP
-\fB-e, --edit[=false]\fR
-edit server
-.TP
-\fB-v, --invert[=false]\fR
-invert matching on servers
+\fB-t, --tags=[]\fR
+filter servers by their tag
 .TP
 \fB-r, --regex=""\fR
 filter servers on host regex
 .TP
-\fB-t, --tags=[]\fR
-filter servers by their tag
+\fB-v, --invert[=false]\fR
+invert matching on servers
+.TP
+\fB-e, --edit[=false]\fR
+edit server
 .RE
 .RE
 .TP
-.B describe specs [specs] [flags]
-Describe specs.
+.B describe tasks [tasks] [flags]
+Describe tasks.
 
 
 .B Available Options:
@@ -366,7 +453,7 @@ Describe specs.
 .RS
 .TP
 \fB-e, --edit[=false]\fR
-edit spec
+edit task
 .RE
 .RE
 .TP
@@ -383,8 +470,8 @@ edit target
 .RE
 .RE
 .TP
-.B describe tasks [tasks] [flags]
-Describe tasks.
+.B describe specs [specs] [flags]
+Describe specs.
 
 
 .B Available Options:
@@ -392,7 +479,7 @@ Describe tasks.
 .RS
 .TP
 \fB-e, --edit[=false]\fR
-edit task
+edit spec
 .RE
 .RE
 .TP
@@ -607,65 +694,112 @@ Below is a config file detailing all of the available options and their defaults
          header:
            fg:
            bg:
-           align:
            attr:
 
          row:
            fg:
            bg:
-           align:
            attr:
 
          row_alt:
            fg:
            bg:
-           align:
            attr:
 
          footer:
            fg:
            bg:
-           align:
            attr:
 
  # List of Specs [optional]
  specs:
    default:
-     # Set task output [text|table|html|markdown]
-     output: text
+     # Spec description
+     desc: default spec
 
-     # Run server tasks in parallel
-     parallel: false
+     # Print task description
+     describe: false
+
+     # Print list of hosts that will be targetted
+     list_hosts: false
+
+     # Order hosts [inventory|reverse_inventory|sorted|reverse_sorted|random]
+     order: inventory
+
+     # Omit showing loader when running tasks
+     silent: false
+
+     # Execution strategy [linear|host_pinned|free]
+     strategy: linear
+
+     # Number of hosts to run in parallel
+     batch: 1
+
+     # Number of hosts in percentage to run in parallel [0-100]
+     # batch_p: 100
+
+     # Max number of forks
+     forks: 10000
+
+     # Set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+     output: text
 
      # Continue task execution on errors
      ignore_errors: true
 
-     # Stop task execution on all servers on error
+     # Stop task execution on any error
      any_errors_fatal: false
+
+     # Max number of tasks to fail before aborting
+     max_fail_percentage: 100
 
      # Ignore unreachable hosts
      ignore_unreachable: false
 
-     # Omit empty results for table output
-     omit_empty: false
+     # Omit empty rows for table output
+     omit_empty_rows: false
+
+     # Omit empty columns for table output
+     omit_empty_columns: false
+
+     # Show task reports [recap|rc|task|time|all]
+     report: [recap]
+
+     # Verbose turns on describe, list_hosts and report set to all
+     verbose: false
+
+     # Confirm invoked task before running
+     confirm: false
+
+     # Confirm each task before running
+     step: false
 
  # List of targets [optional]
  targets:
    default:
-     # Target all servers
+     # Target description
+     desc: ""
+
+     # Target all hosts
      all: false
 
-     # Specify servers via server name
+     # Specify hosts via server name
      servers: []
 
-     # Specify servers via server tags
+     # Specify hosts via server tags
      tags: []
 
-     # Limit of servers to target
+     # Limit number of hosts to target
      limit: 0
 
-     # Limit of servers to target in percentage
-     limit_p: 0
+     # Limit number of hosts to target in percentage
+     limit_p: 100
+
+     # Invert matching on hosts
+     invert: false
+
+     # Specify host regex
+     regex: ""
 
  # List of tasks
  tasks:
@@ -699,11 +833,11 @@ Below is a config file detailing all of the available options and their defaults
      # Or specify specs inline
      spec:
        output: table
-       parallel: true
        ignore_errors: true
        ignore_unreachable: true
        any_errors_fatal: false
-       omit_empty: true
+       omit_empty_rows: true
+       omit_empty_columns: true
 
      # Target reference [optional]
      # target: default
@@ -714,7 +848,6 @@ Below is a config file detailing all of the available options and their defaults
        servers: [media]
        tags: [remote]
        limit: 1
-       limit_p: 100
 
      # List of environment variables [optional]
      env:
@@ -725,22 +858,15 @@ Below is a config file detailing all of the available options and their defaults
        num_lines: $(ls -1 | wc -l)
 
        # The following variables are available by default:
+       #   S_NAME
+       #   S_HOST
+       #   S_USER
+       #   S_PORT
+       #   S_BASTION
+       #   S_TAGS
+       #   S_IDENTITY
        #   SAKE_DIR
        #   SAKE_PATH
-       #
-       #   SAKE_TASK_ID
-       #   SAKE_TASK_NAME
-       #   SAKE_TASK_DESC
-       #   SAKE_TASK_LOCAL
-       #
-       #   SAKE_SERVER_NAME
-       #   SAKE_SERVER_DESC
-       #   SAKE_SERVER_TAGS
-       #   SAKE_SERVER_HOST
-       #   SAKE_SERVER_USER
-       #   SAKE_SERVER_PORT
-       #   SAKE_SERVER_BASTION
-       #   SAKE_SERVER_LOCAL
 
      # Run on localhost [optional]
      local: false
@@ -754,7 +880,7 @@ Below is a config file detailing all of the available options and their defaults
      # Each task can only define:
      # - a single cmd
      # - or a single task reference
-     # - or a list of task references or commands
+     # - or a list of task references and commands
 
      # Single command
      cmd: |
@@ -769,6 +895,7 @@ Below is a config file detailing all of the available options and their defaults
        # Command
        - name: inline-command
          cmd: echo "Hello World"
+         ignore_errors: true
          work_dir: /tmp
          shell: bash
          env:
@@ -778,9 +905,14 @@ Below is a config file detailing all of the available options and their defaults
        # Nested task referencing is supported and will result in a
        # flat list of commands
        - task: simple-1
+         ignore_errors: true
          work_dir: /tmp
+         register: results
          env:
            foo: bar
+
+       - name: output
+         cmd: echo $results_stdout
 .RE
 
 .SH EXAMPLES
@@ -825,29 +957,19 @@ Describe a task
 .B ~ $ sake describe task ping
 
 .nf
-Task: ping
-Name: ping
-Desc: ping server
-Local: false
-WorkDir:
-Theme: default
-Target:
-    All: true
-    Servers:
-    Tags:
-Spec:
-    Output: text
-    Parallel: false
-    AnyErrorsFatal: false
-    IgnoreErrors: false
-    IgnoreUnreachable: false
-    OmitEmpty: false
-Env:
-    SAKE_TASK_ID: ping
-    SAKE_TASK_NAME:
-    SAKE_TASK_DESC: ping server
-    SAKE_TASK_LOCAL: false
-Cmd:
+name: ping
+desc: ping server
+local: false
+work_dir:
+theme: default
+target:
+    all: true
+spec:
+    output: text
+    ignore_unreachable: true
+    omit_empty_rows: true
+    omit_empty_columns: true
+cmd:
     echo pong
 .fi
 

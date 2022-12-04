@@ -3,39 +3,48 @@ package dao
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/alajmo/sake/core"
 )
 
+var REGISTER_REGEX = regexp.MustCompile("^[a-zA-Z_]+[a-zA-Z0-9_]*$")
+
 // This is the struct that is added to the Task.Tasks in import_task.go
 type TaskCmd struct {
-	ID      string
-	Name    string
-	Desc    string
-	WorkDir string
-	Shell   string
-	RootDir string
-	Cmd     string
-	Local   bool
-	TTY     bool
-	Envs    []string
+	ID           string
+	Name         string
+	Desc         string
+	WorkDir      string
+	Shell        string
+	RootDir      string
+	Register     string
+	Cmd          string
+	Local        bool
+	TTY          bool
+	IgnoreErrors bool
+	Envs         []string
 }
 
 // This is the struct that is added to the Task.TaskRefs
 type TaskRef struct {
-	Name    string
-	Desc    string
-	Cmd     string
-	WorkDir string
-	Shell   string
-	Task    string
-	Local   *bool
-	TTY     *bool
-	Envs    []string
+	Name         string
+	Desc         string
+	Cmd          string
+	WorkDir      string
+	Shell        string
+	Register     string
+	Task         string
+	Local        *bool
+	TTY          *bool
+	IgnoreErrors *bool
+	Envs         []string
 }
 
 type Task struct {
@@ -63,6 +72,7 @@ type Task struct {
 	contextLine int    // defined at
 }
 
+// Unmarshaled from YAML
 type TaskYAML struct {
 	Name    string        `yaml:"name"`
 	Desc    string        `yaml:"desc"`
@@ -80,17 +90,19 @@ type TaskYAML struct {
 	Theme   yaml.Node     `yaml:"theme"`
 }
 
-// This is the struct that will be unmarsheld from YAML
+// Unmarshaled from YAML
 type TaskRefYAML struct {
-	Name    string    `yaml:"name"`
-	Desc    string    `yaml:"desc"`
-	WorkDir string    `yaml:"work_dir"`
-	Shell   string    `yaml:"shell"`
-	Cmd     string    `yaml:"cmd"`
-	Task    string    `yaml:"task"`
-	Local   *bool     `yaml:"local"`
-	TTY     *bool     `yaml:"tty"`
-	Env     yaml.Node `yaml:"env"`
+	Name         string    `yaml:"name"`
+	Desc         string    `yaml:"desc"`
+	WorkDir      string    `yaml:"work_dir"`
+	Shell        string    `yaml:"shell"`
+	Cmd          string    `yaml:"cmd"`
+	Task         string    `yaml:"task"`
+	Register     string    `yaml:"register"`
+	Local        *bool     `yaml:"local"`
+	IgnoreErrors *bool     `yaml:"ignore_errors"`
+	TTY          *bool     `yaml:"tty"`
+	Env          yaml.Node `yaml:"env"`
 }
 
 func (t Task) GetValue(key string, _ int) string {
@@ -121,28 +133,6 @@ func (t Task) GetValue(key string, _ int) string {
 	}
 }
 
-func (t *Task) GetDefaultEnvs() []string {
-	var defaultEnvs []string
-	for _, env := range t.Envs {
-		if strings.Contains(env, "SAKE_TASK_") {
-			defaultEnvs = append(defaultEnvs, env)
-		}
-	}
-
-	return defaultEnvs
-}
-
-func (t *Task) GetNonDefaultEnvs() []string {
-	var envs []string
-	for _, env := range t.Envs {
-		if !strings.Contains(env, "SAKE_TASK_") {
-			envs = append(envs, env)
-		}
-	}
-
-	return envs
-}
-
 func (t *Task) GetContext() string {
 	return t.context
 }
@@ -155,16 +145,15 @@ func (t *Task) GetContextLine() int {
 // This function also sets task references.
 // Valid formats (only one is allowed):
 //
-//	 cmd: |
-//	   echo pong
+//	cmd: |
+//	  echo pong
 //
-//	 task: ping
+//	task: ping
 //
-//	 tasks:
-//	   - task: ping
-//	   - task: ping
-//	   - cmd: echo pong
-//
+//	tasks:
+//	  - task: ping
+//	  - task: ping
+//	  - cmd: echo pong
 func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 	var tasks []Task
 	count := len(c.Tasks.Content)
@@ -231,18 +220,6 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 		task.Shell = taskYAML.Shell
 		task.Attach = taskYAML.Attach
 
-		defaultEnvs := []string{
-			fmt.Sprintf("SAKE_TASK_ID=%s", task.ID),
-			fmt.Sprintf("SAKE_TASK_NAME=%s", taskYAML.Name),
-			fmt.Sprintf("SAKE_TASK_DESC=%s", taskYAML.Desc),
-		}
-
-		if taskYAML.Local {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("SAKE_TASK_LOCAL=%t", taskYAML.Local))
-		}
-
-		task.Envs = append(task.Envs, defaultEnvs...)
-
 		if !IsNullNode(taskYAML.Env) {
 			err := CheckIsMappingNode(taskYAML.Env)
 			if err != nil {
@@ -257,16 +234,10 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Spec
 		if len(taskYAML.Spec.Content) > 0 {
-			// Spec value
-			spec := &Spec{}
-			err := taskYAML.Spec.Decode(spec)
-			if err != nil {
-				for _, yerr := range err.(*yaml.TypeError).Errors {
-					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
-				}
-			} else {
-				task.Spec = *spec
-			}
+			// Inline Spec
+			spec, specErrors := c.DecodeSpec("", taskYAML.Spec)
+			taskErrors[j].Errors = append(taskErrors[j].Errors, specErrors...)
+			task.Spec = *spec
 		} else if taskYAML.Spec.Value != "" {
 			// Spec reference
 			task.SpecRef = taskYAML.Spec.Value
@@ -276,16 +247,10 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Target
 		if len(taskYAML.Target.Content) > 0 {
-			// Target value
-			target := &Target{}
-			err := taskYAML.Target.Decode(target)
-			if err != nil {
-				for _, yerr := range err.(*yaml.TypeError).Errors {
-					taskErrors[j].Errors = append(taskErrors[j].Errors, errors.New(yerr))
-				}
-			} else {
-				task.Target = *target
-			}
+			// Inline Target
+			target, targetErrors := c.DecodeTarget("", taskYAML.Target)
+			taskErrors[j].Errors = append(taskErrors[j].Errors, targetErrors...)
+			task.Target = *target
 		} else if taskYAML.Target.Value != "" {
 			// Target reference
 			task.TargetRef = taskYAML.Target.Value
@@ -295,7 +260,7 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 
 		// Theme
 		if len(taskYAML.Theme.Content) > 0 {
-			// Theme value
+			// Inline Theme
 			theme := &Theme{}
 			err := taskYAML.Theme.Decode(theme)
 			if err != nil {
@@ -324,14 +289,35 @@ func (c *ConfigYAML) ParseTasksYAML() ([]Task, []ResourceErrors[Task]) {
 			// Tasks References
 			for k := range taskYAML.Tasks {
 				tr := TaskRef{
-					Name:    taskYAML.Tasks[k].Name,
-					Desc:    taskYAML.Tasks[k].Desc,
-					WorkDir: taskYAML.Tasks[k].WorkDir,
-					Shell:   taskYAML.Tasks[k].Shell,
-					Local:   taskYAML.Tasks[k].Local,
-					TTY:     taskYAML.Tasks[k].TTY,
-					Envs:    ParseNodeEnv(taskYAML.Tasks[k].Env),
+					Name:         taskYAML.Tasks[k].Name,
+					Desc:         taskYAML.Tasks[k].Desc,
+					WorkDir:      taskYAML.Tasks[k].WorkDir,
+					Shell:        taskYAML.Tasks[k].Shell,
+					Local:        taskYAML.Tasks[k].Local,
+					TTY:          taskYAML.Tasks[k].TTY,
+					IgnoreErrors: taskYAML.Tasks[k].IgnoreErrors,
+					Envs:         ParseNodeEnv(taskYAML.Tasks[k].Env),
 				}
+
+				if taskYAML.Tasks[k].Register != "" {
+					match := REGISTER_REGEX.MatchString(taskYAML.Tasks[k].Register)
+					if match {
+						tr.Register = taskYAML.Tasks[k].Register
+					} else {
+						taskErrors[j].Errors = append(taskErrors[j].Errors, &core.RegisterInvalidName{Value: taskYAML.Tasks[k].Register})
+						continue
+					}
+				}
+
+				// TODO: What about this?
+				// Find servers matching the flag
+				// var servers []Server
+				// for _, server := range c.Servers {
+				// 	match := pattern.MatchString(server.Host)
+				// 	if match {
+				// 		servers = append(servers, server)
+				// 	}
+				// }
 
 				// Check that only cmd or task is defined
 				if taskYAML.Tasks[k].Cmd != "" && taskYAML.Tasks[k].Task != "" {
@@ -381,12 +367,24 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 	// If any runtime target flags are used, disregard config specified task targets
 	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
 		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
+		if err != nil {
+			return []Server{}, err
+		}
+	} else if runFlags.Target != "" {
+		target, err := c.GetTarget(runFlags.Target)
+		if err != nil {
+			return []Server{}, err
+		}
+		task.Target = *target
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
+		if err != nil {
+			return []Server{}, err
+		}
 	} else {
 		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
-	}
-
-	if err != nil {
-		return []Server{}, err
+		if err != nil {
+			return []Server{}, err
+		}
 	}
 
 	var limit uint32
@@ -406,15 +404,18 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 	if limit > 0 {
 		if limit <= uint32(len(servers)) {
 			return servers[0:limit], nil
-		} else {
-			return []Server{}, &core.InvalidLimit{Max: len(servers), Limit: limit}
 		}
 	} else if limitp > 0 {
 		if limitp <= 100 {
 			tot := float64(len(servers))
 			percentage := float64(limitp) / float64(100)
 			limit := math.Floor(percentage * tot)
-			return servers[0:int(limit)], nil
+
+			if limit > 0 {
+				return servers[0:int(limit)], nil
+			} else {
+				return servers[0:1], nil
+			}
 		} else {
 			return []Server{}, &core.InvalidPercentInput{}
 		}
@@ -493,4 +494,49 @@ func (c *Config) GetTask(id string) (*Task, error) {
 	}
 
 	return nil, &core.TaskNotFound{IDs: []string{id}}
+}
+
+type TaskStatus int64
+
+const (
+	Skipped TaskStatus = iota
+	Ok
+	Failed
+	Ignored
+	Unreachable
+)
+
+type Report struct {
+	ReturnCode int
+	Duration   time.Duration
+	Status     TaskStatus
+}
+
+type ReportRow struct {
+	Name   string
+	Status map[TaskStatus]int
+	Rows   []Report
+}
+
+type ReportData struct {
+	Headers []string
+	Tasks   []ReportRow
+	Status  map[TaskStatus]int
+}
+
+func (s TaskStatus) String() string {
+	switch s {
+	case Ok:
+		return "ok"
+	case Failed:
+		return "failed"
+	case Skipped:
+		return "skipped"
+	case Ignored:
+		return "ignored"
+	case Unreachable:
+		return "unreachable"
+	}
+
+	return ""
 }

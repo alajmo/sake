@@ -40,7 +40,7 @@ This readme is also accessible on [sakecli.com](https://sakecli.com/).
 
 ![demo](res/output.gif)
 
-Interested in managing your git repositiories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
+Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 
@@ -78,7 +78,7 @@ Auto-completion is available via `sake completion bash|zsh|fish` and man page vi
 
 ### Building From Source
 
-Requires [go 1.18 or above](https://golang.org/doc/install).
+Requires [go 1.19 or above](https://golang.org/doc/install).
 
 1. Clone the repo
 2. Build and run the executable
@@ -133,7 +133,7 @@ TASK ping: Pong ************
 0.0.0.0 | pong
 
 # Count number of files in each server in parallel
-$ sake exec --all --output table --parallel 'find . -type f | wc -l'
+$ sake exec --all --output table --strategy=free 'find . -type f | wc -l'
 
  Server    | Output
 -----------+--------
@@ -150,10 +150,22 @@ Check out the [examples page](/docs/examples.md) for more advanced examples and 
 - [Recipes](docs/recipes.md)
 - [Config Reference](docs/config-reference.md)
 - [Command Reference](docs/command-reference.md)
+- Documentation
+  - [Inventory](docs/inventory.md)
+  - [Task Execution](docs/task-execution.md)
+  - [Error Handling](docs/error-handling.md)
+  - [Variables](docs/variables.md)
+  - [Working Directory](docs/work-dir.md)
+  - [Output](docs/output.md)
+- Project
+  - [Background](docs/background.md)
+  - [Roadmap](docs/roadmap.md)
+  - [Ansible](docs/ansible.md)
+  - [Performance](docs/performance.md)
+- Development
+  - [Development](docs/development.md)
+  - [Contributing](docs/contributing.md)
 - [Changelog](docs/changelog.md)
-- [Roadmap](docs/roadmap.md)
-- [Project Background](docs/project-background.md)
-- [Contributing](docs/contributing.md)
 
 ## [License](LICENSE)
 

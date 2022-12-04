@@ -33,6 +33,8 @@ func sshCmd(config *dao.Config, configErr *error) *cobra.Command {
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().StringVarP(&runFlags.IdentityFile, "identity-file", "i", "", "set identity file for all servers")
 	cmd.Flags().StringVar(&runFlags.Password, "password", "", "set ssh password for all servers")
 
@@ -44,7 +46,7 @@ func ssh(args []string, config *dao.Config, runFlags *core.RunFlags) {
 	core.CheckIfError(err)
 	servers := []dao.Server{*server}
 
-	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers, runFlags)
+	errConnect, err := run.ParseServers(config.SSHConfigFile, &servers, runFlags, "inventory")
 	if len(errConnect) > 0 {
 		core.Exit(&errConnect[0])
 	}

@@ -35,6 +35,8 @@ func listTagsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags
 		DisableAutoGenTag: true,
 	}
 
+	cmd.Flags().SortFlags = false
+
 	cmd.Flags().StringSliceVar(&tagFlags.Headers, "headers", tagHeaders, "set headers")
 	err := cmd.RegisterFlagCompletionFunc("headers", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if *configErr != nil {
@@ -59,11 +61,11 @@ func listTags(
 	core.CheckIfError(err)
 
 	options := print.PrintTableOptions{
-		Output:               listFlags.Output,
-		Theme:                *theme,
-		OmitEmpty:            false,
-		SuppressEmptyColumns: true,
-		Resource:             "tag",
+		Output:           listFlags.Output,
+		Theme:            *theme,
+		OmitEmptyRows:    false,
+		OmitEmptyColumns: true,
+		Resource:         "tag",
 	}
 
 	allTags := config.GetTags()
@@ -79,14 +81,16 @@ func listTags(
 		core.CheckIfError(err)
 
 		if len(tags) > 0 {
-			print.PrintTable(tags, options, tagFlags.Headers)
+			err := print.PrintTable(tags, options, tagFlags.Headers, []string{}, true, true)
+			core.CheckIfError(err)
 		}
 	} else {
 		tags, err := config.GetTagAssocations(allTags)
 		core.CheckIfError(err)
 		if len(tags) > 0 {
 			rows := dao.GetTableData(tags, tagFlags.Headers)
-			print.PrintTable(rows, options, tagFlags.Headers)
+			err := print.PrintTable(rows, options, tagFlags.Headers, []string{}, true, true)
+			core.CheckIfError(err)
 		}
 	}
 }

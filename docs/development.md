@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- [go 1.18 or above](https://golang.org/doc/install)
+- [go 1.19 or above](https://golang.org/doc/install)
 - [goreleaser](https://goreleaser.com/install/) (optional)
 - [golangci-lint](https://github.com/golangci/golangci-lint) (optional)
 
@@ -49,13 +49,22 @@ The following workflow is used for releasing a new `sake` version:
    - `make benchmark`
 4. Verify build works (especially windows build)
    - `make build-all`
-5. Generate manpage
+5. Update `config-reference.md` and `config.man` if any config changes and generate manpage
    - `make gen-man`
 6. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
 7. Squash-merge to main with `Release vx.y.z` and description of changes
 8. Run `make release`, which will:
    - Create a git tag with release notes
    - Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
+
+## Overview of How Sake Works
+
+1. Parse & validate CLI arguments
+2. Parse `sake` config files and create config, inventory, tasks, specs, and target states
+3. Create clients for remote and local task execution for the selected hosts/tasks
+4. Execute tasks on remote/local hosts
+6. Disconnect from remote hosts
+7. Print any output (results, reports, errors, etc.)
 
 ## Dependency Graph
 

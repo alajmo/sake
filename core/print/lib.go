@@ -6,6 +6,14 @@ import (
 	"github.com/alajmo/sake/core"
 )
 
+var NormalPrint = text.Colors{text.Reset}
+var OkPrint = text.Colors{text.Reset, text.FgGreen}
+var FailedPrint = text.Colors{text.Reset, text.FgRed}
+var SkippedPrint = text.Colors{text.Reset, text.FgBlue}
+var IgnoredPrint = text.Colors{text.Reset, text.FgMagenta}
+var UnreachablePrint = text.Colors{text.Reset, text.FgRed}
+var ZeroPrint = text.Colors{text.Reset, text.Faint}
+
 // Format map against go-pretty/table
 func GetFormat(s string) text.Format {
 	switch s {

@@ -721,7 +721,6 @@ specs:
 
   info:
     output: table
-    parallel: true
     ignore_errors: true
     ignore_unreachable: true
     any_errors_fatal: false

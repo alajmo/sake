@@ -1,282 +1,111 @@
 Index: 22
 Name: Default Envs
-Cmd: go run ../../main.go run env-default -S -t reachable
+Cmd: go run ../../main.go run env-default -q -t reachable
 WantErr: false
 
 ---
 
- server    | env-default                                  
------------+----------------------------------------------
- localhost | # SERVER                                     
-           | SAKE_SERVER_NAME localhost                   
-           | SAKE_SERVER_DESC localhost                   
-           | SAKE_SERVER_TAGS local,reachable             
-           | SAKE_SERVER_HOST localhost                   
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL true                       
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- list-0    | # SERVER                                     
-           | SAKE_SERVER_NAME list-0                      
-           | SAKE_SERVER_DESC many hosts using list       
-           | SAKE_SERVER_TAGS remote,prod,list,reachable  
-           | SAKE_SERVER_HOST 172.24.2.2                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- list-1    | # SERVER                                     
-           | SAKE_SERVER_NAME list-1                      
-           | SAKE_SERVER_DESC many hosts using list       
-           | SAKE_SERVER_TAGS remote,prod,list,reachable  
-           | SAKE_SERVER_HOST 172.24.2.4                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- range-0   | # SERVER                                     
-           | SAKE_SERVER_NAME range-0                     
-           | SAKE_SERVER_DESC many hosts using range      
-           | SAKE_SERVER_TAGS remote,prod,range,reachable 
-           | SAKE_SERVER_HOST 172.24.2.2                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- range-1   | # SERVER                                     
-           | SAKE_SERVER_NAME range-1                     
-           | SAKE_SERVER_DESC many hosts using range      
-           | SAKE_SERVER_TAGS remote,prod,range,reachable 
-           | SAKE_SERVER_HOST 172.24.2.4                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- inv-0     | # SERVER                                     
-           | SAKE_SERVER_NAME inv-0                       
-           | SAKE_SERVER_DESC many hosts using inventory  
-           | SAKE_SERVER_TAGS remote,prod,inv,reachable   
-           | SAKE_SERVER_HOST 172.24.2.2                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- inv-1     | # SERVER                                     
-           | SAKE_SERVER_NAME inv-1                       
-           | SAKE_SERVER_DESC many hosts using inventory  
-           | SAKE_SERVER_TAGS remote,prod,inv,reachable   
-           | SAKE_SERVER_HOST 172.24.2.4                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-1  | # SERVER                                     
-           | SAKE_SERVER_NAME server-1                    
-           | SAKE_SERVER_DESC server-1                    
-           | SAKE_SERVER_TAGS remote,prod,reachable       
-           | SAKE_SERVER_HOST 172.24.2.2                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-2  | # SERVER                                     
-           | SAKE_SERVER_NAME server-2                    
-           | SAKE_SERVER_DESC server-2                    
-           | SAKE_SERVER_TAGS remote,prod,reachable       
-           | SAKE_SERVER_HOST 172.24.2.3                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 33                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-3  | # SERVER                                     
-           | SAKE_SERVER_NAME server-3                    
-           | SAKE_SERVER_DESC server-3                    
-           | SAKE_SERVER_TAGS remote,demo,reachable       
-           | SAKE_SERVER_HOST 172.24.2.4                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-4  | # SERVER                                     
-           | SAKE_SERVER_NAME server-4                    
-           | SAKE_SERVER_DESC server-4                    
-           | SAKE_SERVER_TAGS remote,demo,reachable       
-           | SAKE_SERVER_HOST 172.24.2.5                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-5  | # SERVER                                     
-           | SAKE_SERVER_NAME server-5                    
-           | SAKE_SERVER_DESC server-5                    
-           | SAKE_SERVER_TAGS remote,sandbox,reachable    
-           | SAKE_SERVER_HOST 172.24.2.6                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-6  | # SERVER                                     
-           | SAKE_SERVER_NAME server-6                    
-           | SAKE_SERVER_DESC server-6                    
-           | SAKE_SERVER_TAGS remote,sandbox,reachable    
-           | SAKE_SERVER_HOST 172.24.2.7                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-7  | # SERVER                                     
-           | SAKE_SERVER_NAME server-7                    
-           | SAKE_SERVER_DESC server-7                    
-           | SAKE_SERVER_TAGS remote,demo,reachable       
-           | SAKE_SERVER_HOST 172.24.2.8                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-8  | # SERVER                                     
-           | SAKE_SERVER_NAME server-8                    
-           | SAKE_SERVER_DESC server-8                    
-           | SAKE_SERVER_TAGS remote,demo,reachable       
-           | SAKE_SERVER_HOST 172.24.2.9                  
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
- server-9  | # SERVER                                     
-           | SAKE_SERVER_NAME server-9                    
-           | SAKE_SERVER_DESC server-9                    
-           | SAKE_SERVER_TAGS remote,demo,reachable       
-           | SAKE_SERVER_HOST 2001:3984:3989::10          
-           | SAKE_SERVER_USER test                        
-           | SAKE_SERVER_PORT 22                          
-           | SAKE_SERVER_LOCAL                            
-           |                                              
-           | # TASK                                       
-           | SAKE_TASK_ID env-default                     
-           | SAKE_TASK_NAME                               
-           | SAKE_TASK_DESC                               
-           | SAKE_TASK_LOCAL                              
-           |                                              
-           | # CONFIG                                     
-           | SAKE_KNOWN_HOSTS_FILE                        
+TASKS 
+
+ host               | env-default                        
+--------------------+------------------------------------
+ localhost          | # SERVER                           
+                    | S_TAGS local,reachable             
+                    | S_HOST localhost                   
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.3         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.3                  
+                    | S_USER test                        
+                    | S_PORT 33                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.5         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.5                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.6         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.6                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.7         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.7                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.8         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.8                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.9         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.9                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 2001:3984:3989::10 | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 2001:3984:3989::10          
+                    | S_USER test                        
+                    | S_PORT 22                          
+                                                                              
+ localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

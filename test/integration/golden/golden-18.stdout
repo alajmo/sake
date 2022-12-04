@@ -1,38 +1,31 @@
 Index: 18
 Name: Limit to 50 percent servers
-Cmd: go run ../../main.go run ping -S -t reachable -L 50
+Cmd: go run ../../main.go run ping -q -t reachable -L 50
 WantErr: false
 
 ---
 
-TASK [ping: ping server] 
+TASKS 
 
-localhost | pong
+ host       | ping 
+------------+------
+ localhost  | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+                                                                     
+ localhost       ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total           ok=8  unreachable=0  ignored=0  failed=0  skipped=0 
 
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.4 | pong
-
-TASK [ping: ping server] 
-
-172.24.2.2 | pong

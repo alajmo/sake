@@ -106,6 +106,10 @@ func MergeEnvs(envs ...[]string) []string {
 
 	for _, part := range envs {
 		for _, elem := range part {
+			if elem == "" {
+				continue
+			}
+
 			elem = strings.TrimSuffix(elem, "\n")
 
 			kv := strings.SplitN(elem, "=", 2)

@@ -27,6 +27,8 @@ WantErr: false
  work-dir-1       |                      
  work-dir-2       |                      
  work-dir-3       |                      
+ register-1       |                      
+ register-2       |                      
  fatal            |                      
  fatal-true       |                      
  errors           |                      
