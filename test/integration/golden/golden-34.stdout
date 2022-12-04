@@ -1,29 +1,38 @@
 Index: 34
-Name: omit_empty true
-Cmd: go run ../../main.go run empty-true -q -t reachable
+Name: unreachable true
+Cmd: go run ../../main.go run unreachable-true -o table -q -a
 WantErr: false
 
 ---
 
+                                                                                              
+ Unreachable Hosts                                                                            
+                                                                                              
+ server      | host            | user | port | error                                          
+-------------+-----------------+------+------+------------------------------------------------
+ unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+
+
 TASKS 
 
- host               | empty-true 
---------------------+------------
- 172.24.2.2         | Exists     
- 172.24.2.4         | Exists     
- 172.24.2.2         | Exists     
- 172.24.2.4         | Exists     
- 172.24.2.2         | Exists     
- 172.24.2.4         | Exists     
- 172.24.2.2         | Exists     
- 172.24.2.3         | Exists     
- 172.24.2.4         | Exists     
- 172.24.2.5         | Exists     
- 172.24.2.6         | Exists     
- 172.24.2.7         | Exists     
- 172.24.2.8         | Exists     
- 172.24.2.9         | Exists     
- 2001:3984:3989::10 | Exists     
+ host               | unreachable-true 
+--------------------+------------------
+ localhost          | 123              
+ 172.24.2.2         | 123              
+ 172.24.2.4         | 123              
+ 172.24.2.2         | 123              
+ 172.24.2.4         | 123              
+ 172.24.2.2         | 123              
+ 172.24.2.4         | 123              
+ 172.24.2.2         | 123              
+ 172.24.2.3         | 123              
+ 172.24.2.4         | 123              
+ 172.24.2.5         | 123              
+ 172.24.2.6         | 123              
+ 172.24.2.7         | 123              
+ 172.24.2.8         | 123              
+ 172.24.2.9         | 123              
+ 2001:3984:3989::10 | 123              
                                                                               
  localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
@@ -41,6 +50,7 @@ TASKS
  172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ unreachable.lan         ok=0   unreachable=1  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ Total                   ok=16  unreachable=1  ignored=0  failed=0  skipped=0 
 

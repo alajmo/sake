@@ -1,6 +1,6 @@
-Index: 27
-Name: Register 1
-Cmd: go run ../../main.go run register-1 -q -t reachable
+Index: 38
+Name: Run exec command
+Cmd: go run ../../main.go exec 'echo 123' -q -t reachable
 WantErr: false
 
 ---
@@ -9,22 +9,22 @@ TASKS
 
  host               | task-0 
 --------------------+--------
- localhost          | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.3         | foo    
- 172.24.2.4         | foo    
- 172.24.2.5         | foo    
- 172.24.2.6         | foo    
- 172.24.2.7         | foo    
- 172.24.2.8         | foo    
- 172.24.2.9         | foo    
- 2001:3984:3989::10 | foo    
+ localhost          | 123    
+ 172.24.2.2         | 123    
+ 172.24.2.4         | 123    
+ 172.24.2.2         | 123    
+ 172.24.2.4         | 123    
+ 172.24.2.2         | 123    
+ 172.24.2.4         | 123    
+ 172.24.2.2         | 123    
+ 172.24.2.3         | 123    
+ 172.24.2.4         | 123    
+ 172.24.2.5         | 123    
+ 172.24.2.6         | 123    
+ 172.24.2.7         | 123    
+ 172.24.2.8         | 123    
+ 172.24.2.9         | 123    
+ 2001:3984:3989::10 | 123    
                                                                               
  localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 

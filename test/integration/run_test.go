@@ -159,6 +159,18 @@ var cases = []TemplateTest{
 		WantErr:  false,
 	},
 
+	// run tasks and register variables
+	{
+		TestName: "Register 1",
+		TestCmd:  "go run ../../main.go run register-1 -q -t reachable",
+		WantErr:  false,
+	},
+	{
+		TestName: "Register 2",
+		TestCmd:  "go run ../../main.go run register-2 -q -t reachable",
+		WantErr:  false,
+	},
+
 	// Tests for running tasks with various specs
 	{
 		TestName: "fatal false",

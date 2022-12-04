@@ -551,7 +551,7 @@ func (run *Run) textWork(
 		register[r.Cmd.Register] = strings.TrimSuffix(out, "\n")
 		register[r.Cmd.Register+"_stdout"] = stdout
 		register[r.Cmd.Register+"_stderr"] = stderr
-		register[r.Cmd.Register+"_rc"] = fmt.Sprint(reportData.Tasks[t.rIndex].Rows[r.j+1].ReturnCode)
+		register[r.Cmd.Register+"_rc"] = fmt.Sprint(reportData.Tasks[t.rIndex].Rows[r.j].ReturnCode)
 		if err != nil {
 			register[r.Cmd.Register+"_failed"] = "true"
 			if r.Task.Spec.IgnoreErrors || r.Cmd.IgnoreErrors {

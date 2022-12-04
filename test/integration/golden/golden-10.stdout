@@ -9,7 +9,7 @@ name: ping
 desc: ping server
 theme: default
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -25,7 +25,7 @@ desc: ping server
 theme: default
 local: true
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -195,7 +195,7 @@ cmd:
 name: a
 theme: default
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -207,7 +207,7 @@ tasks:
 name: b
 theme: default
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -220,7 +220,7 @@ tasks:
 name: c
 theme: default
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -253,7 +253,7 @@ name: ref
 theme: default
 work_dir: /usr
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -266,7 +266,7 @@ task: work-nested
 name: nested
 theme: default
 spec:
-    strategy: free
+    strategy: linear
     batch: 1
     output: table
     report: recap
@@ -316,6 +316,33 @@ target:
 tasks: 
     - ref
     - ref
+
+--
+
+name: register-1
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - task-0
+
+--
+
+name: register-2
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - task-0
+    - task-1
+    - task-2
+    - task-3
 
 --
 

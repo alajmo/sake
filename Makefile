@@ -39,7 +39,7 @@ unit-test:
 	go test -v ./core/...
 
 integration-test:
-	go test -v ./test/integration/... -clean
+	go test -v ./test/integration/...
 
 update-golden-files:
 	go test ./test/integration/... -update
@@ -51,7 +51,7 @@ mock-performance-ssh:
 	cd ./test && docker-compose -f docker-compose-performance.yaml up
 
 build:
-	go build \
+	CGO_ENABLED=0 go build \
 	-ldflags "-s -w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
 	-a -o dist/${NAME} main.go
 

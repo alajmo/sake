@@ -13,7 +13,7 @@ targets:
 specs:
   default:
       output: table
-      strategy: free
+      strategy: linear
       batch: 1
 
   table:

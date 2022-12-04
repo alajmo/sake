@@ -22,7 +22,7 @@ Where they notably differ is that Ansible has modules which allows you to easily
  Opionated | No | Yes
  Learning curve | sake has less concepts to learn but puts more work on the user | While not complex, it's safe to say you'll be revisiting Ansible docs
  Documentation | Yes | Yes, Ansible has a lot more Stackoverflow posts, blogs, etc.
- Performance | [sake is around 4-8 times faster than Ansible depending on the number of hosts ](/performance) | Lacking, however there's a lot of optimization configurations you can do to increase performance
+ Performance | [sake is around 4-18 times faster than Ansible depending on the number of hosts ](/performance) | Lacking, however there's a lot of optimization configurations you can do to increase performance
 
 ## Should I use Ansible or Sake?
 

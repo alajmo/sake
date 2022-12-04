@@ -200,6 +200,43 @@ tasks:
       - task: work-nested
         work_dir: /etc
 
+  ############
+  # REGISTER #
+  ############
+  register-1:
+    tasks:
+      - cmd: echo "foo"
+        register: out
+
+  register-2:
+    tasks:
+      - cmd: echo "foo"
+        register: out
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+
+      - cmd: |
+          >&2 echo "error 2"
+        register: out2
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+
+          echo "-------------"
+
+          echo "status: $out2_status"
+          echo "rc: $out2_rc"
+          echo "failed: $out2_failed"
+          echo "stdout: $out2_stdout"
+          echo "stderr: $out2_stderr"
+
   ########
   # Spec #
   ########

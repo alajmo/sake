@@ -43,7 +43,6 @@
 - Switch to default shell when evaluating inventory
 - If no command name is set on nested tasks, assign `task-$i` instead of `task`
 - If `--limit` flag is higher than available hosts, then select all hosts filtered
-- Enable `CGO` to support cgo-based resolver (go resolver doesn't support all setups)
 - Building `sake` with go 1.19
 - Shorthand flag for silent is now `Q`
 - Deprecated the parallel flag, use batch/batch_p/forks instead
