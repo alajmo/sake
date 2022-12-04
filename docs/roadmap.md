@@ -1,38 +1,33 @@
 # Roadmap
 
-`sake` is under active development. Before **v1.0.0**, I want to finish the following tasks, some miscellaneous fixes and improve code documentation:
+`sake` is under active development. Before **v1.0.0**, I want to finish the following tasks, some miscellaneous fixes, improve code documentation and refactor:
 
-- [x] Improve servers
-  - [x] Resolve hostnames from ssh_config
-  - [x] Support Bastion/Jumphost
-  - [x] Define multiple hosts without creating individual servers
-  - [x] Dynamically fetch hosts
-  - [x] Regex filtering of servers
-  - [x] Support glob pattern for Hosts (`Host *`)
-  - [x] Support resolving Includes in ssh config (`~/.ssh/config`)
-  - [x] Add limit and limit-p flag/target
-  - [x] Add filtering servers on host regex
-  - [x] Add invert flag on filtering servers
-
-- [x] Improve output and add new table outputs
-  - [x] Tasks in 1st column, output in 2nd, one table per server
-  - [x] Tasks in column, project output in row
-
-- [ ] Improve tasks
-  - [ ] Return correct error exit codes when running tasks
-    - [x] serial playbook
-    - [ ] parallel playbook
-  - [ ] Omit certain tasks from auto-completion and/or being called directly (mainly tasks which are called by other tasks)
-  - [ ] Repress certain task output if exit code is 0, otherwise displayed
-  - [ ] Summary of task execution at the end
-  - [ ] Pass environment variables between tasks
-  - [ ] Access exit code of the previous task
-  - [ ] Conditional task execution
-  - [ ] Tags/servers filtering launching different comands on different servers #6
-  - [ ] Ensure command (check existence of file, software, etc.)
-  - [ ] on-error/on-success task execution
-  - [ ] Cleanup task that is always ran
-  - [ ] Log task execution to a file
-  - [ ] Abort if certain env variables are not present (required envs)
-  - [ ] Add --step mode flag or config setting to prompt before executing a task
-  - [ ] Add yaml to command mapper
+- [ ] Task not callable, only from another task (as not to accidently call it)
+- [ ] Hide tasks from auto-completion via `hidden: true` attribute
+- [ ] Silent output from task via `silent: true` (and flag)
+- [ ] ExecTTY should be config shell
+- [ ] Add flag `default_timeout_s`
+- [ ] Use `chdir` for tasks, `work_dir` for servers
+- [ ] Move limit/limitp to spec, or move order to target
+- [ ] Figure out changed/skipped/when
+- [ ] Conditional tasks (success, error, skip)
+- [ ] Add callbacks (success/error)
+- [ ] Loader show current task and how many left on table
+- [ ] Add retries to task
+- [ ] Add required envs
+- [ ] Add option to prompt for envs
+- [ ] Handle `Match *` in ssh config for inventory as well
+- [ ] Something similar to play, to trigger multiple tasks (with their own context)
+- [ ] Add env variables to multiple servers
+- [ ] Run one task, save output from all, and then have one task handle differences
+- [ ] Save logs/output to files (remote/local)
+- [ ] Diff task
+- [ ] Inherit default from `default` spec/target
+- [ ] Add yaml to command mapper
+- [ ] Implement facts
+- [ ] Configure what to show, host/ip or name, configure via theme/cli flags
+- [ ] - Template for server prefix, similar to header
+- [ ] - Add colors to describe (key bold, value color), true (green), false (red)
+- [ ] - Add Tree output
+- [ ] Fix hashed ip6 with port 22 does not work, all other combinations work
+- [ ] Fix `sake ssh inv` not working
