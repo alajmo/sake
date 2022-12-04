@@ -39,7 +39,7 @@ unit-test:
 	go test -v ./core/...
 
 integration-test:
-	go test -v ./test/integration/...
+	go test -v ./test/integration/... -clean
 
 update-golden-files:
 	go test ./test/integration/... -update
@@ -53,7 +53,7 @@ mock-performance-ssh:
 build:
 	CGO_ENABLED=0 go build \
 	-ldflags "-s -w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
-	-a -o dist/${NAME} main.go
+	-a -tags netgo -o dist/${NAME} main.go
 
 build-all:
 	goreleaser release --skip-publish --rm-dist --snapshot
@@ -61,7 +61,7 @@ build-all:
 build-and-link:
 	go build \
 		-ldflags "-w -X '${PACKAGE}/cmd.version=${VERSION}' -X '${PACKAGE}/cmd.commit=${GIT}' -X '${PACKAGE}/cmd.date=${DATE}'" \
-		-a -o dist/${NAME} main.go
+		-a -tags netgo -o dist/${NAME} main.go
 	cp ./dist/sake ~/.local/bin/sake
 
 gen-man:
