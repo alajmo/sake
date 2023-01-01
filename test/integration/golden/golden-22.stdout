@@ -7,105 +7,105 @@ WantErr: false
 
 TASKS 
 
- host      | env-default                        
------------+------------------------------------
- localhost | # SERVER                           
-           | S_TAGS local,reachable             
-           | S_HOST localhost                   
-           | S_USER test                        
-           | S_PORT 22                          
- list-0    | # SERVER                           
-           | S_TAGS remote,prod,list,reachable  
-           | S_HOST 172.24.2.2                  
-           | S_USER test                        
-           | S_PORT 22                          
- list-1    | # SERVER                           
-           | S_TAGS remote,prod,list,reachable  
-           | S_HOST 172.24.2.4                  
-           | S_USER test                        
-           | S_PORT 22                          
- range-0   | # SERVER                           
-           | S_TAGS remote,prod,range,reachable 
-           | S_HOST 172.24.2.2                  
-           | S_USER test                        
-           | S_PORT 22                          
- range-1   | # SERVER                           
-           | S_TAGS remote,prod,range,reachable 
-           | S_HOST 172.24.2.4                  
-           | S_USER test                        
-           | S_PORT 22                          
- inv-0     | # SERVER                           
-           | S_TAGS remote,prod,inv,reachable   
-           | S_HOST 172.24.2.2                  
-           | S_USER test                        
-           | S_PORT 22                          
- inv-1     | # SERVER                           
-           | S_TAGS remote,prod,inv,reachable   
-           | S_HOST 172.24.2.4                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-1  | # SERVER                           
-           | S_TAGS remote,prod,reachable       
-           | S_HOST 172.24.2.2                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-2  | # SERVER                           
-           | S_TAGS remote,prod,reachable       
-           | S_HOST 172.24.2.3                  
-           | S_USER test                        
-           | S_PORT 33                          
- server-3  | # SERVER                           
-           | S_TAGS remote,demo,reachable       
-           | S_HOST 172.24.2.4                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-4  | # SERVER                           
-           | S_TAGS remote,demo,reachable       
-           | S_HOST 172.24.2.5                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-5  | # SERVER                           
-           | S_TAGS remote,sandbox,reachable    
-           | S_HOST 172.24.2.6                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-6  | # SERVER                           
-           | S_TAGS remote,sandbox,reachable    
-           | S_HOST 172.24.2.7                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-7  | # SERVER                           
-           | S_TAGS remote,demo,reachable       
-           | S_HOST 172.24.2.8                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-8  | # SERVER                           
-           | S_TAGS remote,demo,reachable       
-           | S_HOST 172.24.2.9                  
-           | S_USER test                        
-           | S_PORT 22                          
- server-9  | # SERVER                           
-           | S_TAGS remote,demo,reachable       
-           | S_HOST 2001:3984:3989::10          
-           | S_USER test                        
-           | S_PORT 22                          
-                                                                     
- localhost      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- list-0         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- list-1         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- range-0        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- range-1        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-0          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-1          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-1       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-2       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-3       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-4       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-5       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-6       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-7       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-8       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-9       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
----------------------------------------------------------------------
- Total          ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host               | env-default                        
+--------------------+------------------------------------
+ localhost          | # SERVER                           
+                    | S_TAGS local,reachable             
+                    | S_HOST localhost                   
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.3         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.3                  
+                    | S_USER test                        
+                    | S_PORT 33                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.5         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.5                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.6         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.6                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.7         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.7                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.8         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.8                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.9         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.9                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 2001:3984:3989::10 | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 2001:3984:3989::10          
+                    | S_USER test                        
+                    | S_PORT 22                          
+                                                                              
+ localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

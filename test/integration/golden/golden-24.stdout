@@ -7,41 +7,41 @@ WantErr: false
 
 TASKS 
 
- host      | ref   | Override inline ref | Inline | Override inline 
------------+-------+---------------------+--------+-----------------
- localhost | /home | /opt                | /home  | /               
- list-0    | /home | /opt                | /home  | /               
- list-1    | /home | /opt                | /home  | /               
- range-0   | /home | /opt                | /home  | /               
- range-1   | /home | /opt                | /home  | /               
- inv-0     | /home | /opt                | /home  | /               
- inv-1     | /home | /opt                | /home  | /               
- server-1  | /home | /opt                | /home  | /               
- server-2  | /home | /opt                | /home  | /               
- server-3  | /home | /opt                | /home  | /               
- server-4  | /home | /opt                | /home  | /               
- server-5  | /home | /opt                | /home  | /               
- server-6  | /home | /opt                | /home  | /               
- server-7  | /home | /opt                | /home  | /               
- server-8  | /home | /opt                | /home  | /               
- server-9  | /home | /opt                | /home  | /               
-                                                                     
- localhost      ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- list-0         ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- list-1         ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- range-0        ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- range-1        ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-0          ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-1          ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-1       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-2       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-3       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-4       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-5       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-6       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-7       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-8       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- server-9       ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
----------------------------------------------------------------------
- Total          ok=64  unreachable=0  ignored=0  failed=0  skipped=0 
+ host               | ref   | Override inline ref | Inline | Override inline 
+--------------------+-------+---------------------+--------+-----------------
+ localhost          | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.3         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.5         | /home | /opt                | /home  | /               
+ 172.24.2.6         | /home | /opt                | /home  | /               
+ 172.24.2.7         | /home | /opt                | /home  | /               
+ 172.24.2.8         | /home | /opt                | /home  | /               
+ 172.24.2.9         | /home | /opt                | /home  | /               
+ 2001:3984:3989::10 | /home | /opt                | /home  | /               
+                                                                              
+ localhost               ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=64  unreachable=0  ignored=0  failed=0  skipped=0 
 

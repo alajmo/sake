@@ -7,25 +7,25 @@ WantErr: false
 
 TASKS 
 
- host      | ping 
------------+------
- localhost | pong 
- list-0    | pong 
- list-1    | pong 
- range-0   | pong 
- range-1   | pong 
- inv-0     | pong 
- inv-1     | pong 
- server-1  | pong 
-                                                                    
- localhost      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- list-0         ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- list-1         ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- range-0        ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- range-1        ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- inv-0          ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- inv-1          ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- server-1       ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
---------------------------------------------------------------------
- Total          ok=8  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | ping 
+------------+------
+ localhost  | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+ 172.24.2.4 | pong 
+ 172.24.2.2 | pong 
+                                                                     
+ localhost       ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total           ok=8  unreachable=0  ignored=0  failed=0  skipped=0 
 

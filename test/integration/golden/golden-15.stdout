@@ -7,13 +7,13 @@ WantErr: false
 
 TASKS 
 
- host   | OS | Kernel 
---------+----+--------
- list-0 | OS | kernel 
- list-1 | OS | kernel 
-                                                                 
- list-0      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
- list-1      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
------------------------------------------------------------------
- Total       ok=4  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+                                                                     
+ 172.24.2.2      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total           ok=4  unreachable=0  ignored=0  failed=0  skipped=0 
 

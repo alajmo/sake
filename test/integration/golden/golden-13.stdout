@@ -7,9 +7,9 @@ WantErr: false
 
 TASKS 
 
- host   | OS | Kernel 
---------+----+--------
- list-1 | OS | kernel 
-                                                                 
- list-1      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.4 | OS | kernel 
+                                                                     
+ 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
 

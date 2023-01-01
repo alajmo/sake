@@ -7,40 +7,40 @@ WantErr: false
 
 TASKS 
 
- host     | empty-true 
-----------+------------
- list-0   | Exists     
- list-1   | Exists     
- range-0  | Exists     
- range-1  | Exists     
- inv-0    | Exists     
- inv-1    | Exists     
- server-1 | Exists     
- server-2 | Exists     
- server-3 | Exists     
- server-4 | Exists     
- server-5 | Exists     
- server-6 | Exists     
- server-7 | Exists     
- server-8 | Exists     
- server-9 | Exists     
-                                                                     
- localhost      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- list-0         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- list-1         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- range-0        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- range-1        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-0          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- inv-1          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-1       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-2       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-3       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-4       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-5       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-6       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-7       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-8       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- server-9       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
----------------------------------------------------------------------
- Total          ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host               | empty-true 
+--------------------+------------
+ 172.24.2.2         | Exists     
+ 172.24.2.4         | Exists     
+ 172.24.2.2         | Exists     
+ 172.24.2.4         | Exists     
+ 172.24.2.2         | Exists     
+ 172.24.2.4         | Exists     
+ 172.24.2.2         | Exists     
+ 172.24.2.3         | Exists     
+ 172.24.2.4         | Exists     
+ 172.24.2.5         | Exists     
+ 172.24.2.6         | Exists     
+ 172.24.2.7         | Exists     
+ 172.24.2.8         | Exists     
+ 172.24.2.9         | Exists     
+ 2001:3984:3989::10 | Exists     
+                                                                              
+ localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 
