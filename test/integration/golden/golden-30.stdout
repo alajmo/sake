@@ -1,64 +1,47 @@
 Index: 30
-Name: fatal true
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run fatal-true -q -t reachable
-WantErr: true
+Name: Work Dir 3
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run work-dir-3 -q -t reachable
+WantErr: false
 
 ---
 
 TASKS 
 
- host               | fatal-true                   
---------------------+------------------------------
- localhost          |                              
-                    | exit status 1                
- 172.24.2.2         |                              
-                    | Process exited with status 1 
- 172.24.2.4         |                              
-                    | Process exited with status 1 
- 172.24.2.2         |                              
-                    | Process exited with status 1 
- 172.24.2.4         |                              
-                    | Process exited with status 1 
- 172.24.2.2         |                              
-                    | Process exited with status 1 
- 172.24.2.4         |                              
-                    | Process exited with status 1 
- 172.24.2.2         |                              
-                    | Process exited with status 1 
- 172.24.2.3         |                              
-                    | Process exited with status 1 
- 172.24.2.4         |                              
-                    | Process exited with status 1 
- 172.24.2.5         |                              
-                    | Process exited with status 1 
- 172.24.2.6         |                              
-                    | Process exited with status 1 
- 172.24.2.7         |                              
-                    | Process exited with status 1 
- 172.24.2.8         |                              
-                    | Process exited with status 1 
- 172.24.2.9         |                              
-                    | Process exited with status 1 
- 2001:3984:3989::10 |                              
-                    | Process exited with status 1 
+ host               | ref  | ref  
+--------------------+------+------
+ localhost          | /usr | /etc 
+ 172.24.2.2         | /usr | /etc 
+ 172.24.2.4         | /usr | /etc 
+ 172.24.2.2         | /usr | /etc 
+ 172.24.2.4         | /usr | /etc 
+ 172.24.2.2         | /usr | /etc 
+ 172.24.2.4         | /usr | /etc 
+ 172.24.2.2         | /usr | /etc 
+ 172.24.2.3         | /usr | /etc 
+ 172.24.2.4         | /usr | /etc 
+ 172.24.2.5         | /usr | /etc 
+ 172.24.2.6         | /usr | /etc 
+ 172.24.2.7         | /usr | /etc 
+ 172.24.2.8         | /usr | /etc 
+ 172.24.2.9         | /usr | /etc 
+ 2001:3984:3989::10 | /usr | /etc 
                                                                               
- localhost               ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.3              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.5              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.6              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.7              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.8              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 172.24.2.9              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 2001:3984:3989::10      ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ localhost               ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=0  unreachable=0  ignored=0  failed=16  skipped=0 
+ Total                   ok=32  unreachable=0  ignored=0  failed=0  skipped=0 
 
-exit status 1

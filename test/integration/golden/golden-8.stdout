@@ -1,29 +1,32 @@
 Index: 8
-Name: Describe servers filter on range hosts
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers range
+Name: Describe specs
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe specs
 WantErr: false
 
 ---
-
-name: range-0
-group: range
-desc: many hosts using range
-user: test
-host: 172.24.2.2
-port: 22
-tags: remote, prod, range, reachable
-env: 
-    hello: world
+name: default
+strategy: linear
+batch: 1
+output: table
+report: recap
 
 --
 
-name: range-1
-group: range
-desc: many hosts using range
-user: test
-host: 172.24.2.4
-port: 22
-tags: remote, prod, range, reachable
-env: 
-    hello: world
+name: table
+output: table
+report: recap
 
+--
+
+name: text
+output: text
+report: recap
+
+--
+
+name: info
+strategy: free
+output: table
+ignore_errors: true
+ignore_unreachable: true
+report: recap

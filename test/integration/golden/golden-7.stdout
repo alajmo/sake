@@ -1,29 +1,12 @@
 Index: 7
-Name: Describe servers filter on list hosts
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers list
+Name: List servers filter on inventory hosts
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers inv
 WantErr: false
 
 ---
 
-name: list-0
-group: list
-desc: many hosts using list
-user: test
-host: 172.24.2.2
-port: 22
-tags: remote, prod, list, reachable
-env: 
-    hello: world
-
---
-
-name: list-1
-group: list
-desc: many hosts using list
-user: test
-host: 172.24.2.4
-port: 22
-tags: remote, prod, list, reachable
-env: 
-    hello: world
+ server | host       | tags                      | desc                       
+--------+------------+---------------------------+----------------------------
+ inv-0  | 172.24.2.2 | remote,prod,inv,reachable | many hosts using inventory 
+ inv-1  | 172.24.2.4 | remote,prod,inv,reachable | many hosts using inventory 
 

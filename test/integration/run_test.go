@@ -13,6 +13,20 @@ var cases = []TemplateTest{
 		WantErr:  false,
 	},
 
+	// list specs
+	{
+		TestName: "List specs",
+		TestCmd:  `export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list specs`,
+		WantErr:  false,
+	},
+
+	// list targets
+	{
+		TestName: "List targets",
+		TestCmd:  `export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list targets`,
+		WantErr:  false,
+	},
+
 	// list tasks
 	{
 		TestName: "List tasks",
@@ -39,6 +53,20 @@ var cases = []TemplateTest{
 	{
 		TestName: "List servers filter on inventory hosts",
 		TestCmd:  `export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers inv`,
+		WantErr:  false,
+	},
+
+	// describe specs
+	{
+		TestName: "Describe specs",
+		TestCmd:  `export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe specs`,
+		WantErr:  false,
+	},
+
+	// describe targets
+	{
+		TestName: "Describe targets",
+		TestCmd:  `export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe targets`,
 		WantErr:  false,
 	},
 

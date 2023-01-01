@@ -474,6 +474,10 @@ func (c *Config) GetTaskNames() []string {
 func (c *Config) GetTaskIDAndDesc() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
+		if task.Spec.Hidden {
+			continue
+		}
+
 		if task.Desc != "" {
 			taskNames = append(taskNames, fmt.Sprintf("%s\t%s", task.ID, task.Desc))
 		} else if task.ID != task.Name {

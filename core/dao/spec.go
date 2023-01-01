@@ -18,6 +18,7 @@ type Spec struct {
 	ListHosts         bool     `yaml:"list_hosts"`
 	Order             string   `yaml:"order"`
 	Silent            bool     `yaml:"silent"`
+	Hidden            bool     `yaml:"hidden"`
 	Strategy          string   `yaml:"strategy"`
 	Batch             uint32   `yaml:"batch"`
 	BatchP            uint8    `yaml:"batch_p"`
@@ -59,6 +60,14 @@ func (s Spec) GetValue(key string, _ int) string {
 		return strconv.FormatBool(s.ListHosts)
 	case "silent", "Silent":
 		return strconv.FormatBool(s.Silent)
+	case "hidden", "Hidden":
+		return strconv.FormatBool(s.Hidden)
+	case "verbose", "Verbose":
+		return strconv.FormatBool(s.Verbose)
+	case "confirm", "Confirm":
+		return strconv.FormatBool(s.Confirm)
+	case "step", "Step":
+		return strconv.FormatBool(s.Step)
 	case "strategy":
 		return s.Strategy
 	case "forks":

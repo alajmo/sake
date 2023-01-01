@@ -1,56 +1,64 @@
 Index: 34
-Name: unreachable true
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run unreachable-true -o table -q -a
-WantErr: false
+Name: fatal true
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run fatal-true -q -t reachable
+WantErr: true
 
 ---
 
-                                                                                              
- Unreachable Hosts                                                                            
-                                                                                              
- server      | host            | user | port | error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
-
-
 TASKS 
 
- host               | unreachable-true 
---------------------+------------------
- localhost          | 123              
- 172.24.2.2         | 123              
- 172.24.2.4         | 123              
- 172.24.2.2         | 123              
- 172.24.2.4         | 123              
- 172.24.2.2         | 123              
- 172.24.2.4         | 123              
- 172.24.2.2         | 123              
- 172.24.2.3         | 123              
- 172.24.2.4         | 123              
- 172.24.2.5         | 123              
- 172.24.2.6         | 123              
- 172.24.2.7         | 123              
- 172.24.2.8         | 123              
- 172.24.2.9         | 123              
- 2001:3984:3989::10 | 123              
+ host               | fatal-true                   
+--------------------+------------------------------
+ localhost          |                              
+                    | exit status 1                
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.2         |                              
+                    | Process exited with status 1 
+ 172.24.2.3         |                              
+                    | Process exited with status 1 
+ 172.24.2.4         |                              
+                    | Process exited with status 1 
+ 172.24.2.5         |                              
+                    | Process exited with status 1 
+ 172.24.2.6         |                              
+                    | Process exited with status 1 
+ 172.24.2.7         |                              
+                    | Process exited with status 1 
+ 172.24.2.8         |                              
+                    | Process exited with status 1 
+ 172.24.2.9         |                              
+                    | Process exited with status 1 
+ 2001:3984:3989::10 |                              
+                    | Process exited with status 1 
                                                                               
- localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- unreachable.lan         ok=0   unreachable=1  ignored=0  failed=0  skipped=0 
+ localhost               ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.2              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.3              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.4              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.5              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.6              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.7              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.8              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 172.24.2.9              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ 2001:3984:3989::10      ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=16  unreachable=1  ignored=0  failed=0  skipped=0 
+ Total                   ok=0  unreachable=0  ignored=0  failed=16  skipped=0 
 
+exit status 1

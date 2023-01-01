@@ -1,19 +1,15 @@
 Index: 17
-Name: Limit to 2 servers
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t reachable -l 2
+Name: Filter by hosts server using server name
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s list-1
 WantErr: false
 
 ---
 
 TASKS 
 
- host       | ping 
-------------+------
- localhost  | pong 
- 172.24.2.2 | pong 
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.4 | OS | kernel 
                                                                      
- localhost       ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
----------------------------------------------------------------------
- Total           ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
 

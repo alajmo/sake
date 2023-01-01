@@ -207,93 +207,97 @@ env:
 tasks:
   ping:
     target: all
-    spec: host_pinned
+    # spec: host_pinned
+    spec:
+      hidden: true
     desc: ping server
     cmd: echo pong
 
-  # exit:
-  #   # name: Exit
-  #   local: true
-  #   cmd: exit 3
+  exit:
+    # name: Exit
+    local: true
+    cmd: exit 3
 
-  # sleep:
-  #   desc: ping server
-  #   cmd: sleep 2 & echo done
+  sleep:
+    desc: sleep for x seconds
+    env:
+      seconds: 2
+    cmd: sleep $seconds & echo done
 
-  # info:
-  #   name: Info
-  #   desc: print info
-  #   target: all
-  #   tasks:
-  #     - task: print-host
-  #     - task: print-hostname
-  #     - task: print-os
-  #     - task: print-kernel
+  info:
+    name: Info
+    desc: print info
+    target: all
+    tasks:
+      - task: print-host
+      - task: print-hostname
+      - task: print-os
+      - task: print-kernel
 
-  # # Info
-  # print-host:
-  #   name: Host
-  #   desc: print host
-  #   spec: info
-  #   target: all
-  #   cmd: echo $S_HOST
+  # Info
+  print-host:
+    name: Host
+    desc: print host
+    spec: info
+    target: all
+    cmd: echo $S_HOST
 
-  # print-hostname:
-  #   name: Hostname
-  #   desc: print hostname
-  #   spec: info
-  #   target: all
-  #   cmd: hostname
+  print-hostname:
+    name: Hostname
+    desc: print hostname
+    spec: info
+    target: all
+    cmd: hostname
 
-  # print-os:
-  #   name: OS
-  #   desc: print OS
-  #   spec: info
-  #   target: all
-  #   cmd: |
-  #     os=$(lsb_release -si)
-  #     release=$(lsb_release -sr)
-  #     echo "$os $release"
+  print-os:
+    name: OS
+    desc: print OS
+    spec: info
+    target: all
+    cmd: |
+      os=$(lsb_release -si)
+      release=$(lsb_release -sr)
+      echo "$os $release"
 
-  # print-kernel:
-  #   name: Kernel
-  #   desc: Print kernel version
-  #   spec: info
-  #   target: all
-  #   cmd: uname -r | awk -v FS='-' '{print $1}'
+  print-kernel:
+    name: Kernel
+    desc: Print kernel version
+    spec: info
+    target: all
+    cmd: uname -r | awk -v FS='-' '{print $1}'
 
-  # register:
-  #   tasks:
-  #     - cmd: echo "foo" && >&2 echo "error"
-  #       register: out
-  #     - cmd: |
-  #         echo "status: $out_status"
-  #         echo "rc: $out_rc"
-  #         echo "failed: $out_failed"
-  #         echo "stdout: $out_stdout"
-  #         echo "stderr: $out_stderr"
-  #         echo "out: $out"
+  register:
+    tasks:
+      - cmd: echo "foo" && >&2 echo "error"
+        register: out
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+          echo "out: $out"
 
-  #     - cmd: echo "xyz" && >&2 echo "error 2"
-  #       register: out2
-  #     - cmd: |
-  #         echo "status: $out_status"
-  #         echo "rc: $out_rc"
-  #         echo "failed: $out_failed"
-  #         echo "stdout: $out_stdout"
-  #         echo "stderr: $out_stderr"
-  #         echo "out: $out"
+      - cmd: echo "xyz" && >&2 echo "error 2"
+        register: out2
+      - cmd: |
+          echo "status: $out_status"
+          echo "rc: $out_rc"
+          echo "failed: $out_failed"
+          echo "stdout: $out_stdout"
+          echo "stderr: $out_stderr"
+          echo "out: $out"
 
-  #         echo "-------------"
+          echo "-------------"
 
-  #         echo "status: $out2_status"
-  #         echo "rc: $out2_rc"
-  #         echo "failed: $out2_failed"
-  #         echo "stdout: $out2_stdout"
-  #         echo "stderr: $out2_stderr"
-  #         echo "out: $out2"
+          echo "status: $out2_status"
+          echo "rc: $out2_rc"
+          echo "failed: $out2_failed"
+          echo "stdout: $out2_stdout"
+          echo "stderr: $out2_stderr"
+          echo "out: $out2"
 
-  # register2:
-  #   tasks:
-  #     - cmd: echo "foo" && >&2 echo "error"
-  #       register: out
+  register2:
+    tasks:
+      - cmd: echo "foo" && >&2 echo "error"
+        register: out

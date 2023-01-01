@@ -1,47 +1,127 @@
 Index: 25
-Name: Work Dir 2
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run work-dir-2 -q -t reachable
+Name: Reference Envs
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env-complex -q -t reachable
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | ref  | Override inline ref | Inline     | Override inline 
---------------------+------+---------------------+------------+-----------------
- localhost          | /usr | /opt                | /tmp       | /               
- 172.24.2.2         | /usr | /opt                | /home/test | /               
- 172.24.2.4         | /usr | /opt                | /home/test | /               
- 172.24.2.2         | /usr | /opt                | /home/test | /               
- 172.24.2.4         | /usr | /opt                | /home/test | /               
- 172.24.2.2         | /usr | /opt                | /home/test | /               
- 172.24.2.4         | /usr | /opt                | /home/test | /               
- 172.24.2.2         | /usr | /opt                | /home/test | /               
- 172.24.2.3         | /usr | /opt                | /home/test | /               
- 172.24.2.4         | /usr | /opt                | /home/test | /               
- 172.24.2.5         | /usr | /opt                | /home/test | /               
- 172.24.2.6         | /usr | /opt                | /home/test | /               
- 172.24.2.7         | /usr | /opt                | /home/test | /               
- 172.24.2.8         | /usr | /opt                | /home/test | /               
- 172.24.2.9         | /usr | /opt                | /home/test | /               
- 2001:3984:3989::10 | /usr | /opt                | /home/test | /               
+ host               | env-ref     | env-ref     
+--------------------+-------------+-------------
+ localhost          | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.2         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.4         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.2         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.4         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.2         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.4         | foo xyz     | foo xyz     
+                    | hello world | hello world 
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.2         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.3         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.4         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.5         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.6         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.7         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.8         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 172.24.2.9         | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
+ 2001:3984:3989::10 | foo xyz     | foo xyz     
+                    | hello       | hello       
+                    | cookie      | cookie      
+                    | release     | release     
+                    | task local  | task remote 
+                    | xyz xyz     | xyz xyz     
                                                                               
- localhost               ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ localhost               ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=64  unreachable=0  ignored=0  failed=0  skipped=0 
+ Total                   ok=32  unreachable=0  ignored=0  failed=0  skipped=0 
 

@@ -1,15 +1,31 @@
 Index: 13
-Name: Filter by hosts server using server name
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s list-1
+Name: Describe servers filter on inventory hosts
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers inv
 WantErr: false
 
 ---
 
-TASKS 
+name: inv-0
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
 
- host       | OS | Kernel 
-------------+----+--------
- 172.24.2.4 | OS | kernel 
-                                                                     
- 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+--
+
+name: inv-1
+group: inv
+desc: many hosts using inventory
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, inv, reachable
+env: 
+    hello: world
+    host: 172.24.2.4
 

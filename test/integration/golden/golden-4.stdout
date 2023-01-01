@@ -1,12 +1,27 @@
 Index: 4
-Name: List servers filter on range hosts
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers range
+Name: List servers
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers
 WantErr: false
 
 ---
 
- server  | host       | tags                        | desc                   
----------+------------+-----------------------------+------------------------
- range-0 | 172.24.2.2 | remote,prod,range,reachable | many hosts using range 
- range-1 | 172.24.2.4 | remote,prod,range,reachable | many hosts using range 
+ server      | host               | tags                        | desc                       
+-------------+--------------------+-----------------------------+----------------------------
+ localhost   | localhost          | local,reachable             | localhost                  
+ unreachable | unreachable.lan    | unreachable                 |                            
+ list-0      | 172.24.2.2         | remote,prod,list,reachable  | many hosts using list      
+ list-1      | 172.24.2.4         | remote,prod,list,reachable  | many hosts using list      
+ range-0     | 172.24.2.2         | remote,prod,range,reachable | many hosts using range     
+ range-1     | 172.24.2.4         | remote,prod,range,reachable | many hosts using range     
+ inv-0       | 172.24.2.2         | remote,prod,inv,reachable   | many hosts using inventory 
+ inv-1       | 172.24.2.4         | remote,prod,inv,reachable   | many hosts using inventory 
+ server-1    | 172.24.2.2         | remote,prod,reachable       | server-1                   
+ server-2    | 172.24.2.3         | remote,prod,reachable       | server-2                   
+ server-3    | 172.24.2.4         | remote,demo,reachable       | server-3                   
+ server-4    | 172.24.2.5         | remote,demo,reachable       | server-4                   
+ server-5    | 172.24.2.6         | remote,sandbox,reachable    | server-5                   
+ server-6    | 172.24.2.7         | remote,sandbox,reachable    | server-6                   
+ server-7    | 172.24.2.8         | remote,demo,reachable       | server-7                   
+ server-8    | 172.24.2.9         | remote,demo,reachable       | server-8                   
+ server-9    | 2001:3984:3989::10 | remote,demo,reachable       | server-9                   
 

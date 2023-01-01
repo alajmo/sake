@@ -174,6 +174,8 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		output += printBoolField("describe", spec.Describe, indent)
 		output += printBoolField("list_hosts", spec.ListHosts, indent)
 		output += printStringField("order", spec.Order, indent)
+		output += printBoolField("Silent", spec.Silent, indent)
+		output += printBoolField("Hidden", spec.Hidden, indent)
 		output += printStringField("strategy", spec.Strategy, indent)
 		output += printNumberField("batch", int(spec.Batch), indent)
 		output += printNumberField("batch_p", int(spec.BatchP), indent)
@@ -186,6 +188,9 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		output += printBoolField("omit_empty_rows", spec.OmitEmptyRows, indent)
 		output += printBoolField("omit_empty_columns", spec.OmitEmptyColumns, indent)
 		output += printSliceField("report", spec.Report, indent)
+		output += printBoolField("verbose", spec.Verbose, indent)
+		output += printBoolField("confirm", spec.Confirm, indent)
+		output += printBoolField("step", spec.Step, indent)
 
 		if output == "" {
 			continue

@@ -1,31 +1,11 @@
 Index: 9
-Name: Describe servers filter on inventory hosts
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers inv
+Name: Describe targets
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe targets
 WantErr: false
 
 ---
-
-name: inv-0
-group: inv
-desc: many hosts using inventory
-user: test
-host: 172.24.2.2
-port: 22
-tags: remote, prod, inv, reachable
-env: 
-    hello: world
-    host: 172.24.2.4
+name: all
+all: true
 
 --
-
-name: inv-1
-group: inv
-desc: many hosts using inventory
-user: test
-host: 172.24.2.4
-port: 22
-tags: remote, prod, inv, reachable
-env: 
-    hello: world
-    host: 172.24.2.4
 
