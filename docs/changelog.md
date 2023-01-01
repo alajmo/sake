@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add ability to modify prefix in text and table themes
+
 ## 0.13.0
 
 ### Features
