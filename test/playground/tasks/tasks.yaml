@@ -1,3 +1,20 @@
 tasks:
-  hello: echo world
   pwd: pwd
+
+# specs:
+#   table:
+#     output: table
+#     # describe: true
+#     silent: true
+
+# themes:
+#   kaka:
+#     text:
+#       # prefix: '{{ .Index }}'
+#       # prefix: '{{ .Index }} @ {{ .Name }} @ {{ .Host }}:{{ .Port }} : {{ .User }}'
+#       # prefix: "{{ .Name }}"
+#       # prefix: "{{ .Host }}"
+#       # prefix: "{{ .Host }}:{{ .Port }}"
+#       header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
+#     table:
+#       prefix: "{{ .Host }}:{{ .Port }}"

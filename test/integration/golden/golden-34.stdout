@@ -1,6 +1,6 @@
 Index: 34
 Name: unreachable true
-Cmd: go run ../../main.go run unreachable-true -o table -q -a
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run unreachable-true -o table -q -a
 WantErr: false
 
 ---

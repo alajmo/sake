@@ -6,6 +6,11 @@
 
 - Add ability to modify prefix in text and table themes
 
+### Fixes
+
+- [BREAKING CHANGE]: No more duplicate tasks, specs, targets, and themes
+- Small fix when user config is specified but not found
+
 ## 0.13.0
 
 ### Features

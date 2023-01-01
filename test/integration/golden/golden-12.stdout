@@ -1,6 +1,6 @@
 Index: 12
 Name: Multiple commands
-Cmd: go run ../../main.go run info -q -t prod
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -t prod
 WantErr: false
 
 ---

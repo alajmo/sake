@@ -1,6 +1,6 @@
 Index: 23
 Name: Nested tasks
-Cmd: go run ../../main.go run d -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run d -q -t reachable
 WantErr: false
 
 ---

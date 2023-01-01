@@ -1,6 +1,6 @@
 Index: 17
 Name: Limit to 2 servers
-Cmd: go run ../../main.go run ping -q -t reachable -l 2
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t reachable -l 2
 WantErr: false
 
 ---

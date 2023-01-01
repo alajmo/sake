@@ -109,7 +109,11 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 	CheckUserNoColor(noColor)
 	var configPath string
 
-	userConfigFile := getUserConfigFile(userConfigPath)
+	userConfigFile, err := getUserConfigFile(userConfigPath)
+	if err != nil {
+		return Config{}, err
+	}
+
 	sshConfigPath, err := getSSHConfigPath(sshConfigFile)
 	if err != nil {
 		return Config{}, err
@@ -179,28 +183,38 @@ func ReadConfig(configFilepath string, userConfigPath string, sshConfigFile stri
 	return config, nil
 }
 
-func getUserConfigFile(userConfigPath string) *string {
+func getUserConfigFile(userConfigPath string) (*string, error) {
 	// Flag
 	if userConfigPath != "" {
-		if _, err := os.Stat(userConfigPath); err == nil {
-			return &userConfigPath
+		if _, err := os.Stat(userConfigPath); err != nil {
+			return nil, fmt.Errorf("user config not found: %w", err)
 		}
+		return &userConfigPath, nil
 	}
 
 	// Env
 	val, present := os.LookupEnv("SAKE_USER_CONFIG")
 	if present {
-		return &val
+		if _, err := os.Stat(val); err != nil {
+			return nil, fmt.Errorf("user config not found: %w", err)
+		}
+		return &val, nil
 	}
 
 	// Default
 	defaultUserConfigDir, _ := os.UserConfigDir()
+
 	defaultUserConfigPath := filepath.Join(defaultUserConfigDir, "sake", "config.yaml")
 	if _, err := os.Stat(defaultUserConfigPath); err == nil {
-		return &defaultUserConfigPath
+		return &defaultUserConfigPath, nil
 	}
 
-	return nil
+	defaultUserConfigPath = filepath.Join(defaultUserConfigDir, "sake", "config.yml")
+	if _, err := os.Stat(defaultUserConfigPath); err == nil {
+		return &defaultUserConfigPath, nil
+	}
+
+	return nil, nil
 }
 
 func getSSHConfigPath(sshConfigPath string) (*string, error) {

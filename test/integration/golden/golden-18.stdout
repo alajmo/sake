@@ -1,6 +1,6 @@
 Index: 18
 Name: Limit to 50 percent servers
-Cmd: go run ../../main.go run ping -q -t reachable -L 50
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t reachable -L 50
 WantErr: false
 
 ---

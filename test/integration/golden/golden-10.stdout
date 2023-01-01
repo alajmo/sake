@@ -1,6 +1,6 @@
 Index: 10
 Name: Describe tasks
-Cmd: go run ../../main.go describe tasks
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe tasks
 WantErr: false
 
 ---

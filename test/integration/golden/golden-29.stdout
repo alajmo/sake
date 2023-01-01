@@ -1,6 +1,6 @@
 Index: 29
 Name: fatal false
-Cmd: go run ../../main.go run fatal -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run fatal -q -t reachable
 WantErr: true
 
 ---

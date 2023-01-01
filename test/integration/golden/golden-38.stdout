@@ -1,6 +1,6 @@
 Index: 38
 Name: Run exec command
-Cmd: go run ../../main.go exec 'echo 123' -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go exec 'echo 123' -q -t reachable
 WantErr: false
 
 ---

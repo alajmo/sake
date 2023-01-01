@@ -1,6 +1,6 @@
 Index: 13
 Name: Filter by hosts server using server name
-Cmd: go run ../../main.go run info -q -s list-1
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s list-1
 WantErr: false
 
 ---

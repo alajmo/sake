@@ -1,6 +1,6 @@
 Index: 26
 Name: Work Dir 3
-Cmd: go run ../../main.go run work-dir-3 -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run work-dir-3 -q -t reachable
 WantErr: false
 
 ---

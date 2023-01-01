@@ -1,6 +1,6 @@
 Index: 16
 Name: Filter by host regex
-Cmd: go run ../../main.go run info -q -r '172.24.2.(2|4)'
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -r '172.24.2.(2|4)'
 WantErr: false
 
 ---

@@ -1,6 +1,6 @@
 Index: 31
 Name: ignore_errors false
-Cmd: go run ../../main.go run errors -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run errors -q -t reachable
 WantErr: true
 
 ---

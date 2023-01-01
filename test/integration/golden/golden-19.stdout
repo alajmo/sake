@@ -1,6 +1,6 @@
 Index: 19
 Name: Filter by inverting on tag unreachable
-Cmd: go run ../../main.go run ping -q -t unreachable -v
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t unreachable -v
 WantErr: false
 
 ---

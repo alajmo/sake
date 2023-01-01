@@ -1,6 +1,6 @@
 Index: 9
 Name: Describe servers filter on inventory hosts
-Cmd: go run ../../main.go describe servers inv
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers inv
 WantErr: false
 
 ---

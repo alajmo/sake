@@ -1,6 +1,6 @@
 Index: 11
 Name: Ping all servers
-Cmd: go run ../../main.go run ping -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t reachable
 WantErr: false
 
 ---

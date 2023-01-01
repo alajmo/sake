@@ -1,6 +1,6 @@
 Index: 21
 Name: Reference Envs
-Cmd: go run ../../main.go run env-complex -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env-complex -q -t reachable
 WantErr: false
 
 ---

@@ -1,6 +1,6 @@
 Index: 14
 Name: Filter by hosts server using range index
-Cmd: go run ../../main.go run info -q -s 'list[0]'
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s 'list[0]'
 WantErr: false
 
 ---

@@ -1,6 +1,6 @@
 Index: 20
 Name: Simple Envs
-Cmd: go run ../../main.go run env -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env -q -t reachable
 WantErr: false
 
 ---
