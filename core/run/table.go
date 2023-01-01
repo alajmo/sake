@@ -41,15 +41,30 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 		data.Headers = append(data.Headers, subTask.Name)
 		reportData.Headers = append(reportData.Headers, subTask.Name)
 	}
+
 	// Populate the rows (server name is first cell, then commands and cmd output is set to empty string)
 	for i, p := range servers {
-		data.Rows = append(data.Rows, dao.Row{Columns: []string{p.Host}})
-		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Host, Rows: []dao.Report{}})
+
+		var client Client
+		if p.Local {
+			client = run.LocalClients[p.Name]
+		} else {
+			client = run.RemoteClients[p.Name]
+		}
+
+		title, err := getServerTitle(client, i, task.Theme.Table)
+		if err != nil {
+			return data, reportData, err
+		}
+		// p.Host
+		data.Rows = append(data.Rows, dao.Row{Columns: []string{title}})
+		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: title, Rows: []dao.Report{}})
 		for range task.Tasks {
 			data.Rows[i].Columns = append(data.Rows[i].Columns, "")
 			reportData.Tasks[i].Rows = append(reportData.Tasks[i].Rows, dao.Report{})
 		}
 	}
+
 	k := len(servers)
 	for i, p := range uServers {
 		reportData.Tasks = append(reportData.Tasks, dao.ReportRow{Name: p.Host, Rows: []dao.Report{}})
@@ -603,4 +618,25 @@ func runTableCmd(i int, t TaskContext, wg *sync.WaitGroup) (string, string, stri
 	}
 
 	return buf.String(), bufOut.String(), bufErr.String(), nil
+}
+
+func getServerTitle(client Client, i int, ts dao.Table) (string, error) {
+	if ts.Prefix == "" {
+		return "", nil
+	}
+
+	name, host, user, port := client.Prefix()
+	data := PrefixData{
+		Name:  name,
+		Host:  host,
+		User:  user,
+		Port:  port,
+		Index: i,
+	}
+	prefix, err := PrefixTemplate(ts.Prefix, data)
+	if err != nil {
+		return "", err
+	}
+
+	return prefix, nil
 }

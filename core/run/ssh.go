@@ -233,8 +233,8 @@ func (c *SSHClient) DialThrough(net, addr string, config *ssh.ClientConfig) (*ss
 	return ssh.NewClient(client, chans, reqs), nil
 }
 
-func (c *SSHClient) Prefix() string {
-	return c.Host
+func (c *SSHClient) Prefix() (string, string, string, uint16) {
+	return c.Name, c.Host, c.User, c.Port
 }
 
 func (c *SSHClient) Write(i int, p []byte) (n int, err error) {

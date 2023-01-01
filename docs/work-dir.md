@@ -69,7 +69,7 @@ Resolve `work_dir` according to `Server Dir` and `Task Dir`:
 | Host   | Task   | Server Dir | Task Dir | work_dir                  |
 |--------|--------|------------|----------|---------------------------|
 | remote | remote | ""         | ""       | `/home/user`              |
-| remote | remote | ""         | "task"   | `/home/user/opt`          |
+| remote | remote | ""         | "task"   | `/home/user/task`         |
 | remote | remote | "server"   | ""       | `/home/user/server`       |
 | remote | remote | "server"   | "task"   | `/home/user/server/task`  |
 
@@ -83,13 +83,6 @@ Resolve `work_dir` according to `Task Context`:
 | local   | remote | ""         | ""       | `[Task Context]`          |
 | remote  | local  | ""         | ""       | `[Task Context]`          |
 | remote  | local  | "server"   | ""       | `[Task Context]`          |
-
-Resolve `work_dir` according to `Server Context`, `Server Dir` and `Task Dir`:
-
-| Host   | Task   | Server Dir | Task Dir  | work_dir                       |
-|--------|--------|------------|-----------|--------------------------------|
-| local  | local  | "server"   | "task"    | `[Server Context]/server/cmd` |
-| local  | local  | "server"   | "task"    | `[Server Context]/server/cmd` |
 
 Resolve `work_dir` according to `Task Context` and `Task Dir`:
 
@@ -106,3 +99,10 @@ Resolve `work_dir` according to `Server Context` and `Server Dir`:
 |--------|--------|------------|----------|---------------------------|
 | local  | remote | "server"   | ""       | `[Server Context]/server` |
 | local  | local  | "server"   | ""       | `[Server Context]/server` |
+
+Resolve `work_dir` according to `Server Context`, `Server Dir` and `Task Dir`:
+
+| Host   | Task   | Server Dir | Task Dir  | work_dir                       |
+|--------|--------|------------|-----------|--------------------------------|
+| local  | local  | "server"   | "task"    | `[Server Context]/server/cmd` |
+| local  | local  | "server"   | "task"    | `[Server Context]/server/cmd` |

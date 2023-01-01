@@ -26,8 +26,8 @@
 - [ ] Add yaml to command mapper
 - [ ] Implement facts
 - [ ] Configure what to show, host/ip or name, configure via theme/cli flags
-- [ ] - Template for server prefix, similar to header
-- [ ] - Add colors to describe (key bold, value color), true (green), false (red)
-- [ ] - Add Tree output
+   - [ ] Template for server prefix, similar to header
+   - [ ] Add colors to describe (key bold, value color), true (green), false (red)
+   - [ ] Add Tree output
 - [ ] Fix hashed ip6 with port 22 does not work, all other combinations work
 - [ ] Fix `sake ssh inv` not working

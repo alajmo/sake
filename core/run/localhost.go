@@ -15,6 +15,7 @@ type LocalhostClient struct {
 	Name string
 	User string
 	Host string
+	Port uint16
 
 	Sessions []LocalSession
 }
@@ -115,8 +116,8 @@ func (c *LocalhostClient) Stdout(i int) io.Reader {
 	return c.Sessions[i].stdout
 }
 
-func (c *LocalhostClient) Prefix() string {
-	return c.Host
+func (c *LocalhostClient) Prefix() (string, string, string, uint16) {
+	return c.Name, c.Host, c.User, c.Port
 }
 
 func (c *LocalhostClient) Signal(i int, sig os.Signal) error {

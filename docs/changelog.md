@@ -4,6 +4,10 @@
 
 ### Features
 
+- Add ability to register variables which are available to the next tasks
+- Add option to ignore errors for indiviual tasks
+- Add flag/spec `--list-hosts` option to list targetted hosts
+- Support output options `csv`/`json`/`none`
 - Add new task strategies: linear, host_pinned, free
   - `linear`: execute task for each host before proceeding to the next task (default)
   - `host_pinned`: executes tasks (serial) for a host before proceeding to the next host
@@ -18,15 +22,12 @@
   - `batch`: specify number of hosts
   - `batch_p`: specify number of hosts in percentage
   - `forks`: max number of concurrent processes
-- Add ability to register variables which are available to the next tasks
 - Add option to display reports at end of tasks by using `--report` flag or specifying it in `spec` definition
   - `recap`: show basic report
   - `rc`: show return code for each host and task
   - `task`: show task status for each host and task
   - `time`: show time report for each host and task
   - `all`: show all reports
-- Add flag/spec option to list targetted hosts
-- Add option to ignore errors for indiviual tasks
 - Add confirm/step task capability
   - `confirm`: for the root task
   - `step`: per task and host
@@ -38,27 +39,26 @@
 - Fix server range (previously `[2:100]` didn't work as strings were compared)
 - Fix empty error for non existing working directory and update how work_dir works
 
-### Changes
-
-- Switch to default shell when evaluating inventory
-- If no command name is set on nested tasks, assign `task-$i` instead of `task`
-- If `--limit` flag is higher than available hosts, then select all hosts filtered
-- Building `sake` with go 1.19
-- Shorthand flag for silent is now `Q`
-- Deprecated the parallel flag, use batch/batch_p/forks instead
-- Update flag sorting
-- Rename `--omit-empty` to `--omit-empty-rowss`
-- [BREAKING CHANGE]: Rename default environment variables from `SAKE_SERVER_*` to `S_*`, and remove task default environment variables
-
 ### Minor
 
+- Add option to omit empty columns via flag `--omit-empty-columns` and spec `omit_empty_columns`
+- Add option to specify target and spec via flags `--target`/`--spec`
 - Add description to targets and specs
-- Add option to specify target and spec via flags
-- Support output options `csv`/`json`/`none`
 - Add server identity to environment variables
 - Add silent/describe attribute to spec definition
 - Add ssh user flag option
-- Add option to omit empty columns via flag `--omit-empty-columns` and spec `omit_empty_columns`
+
+### Changes
+
+- [**BREAKING CHANGE**]: Deprecated the parallel flag, use batch/batch_p/forks instead
+- [**BREAKING CHANGE**]: Rename default environment variables from `SAKE_SERVER_*` to `S_*`, and remove task default environment variables
+- [**BREAKING CHANGE**]: Shorthand flag for silent is now `Q`
+- Switch to default shell when evaluating inventory
+- If no command name is set on nested tasks, assign `task-$i` instead of `task`
+- If `--limit` flag is higher than available hosts, then select all hosts filtered
+- Update flag sorting
+- Rename `--omit-empty` to `--omit-empty-rows`
+- Building `sake` with go 1.19
 
 ## 0.12.1
 

@@ -16,6 +16,7 @@ type Table struct {
 	// Stylable via YAML
 	Name    string        `yaml:"name"`
 	Style   string        `yaml:"style"`
+	Prefix  string        `yaml:"prefix"`
 	Options *TableOptions `yaml:"options"`
 
 	Border *BorderColors `yaml:"border"`
@@ -53,7 +54,7 @@ type CellColors struct {
 }
 
 type Text struct {
-	Prefix       bool     `yaml:"prefix"`
+	Prefix       string   `yaml:"prefix"`
 	PrefixColors []string `yaml:"prefix_colors"`
 	Header       string   `yaml:"header"`
 	HeaderFiller string   `yaml:"header_filler"`
@@ -154,15 +155,16 @@ var StyleBoxASCII = table.BoxStyle{
 }
 
 var DefaultText = Text{
-	Prefix:       true,
+	Prefix:       `{{ .Host }}`,
 	PrefixColors: []string{"green", "blue", "red", "yellow", "magenta", "cyan"},
 	Header:       `{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}`,
 	HeaderFiller: "*",
 }
 
 var DefaultTable = Table{
-	Style: "default",
-	Box:   StyleBoxASCII,
+	Style:  "default",
+	Box:    StyleBoxASCII,
+	Prefix: `{{ .Host }}`,
 
 	Options: &TableOptions{
 		DrawBorder:      core.Ptr(false),
@@ -266,12 +268,20 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 			themes[i].Text.PrefixColors = DefaultText.PrefixColors
 		}
 
+		if themes[i].Text.Prefix == "" {
+			themes[i].Text.Prefix = DefaultText.Prefix
+		}
+
 		// TABLE
 		if themes[i].Table.Style == "connected-light" {
 			themes[i].Table.Box = StyleBoxLight
 		} else {
 			themes[i].Table.Style = "ascii"
 			themes[i].Table.Box = StyleBoxASCII
+		}
+
+		if themes[i].Table.Prefix == "" {
+			themes[i].Table.Prefix = DefaultTable.Prefix
 		}
 
 		if themes[i].Table.Options == nil {
