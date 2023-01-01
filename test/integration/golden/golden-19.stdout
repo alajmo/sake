@@ -1,47 +1,19 @@
 Index: 19
-Name: Filter by inverting on tag unreachable
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t unreachable -v
+Name: Filter by hosts server
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s 'list[0:2]'
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | ping 
---------------------+------
- localhost          | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.3         | pong 
- 172.24.2.4         | pong 
- 172.24.2.5         | pong 
- 172.24.2.6         | pong 
- 172.24.2.7         | pong 
- 172.24.2.8         | pong 
- 172.24.2.9         | pong 
- 2001:3984:3989::10 | pong 
-                                                                              
- localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
-------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+                                                                     
+ 172.24.2.2      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total           ok=4  unreachable=0  ignored=0  failed=0  skipped=0 
 

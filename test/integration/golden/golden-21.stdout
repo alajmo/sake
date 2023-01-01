@@ -1,127 +1,19 @@
 Index: 21
-Name: Reference Envs
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env-complex -q -t reachable
+Name: Limit to 2 servers
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t reachable -l 2
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | env-ref     | env-ref     
---------------------+-------------+-------------
- localhost          | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.2         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.4         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.2         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.4         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.2         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.4         | foo xyz     | foo xyz     
-                    | hello world | hello world 
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.2         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.3         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.4         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.5         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.6         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.7         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.8         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 172.24.2.9         | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
- 2001:3984:3989::10 | foo xyz     | foo xyz     
-                    | hello       | hello       
-                    | cookie      | cookie      
-                    | release     | release     
-                    | task local  | task remote 
-                    | xyz xyz     | xyz xyz     
-                                                                              
- localhost               ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
-------------------------------------------------------------------------------
- Total                   ok=32  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | ping 
+------------+------
+ localhost  | pong 
+ 172.24.2.2 | pong 
+                                                                     
+ localhost       ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=1  unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total           ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
 

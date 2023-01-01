@@ -1,47 +1,47 @@
 Index: 27
-Name: Register 1
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run register-1 -q -t reachable
+Name: Nested tasks
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run d -q -t reachable
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | task-0 
---------------------+--------
- localhost          | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.4         | foo    
- 172.24.2.2         | foo    
- 172.24.2.3         | foo    
- 172.24.2.4         | foo    
- 172.24.2.5         | foo    
- 172.24.2.6         | foo    
- 172.24.2.7         | foo    
- 172.24.2.8         | foo    
- 172.24.2.9         | foo    
- 2001:3984:3989::10 | foo    
+ host               | ping | ping | ping | ping | ping | ping 
+--------------------+------+------+------+------+------+------
+ localhost          | pong | pong | pong | pong | pong | pong 
+ 172.24.2.2         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.4         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.2         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.4         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.2         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.4         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.2         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.3         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.4         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.5         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.6         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.7         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.8         | pong | pong | pong | pong | pong | pong 
+ 172.24.2.9         | pong | pong | pong | pong | pong | pong 
+ 2001:3984:3989::10 | pong | pong | pong | pong | pong | pong 
                                                                               
- localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ localhost               ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=6   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ Total                   ok=96  unreachable=0  ignored=0  failed=0  skipped=0 
 

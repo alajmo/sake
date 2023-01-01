@@ -1,12 +1,41 @@
 Index: 3
-Name: List servers filter on list hosts
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers list
+Name: List tasks
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list tasks
 WantErr: false
 
 ---
 
- server | host       | tags                       | desc                  
---------+------------+----------------------------+-----------------------
- list-0 | 172.24.2.2 | remote,prod,list,reachable | many hosts using list 
- list-1 | 172.24.2.4 | remote,prod,list,reachable | many hosts using list 
+ task             | desc                 
+------------------+----------------------
+ ping             | ping server          
+ real-ping        | ping server          
+ Host             | print host           
+ Hostname         | print hostname       
+ OS               | print OS             
+ Kernel           | Print kernel version 
+ info             | get remote info      
+ env              |                      
+ env-ref          |                      
+ env-complex      |                      
+ env-default      |                      
+ a                |                      
+ b                |                      
+ c                |                      
+ d                |                      
+ ref              |                      
+ nested           |                      
+ work-dir-1       |                      
+ work-dir-2       |                      
+ work-dir-3       |                      
+ register-1       |                      
+ register-2       |                      
+ fatal            |                      
+ fatal-true       |                      
+ errors           |                      
+ errors-true      |                      
+ unreachable      |                      
+ unreachable-true |                      
+ empty            |                      
+ empty-true       |                      
+ output           |                      
 

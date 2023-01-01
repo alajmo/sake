@@ -1,47 +1,111 @@
 Index: 26
-Name: Work Dir 3
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run work-dir-3 -q -t reachable
+Name: Default Envs
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env-default -q -t reachable
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | ref  | ref  
---------------------+------+------
- localhost          | /usr | /etc 
- 172.24.2.2         | /usr | /etc 
- 172.24.2.4         | /usr | /etc 
- 172.24.2.2         | /usr | /etc 
- 172.24.2.4         | /usr | /etc 
- 172.24.2.2         | /usr | /etc 
- 172.24.2.4         | /usr | /etc 
- 172.24.2.2         | /usr | /etc 
- 172.24.2.3         | /usr | /etc 
- 172.24.2.4         | /usr | /etc 
- 172.24.2.5         | /usr | /etc 
- 172.24.2.6         | /usr | /etc 
- 172.24.2.7         | /usr | /etc 
- 172.24.2.8         | /usr | /etc 
- 172.24.2.9         | /usr | /etc 
- 2001:3984:3989::10 | /usr | /etc 
+ host               | env-default                        
+--------------------+------------------------------------
+ localhost          | # SERVER                           
+                    | S_TAGS local,reachable             
+                    | S_HOST localhost                   
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,list,reachable  
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,range,reachable 
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,prod,inv,reachable   
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.2         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.2                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.3         | # SERVER                           
+                    | S_TAGS remote,prod,reachable       
+                    | S_HOST 172.24.2.3                  
+                    | S_USER test                        
+                    | S_PORT 33                          
+ 172.24.2.4         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.4                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.5         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.5                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.6         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.6                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.7         | # SERVER                           
+                    | S_TAGS remote,sandbox,reachable    
+                    | S_HOST 172.24.2.7                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.8         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.8                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 172.24.2.9         | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 172.24.2.9                  
+                    | S_USER test                        
+                    | S_PORT 22                          
+ 2001:3984:3989::10 | # SERVER                           
+                    | S_TAGS remote,demo,reachable       
+                    | S_HOST 2001:3984:3989::10          
+                    | S_USER test                        
+                    | S_PORT 22                          
                                                                               
- localhost               ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=32  unreachable=0  ignored=0  failed=0  skipped=0 
+ Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

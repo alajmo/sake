@@ -1,0 +1,47 @@
+Index: 41
+Name: output
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run output -q -t reachable
+WantErr: false
+
+---
+
+TASKS 
+
+ host               | task-0      | task-1    | task-2            
+--------------------+-------------+-----------+-------------------
+ localhost          | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.2         | Hello world | Bye world | Hello again world 
+ 172.24.2.3         | Hello world | Bye world | Hello again world 
+ 172.24.2.4         | Hello world | Bye world | Hello again world 
+ 172.24.2.5         | Hello world | Bye world | Hello again world 
+ 172.24.2.6         | Hello world | Bye world | Hello again world 
+ 172.24.2.7         | Hello world | Bye world | Hello again world 
+ 172.24.2.8         | Hello world | Bye world | Hello again world 
+ 172.24.2.9         | Hello world | Bye world | Hello again world 
+ 2001:3984:3989::10 | Hello world | Bye world | Hello again world 
+                                                                              
+ localhost               ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.3              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.5              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.6              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.7              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.8              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.9              ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+ 2001:3984:3989::10      ok=3   unreachable=0  ignored=0  failed=0  skipped=0 
+------------------------------------------------------------------------------
+ Total                   ok=48  unreachable=0  ignored=0  failed=0  skipped=0 
+

@@ -1,111 +1,31 @@
 Index: 20
-Name: Simple Envs
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run env -q -t reachable
+Name: Filter by host regex
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -r '172.24.2.(2|4)'
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | env         
---------------------+-------------
- localhost          | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.2         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.4         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.2         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.4         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.2         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.4         | foo xyz     
-                    | hello world 
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.2         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.3         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.4         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.5         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.6         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.7         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.8         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 172.24.2.9         | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
- 2001:3984:3989::10 | foo xyz     
-                    | hello       
-                    | cookie      
-                    | release     
-                    | task local  
-                                                                              
- localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
-------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host       | OS | Kernel 
+------------+----+--------
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+ 172.24.2.2 | OS | kernel 
+ 172.24.2.4 | OS | kernel 
+                                                                      
+ 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+----------------------------------------------------------------------
+ Total           ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

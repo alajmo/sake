@@ -1,15 +1,466 @@
 Index: 14
-Name: Filter by hosts server using range index
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s 'list[0]'
+Name: Describe tasks
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe tasks
 WantErr: false
 
 ---
 
-TASKS 
+name: ping
+desc: ping server
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+target:
+    all: true
+cmd: 
+    echo pong
 
- host       | OS | Kernel 
-------------+----+--------
- 172.24.2.2 | OS | kernel 
-                                                                     
- 172.24.2.2      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+--
+
+name: real-ping
+desc: ping server
+theme: default
+local: true
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+target:
+    all: true
+cmd: 
+    ping $S_HOST -c 2
+
+--
+
+task: print-host
+name: Host
+desc: print host
+theme: default
+spec:
+    strategy: free
+    output: table
+    ignore_errors: true
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+cmd: 
+    echo $S_HOST
+
+--
+
+task: print-hostname
+name: Hostname
+desc: print hostname
+theme: default
+spec:
+    strategy: free
+    output: table
+    ignore_errors: true
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+cmd: 
+    hostname
+
+--
+
+task: print-os
+name: OS
+desc: print OS
+theme: default
+spec:
+    strategy: free
+    output: table
+    ignore_errors: true
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+cmd: 
+    echo OS
+
+--
+
+task: print-kernel
+name: Kernel
+desc: Print kernel version
+theme: default
+spec:
+    strategy: free
+    output: table
+    ignore_errors: true
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+cmd: 
+    echo kernel
+
+--
+
+name: info
+desc: get remote info
+theme: default
+spec:
+    strategy: free
+    output: table
+    ignore_errors: true
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+tasks: 
+    - OS: print OS
+    - Kernel: Print kernel version
+
+--
+
+name: env
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+env: 
+    foo: xyz
+    task: local
+cmd: 
+    echo "foo $foo"
+    echo "hello $hello"
+    echo "cookie $cookie"
+    echo "release $release"
+    echo "task $task"
+
+--
+
+name: env-ref
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+env: 
+    task: 123
+    xyz: xyz
+cmd: 
+    echo "foo $foo"
+    echo "hello $hello"
+    echo "cookie $cookie"
+    echo "release $release"
+    echo "task $task"
+    echo "xyz $xyz"
+
+--
+
+name: env-complex
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+env: 
+    foo: xyz
+    task: local
+tasks: 
+    - env-ref
+    - env-ref
+
+--
+
+name: env-default
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+cmd: 
+    echo "# SERVER"
+    echo "S_TAGS $S_TAGS"
+    echo "S_HOST $S_HOST"
+    echo "S_USER $S_USER"
+    echo "S_PORT $S_PORT"
+
+--
+
+name: a
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - ping: ping server
+
+--
+
+name: b
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - ping: ping server
+    - ping: ping server
+
+--
+
+name: c
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+
+--
+
+name: d
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+tasks: 
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+    - ping: ping server
+
+--
+
+task: work-ref
+name: ref
+theme: default
+work_dir: /usr
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+cmd: 
+    pwd
+
+--
+
+task: work-nested
+name: nested
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - ref
+
+--
+
+name: work-dir-1
+theme: default
+work_dir: /home
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+tasks: 
+    - ref
+    - Override inline ref
+    - Inline
+    - Override inline
+
+--
+
+name: work-dir-2
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+tasks: 
+    - ref
+    - Override inline ref
+    - Inline
+    - Override inline
+
+--
+
+name: work-dir-3
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    all: true
+tasks: 
+    - ref
+    - ref
+
+--
+
+name: register-1
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - task-0
+
+--
+
+name: register-2
+theme: default
+spec:
+    strategy: linear
+    batch: 1
+    output: table
+    report: recap
+tasks: 
+    - task-0
+    - task-1
+    - task-2
+    - task-3
+
+--
+
+name: fatal
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    tags: reachable
+cmd: 
+    exit 1
+
+--
+
+name: fatal-true
+theme: default
+spec:
+    output: table
+    any_errors_fatal: true
+    report: recap
+target:
+    tags: reachable
+cmd: 
+    exit 1
+
+--
+
+name: errors
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    tags: reachable
+tasks: 
+    - task-0
+    - task-1
+    - task-2
+
+--
+
+name: errors-true
+theme: default
+spec:
+    output: table
+    ignore_errors: true
+    report: recap
+target:
+    tags: reachable
+tasks: 
+    - task-0
+    - task-1
+    - task-2
+
+--
+
+name: unreachable
+theme: default
+spec:
+    report: recap
+target:
+    all: true
+cmd: 
+    echo 123
+
+--
+
+name: unreachable-true
+theme: default
+spec:
+    ignore_unreachable: true
+    report: recap
+target:
+    all: true
+cmd: 
+    echo 123
+
+--
+
+name: empty
+theme: default
+spec:
+    output: table
+    report: recap
+target:
+    tags: reachable
+cmd: 
+    if [[ -d ".ssh" ]]
+    then
+        echo "Exists"
+    fi
+
+--
+
+name: empty-true
+theme: default
+spec:
+    output: table
+    omit_empty_rows: true
+    report: recap
+target:
+    tags: reachable
+cmd: 
+    if [[ -d ".ssh" ]]
+    then
+        echo "Exists"
+    fi
+
+--
+
+name: output
+theme: default
+spec:
+    output: table
+    report: recap
+tasks: 
+    - task-0
+    - task-1
+    - task-2
 

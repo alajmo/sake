@@ -5,6 +5,7 @@
 ### Features
 
 - Add ability to modify prefix in text and table themes
+- Hide tasks from auto-completion via spec attribute `hidden: true`
 
 ### Fixes
 

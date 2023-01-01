@@ -1,31 +1,29 @@
 Index: 12
-Name: Multiple commands
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -t prod
+Name: Describe servers filter on range hosts
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers range
 WantErr: false
 
 ---
 
-TASKS 
+name: range-0
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.2
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 
- host       | OS | Kernel 
-------------+----+--------
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.3 | OS | kernel 
-                                                                      
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
-----------------------------------------------------------------------
- Total           ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+--
+
+name: range-1
+group: range
+desc: many hosts using range
+user: test
+host: 172.24.2.4
+port: 22
+tags: remote, prod, range, reachable
+env: 
+    hello: world
 

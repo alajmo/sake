@@ -1,190 +1,30 @@
 Index: 28
-Name: Register 2
-Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run register-2 -q -t reachable
+Name: Work Dir 1
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run work-dir-1 -q -t reachable
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | task-0 | task-1        | task-2  | task-3          
---------------------+--------+---------------+---------+-----------------
- localhost          | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.2         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.4         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.2         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.4         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.2         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.4         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.2         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.3         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.4         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.5         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.6         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.7         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.8         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 172.24.2.9         | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
- 2001:3984:3989::10 | foo    | status: ok    | error 2 | status: ok      
-                    |        | rc: 0         |         | rc: 0           
-                    |        | failed: false |         | failed: false   
-                    |        | stdout: foo   |         | stdout: foo     
-                    |        | stderr:       |         | stderr:         
-                    |        |               |         | -------------   
-                    |        |               |         | status: ok      
-                    |        |               |         | rc: 0           
-                    |        |               |         | failed: false   
-                    |        |               |         | stdout:         
-                    |        |               |         | stderr: error 2 
+ host               | ref   | Override inline ref | Inline | Override inline 
+--------------------+-------+---------------------+--------+-----------------
+ localhost          | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.2         | /home | /opt                | /home  | /               
+ 172.24.2.3         | /home | /opt                | /home  | /               
+ 172.24.2.4         | /home | /opt                | /home  | /               
+ 172.24.2.5         | /home | /opt                | /home  | /               
+ 172.24.2.6         | /home | /opt                | /home  | /               
+ 172.24.2.7         | /home | /opt                | /home  | /               
+ 172.24.2.8         | /home | /opt                | /home  | /               
+ 172.24.2.9         | /home | /opt                | /home  | /               
+ 2001:3984:3989::10 | /home | /opt                | /home  | /               
                                                                               
  localhost               ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.2              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
