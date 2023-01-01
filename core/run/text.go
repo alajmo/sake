@@ -27,7 +27,10 @@ func (run *Run) Text(dryRun bool) (dao.ReportData, error) {
 	servers := run.Servers
 	uServers := run.UnreachableServers
 
-	prefixMaxLen := calcMaxPrefixLength(run.LocalClients)
+	prefixMaxLen, perr := calcMaxPrefixLength(run.RemoteClients, *task)
+	if perr != nil {
+		return dao.ReportData{}, perr
+	}
 
 	// TODO: reportData should be pointer?
 	var reportData dao.ReportData
@@ -491,8 +494,6 @@ func (run *Run) textWork(
 	dryRun bool,
 	batch int,
 ) error {
-	prefix := getPrefixer(run.LocalClients[r.Server.Name], r.i, prefixMaxLen, r.Task.Theme.Text, batch)
-
 	numTasks := len(r.Task.Tasks)
 
 	var registerEnvs []string
@@ -506,6 +507,11 @@ func (run *Run) textWork(
 		client = run.LocalClients[r.Server.Name]
 	} else {
 		client = run.RemoteClients[r.Server.Name]
+	}
+
+	prefix, err := getPrefixer(client, r.i, prefixMaxLen, r.Task.Theme.Text, batch)
+	if err != nil {
+		return err
 	}
 
 	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
@@ -762,27 +768,86 @@ func printTaskHeader(i int, numTasks int, name string, desc string, ts dao.Text)
 	return nil
 }
 
-func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, batch int) string {
-	if !textStyle.Prefix {
-		return ""
+func PrefixTemplate(prefix string, data PrefixData) (string, error) {
+	tmpl, err := template.New("prefix.tmpl").Parse(prefix)
+	if err != nil {
+		return "", &core.TemplateParseError{Msg: err.Error()}
 	}
 
-	prefix := client.Prefix()
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, data)
+	if err != nil {
+		return "", &core.TemplateParseError{Msg: err.Error()}
+	}
+
+	s := buf.String()
+
+	return s, nil
+}
+
+type PrefixData struct {
+	Name  string
+	Host  string
+	User  string
+	Index int
+	Port  uint16
+}
+
+func (h PrefixData) Style(s any, args ...string) string {
+	v := core.AnyToString(s)
+	colors := text.Colors{}
+
+	for _, k := range args {
+		switch {
+		case strings.Contains(k, "fg_"):
+			fg := print.GetFg(strings.TrimPrefix(k, "fg_"))
+			colors = append(colors, *fg)
+		case strings.Contains(k, "bg_"):
+			bg := print.GetBg(strings.TrimPrefix(k, "bg_"))
+			colors = append(colors, *bg)
+		case slices.Contains([]string{"normal", "bold", "faint", "italic", "underline", "crossed_out"}, k):
+			attr := print.GetAttr(k)
+			colors = append(colors, *attr)
+		}
+	}
+
+	return colors.Sprintf(v)
+}
+
+func getPrefixer(client Client, i int, prefixMaxLen int, ts dao.Text, batch int) (string, error) {
+	if ts.Prefix == "" {
+		return "", nil
+	}
+
+	name, host, user, port := client.Prefix()
+	data := PrefixData{
+		Name:  name,
+		Host:  host,
+		User:  user,
+		Port:  port,
+		Index: i,
+	}
+	prefix, err := PrefixTemplate(ts.Prefix, data)
+	if err != nil {
+		return "", err
+	}
+
 	prefixLen := len(prefix)
-	var prefixColor *text.Color
-	if len(textStyle.PrefixColors) < 1 {
-		prefixColor = print.GetFg("")
-	} else {
-		prefixColor = print.GetFg(textStyle.PrefixColors[i%len(textStyle.PrefixColors)])
-	}
 
-	// When batch = 1 correctly align the prefix to current host
-	// When batch > 1 correctly align the prefix to the largest host
+	// When batch = 1 correctly align the prefix to current prefix
+	// When batch > 1 correctly align the prefix to the largest prefix
 	var prefixString string
-	if batch > 1 && len(prefix) < prefixMaxLen { // Left padding.
+	if batch > 1 && prefixLen < prefixMaxLen { // Left padding.
 		prefixString = prefix + strings.Repeat(" ", prefixMaxLen-prefixLen) + " | "
 	} else {
 		prefixString = prefix + " | "
+	}
+
+	var prefixColor *text.Color
+	if len(ts.PrefixColors) < 1 {
+		prefixColor = print.GetFg("")
+	} else {
+		prefixColor = print.GetFg(ts.PrefixColors[i%len(ts.PrefixColors)])
 	}
 
 	if prefixColor != nil {
@@ -791,19 +856,48 @@ func getPrefixer(client Client, i, prefixMaxLen int, textStyle dao.Text, batch i
 		prefix = prefixString
 	}
 
-	return prefix
+	return prefix, nil
 }
 
-func calcMaxPrefixLength(clients map[string]Client) int {
-	var prefixMaxLen int = 0
-	for _, c := range clients {
-		prefix := c.Prefix()
-		if len(prefix) > prefixMaxLen {
-			prefixMaxLen = len(prefix)
-		}
+func getPrefixLength(client Client, i int, prefixMaxLen int, ts dao.Text) (int, error) {
+	if ts.Prefix == "" {
+		return 0, nil
 	}
 
-	return prefixMaxLen
+	name, host, user, port := client.Prefix()
+	data := PrefixData{
+		Name:  name,
+		Host:  host,
+		User:  user,
+		Port:  port,
+		Index: i,
+	}
+	prefix, err := PrefixTemplate(ts.Prefix, data)
+	if err != nil {
+		return 0, err
+	}
+
+	prefixLen := len(prefix)
+
+	return prefixLen, nil
+}
+
+func calcMaxPrefixLength(clients map[string]Client, task dao.Task) (int, error) {
+	var prefixMaxLen int = 0
+	i := 0
+	for _, c := range clients {
+		prefixLen, err := getPrefixLength(c, i, prefixMaxLen, task.Theme.Text)
+		if err != nil {
+			return 0, err
+		}
+
+		if prefixLen > prefixMaxLen {
+			prefixMaxLen = prefixLen
+		}
+		i += 1
+	}
+
+	return prefixMaxLen, nil
 }
 
 func printCmd(prefix string, cmd string) {

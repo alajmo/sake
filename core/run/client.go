@@ -18,7 +18,7 @@ type Client interface {
 	Stdout(int) io.Reader
 	Signal(int, os.Signal) error
 	GetName() string
-	Prefix() string
+	Prefix() (string, string, string, uint16)
 	Connected() bool
 }
 

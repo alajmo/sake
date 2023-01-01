@@ -105,8 +105,9 @@ themes:
  default:
    # Text options [optional]
    text:
-     # Include server name prefix for each line [optional]
-     prefix: true
+     # Set host prefix for each line [optional]
+     # Available variables: `.Name`, `.Index`, `.Host`, `.Port`, `.User`
+     prefix: '{{ .Host }}'
 
      # Colors to alternate between for each server prefix [optional]
      # Available options: green, blue, red, yellow, magenta, cyan
@@ -128,6 +129,10 @@ themes:
      # Table style [optional]
      # Available options: ascii, connected-light
      style: ascii
+
+     # Set host prefix [optional]
+     # Available variables: `.Name`, `.Index`, `.Host`, `.Port`, `.User`
+     prefix: '{{ .Host }}'
 
      # Border options for table output [optional]
      options:

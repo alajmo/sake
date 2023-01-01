@@ -49,8 +49,7 @@ To access a previous tasks output, you can register a variable in the previous t
 - `<name>_rc`:
 - `<name>_failed`:
 - `<name>_stdout`:
-- `<name>_stdout`:
-- `<name>_status`:
+- `<name>_stderr`:
 
 ```yaml
 tasks:
