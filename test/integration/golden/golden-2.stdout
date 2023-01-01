@@ -1,6 +1,6 @@
 Index: 2
 Name: List servers
-Cmd: go run ../../main.go list servers
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers
 WantErr: false
 
 ---

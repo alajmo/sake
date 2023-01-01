@@ -1,6 +1,6 @@
 Index: 0
 Name: List tags
-Cmd: go run ../../main.go list tags
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list tags
 WantErr: false
 
 ---

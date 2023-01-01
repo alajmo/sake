@@ -1,47 +1,47 @@
 Index: 19
 Name: Filter by inverting on tag unreachable
-Cmd: go run ../../main.go run ping -q -t unreachable -v
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run ping -q -t unreachable -v
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | ping 
---------------------+------
- localhost          | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.4         | pong 
- 172.24.2.2         | pong 
- 172.24.2.3         | pong 
- 172.24.2.4         | pong 
- 172.24.2.5         | pong 
- 172.24.2.6         | pong 
- 172.24.2.7         | pong 
- 172.24.2.8         | pong 
- 172.24.2.9         | pong 
- 2001:3984:3989::10 | pong 
-                                                                              
- localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.5              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.6              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
-------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host      | ping 
+-----------+------
+ localhost | pong 
+ list-0    | pong 
+ list-1    | pong 
+ range-0   | pong 
+ range-1   | pong 
+ inv-0     | pong 
+ inv-1     | pong 
+ server-1  | pong 
+ server-2  | pong 
+ server-3  | pong 
+ server-4  | pong 
+ server-5  | pong 
+ server-6  | pong 
+ server-7  | pong 
+ server-8  | pong 
+ server-9  | pong 
+                                                                     
+ localhost      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ list-0         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ list-1         ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ range-0        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ range-1        ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ inv-0          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ inv-1          ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-1       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-2       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-3       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-4       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-5       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-6       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-7       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-8       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-9       ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+---------------------------------------------------------------------
+ Total          ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

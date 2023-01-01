@@ -1,15 +1,15 @@
 Index: 14
 Name: Filter by hosts server using range index
-Cmd: go run ../../main.go run info -q -s 'list[0]'
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -s 'list[0]'
 WantErr: false
 
 ---
 
 TASKS 
 
- host       | OS | Kernel 
-------------+----+--------
- 172.24.2.2 | OS | kernel 
-                                                                     
- 172.24.2.2      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
+ host   | OS | Kernel 
+--------+----+--------
+ list-0 | OS | kernel 
+                                                                 
+ list-0      ok=2  unreachable=0  ignored=0  failed=0  skipped=0 
 

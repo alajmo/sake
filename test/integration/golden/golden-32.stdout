@@ -1,63 +1,63 @@
 Index: 32
 Name: ignore_errors true
-Cmd: go run ../../main.go run errors-true -q -t reachable
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run errors-true -q -t reachable
 WantErr: false
 
 ---
 
 TASKS 
 
- host               | task-0 | task-1                        | task-2 
---------------------+--------+-------------------------------+--------
- localhost          | 123    |                               | 321    
-                    |        | exit status 65                |        
- 172.24.2.2         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.4         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.2         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.4         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.2         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.4         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.2         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.3         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.4         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.5         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.6         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.7         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.8         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 172.24.2.9         | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
- 2001:3984:3989::10 | 123    |                               | 321    
-                    |        | Process exited with status 65 |        
-                                                                               
- localhost               ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.2              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.3              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.4              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.5              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.6              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.7              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.8              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 172.24.2.9              ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
- 2001:3984:3989::10      ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
--------------------------------------------------------------------------------
- Total                   ok=32  unreachable=0  ignored=16  failed=0  skipped=0 
+ host      | task-0 | task-1                        | task-2 
+-----------+--------+-------------------------------+--------
+ localhost | 123    |                               | 321    
+           |        | exit status 65                |        
+ list-0    | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ list-1    | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ range-0   | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ range-1   | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ inv-0     | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ inv-1     | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-1  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-2  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-3  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-4  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-5  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-6  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-7  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-8  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+ server-9  | 123    |                               | 321    
+           |        | Process exited with status 65 |        
+                                                                      
+ localhost      ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ list-0         ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ list-1         ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ range-0        ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ range-1        ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ inv-0          ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ inv-1          ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-1       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-2       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-3       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-4       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-5       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-6       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-7       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-8       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+ server-9       ok=2   unreachable=0  ignored=1   failed=0  skipped=0 
+----------------------------------------------------------------------
+ Total          ok=32  unreachable=0  ignored=16  failed=0  skipped=0 
 

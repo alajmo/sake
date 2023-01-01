@@ -1,31 +1,31 @@
 Index: 12
 Name: Multiple commands
-Cmd: go run ../../main.go run info -q -t prod
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go run info -q -t prod
 WantErr: false
 
 ---
 
 TASKS 
 
- host       | OS | Kernel 
-------------+----+--------
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.4 | OS | kernel 
- 172.24.2.2 | OS | kernel 
- 172.24.2.3 | OS | kernel 
-                                                                      
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.4      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
- 172.24.2.3      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
-----------------------------------------------------------------------
- Total           ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ host     | OS | Kernel 
+----------+----+--------
+ list-0   | OS | kernel 
+ list-1   | OS | kernel 
+ range-0  | OS | kernel 
+ range-1  | OS | kernel 
+ inv-0    | OS | kernel 
+ inv-1    | OS | kernel 
+ server-1 | OS | kernel 
+ server-2 | OS | kernel 
+                                                                    
+ list-0        ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ list-1        ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ range-0       ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ range-1       ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ inv-0         ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ inv-1         ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-1      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+ server-2      ok=2   unreachable=0  ignored=0  failed=0  skipped=0 
+--------------------------------------------------------------------
+ Total         ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 

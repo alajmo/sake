@@ -32,9 +32,10 @@ specs:
 themes:
     default:
         text:
-            prefix: true
+            prefix: "{{ .Name }}"
             header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
         table:
+            prefix: "{{ .Name }}"
 
 tasks:
   ping:

@@ -254,8 +254,10 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 	// Check duplicate imports
 	importErr := checkDuplicateImports(cr.Imports)
 
+	duplicateObjects := checkDuplicateObjects(config)
+
 	// Concat errors
-	errString := concatErrors(importErr, cr, &importCycles, &taskCycles)
+	errString := concatErrors(importErr, duplicateObjects, cr, &importCycles, &taskCycles)
 
 	if errString != "" {
 		return config, &core.ConfigErr{Msg: errString}
@@ -264,8 +266,9 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 	return config, nil
 }
 
-func concatErrors(importErr string, cr ConfigResources, importCycles *[]NodeLink, taskCycles *[]TaskLink) string {
+func concatErrors(importErr string, duplicateObjects string, cr ConfigResources, importCycles *[]NodeLink, taskCycles *[]TaskLink) string {
 	errString := importErr
+	errString += duplicateObjects
 
 	if len(*importCycles) > 0 {
 		err := &FoundCyclicDependency{Cycles: *importCycles}
@@ -655,6 +658,116 @@ func checkDuplicateImports(imports []Import) string {
 
 	return errString
 }
+
+type FoundDuplicateObjects struct {
+	Name string
+	Type string
+	Values []string
+}
+
+func (c *FoundDuplicateObjects) Error() string {
+	var msg string
+
+	var errPrefix = text.FgRed.Sprintf("error")
+	var ptrPrefix = text.FgBlue.Sprintf("-->")
+	msg = fmt.Sprintf("%s: %s %s %s\n  %s", errPrefix, "found duplicate", c.Type, c.Name, ptrPrefix)
+	msg += fmt.Sprintf(" %s\n", c.Values[0])
+	for i, s := range c.Values[1:] {
+		if i < len(c.Values[1:])-1 {
+			msg += fmt.Sprintf("      %s\n", s)
+		} else {
+			msg += fmt.Sprintf("      %s", s)
+		}
+	}
+
+	return msg
+}
+
+func checkDuplicateObjects(config Config) string {
+	// Task
+	taskIDS := []string{}
+	visitedTasks := make(map[string]bool, 0)
+	tasks := make(map[string][]string, 0)
+	for _, t := range config.Tasks {
+		tasks[t.ID] = append(tasks[t.ID], t.context)
+		_, exists := visitedTasks[t.ID]
+		if !exists {
+			taskIDS = append(taskIDS, t.ID)
+			visitedTasks[t.ID] = true
+		}
+	}
+
+	var errString string
+	for _, id := range taskIDS {
+		if len(tasks[id]) > 1 {
+			err := &FoundDuplicateObjects{Name: id, Type: "task", Values: tasks[id]}
+			errString = fmt.Sprintf("%s%s\n\n", errString, err.Error())
+		}
+	}
+
+	// Spec
+	specIDS := []string{}
+	visitedSpecs := make(map[string]bool, 0)
+	specs := make(map[string][]string, 0)
+	for _, s := range config.Specs {
+		specs[s.Name] = append(specs[s.Name], s.context)
+		_, exists := visitedSpecs[s.Name]
+		if !exists {
+			specIDS = append(specIDS, s.Name)
+			visitedSpecs[s.Name] = true
+		}
+	}
+
+	for _, id := range specIDS {
+		if len(specs[id]) > 1 {
+			err := &FoundDuplicateObjects{Name: id, Type: "spec", Values: specs[id]}
+			errString = fmt.Sprintf("%s%s\n\n", errString, err.Error())
+		}
+	}
+
+	// Target
+	targetIDS := []string{}
+	visitedTargets := make(map[string]bool, 0)
+	targets := make(map[string][]string, 0)
+	for _, t := range config.Targets {
+		targets[t.Name] = append(targets[t.Name], t.context)
+		_, exists := visitedTargets[t.Name]
+		if !exists {
+			targetIDS = append(targetIDS, t.Name)
+			visitedTargets[t.Name] = true
+		}
+	}
+
+	for _, id := range targetIDS {
+		if len(targets[id]) > 1 {
+			err := &FoundDuplicateObjects{Name: id, Type: "target", Values: targets[id]}
+			errString = fmt.Sprintf("%s%s\n\n", errString, err.Error())
+		}
+	}
+
+	// Theme
+	themeIDS := []string{}
+	visitedThemes := make(map[string]bool, 0)
+	themes := make(map[string][]string, 0)
+	for _, t := range config.Themes {
+		themes[t.Name] = append(themes[t.Name], t.context)
+		_, exists := visitedThemes[t.Name]
+		if !exists {
+			themeIDS = append(themeIDS, t.Name)
+			visitedThemes[t.Name] = true
+		}
+	}
+
+	for _, id := range themeIDS {
+		if len(themes[id]) > 1 {
+			err := &FoundDuplicateObjects{Name: id, Type: "theme", Values: themes[id]}
+			errString = fmt.Sprintf("%s%s\n\n", errString, err.Error())
+		}
+	}
+
+	return errString
+}
+
 
 // Used for config imports
 type TaskResources struct {

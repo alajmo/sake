@@ -1,6 +1,6 @@
 Index: 3
 Name: List servers filter on list hosts
-Cmd: go run ../../main.go list servers list
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go list servers list
 WantErr: false
 
 ---

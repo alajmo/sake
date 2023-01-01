@@ -1,6 +1,6 @@
 Index: 7
 Name: Describe servers filter on list hosts
-Cmd: go run ../../main.go describe servers list
+Cmd: export SAKE_USER_CONFIG="$PWD/../user-config.yaml" && go run ../../main.go describe servers list
 WantErr: false
 
 ---
