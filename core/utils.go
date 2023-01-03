@@ -279,26 +279,26 @@ func SplitString(s, sep string) []string {
 }
 
 func GetFirstExistingFile(files ...string) string {
-    for _, file := range files {
+	for _, file := range files {
 		expandedFile := os.ExpandEnv(file)
-        expandedFile, err := expandTilde(expandedFile)
-        if err != nil {
-            continue
-        }
-        if _, err := os.Stat(expandedFile); err == nil {
-            return expandedFile
-        }
-    }
-    return ""
+		expandedFile, err := expandTilde(expandedFile)
+		if err != nil {
+			continue
+		}
+		if _, err := os.Stat(expandedFile); err == nil {
+			return expandedFile
+		}
+	}
+	return ""
 }
 
 func expandTilde(path string) (string, error) {
-    if path[0] != '~' {
-        return path, nil
-    }
-    usr, err := user.Current()
-    if err != nil {
-        return "", err
-    }
-    return filepath.Join(usr.HomeDir, path[1:]), nil
+	if path[0] != '~' {
+		return path, nil
+	}
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(usr.HomeDir, path[1:]), nil
 }

@@ -660,8 +660,8 @@ func checkDuplicateImports(imports []Import) string {
 }
 
 type FoundDuplicateObjects struct {
-	Name string
-	Type string
+	Name   string
+	Type   string
 	Values []string
 }
 
@@ -767,7 +767,6 @@ func checkDuplicateObjects(config Config) string {
 
 	return errString
 }
-
 
 // Used for config imports
 type TaskResources struct {

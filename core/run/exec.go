@@ -251,10 +251,10 @@ func (run *Run) RunTask(
 }
 
 type Signers struct {
-	agentSigners    []ssh.Signer
-	fingerprints    map[string]ssh.Signer     // fingerprint -> signer
-	identities      map[string]ssh.Signer     // identityFile -> signer
-	passwords       map[string]ssh.AuthMethod // password -> signer
+	agentSigners []ssh.Signer
+	fingerprints map[string]ssh.Signer     // fingerprint -> signer
+	identities   map[string]ssh.Signer     // identityFile -> signer
+	passwords    map[string]ssh.AuthMethod // password -> signer
 }
 
 // SetClients establishes connection to server
@@ -1010,14 +1010,13 @@ func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 	}
 
 	if len(publicKeys) > 0 {
-		return append(authMethods, ssh.PublicKeys(publicKeys...))
+		authMethods = append(authMethods, ssh.PublicKeys(publicKeys...))
 	}
 
 	if server.Password != nil {
 		pwSigner, found := signers.passwords[*server.Password]
 		if found {
 			authMethods = append(authMethods, pwSigner)
-			return authMethods
 		}
 	}
 
