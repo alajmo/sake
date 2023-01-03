@@ -475,9 +475,9 @@ func GetFingerprintPubKey(server dao.Server) (string, error) {
 	return ssh.FingerprintSHA256(pk), nil
 }
 
-func GetSigner(server dao.Server) (ssh.Signer, error) {
+func GetSigner(identityFile string) (ssh.Signer, error) {
 	var signer ssh.Signer
-	data, err := os.ReadFile(*server.IdentityFile)
+	data, err := os.ReadFile(identityFile)
 	if err != nil {
 		return nil, err
 	}
@@ -490,7 +490,7 @@ func GetSigner(server dao.Server) (ssh.Signer, error) {
 		switch e := err.(type) {
 		case *ssh.PassphraseMissingError:
 			// TODO: Let user enter password 3 times, then fail
-			fmt.Printf("Enter passphrase for %s: ", *server.IdentityFile)
+			fmt.Printf("Enter passphrase for %s: ", identityFile)
 			pass, err := term.ReadPassword(int(syscall.Stdin))
 			fmt.Println()
 			if err != nil {

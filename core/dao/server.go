@@ -238,25 +238,29 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
+		// Same for all servers
+		var password *string
+		if serverYAML.Password != nil {
+			password = serverYAML.Password
+		}
+
+		if identityFile == nil && password == nil {
+			idFile := core.GetFirstExistingFile("~/.ssh/id_rsa", "~/.ssh/id_ecdsa", "~/.ssh/id_dsa")
+			if idFile != "" {
+				identityFile = &idFile
+			}
+		}
+
 		var pubKeyFile *string
 		if identityFile != nil {
 			if _, err := os.Stat(*identityFile); errors.Is(err, os.ErrNotExist) {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
 				continue
 			}
-
 			if _, err := os.Stat(*identityFile + ".pub"); !errors.Is(err, os.ErrNotExist) {
 				str := *identityFile + ".pub"
 				pubKeyFile = &str
 			}
-		}
-
-		// Return error if file not found
-
-		// Same for all servers
-		var password *string
-		if serverYAML.Password != nil {
-			password = serverYAML.Password
 		}
 
 		switch hostDef {

@@ -251,10 +251,10 @@ func (run *Run) RunTask(
 }
 
 type Signers struct {
-	agentSigners []ssh.Signer
-	fingerprints map[string]ssh.Signer     // fingerprint -> signer
-	identities   map[string]ssh.Signer     // identityFile -> signer
-	passwords    map[string]ssh.AuthMethod // password -> signer
+	agentSigners    []ssh.Signer
+	fingerprints    map[string]ssh.Signer     // fingerprint -> signer
+	identities      map[string]ssh.Signer     // identityFile -> signer
+	passwords       map[string]ssh.AuthMethod // password -> signer
 }
 
 // SetClients establishes connection to server
@@ -985,7 +985,7 @@ func populateSigners(server dao.Server, signers *Signers) error {
 		return nil
 	} else {
 		// If identity key -> try first without passphrase, if passphrase required prompt password, return
-		signer, err := GetSigner(server)
+		signer, err := GetSigner(*server.IdentityFile)
 		if err != nil {
 			return err
 		}
@@ -996,25 +996,29 @@ func populateSigners(server dao.Server, signers *Signers) error {
 
 func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 	var authMethods []ssh.AuthMethod
+	var publicKeys []ssh.Signer
+
+	if len(signers.agentSigners) > 0 {
+		publicKeys = append(publicKeys, signers.agentSigners...)
+	}
 
 	if server.IdentityFile != nil {
-		v, found := signers.identities[*server.IdentityFile]
+		pubKey, found := signers.identities[*server.IdentityFile]
 		if found {
-			authMethods = append(authMethods, ssh.PublicKeys(v))
-			return authMethods
+			publicKeys = append(publicKeys, pubKey)
 		}
+	}
+
+	if len(publicKeys) > 0 {
+		return append(authMethods, ssh.PublicKeys(publicKeys...))
 	}
 
 	if server.Password != nil {
-		v, found := signers.passwords[*server.Password]
+		pwSigner, found := signers.passwords[*server.Password]
 		if found {
-			authMethods = append(authMethods, v)
+			authMethods = append(authMethods, pwSigner)
+			return authMethods
 		}
-	}
-
-	// No signers found, use agent signers
-	if len(signers.agentSigners) > 0 {
-		authMethods = append(authMethods, ssh.PublicKeys(signers.agentSigners...))
 	}
 
 	return authMethods

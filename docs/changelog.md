@@ -6,6 +6,7 @@
 
 - Add ability to modify prefix in text and table themes
 - Hide tasks from auto-completion via spec attribute `hidden: true`
+- Default to one of following identity files if no identity specified `~/.ssh/id_rsa`, `~/.ssh/id_ecdsa`, `~/.ssh/id_dsa`
 
 ### Fixes
 
