@@ -527,9 +527,23 @@ func (run *Run) tableWork(
 	// out, err := io.ReadAll(client.Stderr())
 	// dataMutex.Unlock()
 	if err != nil {
-		data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", out, err.Error())
+		switch r.Task.Spec.Print {
+		case "stdout":
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stdout )
+		case "stderr":
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", stderr, err.Error())
+		default:
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", out, err.Error())
+		}
 	} else {
-		data.Rows[t.rIndex].Columns[t.cIndex] = strings.TrimSuffix(out, "\n")
+		switch r.Task.Spec.Print {
+		case "stdout":
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stdout)
+		case "stderr":
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stderr)
+		default:
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", out)
+		}
 	}
 
 	reportData.Tasks[r.i].Rows[r.j].ReturnCode = errCode

@@ -189,18 +189,6 @@ specs:
     # any_errors_fatal: true
     max_fail_percentage: 60
 
-# themes:
-#   default:
-#     text:
-#       # prefix: '{{ .Index }}'
-#       # prefix: '{{ .Index }} @ {{ .Name }} @ {{ .Host }}:{{ .Port }} : {{ .User }}'
-#       # prefix: "{{ .Name }}"
-#       # prefix: "{{ .Host }}"
-#       # prefix: "{{ .Host }}:{{ .Port }}"
-#       header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
-#     table:
-#       prefix: "{{ .Host }}:{{ .Port }}"
-
 env:
   VERSION: v0.1.0
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
@@ -210,9 +198,15 @@ tasks:
     target: all
     # spec: host_pinned
     spec:
-      hidden: true
+      print: stdout
+      ignore_errors: true
     desc: ping server
-    cmd: echo pong
+    tasks:
+      - cmd: |
+          echo 333
+          kaka
+        register: kaka
+      - cmd: echo hej
 
   exit:
     # name: Exit

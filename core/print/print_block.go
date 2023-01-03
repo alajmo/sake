@@ -181,6 +181,7 @@ func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
 		output += printNumberField("batch_p", int(spec.BatchP), indent)
 		output += printNumberField("forks", int(spec.Forks), indent)
 		output += printStringField("output", spec.Output, indent)
+		output += printStringField("print", spec.Print, indent)
 		output += printNumberField("max_fail_percentage", int(spec.MaxFailPercentage), indent)
 		output += printBoolField("any_errors_fatal", spec.AnyErrorsFatal, indent)
 		output += printBoolField("ignore_errors", spec.IgnoreErrors, indent)

@@ -88,6 +88,7 @@ type RunFlags struct {
 	Batch             uint32
 	BatchP            uint8
 	Output            string
+	Print             string
 	Strategy          string
 }
 

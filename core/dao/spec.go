@@ -34,6 +34,7 @@ type Spec struct {
 	Verbose           bool     `yaml:"verbose"`
 	Confirm           bool     `yaml:"confirm"`
 	Step              bool     `yaml:"step"`
+	Print			  string   `yaml:"print"`
 
 	context     string // config path
 	contextLine int    // defined at
@@ -54,6 +55,8 @@ func (s Spec) GetValue(key string, _ int) string {
 		return s.Name
 	case "desc", "Desc":
 		return s.Desc
+	case "print", "Print":
+		return s.Print
 	case "describe", "Describe":
 		return strconv.FormatBool(s.Describe)
 	case "list_hosts":

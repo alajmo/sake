@@ -183,6 +183,16 @@ before the command gets executed in each directory.`,
 	})
 	core.CheckIfError(err)
 
+	cmd.Flags().StringVarP(&runFlags.Print, "print", "p", "", "set print [all|stdout|stderr]")
+	err = cmd.RegisterFlagCompletionFunc("print", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if *configErr != nil {
+			return []string{}, cobra.ShellCompDirectiveDefault
+		}
+		valid := []string{"all", "stdout", "stderr"}
+		return valid, cobra.ShellCompDirectiveDefault
+	})
+	core.CheckIfError(err)
+
 	cmd.Flags().BoolVar(&runFlags.OmitEmptyRows, "omit-empty-rows", false, "omit empty row for table output")
 	cmd.Flags().BoolVar(&runFlags.OmitEmptyColumns, "omit-empty-columns", false, "omit empty column for table output")
 	cmd.Flags().BoolVarP(&runFlags.Silent, "silent", "q", false, "omit showing loader when running tasks")

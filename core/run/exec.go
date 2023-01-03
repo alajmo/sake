@@ -35,6 +35,7 @@ type TaskContext struct {
 	client Client
 	dryRun bool
 	tty    bool
+	print  string
 
 	desc     string
 	name     string
@@ -711,6 +712,10 @@ func (run *Run) ParseTask(
 	// Update output property if user flag is provided
 	if runFlags.Output != "" {
 		run.Task.Spec.Output = runFlags.Output
+	}
+
+	if runFlags.Print != "" {
+		run.Task.Spec.Print = runFlags.Print
 	}
 
 	// Omit empty row
