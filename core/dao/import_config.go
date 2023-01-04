@@ -29,6 +29,7 @@ func (i *Import) GetContextLine() int {
 // Used for config imports
 type ConfigResources struct {
 	DisableVerifyHost *bool
+	DefaultTimeout    *uint
 	KnownHostsFile    *string
 	Shell             string
 	Imports           []Import
@@ -235,6 +236,12 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 		config.DisableVerifyHost = *cr.DisableVerifyHost
 	}
 
+	if cr.DefaultTimeout == nil {
+		config.DefaultTimeout = DEFAULT_TIMEOUT
+	} else {
+		config.DefaultTimeout = *cr.DefaultTimeout
+	}
+
 	if cr.Shell != "" {
 		config.Shell = cr.Shell
 	}
@@ -355,6 +362,10 @@ func parseConfigFile(path string, cr *ConfigResources) (ConfigYAML, error) {
 func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 	if c.Shell != "" {
 		cr.Shell = c.Shell
+	}
+
+	if c.DefaultTimeout != nil {
+		cr.DefaultTimeout = c.DefaultTimeout
 	}
 
 	if c.DisableVerifyHost != nil {
@@ -660,8 +671,8 @@ func checkDuplicateImports(imports []Import) string {
 }
 
 type FoundDuplicateObjects struct {
-	Name string
-	Type string
+	Name   string
+	Type   string
 	Values []string
 }
 
@@ -767,7 +778,6 @@ func checkDuplicateObjects(config Config) string {
 
 	return errString
 }
-
 
 // Used for config imports
 type TaskResources struct {

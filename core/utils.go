@@ -106,10 +106,10 @@ func FormatShell(shell string) string {
 		return shell + " -c"
 	} else if strings.Contains(shell, "sh") { // sh, /bin/sh
 		return shell + " -c"
-	} else if strings.Contains(shell, "node") { // node, /bin/node
-		return shell + " -e"
 	} else if strings.Contains(shell, "python") { // python, /bin/python
 		return shell + " -c"
+	} else if strings.Contains(shell, "node") { // node, /bin/node
+		return shell + " -e"
 	}
 
 	return shell
@@ -276,4 +276,29 @@ func SplitString(s, sep string) []string {
 		return []string{}
 	}
 	return strings.Split(s, sep)
+}
+
+func GetFirstExistingFile(files ...string) string {
+	for _, file := range files {
+		expandedFile := os.ExpandEnv(file)
+		expandedFile, err := expandTilde(expandedFile)
+		if err != nil {
+			continue
+		}
+		if _, err := os.Stat(expandedFile); err == nil {
+			return expandedFile
+		}
+	}
+	return ""
+}
+
+func expandTilde(path string) (string, error) {
+	if path[0] != '~' {
+		return path, nil
+	}
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(usr.HomeDir, path[1:]), nil
 }

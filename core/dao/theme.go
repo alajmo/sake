@@ -268,9 +268,9 @@ func (c *ConfigYAML) ParseThemesYAML() ([]Theme, []ResourceErrors[Theme]) {
 			themes[i].Text.PrefixColors = DefaultText.PrefixColors
 		}
 
-		if themes[i].Text.Prefix == "" {
-			themes[i].Text.Prefix = DefaultText.Prefix
-		}
+		// if themes[i].Text.Prefix == "" {
+		// 	themes[i].Text.Prefix = DefaultText.Prefix
+		// }
 
 		// TABLE
 		if themes[i].Table.Style == "connected-light" {

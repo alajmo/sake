@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2023-01-01T14:04:13CET" "v0.13.0" "Sake Manual" "sake"
+.TH "SAKE" "1" "2023-01-04T23:00:29CET" "v0.14.0" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a task runner for local and remote hosts
 
@@ -110,6 +110,9 @@ set spec
 .TP
 \fB-o, --output=""\fR
 set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+.TP
+\fB-p, --print=""\fR
+set print [all|stdout|stderr]
 .TP
 \fB--omit-empty-rows[=false]\fR
 omit empty row for table output
@@ -238,6 +241,9 @@ set spec
 .TP
 \fB-o, --output=""\fR
 set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+.TP
+\fB-p, --print=""\fR
+set print [all|stdout|stderr]
 .TP
 \fB--omit-empty-rows[=false]\fR
 omit empty row for table output
@@ -410,7 +416,7 @@ List specs.
 .RS
 .RS
 .TP
-\fB--headers=[spec,desc,describe,list_hosts,order,silent,strategy,batch,batch_p,forks,output,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report]\fR
+\fB--headers=[spec,desc,describe,list_hosts,order,silent,hidden,strategy,batch,batch_p,forks,output,print,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report,verbose,confirm,step]\fR
 set headers
 .TP
 \fB-o, --output="table"\fR
@@ -545,6 +551,9 @@ Below is a config file detailing all of the available options and their defaults
 
  # Set known_hosts_file path. Default is users ssh home directory [optional]
  # known_hosts_file: $HOME/.ssh/known_hosts
+
+ # Set timeout for ssh connections in seconds
+ # default_timeout: 20
 
  # Shell used for commands [optional]
  # If you use any other program than bash, zsh, sh, node, or python
@@ -748,6 +757,12 @@ Below is a config file detailing all of the available options and their defaults
 
      # Set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
      output: text
+
+     # Limit output [stdout|stderr|all]
+     print: all
+
+     # Hide task from auto-completion
+     hidden: false
 
      # Continue task execution on errors
      ignore_errors: true

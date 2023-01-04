@@ -29,7 +29,8 @@ servers:
       - 172.24.2.6
       - 172.24.2.7
     user: test
-    identity_file: ../keys/id_ed25519_pem_no
+    identity_file: ../keys/id_ed25519_pem
+    password: testing
     tags: [remote, pi, many, list, "hej san"]
     env:
       hello: world
@@ -188,30 +189,36 @@ specs:
     # any_errors_fatal: true
     max_fail_percentage: 60
 
-# themes:
-#   default:
-#     text:
-#       # prefix: '{{ .Index }}'
-#       # prefix: '{{ .Index }} @ {{ .Name }} @ {{ .Host }}:{{ .Port }} : {{ .User }}'
-#       # prefix: "{{ .Name }}"
-#       # prefix: "{{ .Host }}"
-#       # prefix: "{{ .Host }}:{{ .Port }}"
-#       header: '{{ .Style "TASK" "bold" }}{{ if ne .NumTasks 1 }} ({{ .Index }}/{{ .NumTasks }}){{end}}{{ if and .Name .Desc }} [{{.Style .Name "bold"}}: {{ .Desc }}] {{ else if .Name }} [{{ .Name }}] {{ else if .Desc }} [{{ .Desc }}] {{end}}'
-#     table:
-#       prefix: "{{ .Host }}:{{ .Port }}"
-
 env:
   VERSION: v0.1.0
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
+  hello:
+    name: Hi
+    cmd: echo PONG
+
+  kaka:
+    name: KAKA
+    desc: KAKA DESC
+    cmd: echo 23
+
   ping:
     target: all
     # spec: host_pinned
+    name: hej
+    desc: foo
     spec:
-      hidden: true
-    desc: ping server
-    cmd: echo pong
+      print: all
+      ignore_errors: true
+      # strategy: free
+    # desc: ping server
+    # cmd: echo pong
+    tty: true
+    tasks:
+      - cmd: |
+          ps -p $$
+      - cmd: pwd
 
   exit:
     # name: Exit

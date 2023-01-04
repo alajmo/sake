@@ -514,7 +514,7 @@ func (run *Run) textWork(
 		return err
 	}
 
-	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
+	shell := dao.SelectFirstNonEmpty((*r.Cmd).Shell, r.Task.Shell, r.Server.Shell, run.Config.Shell)
 	shell = core.FormatShell(shell)
 	workDir := getWorkDir((*r.Cmd).Local, (*r.Server).Local, (*r.Cmd).WorkDir, (*r.Server).WorkDir, (*r.Cmd).RootDir, (*r.Server).RootDir)
 	t := TaskContext{
@@ -530,6 +530,7 @@ func (run *Run) textWork(
 		name:     r.Cmd.Name,
 		numTasks: numTasks,
 		tty:      r.Cmd.TTY,
+		print:    r.Task.Spec.Print,
 	}
 
 	start := time.Now()
@@ -618,19 +619,28 @@ func runTextCmd(
 		var err error
 
 		if register == "" {
-			if prefix != "" {
-				_, err = io.Copy(os.Stdout, core.NewPrefixer(client.Stdout(i), prefix))
-			} else {
-				_, err = io.Copy(os.Stdout, client.Stdout(i))
+			if t.print != "stderr" {
+				if prefix != "" {
+					_, err = io.Copy(os.Stdout, core.NewPrefixer(client.Stdout(i), prefix))
+				} else {
+					_, err = io.Copy(os.Stdout, client.Stdout(i))
+				}
 			}
 		} else {
-			mw := io.MultiWriter(buf, bufOut)
-			r := io.TeeReader(client.Stdout(i), mw)
-			// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
-			if prefix != "" {
-				_, err = io.Copy(os.Stdout, core.NewPrefixer(r, prefix))
-			} else {
-				_, err = io.Copy(os.Stdout, r)
+			if t.print != "stderr" {
+				mw := io.MultiWriter(buf, bufOut)
+				r := io.TeeReader(client.Stdout(i), mw)
+				// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
+				if prefix != "" {
+					_, err = io.Copy(os.Stdout, core.NewPrefixer(r, prefix))
+				} else {
+					_, err = io.Copy(os.Stdout, r)
+				}
+			} else { // don't write to stdout
+				mw := io.MultiWriter(buf, bufOut)
+				r := io.TeeReader(client.Stdout(i), mw)
+				// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
+				_, err = io.Copy(mw, r)
 			}
 		}
 
@@ -646,18 +656,28 @@ func runTextCmd(
 		var err error
 
 		if register == "" {
-			if prefix != "" {
-				_, err = io.Copy(os.Stderr, core.NewPrefixer(client.Stderr(i), prefix))
-			} else {
-				_, err = io.Copy(os.Stderr, client.Stderr(i))
+			if t.print != "stdout" {
+				if prefix != "" {
+					_, err = io.Copy(os.Stderr, core.NewPrefixer(client.Stderr(i), prefix))
+				} else {
+					_, err = io.Copy(os.Stderr, client.Stderr(i))
+				}
 			}
 		} else {
-			mw := io.MultiWriter(buf, bufErr)
-			r := io.TeeReader(client.Stderr(i), mw)
-			if prefix != "" {
-				_, err = io.Copy(os.Stderr, core.NewPrefixer(r, prefix))
-			} else {
-				_, err = io.Copy(os.Stderr, r)
+			if t.print != "stdout" {
+				mw := io.MultiWriter(buf, bufErr)
+				r := io.TeeReader(client.Stderr(i), mw)
+				// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
+				if prefix != "" {
+					_, err = io.Copy(os.Stderr, core.NewPrefixer(r, prefix))
+				} else {
+					_, err = io.Copy(os.Stderr, r)
+				}
+			} else { // don't write to stdout
+				mw := io.MultiWriter(buf, bufErr)
+				r := io.TeeReader(client.Stderr(i), mw)
+				// TODO: Refactor to NewReader: https://pkg.go.dev/golang.org/x/text/transform?utm_source=godoc#NewReader
+				_, err = io.Copy(mw, r)
 			}
 		}
 
@@ -670,10 +690,12 @@ func runTextCmd(
 	wg.Wait()
 
 	if err := t.client.Wait(i); err != nil {
-		if prefix != "" {
-			fmt.Printf("%s%s\n", prefix, err.Error())
-		} else {
-			fmt.Printf("%s\n", err.Error())
+		if t.print != "stdout" {
+			if prefix != "" {
+				fmt.Printf("%s%s\n", prefix, err.Error())
+			} else {
+				fmt.Printf("%s\n", err.Error())
+			}
 		}
 
 		return buf.String(), bufOut.String(), bufErr.String(), err

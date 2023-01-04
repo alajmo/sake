@@ -7,18 +7,21 @@ WantErr: false
 name: default
 strategy: linear
 batch: 1
+forks: 10000
 output: table
 report: recap
 
 --
 
 name: table
+forks: 10000
 output: table
 report: recap
 
 --
 
 name: text
+forks: 10000
 output: text
 report: recap
 
@@ -26,6 +29,7 @@ report: recap
 
 name: info
 strategy: free
+forks: 10000
 output: table
 ignore_errors: true
 ignore_unreachable: true

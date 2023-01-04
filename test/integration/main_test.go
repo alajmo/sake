@@ -81,6 +81,7 @@ func TestMain(m *testing.M) {
 }
 
 func Run(t *testing.T, tt TemplateTest) {
+	var err error
 	log.SetFlags(0)
 	// var goldenFile = filepath.Join(tmpDir, tt.Golden)
 	if _, err := os.Stat(tt.Golden); os.IsNotExist(err) {
@@ -89,12 +90,6 @@ func Run(t *testing.T, tt TemplateTest) {
 			t.Fatalf("could not create golden file at %s: %v", tt.Golden, err)
 		}
 	}
-
-	t.Cleanup(func() {
-		if *clean {
-			clearTmp()
-		}
-	})
 
 	// Run test command
 	cmd := exec.Command("bash", "-c", tt.TestCmd)
@@ -159,4 +154,10 @@ func Run(t *testing.T, tt TemplateTest) {
 			t.Fatalf("Error: %v", err)
 		}
 	}
+
+	t.Cleanup(func() {
+		if *clean && err == nil {
+			clearGolden(tt.Golden)
+		}
+	})
 }

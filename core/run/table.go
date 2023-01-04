@@ -495,7 +495,7 @@ func (run *Run) tableWork(
 		client = run.RemoteClients[r.Server.Name]
 	}
 
-	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
+	shell := dao.SelectFirstNonEmpty((*r.Cmd).Shell, r.Task.Shell, r.Server.Shell, run.Config.Shell)
 	shell = core.FormatShell(shell)
 	workDir := getWorkDir((*r.Cmd).Local, (*r.Server).Local, (*r.Cmd).WorkDir, (*r.Server).WorkDir, (*r.Cmd).RootDir, (*r.Server).RootDir)
 	t := TaskContext{
@@ -507,7 +507,7 @@ func (run *Run) tableWork(
 		workDir: workDir,
 		shell:   shell,
 		cmd:     r.Cmd.Cmd,
-		tty:     r.Task.TTY,
+		tty:     r.Cmd.TTY,
 	}
 
 	start := time.Now()
@@ -527,9 +527,23 @@ func (run *Run) tableWork(
 	// out, err := io.ReadAll(client.Stderr())
 	// dataMutex.Unlock()
 	if err != nil {
-		data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", out, err.Error())
+		switch r.Task.Spec.Print {
+		case "stdout":
+			data.Rows[t.rIndex].Columns[t.cIndex] = stdout
+		case "stderr":
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", stderr, err.Error())
+		default:
+			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", out, err.Error())
+		}
 	} else {
-		data.Rows[t.rIndex].Columns[t.cIndex] = strings.TrimSuffix(out, "\n")
+		switch r.Task.Spec.Print {
+		case "stdout":
+			data.Rows[t.rIndex].Columns[t.cIndex] = stdout
+		case "stderr":
+			data.Rows[t.rIndex].Columns[t.cIndex] = stderr
+		default:
+			data.Rows[t.rIndex].Columns[t.cIndex] = strings.TrimSuffix(out, "\n")
+		}
 	}
 
 	reportData.Tasks[r.i].Rows[r.j].ReturnCode = errCode

@@ -8,7 +8,7 @@ import (
 	"github.com/alajmo/sake/core/print"
 )
 
-var specHeaders = []string{"spec", "desc", "describe", "list_hosts", "order", "silent", "hidden", "strategy", "batch", "batch_p", "forks", "output", "any_errors_fatal", "max_fail_percentage", "ignore_errors", "ignore_unreachable", "omit_empty", "report", "verbose", "confirm", "step"}
+var specHeaders = []string{"spec", "desc", "describe", "list_hosts", "order", "silent", "hidden", "strategy", "batch", "batch_p", "forks", "output", "print", "any_errors_fatal", "max_fail_percentage", "ignore_errors", "ignore_unreachable", "omit_empty", "report", "verbose", "confirm", "step"}
 
 func listSpecsCmd(config *dao.Config, configErr *error, listFlags *core.ListFlags) *cobra.Command {
 	var specFlags core.SpecFlags

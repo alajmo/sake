@@ -24,7 +24,6 @@ import (
 )
 
 var ResetColor = "\033[0m"
-var DefaultTimeout = 20 * time.Second
 
 // Client is a wrapper over the SSH connection/sessions.
 type SSHClient struct {
@@ -66,9 +65,10 @@ func (c *SSHClient) Connect(
 	dialer SSHDialFunc,
 	disableVerifyHost bool,
 	knownHostsFile string,
+	defaultTimeout uint,
 	mu *sync.Mutex,
 ) *ErrConnect {
-	return c.ConnectWith(dialer, disableVerifyHost, knownHostsFile, mu)
+	return c.ConnectWith(dialer, disableVerifyHost, knownHostsFile, defaultTimeout, mu)
 }
 
 // ConnectWith creates a SSH connection to a specified host. It will use dialer to establish the
@@ -77,6 +77,7 @@ func (c *SSHClient) ConnectWith(
 	dialer SSHDialFunc,
 	disableVerifyHost bool,
 	knownHostsFile string,
+	defaultTimeout uint,
 	mu *sync.Mutex,
 ) *ErrConnect {
 	if c.connOpened {
@@ -100,7 +101,7 @@ func (c *SSHClient) ConnectWith(
 			}
 			return nil
 		},
-		Timeout: DefaultTimeout,
+		Timeout: time.Duration(defaultTimeout) * time.Second,
 	}
 
 	var err error
@@ -475,9 +476,9 @@ func GetFingerprintPubKey(server dao.Server) (string, error) {
 	return ssh.FingerprintSHA256(pk), nil
 }
 
-func GetSigner(server dao.Server) (ssh.Signer, error) {
+func GetSigner(identityFile string) (ssh.Signer, error) {
 	var signer ssh.Signer
-	data, err := os.ReadFile(*server.IdentityFile)
+	data, err := os.ReadFile(identityFile)
 	if err != nil {
 		return nil, err
 	}
@@ -490,7 +491,7 @@ func GetSigner(server dao.Server) (ssh.Signer, error) {
 		switch e := err.(type) {
 		case *ssh.PassphraseMissingError:
 			// TODO: Let user enter password 3 times, then fail
-			fmt.Printf("Enter passphrase for %s: ", *server.IdentityFile)
+			fmt.Printf("Enter passphrase for %s: ", identityFile)
 			pass, err := term.ReadPassword(int(syscall.Stdin))
 			fmt.Println()
 			if err != nil {

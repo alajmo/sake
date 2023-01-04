@@ -43,14 +43,19 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 }
 
 func ExecTTY(cmd string, envs []string) error {
-	execBin, err := exec.LookPath("bash")
+	shell := "bash"
+	foundShell, found := os.LookupEnv("SHELL")
+	if found {
+		shell = foundShell
+	}
+
+	execBin, err := exec.LookPath(shell)
 	if err != nil {
 		return err
 	}
 
 	userEnv := append(os.Environ(), envs...)
-	// TODO: default shell
-	err = unix.Exec(execBin, []string{"bash", "-c", cmd}, userEnv)
+	err = unix.Exec(execBin, []string{shell, "-c", cmd}, userEnv)
 	if err != nil {
 		return err
 	}

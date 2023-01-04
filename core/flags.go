@@ -88,6 +88,7 @@ type RunFlags struct {
 	Batch             uint32
 	BatchP            uint8
 	Output            string
+	Print             string
 	Strategy          string
 }
 
@@ -107,6 +108,7 @@ type SetRunFlags struct {
 	IgnoreUnreachable bool
 	Order             bool
 	Report            bool
+	Forks             bool
 	Batch             bool
 	BatchP            bool
 	Servers           bool
@@ -117,4 +119,5 @@ type SetRunFlags struct {
 	Verbose           bool
 	Confirm           bool
 	Step              bool
+	MaxFailPercentage bool
 }

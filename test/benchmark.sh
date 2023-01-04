@@ -20,6 +20,7 @@ function parse_options() {
 }
 
 function __main__() {
+  export SAKE_USER_CONFIG="$PWD/user-config.yaml"
   parse_options $@
     if [[ "$SAVE" ]]; then
         hyperfine -N --runs 10 '../dist/sake run ping -s server-9' > ./profiles/ping-no-key

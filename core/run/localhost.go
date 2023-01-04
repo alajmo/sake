@@ -28,7 +28,7 @@ type LocalSession struct {
 	running bool
 }
 
-func (c *LocalhostClient) Connect(dialer SSHDialFunc, _ bool, _ string, mu *sync.Mutex) *ErrConnect {
+func (c *LocalhostClient) Connect(dialer SSHDialFunc, _ bool, _ string, _ uint, mu *sync.Mutex) *ErrConnect {
 	return nil
 }
 

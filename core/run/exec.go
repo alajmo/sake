@@ -35,6 +35,7 @@ type TaskContext struct {
 	client Client
 	dryRun bool
 	tty    bool
+	print  string
 
 	desc     string
 	name     string
@@ -322,18 +323,18 @@ func (run *Run) SetClients(
 				AuthMethod: authMethod,
 			}
 			// Connect to bastion
-			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}
 
 			// Connect to server through bastion
-			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}
 		} else {
-			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}
@@ -641,15 +642,15 @@ func (run *Run) ParseTask(
 		run.Task.Spec = *spec
 	}
 
-	if run.Task.Spec.Forks == 0 {
-		run.Task.Spec.Forks = 10000
+	if setRunFlags.Forks {
+		run.Task.Spec.Forks = runFlags.Forks
 	}
 
-	if setRunFlags.Batch {
+	if setRunFlags.Batch { // Flag
 		run.Task.Spec.Batch = runFlags.Batch
-	} else if setRunFlags.BatchP {
+	} else if setRunFlags.BatchP { // Flag
 		tot := float64(len(run.Servers))
-		percentage := float64(run.Task.Spec.BatchP) / float64(100)
+		percentage := float64(runFlags.BatchP) / float64(100)
 		batch := uint32(math.Floor(percentage * tot))
 
 		if batch > 0 {
@@ -657,8 +658,7 @@ func (run *Run) ParseTask(
 		} else {
 			run.Task.Spec.Batch = 1
 		}
-	} else {
-		// Batch or BatchP must be > 0
+	} else { // Spec
 		if run.Task.Spec.Batch == 0 && run.Task.Spec.BatchP == 0 {
 			run.Task.Spec.Batch = uint32(len(run.Servers))
 		} else if run.Task.Spec.BatchP > 0 {
@@ -711,6 +711,10 @@ func (run *Run) ParseTask(
 	// Update output property if user flag is provided
 	if runFlags.Output != "" {
 		run.Task.Spec.Output = runFlags.Output
+	}
+
+	if runFlags.Print != "" {
+		run.Task.Spec.Print = runFlags.Print
 	}
 
 	// Omit empty row
@@ -985,7 +989,7 @@ func populateSigners(server dao.Server, signers *Signers) error {
 		return nil
 	} else {
 		// If identity key -> try first without passphrase, if passphrase required prompt password, return
-		signer, err := GetSigner(server)
+		signer, err := GetSigner(*server.IdentityFile)
 		if err != nil {
 			return err
 		}
@@ -996,25 +1000,28 @@ func populateSigners(server dao.Server, signers *Signers) error {
 
 func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 	var authMethods []ssh.AuthMethod
+	var publicKeys []ssh.Signer
+
+	if len(signers.agentSigners) > 0 {
+		publicKeys = append(publicKeys, signers.agentSigners...)
+	}
 
 	if server.IdentityFile != nil {
-		v, found := signers.identities[*server.IdentityFile]
+		pubKey, found := signers.identities[*server.IdentityFile]
 		if found {
-			authMethods = append(authMethods, ssh.PublicKeys(v))
-			return authMethods
+			publicKeys = append(publicKeys, pubKey)
 		}
+	}
+
+	if len(publicKeys) > 0 {
+		authMethods = append(authMethods, ssh.PublicKeys(publicKeys...))
 	}
 
 	if server.Password != nil {
-		v, found := signers.passwords[*server.Password]
+		pwSigner, found := signers.passwords[*server.Password]
 		if found {
-			authMethods = append(authMethods, v)
+			authMethods = append(authMethods, pwSigner)
 		}
-	}
-
-	// No signers found, use agent signers
-	if len(signers.agentSigners) > 0 {
-		authMethods = append(authMethods, ssh.PublicKeys(signers.agentSigners...))
 	}
 
 	return authMethods

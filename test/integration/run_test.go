@@ -1,9 +1,12 @@
 package integration
 
 import (
+	"flag"
 	"fmt"
 	"testing"
 )
+
+var par = flag.Bool("par", true, "run tests in parallel")
 
 var cases = []TemplateTest{
 	// list tags
@@ -256,10 +259,14 @@ var cases = []TemplateTest{
 
 func TestRunCmd(t *testing.T) {
 	for i := range cases {
+		i := i
 		cases[i].Golden = fmt.Sprintf("golden-%d.stdout", i)
 		cases[i].Index = i
-
 		t.Run(cases[i].TestName, func(t *testing.T) {
+			if *par {
+				t.Parallel()
+			}
+
 			Run(t, cases[i])
 		})
 	}

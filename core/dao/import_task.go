@@ -126,6 +126,11 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 					name = tn.TaskRefs[i].Name
 				}
 
+				desc := childTask.Desc
+				if tn.TaskRefs[i].Desc != "" {
+					desc = tn.TaskRefs[i].Desc
+				}
+
 				local := childTask.Local
 				if tn.TaskRefs[i].Local != nil {
 					local = *tn.TaskRefs[i].Local
@@ -150,7 +155,7 @@ func dfsTask(task *Task, tn *TaskNode, tm map[string]*TaskNode, cycles *[]TaskLi
 				t := TaskCmd{
 					ID:           childTask.ID,
 					Name:         name,
-					Desc:         childTask.Desc,
+					Desc:         desc,
 					RootDir:      filepath.Dir(task.context),
 					WorkDir:      workDir,
 					Shell:        shell,

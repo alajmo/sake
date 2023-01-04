@@ -97,6 +97,7 @@ func (c *ConfigYAML) DecodeTarget(name string, targetYAML yaml.Node) (*Target, [
 		targetErrors = append(targetErrors, &core.LimitMultipleDef{Name: name})
 	}
 
+	// Min limit-p 1
 	if target.LimitP > 100 {
 		targetErrors = append(targetErrors, &core.InvalidPercentInput{Name: "limit_p"})
 	}

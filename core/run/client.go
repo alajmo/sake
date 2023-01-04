@@ -7,7 +7,7 @@ import (
 )
 
 type Client interface {
-	Connect(SSHDialFunc, bool, string, *sync.Mutex) *ErrConnect
+	Connect(SSHDialFunc, bool, string, uint, *sync.Mutex) *ErrConnect
 	Run(int, []string, string, string, string) error
 	Wait(int) error
 	Close(int) error

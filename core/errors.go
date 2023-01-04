@@ -138,12 +138,28 @@ func (c *BatchMultipleDef) Error() string {
 	return "can only define one of the following for spec: batch, batch_p"
 }
 
+type ZeroNotAllowed struct {
+	Name string
+}
+
+func (c *ZeroNotAllowed) Error() string {
+	return fmt.Sprintf("invalid value for %s, cannot be 0", c.Name)
+}
+
 type InvalidPercentInput struct {
 	Name string
 }
 
 func (c *InvalidPercentInput) Error() string {
 	return fmt.Sprintf("percentage can only be between 0 and 100 for property `%s`", c.Name)
+}
+
+type InvalidPercentInput2 struct {
+	Name string
+}
+
+func (c *InvalidPercentInput2) Error() string {
+	return fmt.Sprintf("percentage can only be between 1 and 100 for property `%s`", c.Name)
 }
 
 type RegisterInvalidName struct {
