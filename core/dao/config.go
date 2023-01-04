@@ -3,7 +3,6 @@ package dao
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -18,6 +17,8 @@ var (
 	ACCEPTABLE_FILE_NAMES = []string{"sake.yaml", "sake.yml", ".sake.yaml", ".sake.yml"}
 
 	DEFAULT_SHELL = "bash -c"
+
+	DEFAULT_TIMEOUT = uint(20)
 
 	DEFAULT_THEME = Theme{
 		Name:  "default",
@@ -43,26 +44,29 @@ var (
 		ListHosts:         false,
 		Order:             "inventory",
 		Silent:            false,
+		Hidden:            false,
 		Strategy:          "linear",
-		Output:            "text",
+		Batch:             0,
+		BatchP:            0,
 		Forks:             10000,
+		Output:            "text",
 		MaxFailPercentage: 0,
 		AnyErrorsFatal:    true,
 		IgnoreErrors:      false,
 		IgnoreUnreachable: false,
 		OmitEmptyRows:     false,
 		OmitEmptyColumns:  false,
-		Batch:             0,
-		BatchP:            0,
 		Report:            []string{"recap"},
 		Verbose:           false,
 		Confirm:           false,
 		Step:              false,
+		Print:             "all",
 	}
 )
 
 type Config struct {
 	SSHConfigFile     *string
+	DefaultTimeout    uint
 	DisableVerifyHost bool
 	KnownHostsFile    string
 	Shell             string
@@ -83,6 +87,7 @@ type ConfigYAML struct {
 
 	// Intermediate
 	DisableVerifyHost *bool     `yaml:"disable_verify_host"`
+	DefaultTimeout    *uint     `yaml:"default_timeout"`
 	KnownHostsFile    *string   `yaml:"known_hosts_file"`
 	Shell             string    `yaml:"shell"`
 	Import            yaml.Node `yaml:"import"`
@@ -290,21 +295,7 @@ func openEditor(path string, lineNr int) error {
 		args = []string{path}
 	}
 
-	editorBin, err := exec.LookPath(editor)
-	if err != nil {
-		return err
-	}
-
-	cmd := exec.Command(editorBin, args...)
-	cmd.Env = os.Environ()
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
+	ExecEditor(editor, args, os.Environ())
 
 	return nil
 }

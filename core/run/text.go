@@ -514,7 +514,7 @@ func (run *Run) textWork(
 		return err
 	}
 
-	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
+	shell := dao.SelectFirstNonEmpty((*r.Cmd).Shell, r.Task.Shell, r.Server.Shell, run.Config.Shell)
 	shell = core.FormatShell(shell)
 	workDir := getWorkDir((*r.Cmd).Local, (*r.Server).Local, (*r.Cmd).WorkDir, (*r.Server).WorkDir, (*r.Cmd).RootDir, (*r.Server).RootDir)
 	t := TaskContext{

@@ -26,6 +26,9 @@ disable_verify_host: false
 # Set known_hosts_file path. Default is users ssh home directory [optional]
 # known_hosts_file: $HOME/.ssh/known_hosts
 
+# Set timeout for ssh connections in seconds
+# default_timeout: 20
+
 # Shell used for commands [optional]
 # If you use any other program than bash, zsh, sh, node, or python
 # then you have to provide the command flag if you want the command-line string evaluted

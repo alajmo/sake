@@ -8,12 +8,14 @@
 - Hide tasks from auto-completion via spec attribute `hidden: true`
 - Add print option to limit output to stdout|stderr
 - Default to one of following identity files if no identity specified `~/.ssh/id_rsa`, `~/.ssh/id_ecdsa`, `~/.ssh/id_dsa`
+- Add ability to modify default timeout for ssh connections
 
 ### Fixes
 
 - [BREAKING CHANGE]: No more duplicate tasks, specs, targets, and themes
 - Small fix when user config is specified but not found
 - Fix some small validation issues with batch and batch-p
+- A bunch of smaller fixes
 
 ## 0.13.0
 

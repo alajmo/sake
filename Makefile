@@ -39,7 +39,7 @@ unit-test:
 	go test -v ./core/...
 
 integration-test:
-	go test -v ./test/integration/... -clean -par=false
+	go test -v ./test/integration/... -clean
 
 update-golden-files:
 	go test ./test/integration/... -update

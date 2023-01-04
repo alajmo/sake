@@ -323,18 +323,18 @@ func (run *Run) SetClients(
 				AuthMethod: authMethod,
 			}
 			// Connect to bastion
-			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}
 
 			// Connect to server through bastion
-			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}
 		} else {
-			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, mu); err != nil {
+			if err := remote.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return
 			}

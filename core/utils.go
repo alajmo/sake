@@ -106,10 +106,10 @@ func FormatShell(shell string) string {
 		return shell + " -c"
 	} else if strings.Contains(shell, "sh") { // sh, /bin/sh
 		return shell + " -c"
-	} else if strings.Contains(shell, "node") { // node, /bin/node
-		return shell + " -e"
 	} else if strings.Contains(shell, "python") { // python, /bin/python
 		return shell + " -c"
+	} else if strings.Contains(shell, "node") { // node, /bin/node
+		return shell + " -e"
 	}
 
 	return shell

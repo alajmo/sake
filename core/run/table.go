@@ -495,7 +495,7 @@ func (run *Run) tableWork(
 		client = run.RemoteClients[r.Server.Name]
 	}
 
-	shell := dao.SelectFirstNonEmpty(r.Task.Shell, r.Server.Shell, run.Config.Shell)
+	shell := dao.SelectFirstNonEmpty((*r.Cmd).Shell, r.Task.Shell, r.Server.Shell, run.Config.Shell)
 	shell = core.FormatShell(shell)
 	workDir := getWorkDir((*r.Cmd).Local, (*r.Server).Local, (*r.Cmd).WorkDir, (*r.Server).WorkDir, (*r.Cmd).RootDir, (*r.Server).RootDir)
 	t := TaskContext{
@@ -507,7 +507,7 @@ func (run *Run) tableWork(
 		workDir: workDir,
 		shell:   shell,
 		cmd:     r.Cmd.Cmd,
-		tty:     r.Task.TTY,
+		tty:     r.Cmd.TTY,
 	}
 
 	start := time.Now()

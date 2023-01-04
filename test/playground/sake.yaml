@@ -194,21 +194,31 @@ env:
   DATE: $(date -u +"%Y-%m-%dT%H:%M:%S%Z")
 
 tasks:
+  hello:
+    name: Hi
+    cmd: echo PONG
+
+  kaka:
+    name: KAKA
+    desc: KAKA DESC
+    cmd: echo 23
+
   ping:
     target: all
     # spec: host_pinned
+    name: hej
+    desc: foo
     spec:
-      print: stdout
+      print: all
       ignore_errors: true
-      strategy: free
-    desc: ping server
+      # strategy: free
+    # desc: ping server
     # cmd: echo pong
+    tty: true
     tasks:
       - cmd: |
-          echo 333
-          kaka
-        register: kaka
-      - cmd: echo hej
+          ps -p $$
+      - cmd: pwd
 
   exit:
     # name: Exit

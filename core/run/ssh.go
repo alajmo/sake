@@ -24,7 +24,6 @@ import (
 )
 
 var ResetColor = "\033[0m"
-var DefaultTimeout = 20 * time.Second
 
 // Client is a wrapper over the SSH connection/sessions.
 type SSHClient struct {
@@ -66,9 +65,10 @@ func (c *SSHClient) Connect(
 	dialer SSHDialFunc,
 	disableVerifyHost bool,
 	knownHostsFile string,
+	defaultTimeout uint,
 	mu *sync.Mutex,
 ) *ErrConnect {
-	return c.ConnectWith(dialer, disableVerifyHost, knownHostsFile, mu)
+	return c.ConnectWith(dialer, disableVerifyHost, knownHostsFile, defaultTimeout, mu)
 }
 
 // ConnectWith creates a SSH connection to a specified host. It will use dialer to establish the
@@ -77,6 +77,7 @@ func (c *SSHClient) ConnectWith(
 	dialer SSHDialFunc,
 	disableVerifyHost bool,
 	knownHostsFile string,
+	defaultTimeout uint,
 	mu *sync.Mutex,
 ) *ErrConnect {
 	if c.connOpened {
@@ -100,7 +101,7 @@ func (c *SSHClient) ConnectWith(
 			}
 			return nil
 		},
-		Timeout: DefaultTimeout,
+		Timeout: time.Duration(defaultTimeout) * time.Second,
 	}
 
 	var err error
