@@ -3,6 +3,7 @@ package dao
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -295,7 +296,18 @@ func openEditor(path string, lineNr int) error {
 		args = []string{path}
 	}
 
-	err := ExecEditor(editor, args, os.Environ())
+	editorBin, err := exec.LookPath(editor)
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(editorBin, args...)
+	cmd.Env = os.Environ()
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
 	if err != nil {
 		return err
 	}
