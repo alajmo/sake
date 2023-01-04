@@ -295,7 +295,10 @@ func openEditor(path string, lineNr int) error {
 		args = []string{path}
 	}
 
-	ExecEditor(editor, args, os.Environ())
+	err := ExecEditor(editor, args, os.Environ())
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
