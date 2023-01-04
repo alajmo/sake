@@ -45,7 +45,7 @@ update-golden-files:
 	go test ./test/integration/... -update
 
 mock-ssh:
-	cd ./test && docker-compose up --build
+	cd ./test && docker-compose up
 
 mock-performance-ssh:
 	cd ./test && docker-compose -f docker-compose-performance.yaml up
