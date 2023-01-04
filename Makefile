@@ -2,7 +2,7 @@ NAME    := sake
 PACKAGE := github.com/alajmo/$(NAME)
 DATE    := $(shell date +%FT%T%Z)
 GIT     := $(shell [ -d .git ] && git rev-parse --short HEAD)
-VERSION := v0.13.0
+VERSION := v0.14.0
 
 default: build
 

@@ -21,15 +21,17 @@ var tmpDir = "../tmp/"
 
 var debug = flag.Bool("debug", false, "debug")
 var update = flag.Bool("update", false, "update golden files")
+var parallel = flag.Bool("parallel", false, "run tests in parallel")
 var clean = flag.Bool("clean", false, "Clean tmp directory after run")
 
 type TemplateTest struct {
-	TestName string
-	TestCmd  string
-	Golden   string
-	Ignore   bool
-	WantErr  bool
-	Index    int
+	TestName  string
+	TestCmd   string
+	Golden    string
+	GoldenDir string
+	Ignore    bool
+	WantErr   bool
+	Index     int
 }
 
 func (tt TemplateTest) GoldenOutput(output []byte) []byte {
@@ -81,6 +83,18 @@ func TestMain(m *testing.M) {
 }
 
 func Run(t *testing.T, tt TemplateTest) {
+	// t.Parallel()
+
+	// Create ./test/tmp if it doesn't exist
+	err := os.MkdirAll(tt.GoldenDir, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	err = os.Chdir(tt.GoldenDir)
+	if err != nil {
+		panic(err)
+	}
+
 	log.SetFlags(0)
 	// var goldenFile = filepath.Join(tmpDir, tt.Golden)
 	if _, err := os.Stat(tt.Golden); os.IsNotExist(err) {
@@ -119,7 +133,7 @@ func Run(t *testing.T, tt TemplateTest) {
 		t.Fatalf("could not write %s: %v", tt.Golden, err)
 	}
 
-	goldenFilePath := filepath.Join("../integration/golden", tt.Golden)
+	goldenFilePath := filepath.Join("../../integration/golden", tt.Golden)
 	if *update {
 		clearGolden(goldenFilePath)
 

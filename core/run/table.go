@@ -529,7 +529,7 @@ func (run *Run) tableWork(
 	if err != nil {
 		switch r.Task.Spec.Print {
 		case "stdout":
-			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stdout )
+			data.Rows[t.rIndex].Columns[t.cIndex] = stdout
 		case "stderr":
 			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s\n%s", stderr, err.Error())
 		default:
@@ -538,11 +538,11 @@ func (run *Run) tableWork(
 	} else {
 		switch r.Task.Spec.Print {
 		case "stdout":
-			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stdout)
+			data.Rows[t.rIndex].Columns[t.cIndex] = stdout
 		case "stderr":
-			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", stderr)
+			data.Rows[t.rIndex].Columns[t.cIndex] = stderr
 		default:
-			data.Rows[t.rIndex].Columns[t.cIndex] = fmt.Sprintf("%s", out)
+			data.Rows[t.rIndex].Columns[t.cIndex] = strings.TrimSuffix(out, "\n")
 		}
 	}
 

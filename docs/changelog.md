@@ -1,12 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.14.0
 
 ### Features
 
 - Add ability to modify prefix in text and table themes
 - Hide tasks from auto-completion via spec attribute `hidden: true`
 - Default to one of following identity files if no identity specified `~/.ssh/id_rsa`, `~/.ssh/id_ecdsa`, `~/.ssh/id_dsa`
+- Add print option to limit output to stdout|stderr
 
 ### Fixes
 

@@ -201,6 +201,7 @@ tasks:
       print: stdout
       ignore_errors: true
     desc: ping server
+    # cmd: echo pong
     tasks:
       - cmd: |
           echo 333

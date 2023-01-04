@@ -34,7 +34,7 @@ type Spec struct {
 	Verbose           bool     `yaml:"verbose"`
 	Confirm           bool     `yaml:"confirm"`
 	Step              bool     `yaml:"step"`
-	Print			  string   `yaml:"print"`
+	Print             string   `yaml:"print"`
 
 	context     string // config path
 	contextLine int    // defined at
