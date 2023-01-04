@@ -97,6 +97,7 @@ run <task> [flags]
       --ignore-errors               continue task execution on errors
   -J, --spec string                 set spec
   -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+  -p, --print string                set print [all|stdout|stderr]
       --omit-empty-rows             omit empty row for table output
       --omit-empty-columns          omit empty column for table output
   -q, --silent                      omit showing loader when running tasks
@@ -167,6 +168,7 @@ exec <command> [flags]
       --ignore-errors               continue task execution on errors
   -J, --spec string                 set spec
   -o, --output string               set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
+  -p, --print string                set print [all|stdout|stderr]
       --omit-empty-rows             omit empty row for table output
       --omit-empty-columns          omit empty column for table output
   -q, --silent                      omit showing loader when running tasks
@@ -514,7 +516,7 @@ list specs [specs] [flags]
 ### Options
 
 ```
-      --headers strings   set headers (default [spec,desc,describe,list_hosts,order,silent,strategy,batch,batch_p,forks,output,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report])
+      --headers strings   set headers (default [spec,desc,describe,list_hosts,order,silent,hidden,strategy,batch,batch_p,forks,output,print,any_errors_fatal,max_fail_percentage,ignore_errors,ignore_unreachable,omit_empty,report,verbose,confirm,step])
   -h, --help              help for specs
 ```
 

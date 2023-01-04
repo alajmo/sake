@@ -200,6 +200,7 @@ tasks:
     spec:
       print: stdout
       ignore_errors: true
+      strategy: free
     desc: ping server
     # cmd: echo pong
     tasks:

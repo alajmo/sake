@@ -6,13 +6,14 @@
 
 - Add ability to modify prefix in text and table themes
 - Hide tasks from auto-completion via spec attribute `hidden: true`
-- Default to one of following identity files if no identity specified `~/.ssh/id_rsa`, `~/.ssh/id_ecdsa`, `~/.ssh/id_dsa`
 - Add print option to limit output to stdout|stderr
+- Default to one of following identity files if no identity specified `~/.ssh/id_rsa`, `~/.ssh/id_ecdsa`, `~/.ssh/id_dsa`
 
 ### Fixes
 
 - [BREAKING CHANGE]: No more duplicate tasks, specs, targets, and themes
 - Small fix when user config is specified but not found
+- Fix some small validation issues with batch and batch-p
 
 ## 0.13.0
 

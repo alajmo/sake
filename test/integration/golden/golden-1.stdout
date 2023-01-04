@@ -7,8 +7,8 @@ WantErr: false
 
  spec    | describe | list_hosts | silent | hidden | strategy | batch | batch_p | forks | output | any_errors_fatal | max_fail_percentage | ignore_errors | ignore_unreachable | report | verbose | confirm | step  
 ---------+----------+------------+--------+--------+----------+-------+---------+-------+--------+------------------+---------------------+---------------+--------------------+--------+---------+---------+-------
- default | false    | false      | false  | false  | linear   | 1     | 0       | 0     | table  | false            | 0                   | false         | false              | recap  | false   | false   | false 
- table   | false    | false      | false  | false  |          | 0     | 0       | 0     | table  | false            | 0                   | false         | false              | recap  | false   | false   | false 
- text    | false    | false      | false  | false  |          | 0     | 0       | 0     | text   | false            | 0                   | false         | false              | recap  | false   | false   | false 
- info    | false    | false      | false  | false  | free     | 0     | 0       | 0     | table  | false            | 0                   | true          | true               | recap  | false   | false   | false 
+ default | false    | false      | false  | false  | linear   | 1     | 0       | 10000 | table  | false            | 0                   | false         | false              | recap  | false   | false   | false 
+ table   | false    | false      | false  | false  |          | 0     | 0       | 10000 | table  | false            | 0                   | false         | false              | recap  | false   | false   | false 
+ text    | false    | false      | false  | false  |          | 0     | 0       | 10000 | text   | false            | 0                   | false         | false              | recap  | false   | false   | false 
+ info    | false    | false      | false  | false  | free     | 0     | 0       | 10000 | table  | false            | 0                   | true          | true               | recap  | false   | false   | false 
 

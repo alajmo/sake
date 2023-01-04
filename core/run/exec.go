@@ -642,15 +642,15 @@ func (run *Run) ParseTask(
 		run.Task.Spec = *spec
 	}
 
-	if run.Task.Spec.Forks == 0 {
-		run.Task.Spec.Forks = 10000
+	if setRunFlags.Forks {
+		run.Task.Spec.Forks = runFlags.Forks
 	}
 
-	if setRunFlags.Batch {
+	if setRunFlags.Batch { // Flag
 		run.Task.Spec.Batch = runFlags.Batch
-	} else if setRunFlags.BatchP {
+	} else if setRunFlags.BatchP { // Flag
 		tot := float64(len(run.Servers))
-		percentage := float64(run.Task.Spec.BatchP) / float64(100)
+		percentage := float64(runFlags.BatchP) / float64(100)
 		batch := uint32(math.Floor(percentage * tot))
 
 		if batch > 0 {
@@ -658,8 +658,7 @@ func (run *Run) ParseTask(
 		} else {
 			run.Task.Spec.Batch = 1
 		}
-	} else {
-		// Batch or BatchP must be > 0
+	} else { // Spec
 		if run.Task.Spec.Batch == 0 && run.Task.Spec.BatchP == 0 {
 			run.Task.Spec.Batch = uint32(len(run.Servers))
 		} else if run.Task.Spec.BatchP > 0 {

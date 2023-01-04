@@ -39,13 +39,13 @@ unit-test:
 	go test -v ./core/...
 
 integration-test:
-	go test -v ./test/integration/... -clean
+	go test -v ./test/integration/... -clean -par=false
 
 update-golden-files:
 	go test ./test/integration/... -update
 
 mock-ssh:
-	cd ./test && docker-compose up
+	cd ./test && docker-compose up --build
 
 mock-performance-ssh:
 	cd ./test && docker-compose -f docker-compose-performance.yaml up

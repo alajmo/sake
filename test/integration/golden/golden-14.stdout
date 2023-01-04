@@ -11,6 +11,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 target:
@@ -27,6 +28,7 @@ local: true
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 target:
@@ -42,6 +44,7 @@ desc: print host
 theme: default
 spec:
     strategy: free
+    forks: 10000
     output: table
     ignore_errors: true
     ignore_unreachable: true
@@ -59,6 +62,7 @@ desc: print hostname
 theme: default
 spec:
     strategy: free
+    forks: 10000
     output: table
     ignore_errors: true
     ignore_unreachable: true
@@ -76,6 +80,7 @@ desc: print OS
 theme: default
 spec:
     strategy: free
+    forks: 10000
     output: table
     ignore_errors: true
     ignore_unreachable: true
@@ -93,6 +98,7 @@ desc: Print kernel version
 theme: default
 spec:
     strategy: free
+    forks: 10000
     output: table
     ignore_errors: true
     ignore_unreachable: true
@@ -109,6 +115,7 @@ desc: get remote info
 theme: default
 spec:
     strategy: free
+    forks: 10000
     output: table
     ignore_errors: true
     ignore_unreachable: true
@@ -124,6 +131,7 @@ tasks:
 name: env
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -143,6 +151,7 @@ cmd:
 name: env-ref
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -163,6 +172,7 @@ cmd:
 name: env-complex
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -179,6 +189,7 @@ tasks:
 name: env-default
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -197,6 +208,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -209,6 +221,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -222,6 +235,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -234,6 +248,7 @@ tasks:
 name: d
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -255,6 +270,7 @@ work_dir: /usr
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 cmd: 
@@ -268,6 +284,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -279,6 +296,7 @@ name: work-dir-1
 theme: default
 work_dir: /home
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -294,6 +312,7 @@ tasks:
 name: work-dir-2
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -309,6 +328,7 @@ tasks:
 name: work-dir-3
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -324,6 +344,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -336,6 +357,7 @@ theme: default
 spec:
     strategy: linear
     batch: 1
+    forks: 10000
     output: table
     report: recap
 tasks: 
@@ -349,6 +371,7 @@ tasks:
 name: fatal
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -361,6 +384,7 @@ cmd:
 name: fatal-true
 theme: default
 spec:
+    forks: 10000
     output: table
     any_errors_fatal: true
     report: recap
@@ -374,6 +398,7 @@ cmd:
 name: errors
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -388,6 +413,7 @@ tasks:
 name: errors-true
 theme: default
 spec:
+    forks: 10000
     output: table
     ignore_errors: true
     report: recap
@@ -403,6 +429,7 @@ tasks:
 name: unreachable
 theme: default
 spec:
+    forks: 10000
     report: recap
 target:
     all: true
@@ -414,6 +441,7 @@ cmd:
 name: unreachable-true
 theme: default
 spec:
+    forks: 10000
     ignore_unreachable: true
     report: recap
 target:
@@ -426,6 +454,7 @@ cmd:
 name: empty
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 target:
@@ -441,6 +470,7 @@ cmd:
 name: empty-true
 theme: default
 spec:
+    forks: 10000
     output: table
     omit_empty_rows: true
     report: recap
@@ -457,6 +487,7 @@ cmd:
 name: output
 theme: default
 spec:
+    forks: 10000
     output: table
     report: recap
 tasks: 

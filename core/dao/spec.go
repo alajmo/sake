@@ -139,6 +139,14 @@ func (c *ConfigYAML) DecodeSpec(name string, specYAML yaml.Node) (*Spec, []error
 		specErrors = append(specErrors, &core.MultipleFailSet{Name: name})
 	}
 
+	if spec.MaxFailPercentage > 100 {
+		specErrors = append(specErrors, &core.InvalidPercentInput{Name: "max_fail_percentage"})
+	}
+
+	if spec.Forks == 0 {
+		spec.Forks = 10000
+	}
+
 	if spec.BatchP > 0 && spec.Batch > 0 {
 		specErrors = append(specErrors, &core.BatchMultipleDef{Name: name})
 	}

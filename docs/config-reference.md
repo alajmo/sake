@@ -229,6 +229,12 @@ specs:
    # Set task output [text|table|table-2|table-3|table-4|html|markdown|json|csv|none]
    output: text
 
+   # Limit output [stdout|stderr|all]
+   print: all
+
+   # Hide task from auto-completion
+   hidden: false
+
    # Continue task execution on errors
    ignore_errors: true
 

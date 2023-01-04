@@ -38,6 +38,7 @@ before the command gets executed in each directory.`,
 			setRunFlags.All = cmd.Flags().Changed("all")
 			setRunFlags.AnyErrorsFatal = cmd.Flags().Changed("any-errors-fatal")
 			setRunFlags.Attach = cmd.Flags().Changed("attach")
+			setRunFlags.Forks = cmd.Flags().Changed("forks")
 			setRunFlags.Batch = cmd.Flags().Changed("batch")
 			setRunFlags.BatchP = cmd.Flags().Changed("batch-p")
 			setRunFlags.IgnoreErrors = cmd.Flags().Changed("ignore-error")
@@ -59,29 +60,62 @@ before the command gets executed in each directory.`,
 			setRunFlags.TTY = cmd.Flags().Changed("tty")
 			setRunFlags.Tags = cmd.Flags().Changed("tags")
 			setRunFlags.Verbose = cmd.Flags().Changed("verbose")
+			setRunFlags.MaxFailPercentage = cmd.Flags().Changed("max-fail-percentage")
 
-			maxFailPercentage, err := cmd.Flags().GetUint8("max-fail-percentage")
-			core.CheckIfError(err)
-			runFlags.MaxFailPercentage = maxFailPercentage
+			if setRunFlags.MaxFailPercentage {
+				maxFailPercentage, err := cmd.Flags().GetUint8("max-fail-percentage")
+				core.CheckIfError(err)
+				if maxFailPercentage > 100 {
+					core.Exit(&core.InvalidPercentInput{Name: "max-fail-percentage"})
+				}
+				runFlags.MaxFailPercentage = maxFailPercentage
+			}
 
-			forks, err := cmd.Flags().GetUint32("forks")
-			core.CheckIfError(err)
-			runFlags.Forks = forks
+			if setRunFlags.Forks {
+				forks, err := cmd.Flags().GetUint32("forks")
+				core.CheckIfError(err)
+				if forks == 0 {
+					core.Exit(&core.ZeroNotAllowed{Name: "forks"})
+				}
+				runFlags.Forks = forks
+			}
 
-			batch, err := cmd.Flags().GetUint32("batch")
-			core.CheckIfError(err)
-			batchp, err := cmd.Flags().GetUint8("batch-p")
-			core.CheckIfError(err)
-			runFlags.Batch = batch
-			runFlags.BatchP = batchp
+			if setRunFlags.Batch {
+				batch, err := cmd.Flags().GetUint32("batch")
+				core.CheckIfError(err)
+				if batch == 0 {
+					core.Exit(&core.ZeroNotAllowed{Name: "batch"})
+				}
+				runFlags.Batch = batch
+			}
 
-			limit, err := cmd.Flags().GetUint32("limit")
-			core.CheckIfError(err)
-			limitp, err := cmd.Flags().GetUint8("limit-p")
-			core.CheckIfError(err)
+			if setRunFlags.BatchP {
+				batchp, err := cmd.Flags().GetUint8("batch-p")
+				core.CheckIfError(err)
+				if batchp == 0 || batchp > 100 {
+					core.Exit(&core.InvalidPercentInput2{Name: "batch-p"})
+				}
+				runFlags.BatchP = batchp
+			}
 
-			runFlags.Limit = limit
-			runFlags.LimitP = limitp
+			if setRunFlags.Limit {
+				limit, err := cmd.Flags().GetUint32("limit")
+				core.CheckIfError(err)
+				if limit == 0 {
+					core.Exit(&core.ZeroNotAllowed{Name: "limit"})
+				}
+				runFlags.Limit = limit
+			}
+
+			// Min-limit-p 1
+			if setRunFlags.LimitP {
+				limitp, err := cmd.Flags().GetUint8("limit-p")
+				core.CheckIfError(err)
+				if limitp == 0 || limitp > 100 {
+					core.Exit(&core.InvalidPercentInput2{Name: "limit-p"})
+				}
+				runFlags.LimitP = limitp
+			}
 
 			execTask(args, config, &runFlags, &setRunFlags)
 		},
