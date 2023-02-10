@@ -15,6 +15,16 @@
   brew install sake
   ```
 
+* via MacPorts
+  ```sh
+  sudo port install sake
+  ```
+
+* via Arch
+  ```sh
+  pacman -S sake
+  ```
+
 * via Go
   ```bash
   go install github.com/alajmo/sake@latest

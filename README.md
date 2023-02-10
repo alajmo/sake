@@ -69,7 +69,17 @@ Interested in managing your git repositories in a similar way? Check out [mani](
   brew install sake
   ```
 
-* Via GO install
+* via MacPorts
+  ```sh
+  sudo port install sake
+  ```
+
+* via Arch
+  ```sh
+  pacman -S sake
+  ```
+
+* Via Go
     ```sh
     go install github.com/alajmo/sake@latest
     ```
