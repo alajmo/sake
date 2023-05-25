@@ -36,7 +36,7 @@ func (c *LocalhostClient) Run(i int, env []string, workDir string, shell string,
 	var err error
 
 	if c.Sessions[i].running {
-		return fmt.Errorf("Command already running")
+		return fmt.Errorf("command already running")
 	}
 
 	userEnv := os.Environ()
@@ -85,7 +85,7 @@ func (c *LocalhostClient) Run(i int, env []string, workDir string, shell string,
 
 func (c *LocalhostClient) Wait(i int) error {
 	if !c.Sessions[i].running {
-		return fmt.Errorf("Trying to wait on stopped command")
+		return fmt.Errorf("trying to wait on stopped command")
 	}
 	err := c.Sessions[i].cmd.Wait()
 	c.Sessions[i].running = false

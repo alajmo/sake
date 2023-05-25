@@ -6,10 +6,9 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/alajmo/sake/core"
-	"github.com/alajmo/sake/core/dao"
 )
 
-func checkCmd(config *dao.Config, configErr *error) *cobra.Command {
+func checkCmd(configErr *error) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "check",
 		Short: "Validate config",

@@ -74,7 +74,7 @@ func init() {
 		execCmd(&config, &configErr),
 		sshCmd(&config, &configErr),
 		editCmd(&config, &configErr),
-		checkCmd(&config, &configErr),
+		checkCmd(&configErr),
 		completionCmd(),
 		genCmd(),
 	)

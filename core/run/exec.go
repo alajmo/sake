@@ -97,7 +97,7 @@ func (run *Run) RunTask(
 			return err
 		}
 
-		return &core.ExecError{Err: errors.New("Parse Error"), ExitCode: 4}
+		return &core.ExecError{Err: errors.New("parse Error"), ExitCode: 4}
 	}
 
 	// Remote + Local clients
@@ -266,7 +266,7 @@ func (run *Run) SetClients(
 	clientCh chan Client,
 	errCh chan ErrConnect,
 ) ([]ErrConnect, error) {
-	createLocalClient := func(strategy string, numTasks int, server dao.Server, wg *sync.WaitGroup, mu *sync.Mutex) {
+	createLocalClient := func(strategy string, numTasks int, server dao.Server, wg *sync.WaitGroup) {
 		defer wg.Done()
 
 		local := &LocalhostClient{
@@ -374,7 +374,7 @@ func (run *Run) SetClients(
 	// TODO: Dont create remote clients if task is set to local
 	for _, server := range run.Servers {
 		wg.Add(1)
-		go createLocalClient(task.Spec.Strategy, len(task.Tasks), server, &wg, &mu)
+		go createLocalClient(task.Spec.Strategy, len(task.Tasks), server, &wg)
 		if !server.Local {
 			wg.Add(1)
 			authMethods := getAuthMethod(server, &signers)
@@ -856,12 +856,12 @@ func getWorkDir(
 	cmdDir string,
 	serverDir string,
 ) string {
-	cmdWDTrue := false
+	var cmdWDTrue bool
 	if cmdWD != "" {
 		cmdWDTrue = true
 	}
 
-	serverWDTrue := false
+	var serverWDTrue bool
 	if serverWD != "" {
 		serverWDTrue = true
 	}

@@ -311,10 +311,6 @@ func (run *Run) linearText(
 					r ServerTask,
 					register map[string]string,
 					errCh chan<- error,
-					failedHosts chan<- struct {
-						string
-						bool
-					},
 					wg *sync.WaitGroup,
 				) {
 					defer wg.Done()
@@ -333,7 +329,7 @@ func (run *Run) linearText(
 							bool
 						}{r.Server.Name, false}
 					}
-				}(r, register[r.Server.Name], errCh, failedHostsCh, &wg)
+				}(r, register[r.Server.Name], errCh, &wg)
 			}
 
 			wg.Wait()
@@ -535,7 +531,7 @@ func (run *Run) textWork(
 
 	start := time.Now()
 	var wg sync.WaitGroup
-	out, stdout, stderr, err := runTextCmd(si, t, r.Task.Theme.Text, prefix, r.Cmd.Register, &wg)
+	out, stdout, stderr, err := runTextCmd(si, t, prefix, r.Cmd.Register, &wg)
 	reportData.Tasks[r.i].Rows[r.j].Duration = time.Since(start)
 
 	// Add exit code to reportData
@@ -590,7 +586,6 @@ func (run *Run) textWork(
 func runTextCmd(
 	i int,
 	t TaskContext,
-	textStyle dao.Text,
 	prefix string,
 	register string,
 	wg *sync.WaitGroup,
@@ -881,7 +876,7 @@ func getPrefixer(client Client, i int, prefixMaxLen int, ts dao.Text, batch int)
 	return prefix, nil
 }
 
-func getPrefixLength(client Client, i int, prefixMaxLen int, ts dao.Text) (int, error) {
+func getPrefixLength(client Client, i int, ts dao.Text) (int, error) {
 	if ts.Prefix == "" {
 		return 0, nil
 	}
@@ -905,10 +900,10 @@ func getPrefixLength(client Client, i int, prefixMaxLen int, ts dao.Text) (int, 
 }
 
 func calcMaxPrefixLength(clients map[string]Client, task dao.Task) (int, error) {
-	var prefixMaxLen int = 0
+	var prefixMaxLen = 0
 	i := 0
 	for _, c := range clients {
-		prefixLen, err := getPrefixLength(c, i, prefixMaxLen, task.Theme.Text)
+		prefixLen, err := getPrefixLength(c, i, task.Theme.Text)
 		if err != nil {
 			return 0, err
 		}

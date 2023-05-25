@@ -95,7 +95,7 @@ func PrintTaskBlock(tasks []dao.Task) {
 
 		fmt.Print(output)
 
-		PrintSpecBlocks([]dao.Spec{task.Spec}, true, false)
+		PrintSpecBlocks([]dao.Spec{task.Spec}, true)
 		PrintTargetBlocks([]dao.Target{task.Target}, true)
 
 		if task.Envs != nil {
@@ -163,7 +163,7 @@ func PrintTargetBlocks(targets []dao.Target, indent bool) {
 	}
 }
 
-func PrintSpecBlocks(specs []dao.Spec, indent bool, name bool) {
+func PrintSpecBlocks(specs []dao.Spec, indent bool) {
 	if len(specs) == 0 {
 		return
 	}

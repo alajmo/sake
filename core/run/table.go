@@ -313,10 +313,6 @@ func (run *Run) linear(
 					r ServerTask,
 					register map[string]string,
 					errCh chan<- error,
-					failedHosts chan<- struct {
-						string
-						bool
-					},
 					wg *sync.WaitGroup,
 				) {
 					defer wg.Done()
@@ -335,7 +331,7 @@ func (run *Run) linear(
 							bool
 						}{r.Server.Name, false}
 					}
-				}(r, register[r.Server.Name], errCh, failedHostsCh, &wg)
+				}(r, register[r.Server.Name], errCh, &wg)
 			}
 
 			wg.Wait()

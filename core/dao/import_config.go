@@ -332,7 +332,7 @@ func concatErrors(importErr string, duplicateObjects string, cr ConfigResources,
 	return errString
 }
 
-func parseConfigFile(path string, cr *ConfigResources) (ConfigYAML, error) {
+func parseConfigFile(path string) (ConfigYAML, error) {
 	var configYAML ConfigYAML
 
 	absPath, err := filepath.Abs(path)
@@ -580,7 +580,7 @@ func dfsImport(n *Node, m map[string]*Node, cycles *[]NodeLink, cr *ConfigResour
 		}
 
 		// Import raw configYAML
-		configYAML, err := parseConfigFile(nc.Path, cr)
+		configYAML, err := parseConfigFile(nc.Path)
 
 		// Error belongs to config file trying to import the new config
 		if err != nil {

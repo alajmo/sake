@@ -181,7 +181,7 @@ func (c *SSHClient) Run(i int, env []string, workDir string, shell string, cmdSt
 // It closes the SSH session.
 func (c *SSHClient) Wait(i int) error {
 	if !c.Sessions[i].running {
-		return fmt.Errorf("Trying to wait on stopped session")
+		return fmt.Errorf("trying to wait on stopped session")
 	}
 
 	err := c.Sessions[i].sess.Wait()
@@ -199,7 +199,7 @@ func (c *SSHClient) Close(i int) error {
 		c.Sessions[i].sessOpened = false
 	}
 	if !c.connOpened {
-		return fmt.Errorf("Trying to close the already closed connection")
+		return fmt.Errorf("trying to close the already closed connection")
 	}
 
 	err := c.conn.Close()
@@ -280,11 +280,11 @@ func VerifyHost(knownHostsFile string, mu *sync.Mutex, host string, remote net.A
 
 	// Host not found, ask user to check if he trust the host public key
 	if !askIsHostTrusted(host, key, mu) {
-		return errors.New("you typed no, aborted!")
+		return errors.New("you typed no, aborted")
 	}
 
 	// Add the new host to known hosts file
-	return AddKnownHost(host, remote, key, knownHostsFile)
+	return AddKnownHost(host, key, knownHostsFile)
 }
 
 func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile string) (found bool, err error) {
@@ -339,7 +339,7 @@ func askIsHostTrusted(host string, key ssh.PublicKey, mu *sync.Mutex) bool {
 	return strings.ToLower(strings.TrimSpace(a)) == "yes" || strings.ToLower(strings.TrimSpace(a)) == "y"
 }
 
-func AddKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile string) (err error) {
+func AddKnownHost(host string, key ssh.PublicKey, knownFile string) (err error) {
 	f, err := os.OpenFile(knownFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
 	if err != nil {
 		return err

@@ -63,5 +63,5 @@ func describeSpecs(
 		specs = config.Specs
 	}
 
-	print.PrintSpecBlocks(specs, false, true)
+	print.PrintSpecBlocks(specs, false)
 }
