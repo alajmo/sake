@@ -25,6 +25,11 @@
   pacman -S sake
   ```
 
+* via pkg
+  ```sh
+  pkg install sake
+  ```
+
 * via Go
   ```bash
   go install github.com/alajmo/sake@latest
