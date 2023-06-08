@@ -24,6 +24,6 @@ WantErr: false
  server-7    | 172.24.2.8         | remote,demo,reachable       | server-7                   
  server-8    | 172.24.2.9         | remote,demo,reachable       | server-8                   
  server-9    | 2001:3984:3989::10 | remote,demo,reachable       | server-9                   
- server-10   | 172.24.2.10        | remote                      | server-10 desc             
- server-11   | 172.24.2.11        | remote                      | server-11 desc             
+ server-10   | 172.24.2.10        | remote,bastion              | server-10 desc             
+ server-11   | 172.24.2.11        | remote,bastion              | server-11 desc             
 

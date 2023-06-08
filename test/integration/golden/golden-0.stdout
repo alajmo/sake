@@ -59,4 +59,6 @@ WantErr: false
              | server-9    
  sandbox     | server-5    
              | server-6    
+ bastion     | server-10   
+             | server-11   
 

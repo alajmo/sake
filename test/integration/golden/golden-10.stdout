@@ -189,7 +189,7 @@ host: 172.24.2.10
 port: 22
 bastion: 172.24.2.98
 work_dir: /tmp
-tags: remote
+tags: remote, bastion
 
 --
 
@@ -199,5 +199,5 @@ user: test
 host: 172.24.2.11
 port: 22
 work_dir: /tmp
-tags: remote
+tags: remote, bastion
 
