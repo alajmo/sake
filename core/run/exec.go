@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/ssh"
 	"math"
 	"os"
 	"os/signal"
@@ -12,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"golang.org/x/crypto/ssh"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -313,22 +314,37 @@ func (run *Run) SetClients(
 			remote.Sessions = append(remote.Sessions, SSHSession{})
 		}
 
-		var bastion *SSHClient
-		if server.BastionHost != "" {
-			bastion = &SSHClient{
-				Name:       "Bastion",
-				Host:       server.BastionHost,
-				User:       server.BastionUser,
-				Port:       server.BastionPort,
-				AuthMethod: authMethod,
-			}
-			// Connect to bastion
-			if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
-				errCh <- *err
-				return
-			}
+		if len(server.Bastions) > 0 {
+			var bastion *SSHClient
+			for _, bastionServer := range server.Bastions {
+				if bastion == nil {
+					bastion = &SSHClient{
+						Name:       "Bastion",
+						Host:       bastionServer.Host,
+						User:       bastionServer.User,
+						Port:       bastionServer.Port,
+						AuthMethod: authMethod,
+					}
+					if err := bastion.Connect(ssh.Dial, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
+						errCh <- *err
+						return
+					}
+				} else {
+					bastt := &SSHClient{
+						Name:       "Bastion",
+						Host:       bastionServer.Host,
+						User:       bastionServer.User,
+						Port:       bastionServer.Port,
+						AuthMethod: authMethod,
+					}
 
-			// Connect to server through bastion
+					if err := bastt.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
+						errCh <- *err
+						return
+					}
+					bastion = bastt
+				}
+			}
 			if err := remote.Connect(bastion.DialThrough, run.Config.DisableVerifyHost, run.Config.KnownHostsFile, run.Config.DefaultTimeout, mu); err != nil {
 				errCh <- *err
 				return

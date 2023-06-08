@@ -84,6 +84,24 @@ servers:
     password: testing
     tags: [remote, pi, pihole]
 
+  server-5:
+    desc: server-5 desc
+    host: test@172.24.2.10:22
+    bastion: test@172.24.2.98:22
+    identity_file: ../keys/id_ed25519_pem
+    password: testing
+    tags: [remote]
+    work_dir: /tmp
+
+  server-6:
+    desc: server-6 desc
+    host: test@172.24.2.11:22
+    bastions: ['test@172.24.2.98:22', 'test@172.24.2.99:22']
+    identity_file: ../keys/id_ed25519_pem
+    password: testing
+    tags: [remote]
+    work_dir: /tmp
+
   ip6-1:
     desc: ip6-1 desc
     host: test@[2001:3984:3989::10]:22
@@ -213,12 +231,12 @@ tasks:
       ignore_errors: true
       # strategy: free
     # desc: ping server
-    # cmd: echo pong
-    tty: true
-    tasks:
-      - cmd: |
-          ps -p $$
-      - cmd: pwd
+    cmd: echo pong
+    # tty: true
+    # tasks:
+    #   - cmd: |
+    #       ps -p $$
+    #   - cmd: pwd
 
   exit:
     # name: Exit

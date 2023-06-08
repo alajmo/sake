@@ -103,7 +103,6 @@ desc: server-1
 user: test
 host: 172.24.2.2
 port: 22
-bastion: 172.24.2.99
 work_dir: /home/test
 tags: remote, prod, reachable
 env: 
