@@ -180,3 +180,24 @@ host: 2001:3984:3989::10
 port: 22
 tags: remote, demo, reachable
 
+--
+
+name: server-10
+desc: server-10 desc
+user: test
+host: 172.24.2.10
+port: 22
+bastion: 172.24.2.98
+work_dir: /tmp
+tags: remote
+
+--
+
+name: server-11
+desc: server-11 desc
+user: test
+host: 172.24.2.11
+port: 22
+work_dir: /tmp
+tags: remote
+

@@ -116,40 +116,20 @@ servers:
     password: test
     tags: [remote, demo, reachable]
 
-  server-10: # Only accesible via bastion-1
-    container_name: 'server-10'
-    build: .
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
-        echo 'PubkeyAuthentication no' >> /etc/ssh/sshd_config
-        echo 'Match Address 172.24.2.98' >> /etc/ssh/sshd_config
-        echo '    PasswordAuthentication yes' >> /etc/ssh/sshd_config
-        echo '    PubkeyAuthentication yes' >> /etc/ssh/sshd_config
-        /usr/sbin/sshd -D
-    ports:
-      - '222:22'
-    networks:
-      sake:
-        ipv4_address: 172.24.2.10
+  server-10:
+    desc: server-10 desc
+    host: test@172.24.2.10:22
+    bastion: test@172.24.2.98:22
+    identity_file: keys/id_rsa_rfc
+    password: testing
+    tags: [remote]
+    work_dir: /tmp
 
-  server-11: # Only accesible via bastion-2
-    container_name: 'server-11'
-    build: .
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
-        echo 'PubkeyAuthentication no' >> /etc/ssh/sshd_config
-        echo 'Match Address 172.24.2.99' >> /etc/ssh/sshd_config
-        echo '    PasswordAuthentication yes' >> /etc/ssh/sshd_config
-        echo '    PubkeyAuthentication yes' >> /etc/ssh/sshd_config
-        /usr/sbin/sshd -D
-    ports:
-      - '223:22'
-    networks:
-      sake:
-        ipv4_address: 172.24.2.11
+  server-11:
+    desc: server-11 desc
+    host: test@172.24.2.11:22
+    bastions: ['test@172.24.2.98:22', 'test@172.24.2.99:22']
+    identity_file: keys/id_rsa_rfc
+    password: testing
+    tags: [remote]
+    work_dir: /tmp

@@ -38,6 +38,8 @@ WantErr: false
              | server-7    
              | server-8    
              | server-9    
+             | server-10   
+             | server-11   
  prod        | list-0      
              | list-1      
              | range-0     

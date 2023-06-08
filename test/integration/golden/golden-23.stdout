@@ -25,6 +25,8 @@ TASKS
  172.24.2.8         | pong 
  172.24.2.9         | pong 
  2001:3984:3989::10 | pong 
+ 172.24.2.10        | pong 
+ 172.24.2.11        | pong 
                                                                               
  localhost               ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.2              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
@@ -42,6 +44,8 @@ TASKS
  172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.10             ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ 172.24.2.11             ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
- Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
+ Total                   ok=18  unreachable=0  ignored=0  failed=0  skipped=0 
 
