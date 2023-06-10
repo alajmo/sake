@@ -18,7 +18,7 @@ tags: local, reachable
 
 name: unreachable
 user: test
-host: unreachable.lan
+host: 172.24.2.50
 port: 22
 tags: unreachable
 

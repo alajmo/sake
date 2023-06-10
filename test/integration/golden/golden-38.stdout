@@ -8,9 +8,9 @@ WantErr: false
                                                                                               
  Unreachable Hosts                                                                            
                                                                                               
- server      | host            | user | port | error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+ server      | host        | user | port | error                                              
+-------------+-------------+------+------+----------------------------------------------------
+ unreachable | 172.24.2.50 | test | 22   | dial tcp 172.24.2.50:22: connect: no route to host 
 
 
 TASKS 
@@ -54,7 +54,7 @@ TASKS
  2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.10             ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.11             ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- unreachable.lan         ok=0   unreachable=1  ignored=0  failed=0  skipped=0 
+ 172.24.2.50             ok=0   unreachable=1  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
  Total                   ok=18  unreachable=1  ignored=0  failed=0  skipped=0 
 

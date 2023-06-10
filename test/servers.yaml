@@ -11,7 +11,7 @@ servers:
     tags: [local, reachable]
 
   unreachable:
-    host: unreachable.lan
+    host: 172.24.2.50
     user: test
     tags: [unreachable]
 

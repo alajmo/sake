@@ -8,8 +8,8 @@ WantErr: true
                                                                                               
  Unreachable Hosts                                                                            
                                                                                               
- server      | host            | user | port | error                                          
--------------+-----------------+------+------+------------------------------------------------
- unreachable | unreachable.lan | test | 22   | dial tcp: lookup unreachable.lan: no such host 
+ server      | host        | user | port | error                                              
+-------------+-------------+------+------+----------------------------------------------------
+ unreachable | 172.24.2.50 | test | 22   | dial tcp 172.24.2.50:22: connect: no route to host 
 
 exit status 4

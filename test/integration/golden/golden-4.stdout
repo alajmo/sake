@@ -8,7 +8,7 @@ WantErr: false
  server      | host               | tags                        | desc                       
 -------------+--------------------+-----------------------------+----------------------------
  localhost   | localhost          | local,reachable             | localhost                  
- unreachable | unreachable.lan    | unreachable                 |                            
+ unreachable | 172.24.2.50        | unreachable                 |                            
  list-0      | 172.24.2.2         | remote,prod,list,reachable  | many hosts using list      
  list-1      | 172.24.2.4         | remote,prod,list,reachable  | many hosts using list      
  range-0     | 172.24.2.2         | remote,prod,range,reachable | many hosts using range     
