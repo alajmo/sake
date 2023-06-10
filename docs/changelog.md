@@ -6,6 +6,10 @@
 
 - Add support for multiple bastions
 
+### Misc
+
+- Update to go 1.20
+
 ### Fixes
 
 - Fix issue where user/port was not set correctly when using shorthand format for host/user/port definition
