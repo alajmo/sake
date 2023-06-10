@@ -117,9 +117,7 @@ func (c *ConfigYAML) parseConfig() (Config, error) {
 			cr.ConfigErrors = append(cr.ConfigErrors, configError)
 		} else {
 			imports, importErrors := c.ParseImportsYAML()
-			for i := range importErrors {
-				cr.ImportErrors = append(cr.ImportErrors, importErrors[i])
-			}
+			cr.ImportErrors = append(cr.ImportErrors, importErrors...)
 
 			cr.Imports = append(cr.Imports, imports...)
 		}
@@ -412,9 +410,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 			cr.ConfigErrors = append(cr.ConfigErrors, configError)
 		} else {
 			tasks, taskErrors := c.ParseTasksYAML()
-			for i := range taskErrors {
-				cr.TaskErrors = append(cr.TaskErrors, taskErrors[i])
-			}
+			cr.TaskErrors = append(cr.TaskErrors, taskErrors...)
 			cr.Tasks = append(cr.Tasks, tasks...)
 		}
 	}
@@ -433,9 +429,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 		} else {
 			servers, serverErrors := c.ParseServersYAML()
 			cr.Servers = append(cr.Servers, servers...)
-			for i := range serverErrors {
-				cr.ServerErrors = append(cr.ServerErrors, serverErrors[i])
-			}
+			cr.ServerErrors = append(cr.ServerErrors, serverErrors...)
 		}
 	}
 
@@ -453,9 +447,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 		} else {
 			themes, themeErrors := c.ParseThemesYAML()
 			cr.Themes = append(cr.Themes, themes...)
-			for i := range themeErrors {
-				cr.ThemeErrors = append(cr.ThemeErrors, themeErrors[i])
-			}
+			cr.ThemeErrors = append(cr.ThemeErrors, themeErrors...)
 		}
 	}
 
