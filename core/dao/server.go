@@ -83,7 +83,7 @@ func (s Server) GetValue(key string, _ int) string {
 	case "host":
 		return s.Host
 	case "bastion":
-		return getBastionHosts(s.Bastions)
+		return getBastionHosts(s.Bastions, "\n")
 	case "user":
 		return s.User
 	case "port":
@@ -230,8 +230,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		if len(serverYAML.Tags) > 0 {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_TAGS=%s", strings.Join(serverYAML.Tags, ",")))
 		}
-		if serverYAML.Bastion != "" {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_BASTION=%s", serverYAML.Bastion))
+		if len(bastions) > 0 {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_BASTION=%s", getBastionHosts(bastions, ",")))
 		}
 
 		var identityFile *string
@@ -1030,7 +1030,7 @@ func SortServers(order string, servers *[]Server) {
 	}
 }
 
-func getBastionHosts(bastions []Bastion) string {
+func getBastionHosts(bastions []Bastion, splitOn string) string {
 	if len(bastions) == 1 {
 		return bastions[0].GetPrint()
 	}
@@ -1039,7 +1039,7 @@ func getBastionHosts(bastions []Bastion) string {
 		b := bastion.GetPrint()
 
 		if i < len(bastions)-1 {
-			output += fmt.Sprintf("%s\n", b)
+			output += fmt.Sprintf("%s%s", b, splitOn)
 		} else {
 			output += b
 		}

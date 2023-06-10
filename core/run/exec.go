@@ -76,10 +76,6 @@ func (run *Run) RunTask(
 		return err
 	}
 
-	// fmt.Println("----------------------")
-	// core.DebugPrint(&run.Servers)
-	// fmt.Println("----------------------")
-
 	if len(errConnects) > 0 {
 		parseOutput := dao.TableOutput{
 			Headers: []string{"server", "host", "user", "port", "error"},

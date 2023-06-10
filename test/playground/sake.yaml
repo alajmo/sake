@@ -270,7 +270,7 @@ tasks:
       ignore_errors: true
       # strategy: free
     # desc: ping server
-    cmd: echo pong
+    cmd: echo $S_BASTION
     # tty: true
     # tasks:
     #   - cmd: |
