@@ -76,6 +76,10 @@ func (run *Run) RunTask(
 		return err
 	}
 
+	// fmt.Println("----------------------")
+	// core.DebugPrint(&run.Servers)
+	// fmt.Println("----------------------")
+
 	if len(errConnects) > 0 {
 		parseOutput := dao.TableOutput{
 			Headers: []string{"server", "host", "user", "port", "error"},
@@ -510,16 +514,19 @@ func ParseServers(
 	var errConnects []ErrConnect
 	for i := range *servers {
 		serv := cfg[(*servers)[i].Host]
-
-		// Bastion resolve:
+		// Bastion resolve, for instance, host: server-1 has an entry in ssh config
+		// that has ProxyJump, ProxyJump alias or if in sake it has a bastion: server-1
 		//  1. proxyjump alias
 		//	2. proxyjump
-		//	3. bastion alias
-		if proxyJump := serv.ProxyJump; proxyJump != "" {
+		//	3. bastion alias, in this case we need to handle multiple bastions
+		// In-case sake has bastions defined, then skip resolving
+		// TODO: Refactor this part
+		if proxyJump := serv.ProxyJump; proxyJump != "" && len((*servers)[i].Bastions) == 0 {
 			if hostName := cfg[proxyJump].HostName; hostName != "" {
 				// 1. proxyjump alias
-				(*servers)[i].BastionHost = hostName
-
+				bastionHost := hostName
+				bastionPort := (*servers)[i].Port
+				bastionUser := (*servers)[i].User
 				port := cfg[proxyJump].Port
 				if port != "" {
 					p, err := strconv.ParseUint(port, 10, 16)
@@ -534,64 +541,76 @@ func ParseServers(
 						errConnects = append(errConnects, *errConnect)
 						continue
 					}
-					(*servers)[i].BastionPort = uint16(p)
-				} else {
-					(*servers)[i].BastionPort = (*servers)[i].Port
+					bastionPort = uint16(p)
 				}
 
 				user := cfg[proxyJump].User
 				if user != "" {
-					(*servers)[i].BastionUser = user
-				} else {
-					(*servers)[i].BastionUser = (*servers)[i].User
+					bastionUser = user
 				}
+
+				bastion := dao.Bastion{
+					Host: bastionHost,
+					User: bastionUser,
+					Port: bastionPort,
+				}
+
+				(*servers)[i].Bastions = append((*servers)[i].Bastions, bastion)
 			} else {
 				// 2. proxyjump
-				user, host, port, err := core.ParseHostName(proxyJump, (*servers)[i].User, (*servers)[i].Port)
-				if err != nil {
-					errConnect := &ErrConnect{
-						Name:   (*servers)[i].Name,
-						User:   (*servers)[i].User,
-						Host:   (*servers)[i].Host,
-						Port:   (*servers)[i].Port,
-						Reason: err.Error(),
-					}
-					errConnects = append(errConnects, *errConnect)
-					continue
-				}
 
-				(*servers)[i].BastionHost = host
-				(*servers)[i].BastionPort = port
-				(*servers)[i].BastionUser = user
+				for _, proxy := range strings.Split(proxyJump, ",") {
+					user, host, port, err := core.ParseHostName(proxy, (*servers)[i].User, (*servers)[i].Port)
+					if err != nil {
+						errConnect := &ErrConnect{
+							Name:   (*servers)[i].Name,
+							User:   (*servers)[i].User,
+							Host:   (*servers)[i].Host,
+							Port:   (*servers)[i].Port,
+							Reason: err.Error(),
+						}
+						errConnects = append(errConnects, *errConnect)
+						continue
+					}
+
+					bastion := dao.Bastion{
+						Host: host,
+						User: user,
+						Port: port,
+					}
+					(*servers)[i].Bastions = append((*servers)[i].Bastions, bastion)
+				}
 			}
-		} else if bastionHost := cfg[(*servers)[i].BastionHost].HostName; bastionHost != "" {
+		} else {
 			// 3. bastion alias
-			(*servers)[i].BastionHost = bastionHost
-
-			port := cfg[(*servers)[i].BastionHost].Port
-			if port != "" {
-				p, err := strconv.ParseUint(port, 10, 16)
-				if err != nil {
-					errConnect := &ErrConnect{
-						Name:   (*servers)[i].Name,
-						User:   (*servers)[i].User,
-						Host:   (*servers)[i].Host,
-						Port:   (*servers)[i].Port,
-						Reason: err.Error(),
+			for j, bastion := range (*servers)[i].Bastions {
+				if bastionHost := cfg[bastion.Host].HostName; bastionHost != "" {
+					bastionPort := (*servers)[i].Port
+					bastionUser := (*servers)[i].User
+					if cfg[bastion.Host].Port != "" {
+						p, err := strconv.ParseUint(cfg[bastion.Host].Port, 10, 16)
+						if err != nil {
+							errConnect := &ErrConnect{
+								Name:   (*servers)[i].Name,
+								User:   (*servers)[i].User,
+								Host:   (*servers)[i].Host,
+								Port:   (*servers)[i].Port,
+								Reason: err.Error(),
+							}
+							errConnects = append(errConnects, *errConnect)
+							continue
+						}
+						bastionPort = uint16(p)
 					}
-					errConnects = append(errConnects, *errConnect)
-					continue
-				}
-				(*servers)[i].BastionPort = uint16(p)
-			} else {
-				(*servers)[i].BastionPort = (*servers)[i].Port
-			}
 
-			user := cfg[(*servers)[i].BastionHost].User
-			if user != "" {
-				(*servers)[i].BastionUser = user
-			} else {
-				(*servers)[i].BastionUser = (*servers)[i].User
+					if cfg[bastion.Host].User != "" {
+						bastionUser = cfg[bastion.Host].User
+					}
+
+					(*servers)[i].Bastions[j].Host = bastionHost
+					(*servers)[i].Bastions[j].User = bastionUser
+					(*servers)[i].Bastions[j].Port = bastionPort
+				}
 			}
 		}
 

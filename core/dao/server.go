@@ -20,13 +20,13 @@ import (
 )
 
 type Server struct {
-	Name         string
-	Desc         string
-	Host         string
-	Inventory    string
-	BastionHost  string
-	BastionUser  string
-	BastionPort  uint16
+	Name      string
+	Desc      string
+	Host      string
+	Inventory string
+	// BastionHost  string
+	// BastionUser  string
+	// BastionPort  uint16
 	Bastions     []Bastion
 	User         string
 	Port         uint16
@@ -51,6 +51,10 @@ type Bastion struct {
 	Host string
 	User string
 	Port uint16
+}
+
+func (b Bastion) GetPrint() string {
+	return fmt.Sprintf("%s@%s:%d", b.User, b.Host, b.Port)
 }
 
 type ServerYAML struct {
@@ -82,7 +86,7 @@ func (s Server) GetValue(key string, _ int) string {
 	case "host":
 		return s.Host
 	case "bastion":
-		return s.BastionHost
+		return getBastionHosts(s.Bastions)
 	case "user":
 		return s.User
 	case "port":
@@ -222,22 +226,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
-		// Same for all servers
-		var bastionUser string
-		var bastionHost string
-		var bastionPort uint16
-		if serverYAML.Bastion != "" {
-			bUser, bHost, bPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
-			if err != nil {
-				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
-				continue
-			}
-
-			bastionHost = bHost
-			bastionUser = bUser
-			bastionPort = bPort
-		}
-
 		defaultEnvs := []string{}
 		if serverYAML.IdentityFile != nil {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_IDENTITY=%s", *serverYAML.IdentityFile))
@@ -336,9 +324,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				WorkDir:      serverYAML.WorkDir,
 				Envs:         serverEnvs,
 				Bastions:     bastions,
-				BastionHost:  bastionHost,
-				BastionUser:  bastionUser,
-				BastionPort:  bastionPort,
 				IdentityFile: identityFile,
 				PubFile:      pubKeyFile,
 				Password:     password,
@@ -380,9 +365,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					WorkDir:      serverYAML.WorkDir,
 					Envs:         serverEnvs,
 					Bastions:     bastions,
-					BastionHost:  bastionHost,
-					BastionUser:  bastionUser,
-					BastionPort:  bastionPort,
 					IdentityFile: identityFile,
 					PubFile:      pubKeyFile,
 					Password:     password,
@@ -430,9 +412,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					WorkDir:      serverYAML.WorkDir,
 					Envs:         serverEnvs,
 					Bastions:     bastions,
-					BastionHost:  bastionHost,
-					BastionUser:  bastionUser,
-					BastionPort:  bastionPort,
 					IdentityFile: identityFile,
 					PubFile:      pubKeyFile,
 					Password:     password,
@@ -460,9 +439,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				WorkDir:      serverYAML.WorkDir,
 				Envs:         serverEnvs,
 				Bastions:     bastions,
-				BastionHost:  bastionHost,
-				BastionUser:  bastionUser,
-				BastionPort:  bastionPort,
 				IdentityFile: identityFile,
 				PubFile:      pubKeyFile,
 				Password:     password,
@@ -1014,20 +990,20 @@ func CreateInventoryServers(inputHost string, i int, server Server, userArgs []s
 	serverEnvs = append(serverEnvs, userArgs...)
 
 	iServer := &Server{
-		Name:         fmt.Sprintf("%s-%d", server.Name, i),
-		Group:        server.Group,
-		Desc:         server.Desc,
-		Host:         host,
-		User:         user,
-		Port:         port,
-		Local:        server.Local,
-		Tags:         server.Tags,
-		Shell:        server.Shell,
-		WorkDir:      server.WorkDir,
-		Envs:         serverEnvs,
-		BastionHost:  server.BastionHost,
-		BastionUser:  server.BastionUser,
-		BastionPort:  server.BastionPort,
+		Name:    fmt.Sprintf("%s-%d", server.Name, i),
+		Group:   server.Group,
+		Desc:    server.Desc,
+		Host:    host,
+		User:    user,
+		Port:    port,
+		Local:   server.Local,
+		Tags:    server.Tags,
+		Shell:   server.Shell,
+		WorkDir: server.WorkDir,
+		Envs:    serverEnvs,
+		// BastionHost:  server.BastionHost,
+		// BastionUser:  server.BastionUser,
+		// BastionPort:  server.BastionPort,
 		IdentityFile: server.IdentityFile,
 		PubFile:      server.PubFile,
 		Password:     server.Password,
@@ -1058,4 +1034,22 @@ func SortServers(order string, servers *[]Server) {
 		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
 	}
+}
+
+func getBastionHosts(bastions []Bastion) string {
+	if len(bastions) == 1 {
+		return bastions[0].GetPrint()
+	}
+	output := ""
+	for i, bastion := range bastions {
+		b := bastion.GetPrint()
+
+		if i < len(bastions)-1 {
+			output += fmt.Sprintf("%s\n", b)
+		} else {
+			output += b
+		}
+	}
+
+	return output
 }

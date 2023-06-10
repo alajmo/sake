@@ -28,10 +28,11 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 		args = append(args, fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile))
 	}
 
-	if server.BastionHost != "" {
-		jumphost := fmt.Sprintf("%s@%s:%d", server.BastionUser, server.BastionHost, server.BastionPort)
-		args = append(args, fmt.Sprintf("-J %s", jumphost))
-	}
+	// TODO:
+	// if server.BastionHost != "" {
+	// 	jumphost := fmt.Sprintf("%s@%s:%d", server.BastionUser, server.BastionHost, server.BastionPort)
+	// 	args = append(args, fmt.Sprintf("-J %s", jumphost))
+	// }
 
 	err = unix.Exec(sshBin, args, os.Environ())
 

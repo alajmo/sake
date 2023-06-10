@@ -160,7 +160,7 @@ func DebugPrint(data any) {
 	fmt.Println()
 }
 
-// Parse host, for instance : user@hostname
+// Parse host, for instance : user@hostname:22
 func ParseHostName(hostname string, defaultUser string, defaultPort uint16) (string, string, uint16, error) {
 	if strings.Contains(hostname, "/") {
 		return "", "", 22, fmt.Errorf("unexpected slash in the host %s", hostname)

@@ -61,6 +61,9 @@ servers:
    # Bastion [optional]
    bastion: samir@192.168.1.1:2222
 
+   # Bastions [optional]
+   # bastions: [samir@192.168.1.1:2222, samir@192.168.1.2:3333]
+
    # User to connect as. It defaults to the current user [optional]
    user: samir
 

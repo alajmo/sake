@@ -48,7 +48,10 @@ func PrintServerBlocks(servers []dao.Server) {
 		output += printStringField("user", server.User, false)
 		output += printStringField("host", server.Host, false)
 		output += printNumberField("port", int(server.Port), false)
-		output += printStringField("bastion", server.BastionHost, false)
+		if len(server.Bastions) > 0 {
+			output += printBastion(server.Bastions)
+		}
+
 		output += printBoolField("local", server.Local, false)
 		output += printStringField("shell", server.Shell, false)
 		output += printStringField("work_dir", server.WorkDir, false)
@@ -222,6 +225,18 @@ func printEnv(env []string) {
 	for _, env := range env {
 		fmt.Printf("%4s%s\n", " ", strings.Replace(strings.TrimSuffix(env, "\n"), "=", ": ", 1))
 	}
+}
+
+func printBastion(bastions []dao.Bastion) string {
+	if len(bastions) == 1 {
+		return fmt.Sprintf("bastion: %s\n", bastions[0].GetPrint())
+	}
+
+	output := "bastions: \n"
+	for _, bastion := range bastions {
+		output += fmt.Sprintf("%4s- %s\n", " ", bastion.GetPrint())
+	}
+	return output
 }
 
 func printStringField(key string, value string, indent bool) string {

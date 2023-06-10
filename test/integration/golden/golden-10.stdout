@@ -187,7 +187,7 @@ desc: server-10 desc
 user: test
 host: 172.24.2.10
 port: 22
-bastion: 172.24.2.98
+bastion: test@172.24.2.98:22
 work_dir: /tmp
 tags: remote, bastion
 
@@ -198,6 +198,9 @@ desc: server-11 desc
 user: test
 host: 172.24.2.11
 port: 22
+bastions: 
+    - test@172.24.2.98:22
+    - test@172.24.2.99:22
 work_dir: /tmp
 tags: remote, bastion
 

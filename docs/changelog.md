@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.0
+
+### Features
+
+- Add support for multiple bastions
+
+### Fixes
+
+- Fix issue where user/port was not set correctly when using shorthand format for host/user/port definition
+
 ## 0.14.0
 
 ### Features
