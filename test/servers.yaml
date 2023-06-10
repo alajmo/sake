@@ -8,10 +8,10 @@ servers:
     user: test
     local: true
     work_dir: /tmp
-    tags: [local,reachable]
+    tags: [local, reachable]
 
   unreachable:
-    host: unreachable.lan
+    host: 172.24.2.50
     user: test
     tags: [unreachable]
 
@@ -49,12 +49,11 @@ servers:
   server-1:
     desc: server-1
     host: 172.24.2.2
-    bastion: test@172.24.2.99:22
     user: test
     work_dir: /home/test
     identity_file: keys/id_ed25519_pem
     password: testing
-    tags: [remote,prod,reachable]
+    tags: [remote, prod, reachable]
     env:
       host: 172.24.2.2
 
@@ -64,7 +63,7 @@ servers:
     user: test
     port: 33
     identity_file: keys/id_ed25519_pem_no
-    tags: [remote,prod,reachable]
+    tags: [remote, prod, reachable]
 
   server-3:
     desc: server-3
@@ -72,14 +71,14 @@ servers:
     user: test
     identity_file: keys/id_ed25519_rfc
     password: testing
-    tags: [remote,demo,reachable]
+    tags: [remote, demo, reachable]
 
   server-4:
     desc: server-4
     host: 172.24.2.5
     user: test
     identity_file: keys/id_ed25519_rfc_no
-    tags: [remote,demo,reachable]
+    tags: [remote, demo, reachable]
 
   server-5:
     desc: server-5
@@ -87,32 +86,50 @@ servers:
     user: test
     identity_file: keys/id_rsa_pem
     password: testing
-    tags: [remote,sandbox,reachable]
+    tags: [remote, sandbox, reachable]
 
   server-6:
     desc: server-6
     host: 172.24.2.7
     user: test
     identity_file: keys/id_rsa_pem_no
-    tags: [remote,sandbox,reachable]
+    tags: [remote, sandbox, reachable]
 
   server-7:
     desc: server-7
     host: test@172.24.2.8:22
     identity_file: keys/id_rsa_rfc
     password: testing
-    tags: [remote,demo,reachable]
+    tags: [remote, demo, reachable]
 
   server-8:
     desc: server-8
     host: 172.24.2.9
     user: test
     identity_file: keys/id_rsa_rfc_no
-    tags: [remote,demo,reachable]
+    tags: [remote, demo, reachable]
 
   server-9:
     desc: server-9
     host: 2001:3984:3989::10
     user: test
     password: test
-    tags: [remote,demo,reachable]
+    tags: [remote, demo, reachable]
+
+  server-10:
+    desc: server-10 desc
+    host: test@172.24.2.10:22
+    bastion: test@172.24.2.98:22
+    identity_file: keys/id_rsa_rfc
+    password: testing
+    tags: [remote, bastion]
+    work_dir: /tmp
+
+  server-11:
+    desc: server-11 desc
+    host: test@172.24.2.11:22
+    bastions: ['test@172.24.2.98:22', 'test@172.24.2.99:22']
+    identity_file: keys/id_rsa_rfc
+    password: testing
+    tags: [remote, bastion]
+    work_dir: /tmp

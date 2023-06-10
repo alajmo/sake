@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install openssh-server sudo -y
+RUN apt-get update && apt-get install openssh-server vim sudo -y
 
 RUN useradd --user-group --system --create-home -s /bin/bash --no-log-init test
 
@@ -22,4 +22,4 @@ RUN service ssh start
 
 WORKDIR /home/test
 
-CMD [ "/usr/sbin/sshd", "-D" ]
+ENTRYPOINT [ "/usr/sbin/sshd", "-D" ]

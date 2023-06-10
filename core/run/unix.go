@@ -5,10 +5,12 @@ package run
 
 import (
 	"fmt"
-	"github.com/alajmo/sake/core/dao"
-	"golang.org/x/sys/unix"
 	"os"
 	"os/exec"
+	"strings"
+
+	"github.com/alajmo/sake/core/dao"
+	"golang.org/x/sys/unix"
 )
 
 // func SSHToServer(host string, user string, port uint16, bastion string, disableVerifyHost bool, knownHostFile string) error {
@@ -28,9 +30,14 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 		args = append(args, fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile))
 	}
 
-	if server.BastionHost != "" {
-		jumphost := fmt.Sprintf("%s@%s:%d", server.BastionUser, server.BastionHost, server.BastionPort)
-		args = append(args, fmt.Sprintf("-J %s", jumphost))
+	// TODO:
+	if len(server.Bastions) > 0 {
+		jumphosts := []string{}
+		for _, bastion := range server.Bastions {
+			jumphosts = append(jumphosts, fmt.Sprintf("%s@%s:%d", bastion.User, bastion.Host, bastion.Port))
+		}
+
+		args = append(args, fmt.Sprintf("-J %s", strings.Join(jumphosts, ",")))
 	}
 
 	err = unix.Exec(sshBin, args, os.Environ())

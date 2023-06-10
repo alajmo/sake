@@ -66,7 +66,10 @@ Below is a config file detailing all of the available options and their defaults
      # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
 
      # Bastion [optional]
-     bastion: samir@192.168.1.1:2222
+		 bastion: samir@192.168.1.1:2222
+
+     # Bastions [optional]
+     # bastions: [samir@192.168.1.1:2222, samir@192.168.1.2:3333]
 
      # User to connect as. It defaults to the current user [optional]
      user: samir

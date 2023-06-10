@@ -18,7 +18,7 @@ tags: local, reachable
 
 name: unreachable
 user: test
-host: unreachable.lan
+host: 172.24.2.50
 port: 22
 tags: unreachable
 
@@ -103,7 +103,6 @@ desc: server-1
 user: test
 host: 172.24.2.2
 port: 22
-bastion: 172.24.2.99
 work_dir: /home/test
 tags: remote, prod, reachable
 env: 
@@ -180,4 +179,28 @@ user: test
 host: 2001:3984:3989::10
 port: 22
 tags: remote, demo, reachable
+
+--
+
+name: server-10
+desc: server-10 desc
+user: test
+host: 172.24.2.10
+port: 22
+bastion: test@172.24.2.98:22
+work_dir: /tmp
+tags: remote, bastion
+
+--
+
+name: server-11
+desc: server-11 desc
+user: test
+host: 172.24.2.11
+port: 22
+bastions: 
+    - test@172.24.2.98:22
+    - test@172.24.2.99:22
+work_dir: /tmp
+tags: remote, bastion
 

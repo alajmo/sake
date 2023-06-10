@@ -24,9 +24,7 @@ type Server struct {
 	Desc         string
 	Host         string
 	Inventory    string
-	BastionHost  string
-	BastionUser  string
-	BastionPort  uint16
+	Bastions     []Bastion
 	User         string
 	Port         uint16
 	Local        bool
@@ -46,6 +44,16 @@ type Server struct {
 	contextLine int    // defined at
 }
 
+type Bastion struct {
+	Host string
+	User string
+	Port uint16
+}
+
+func (b Bastion) GetPrint() string {
+	return fmt.Sprintf("%s@%s:%d", b.User, b.Host, b.Port)
+}
+
 type ServerYAML struct {
 	Name         string    `yaml:"-"`
 	Desc         string    `yaml:"desc"`
@@ -53,6 +61,7 @@ type ServerYAML struct {
 	Hosts        yaml.Node `yaml:"hosts"`
 	Inventory    string    `yaml:"inventory"`
 	Bastion      string    `yaml:"bastion"`
+	Bastions     []string  `yaml:"bastions"`
 	User         string    `yaml:"user"`
 	Port         uint16    `yaml:"port"`
 	Local        bool      `yaml:"local"`
@@ -74,7 +83,7 @@ func (s Server) GetValue(key string, _ int) string {
 	case "host":
 		return s.Host
 	case "bastion":
-		return s.BastionHost
+		return getBastionHosts(s.Bastions, "\n")
 	case "user":
 		return s.User
 	case "port":
@@ -162,12 +171,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			serverYAML.Port = 22
 		}
 
-		hostDef, err := getServerHostDefinition(serverYAML)
-		if err != nil {
-			serverErrors[j].Errors = append(serverErrors[j].Errors, err)
-			continue
-		}
-
 		var envs []string
 		if !IsNullNode(serverYAML.Env) {
 			err := CheckIsMappingNode(serverYAML.Env)
@@ -184,6 +187,42 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
+		bastionDef, err := getServerBastionDefinition(serverYAML)
+		bastions := []Bastion{}
+		if err != nil {
+			serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+			continue
+		}
+		switch bastionDef {
+		case "bastion":
+			bUser, bHost, bPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
+			if err != nil {
+				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+				continue
+			}
+
+			bastions = append(bastions, Bastion{
+				User: bUser,
+				Host: bHost,
+				Port: bPort,
+			})
+		case "bastions":
+			for _, bastionStr := range serverYAML.Bastions {
+				bUser, bHost, bPort, err := core.ParseHostName(bastionStr, serverYAML.User, serverYAML.Port)
+				if err != nil {
+					serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+					continue
+				}
+
+				bastions = append(bastions, Bastion{
+					User: bUser,
+					Host: bHost,
+					Port: bPort,
+				})
+
+			}
+		}
+
 		defaultEnvs := []string{}
 		if serverYAML.IdentityFile != nil {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_IDENTITY=%s", *serverYAML.IdentityFile))
@@ -191,24 +230,8 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 		if len(serverYAML.Tags) > 0 {
 			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_TAGS=%s", strings.Join(serverYAML.Tags, ",")))
 		}
-		if serverYAML.Bastion != "" {
-			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_BASTION=%s", serverYAML.Bastion))
-		}
-
-		// Same for all servers
-		var bastionUser string
-		var bastionHost string
-		var bastionPort uint16
-		if serverYAML.Bastion != "" {
-			bUser, bHost, bPort, err := core.ParseHostName(serverYAML.Bastion, serverYAML.User, serverYAML.Port)
-			if err != nil {
-				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
-				continue
-			}
-
-			bastionHost = bHost
-			bastionUser = bUser
-			bastionPort = bPort
+		if len(bastions) > 0 {
+			defaultEnvs = append(defaultEnvs, fmt.Sprintf("S_BASTION=%s", getBastionHosts(bastions, ",")))
 		}
 
 		var identityFile *string
@@ -263,9 +286,14 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 			}
 		}
 
+		hostDef, err := getServerHostDefinition(serverYAML)
+		if err != nil {
+			serverErrors[j].Errors = append(serverErrors[j].Errors, err)
+			continue
+		}
 		switch hostDef {
 		case "host":
-			// string to be evaluated and will result in list of hosts
+			// host: test@192.168.0.1:22
 			user, host, port, err := core.ParseHostName(serverYAML.Host, serverYAML.User, serverYAML.Port)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
@@ -292,9 +320,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				Shell:        serverYAML.Shell,
 				WorkDir:      serverYAML.WorkDir,
 				Envs:         serverEnvs,
-				BastionHost:  bastionHost,
-				BastionUser:  bastionUser,
-				BastionPort:  bastionPort,
+				Bastions:     bastions,
 				IdentityFile: identityFile,
 				PubFile:      pubKeyFile,
 				Password:     password,
@@ -306,7 +332,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 
 			servers = append(servers, *hServer)
 		case "hosts":
-			// list of servers
+			// list of hosts
 
 			for k, s := range serverYAML.Hosts.Content {
 				user, host, port, err := core.ParseHostName(s.Value, serverYAML.User, serverYAML.Port)
@@ -335,9 +361,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					Shell:        serverYAML.Shell,
 					WorkDir:      serverYAML.WorkDir,
 					Envs:         serverEnvs,
-					BastionHost:  bastionHost,
-					BastionUser:  bastionUser,
-					BastionPort:  bastionPort,
+					Bastions:     bastions,
 					IdentityFile: identityFile,
 					PubFile:      pubKeyFile,
 					Password:     password,
@@ -350,6 +374,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				servers = append(servers, *hServer)
 			}
 		case "hosts-string":
+			// hosts: 192.168.[0:3].1
 			hosts, err := core.EvaluateRange(serverYAML.Hosts.Value)
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
@@ -383,9 +408,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 					Shell:        serverYAML.Shell,
 					WorkDir:      serverYAML.WorkDir,
 					Envs:         serverEnvs,
-					BastionHost:  bastionHost,
-					BastionUser:  bastionUser,
-					BastionPort:  bastionPort,
+					Bastions:     bastions,
 					IdentityFile: identityFile,
 					PubFile:      pubKeyFile,
 					Password:     password,
@@ -398,6 +421,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				servers = append(servers, *hServer)
 			}
 		case "inventory":
+			// User provides command to evaluate to a list of hosts
 			serverEnvs := append(defaultEnvs, envs...)
 			hServer := &Server{
 				Name:         c.Servers.Content[i].Value,
@@ -411,9 +435,7 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 				Shell:        serverYAML.Shell,
 				WorkDir:      serverYAML.WorkDir,
 				Envs:         serverEnvs,
-				BastionHost:  bastionHost,
-				BastionUser:  bastionUser,
-				BastionPort:  bastionPort,
+				Bastions:     bastions,
 				IdentityFile: identityFile,
 				PubFile:      pubKeyFile,
 				Password:     password,
@@ -428,6 +450,25 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 	}
 
 	return servers, serverErrors
+}
+
+func getServerBastionDefinition(serverYAML *ServerYAML) (string, error) {
+	bastionDef := ""
+	numDefined := 0
+	if serverYAML.Bastion != "" {
+		bastionDef = "bastion"
+		numDefined += 1
+	}
+	if len(serverYAML.Bastions) > 0 {
+		numDefined += 1
+		bastionDef = "bastions"
+	}
+
+	if numDefined > 1 {
+		return "", &core.ServerBastionMultipleDef{Name: serverYAML.Name}
+	}
+
+	return bastionDef, nil
 }
 
 func getServerHostDefinition(serverYAML *ServerYAML) (string, error) {
@@ -845,7 +886,7 @@ func (c *Config) GetServersByTags(tags []string) ([]Server, error) {
 	var servers []Server
 	for _, server := range c.Servers {
 		// Variable use to check that all tags are matched
-		var numMatched int = 0
+		numMatched := 0
 		for _, tag := range tags {
 			for _, serverTag := range server.Tags {
 				if serverTag == tag {
@@ -957,9 +998,6 @@ func CreateInventoryServers(inputHost string, i int, server Server, userArgs []s
 		Shell:        server.Shell,
 		WorkDir:      server.WorkDir,
 		Envs:         serverEnvs,
-		BastionHost:  server.BastionHost,
-		BastionUser:  server.BastionUser,
-		BastionPort:  server.BastionPort,
 		IdentityFile: server.IdentityFile,
 		PubFile:      server.PubFile,
 		Password:     server.Password,
@@ -987,7 +1025,25 @@ func SortServers(order string, servers *[]Server) {
 			return (*servers)[i].Host > (*servers)[j].Host
 		})
 	case "random":
-		rand.Seed(time.Now().UnixNano())
-		rand.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		r.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
 	}
+}
+
+func getBastionHosts(bastions []Bastion, splitOn string) string {
+	if len(bastions) == 1 {
+		return bastions[0].GetPrint()
+	}
+	output := ""
+	for i, bastion := range bastions {
+		b := bastion.GetPrint()
+
+		if i < len(bastions)-1 {
+			output += fmt.Sprintf("%s%s", b, splitOn)
+		} else {
+			output += b
+		}
+	}
+
+	return output
 }

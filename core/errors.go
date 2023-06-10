@@ -178,6 +178,14 @@ func (c *ServerMultipleDef) Error() string {
 	return fmt.Sprintf("can only define one of the following for server `%s`: host, hosts", c.Name)
 }
 
+type ServerBastionMultipleDef struct {
+	Name string
+}
+
+func (c *ServerBastionMultipleDef) Error() string {
+	return fmt.Sprintf("can only define one of the following for server `%s`: bastion, bastions", c.Name)
+}
+
 type TaskRefMultipleDef struct {
 	Name string
 }
