@@ -1,4 +1,4 @@
-.TH "SAKE" "1" "2023-01-04T23:23:54CET" "v0.14.0" "Sake Manual" "sake"
+.TH "SAKE" "1" "2023-06-10T15:42:30CEST" "v0.14.0" "Sake Manual" "sake"
 .SH NAME
 sake - sake is a task runner for local and remote hosts
 
@@ -585,7 +585,10 @@ Below is a config file detailing all of the available options and their defaults
      # inventory: echo samir@192.168.0.1:22 samir@192.168.1.1:22
 
      # Bastion [optional]
-     bastion: samir@192.168.1.1:2222
+		 bastion: samir@192.168.1.1:2222
+
+     # Bastions [optional]
+     # bastions: [samir@192.168.1.1:2222, samir@192.168.1.2:3333]
 
      # User to connect as. It defaults to the current user [optional]
      user: samir

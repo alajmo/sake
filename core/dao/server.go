@@ -20,13 +20,10 @@ import (
 )
 
 type Server struct {
-	Name      string
-	Desc      string
-	Host      string
-	Inventory string
-	// BastionHost  string
-	// BastionUser  string
-	// BastionPort  uint16
+	Name         string
+	Desc         string
+	Host         string
+	Inventory    string
 	Bastions     []Bastion
 	User         string
 	Port         uint16
@@ -990,20 +987,17 @@ func CreateInventoryServers(inputHost string, i int, server Server, userArgs []s
 	serverEnvs = append(serverEnvs, userArgs...)
 
 	iServer := &Server{
-		Name:    fmt.Sprintf("%s-%d", server.Name, i),
-		Group:   server.Group,
-		Desc:    server.Desc,
-		Host:    host,
-		User:    user,
-		Port:    port,
-		Local:   server.Local,
-		Tags:    server.Tags,
-		Shell:   server.Shell,
-		WorkDir: server.WorkDir,
-		Envs:    serverEnvs,
-		// BastionHost:  server.BastionHost,
-		// BastionUser:  server.BastionUser,
-		// BastionPort:  server.BastionPort,
+		Name:         fmt.Sprintf("%s-%d", server.Name, i),
+		Group:        server.Group,
+		Desc:         server.Desc,
+		Host:         host,
+		User:         user,
+		Port:         port,
+		Local:        server.Local,
+		Tags:         server.Tags,
+		Shell:        server.Shell,
+		WorkDir:      server.WorkDir,
+		Envs:         serverEnvs,
 		IdentityFile: server.IdentityFile,
 		PubFile:      server.PubFile,
 		Password:     server.Password,
@@ -1031,8 +1025,8 @@ func SortServers(order string, servers *[]Server) {
 			return (*servers)[i].Host > (*servers)[j].Host
 		})
 	case "random":
-		rand.Seed(time.Now().UnixNano())
-		rand.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		r.Shuffle(len((*servers)), func(i, j int) { (*servers)[i], (*servers)[j] = (*servers)[j], (*servers)[i] })
 	}
 }
 
