@@ -465,9 +465,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 		} else {
 			specs, specErrors := c.ParseSpecsYAML()
 			cr.Specs = append(cr.Specs, specs...)
-			for i := range specErrors {
-				cr.SpecErrors = append(cr.SpecErrors, specErrors[i])
-			}
+			cr.SpecErrors = append(cr.SpecErrors, specErrors...)
 		}
 	}
 
@@ -485,9 +483,7 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 		} else {
 			targets, targetErrors := c.ParseTargetsYAML()
 			cr.Targets = append(cr.Targets, targets...)
-			for i := range targetErrors {
-				cr.TargetErrors = append(cr.TargetErrors, targetErrors[i])
-			}
+			cr.TargetErrors = append(cr.TargetErrors, targetErrors...)
 		}
 	}
 
@@ -597,9 +593,7 @@ func dfsImport(n *Node, m map[string]*Node, cycles *[]NodeLink, cr *ConfigResour
 				continue
 			} else {
 				imports, importErrors := configYAML.ParseImportsYAML()
-				for i := range importErrors {
-					cr.ImportErrors = append(cr.ImportErrors, importErrors[i])
-				}
+				cr.ImportErrors = append(cr.ImportErrors, importErrors...)
 				nc.Imports = imports
 			}
 		}

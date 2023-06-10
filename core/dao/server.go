@@ -886,7 +886,7 @@ func (c *Config) GetServersByTags(tags []string) ([]Server, error) {
 	var servers []Server
 	for _, server := range c.Servers {
 		// Variable use to check that all tags are matched
-		var numMatched int = 0
+		numMatched := 0
 		for _, tag := range tags {
 			for _, serverTag := range server.Tags {
 				if serverTag == tag {
