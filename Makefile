@@ -31,9 +31,9 @@ test:
 	go test -v ./core/...
 
 	# Integration tests
-	# cd ./test && docker-compose up -d
-	go test -v ./test/integration/... -count=1 -clean
-	# cd ./test && docker-compose down
+	cd ./test && docker-compose up -d
+	go test -v ./test/integration/... -count=5 -clean
+	cd ./test && docker-compose down
 
 unit-test:
 	go test -v ./core/...
