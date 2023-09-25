@@ -50,12 +50,11 @@ The following workflow is used for releasing a new `sake` version:
    - `make unit-test`
 4. Run benchmarks and profiler to check performance
    - `make benchmark`
-5. Update Makefile to use correct VERSION
-6. Update `config-reference.md` and `config.man` if any config changes and generate manpage
+5. Update `config-reference.md` and `config.man` if any config changes and generate manpage
    - `make gen-man`
-7. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
-8. Squash-merge to main with `Release vx.y.z` and description of changes
-9. Run `make release`, which will:
+6. Update `Makefile` and `CHANGELOG.md` with correct version, and add all changes to `CHANGELOG.md`
+7. Squash-merge to main with `Release vx.y.z` and description of changes
+8. Run `make release`, which will:
    - Create a git tag with release notes
    - Trigger a build in Github that builds cross-platform binaries and generates release notes of changes between current and previous tag
 
