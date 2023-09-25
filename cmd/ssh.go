@@ -52,6 +52,6 @@ func ssh(args []string, config *dao.Config, runFlags *core.RunFlags) {
 	}
 	core.CheckIfError(err)
 
-	err = run.SSHToServer(*server, config.DisableVerifyHost, config.KnownHostsFile)
+	err = run.SSHToServer(servers[0], config.DisableVerifyHost, config.KnownHostsFile)
 	core.CheckIfError(err)
 }

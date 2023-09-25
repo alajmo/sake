@@ -626,6 +626,34 @@ func ParseServers(
 			}
 
 			(*servers)[i].IdentityFile = &iFile
+
+			// TODO: Update PubFile as well
+			if _, err := os.Stat(*(*servers)[i].IdentityFile); errors.Is(err, os.ErrNotExist) {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			}
+
+			pubFile := *(*servers)[i].IdentityFile + ".pub"
+			if _, err := os.Stat(pubFile); errors.Is(err, os.ErrNotExist) {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			} else {
+				*(*servers)[i].PubFile = pubFile
+			}
 		}
 
 		// HostName

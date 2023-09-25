@@ -31,5 +31,5 @@ type ErrConnect struct {
 }
 
 func (e *ErrConnect) Error() string {
-	return ""
+	return e.Reason
 }
