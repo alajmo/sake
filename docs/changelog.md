@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.1
+
+### Fixes
+
+- Fix resolving identity file in ssh config correctly when ~ is used.
+- Fix public file not found when using ssh config
+
 ## 0.15.0
 
 ### Features
