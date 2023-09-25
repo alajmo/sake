@@ -612,7 +612,20 @@ func ParseServers(
 
 		// IdentityFile
 		if len(serv.IdentityFiles) > 0 {
-			(*servers)[i].IdentityFile = &serv.IdentityFiles[0]
+			iFile, err := core.ExpandPath(serv.IdentityFiles[0])
+			if err != nil {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			}
+
+			(*servers)[i].IdentityFile = &iFile
 		}
 
 		// HostName
