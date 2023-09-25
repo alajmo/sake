@@ -14,7 +14,7 @@ import (
 	"github.com/kevinburke/ssh_config"
 )
 
-// PraseFile reads and parses the file in the given path.
+// Parse reads and parses the file in the given path.
 func ParseSSHConfig(path string) (map[string](Endpoint), error) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -243,7 +243,7 @@ func parseInternal(r io.Reader, cfg string) (*hostinfoMap, error) {
 						continue
 					}
 
-					path, err := expandPath(value)
+					path, err := ExpandPath(value)
 					if err != nil {
 						return nil, err
 					}
@@ -340,7 +340,7 @@ func parseFileInternal(path string) (*hostinfoMap, error) {
 	return parseInternal(f, path)
 }
 
-func expandPath(p string) (string, error) {
+func ExpandPath(p string) (string, error) {
 	if !strings.HasPrefix(p, "~/") {
 		return p, nil
 	}

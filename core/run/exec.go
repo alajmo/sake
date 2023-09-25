@@ -612,7 +612,48 @@ func ParseServers(
 
 		// IdentityFile
 		if len(serv.IdentityFiles) > 0 {
-			(*servers)[i].IdentityFile = &serv.IdentityFiles[0]
+			iFile, err := core.ExpandPath(serv.IdentityFiles[0])
+			if err != nil {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			}
+
+			(*servers)[i].IdentityFile = &iFile
+
+			// TODO: Update PubFile as well
+			if _, err := os.Stat(*(*servers)[i].IdentityFile); errors.Is(err, os.ErrNotExist) {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			}
+
+			pubFile := *(*servers)[i].IdentityFile + ".pub"
+			if _, err := os.Stat(pubFile); errors.Is(err, os.ErrNotExist) {
+				errConnect := &ErrConnect{
+					Name:   (*servers)[i].Name,
+					User:   (*servers)[i].User,
+					Host:   (*servers)[i].Host,
+					Port:   (*servers)[i].Port,
+					Reason: err.Error(),
+				}
+				errConnects = append(errConnects, *errConnect)
+				continue
+			} else {
+				*(*servers)[i].PubFile = pubFile
+			}
 		}
 
 		// HostName
