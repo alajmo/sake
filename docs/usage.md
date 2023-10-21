@@ -29,7 +29,7 @@ tasks:
   ping:
     desc: Pong
     cmd: echo "pong"
-"```
+```
 
 ## Run Some Commands
 
