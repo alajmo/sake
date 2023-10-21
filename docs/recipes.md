@@ -35,10 +35,10 @@ upload-compose:
   task: upload
 ```
 
-To upload a file:
+To upload a docker-compose file:
 
 ```bash
-$ sake run get-backups --server <server>
+$ sake run upload-compose --server <server>
 ```
 
 You can also override the `SRC` and `DEST` variables at the command line:
@@ -108,7 +108,7 @@ ssh-and-cmd:
 Then run:
 
 ```bash
-$ sake run get-backups --server <server>
+$ sake run ssh-and-cmd --server <server>
 ```
 
 You can also provide the `--attach` flag to arbitrary commands:
