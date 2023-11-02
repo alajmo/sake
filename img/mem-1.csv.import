@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://1ctdrrwtqshy"
+
+[deps]
+
+files=["res://projects/doc/sake/static/img/mem-1.sake.translation", "res://projects/doc/sake/static/img/mem-1.pyinfra.translation", "res://projects/doc/sake/static/img/mem-1.ansible.translation"]
+
+source_file="res://projects/doc/sake/static/img/mem-1.csv"
+dest_files=["res://projects/doc/sake/static/img/mem-1.sake.translation", "res://projects/doc/sake/static/img/mem-1.pyinfra.translation", "res://projects/doc/sake/static/img/mem-1.ansible.translation"]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>sake</ShortName>
+  <Description>Search sake</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://sakecli.com/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://sakecli.com/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://sakecli.com/opensearch.xml" />
+  <moz:SearchForm>https://sakecli.com/</moz:SearchForm>
+</OpenSearchDescription>
