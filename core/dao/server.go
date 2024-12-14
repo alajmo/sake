@@ -155,9 +155,6 @@ func (c *ConfigYAML) ParseServersYAML() ([]Server, []ResourceErrors[Server]) {
 
 		if serverYAML.User == "" {
 			user, err := user.Current()
-			if err != nil {
-				panic(err)
-			}
 
 			if err != nil {
 				serverErrors[j].Errors = append(serverErrors[j].Errors, err)
@@ -498,15 +495,6 @@ func getServerHostDefinition(serverYAML *ServerYAML) (string, error) {
 	}
 
 	return hostDef, nil
-}
-
-func ServerInSlice(name string, list []Server) bool {
-	for _, s := range list {
-		if s.Name == name {
-			return true
-		}
-	}
-	return false
 }
 
 // FilterServers returns servers matching filters, it does a union select.
@@ -913,15 +901,6 @@ func (c *Config) GetServersByTags(tags []string) ([]Server, error) {
 	}
 
 	return servers, nil
-}
-
-func (c *Config) GetServerNames() []string {
-	names := []string{}
-	for _, server := range c.Servers {
-		names = append(names, server.Name)
-	}
-
-	return names
 }
 
 func GetIntersectionServers(s ...[]Server) []Server {

@@ -13,7 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"crypto/sha256"
 	"github.com/kevinburke/ssh_config"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -312,11 +311,6 @@ func CheckKnownHost(host string, remote net.Addr, key ssh.PublicKey, knownFile s
 		return true, keyErr
 	}
 
-	// Some other error occurred and safest way to handle is to pass it back to user
-	if err != nil {
-		return false, err
-	}
-
 	// Key not found in file and is therefor not trusted
 	return false, nil
 }
@@ -406,12 +400,6 @@ func AsExport(env []string) string {
 	return exports
 }
 
-func FingerprintSHA256(b []byte) string {
-	sha256sum := sha256.Sum256(b)
-	hash := base64.RawStdEncoding.EncodeToString(sha256sum[:])
-	return "SHA256:" + hash
-}
-
 func GetSSHAgentSigners() ([]ssh.Signer, error) {
 	// Load keys from SSH Agent if it's running
 	sockPath, found := os.LookupEnv("SSH_AUTH_SOCK")
@@ -479,9 +467,6 @@ func GetFingerprintPubKey(server dao.Server) (string, error) {
 func GetSigner(identityFile string) (ssh.Signer, error) {
 	var signer ssh.Signer
 	data, err := os.ReadFile(identityFile)
-	if err != nil {
-		return nil, err
-	}
 	if err != nil {
 		return nil, err
 	}

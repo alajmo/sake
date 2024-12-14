@@ -122,7 +122,6 @@ func PrintExitReport(
 ) error {
 	theme.Table.Options.SeparateFooter = core.Ptr(false)
 	var data dao.TableOutput
-	data.Headers = reportData.Headers
 	for i := range reportData.Tasks {
 		name := getStatusName(reportData.Tasks[i].Name, reportData.Tasks[i].Status)
 		data.Rows = append(data.Rows, dao.Row{Columns: []string{name}})
@@ -133,9 +132,9 @@ func PrintExitReport(
 			} else {
 				v := strconv.Itoa(t.ReturnCode)
 				if t.ReturnCode > 0 {
-					v = FailedPrint.Sprintf(v)
+					v = FailedPrint.Sprint(v)
 				} else {
-					v = OkPrint.Sprintf(v)
+					v = OkPrint.Sprint(v)
 				}
 				data.Rows[i].Columns = append(data.Rows[i].Columns, v)
 			}
@@ -234,7 +233,6 @@ func PrintTaskReport(
 ) error {
 	theme.Table.Options.SeparateFooter = core.Ptr(false)
 	var data dao.TableOutput
-	data.Headers = reportData.Headers
 	for i := range reportData.Tasks {
 		name := getStatusName(reportData.Tasks[i].Name, reportData.Tasks[i].Status)
 		data.Rows = append(data.Rows, dao.Row{Columns: []string{name}})
@@ -243,15 +241,15 @@ func PrintTaskReport(
 			var v string
 			switch t.Status {
 			case dao.Ok:
-				v = OkPrint.Sprintf(t.Status.String())
+				v = OkPrint.Sprint(t.Status.String())
 			case dao.Skipped:
-				v = SkippedPrint.Sprintf(t.Status.String())
+				v = SkippedPrint.Sprint(t.Status.String())
 			case dao.Ignored:
-				v = IgnoredPrint.Sprintf(t.Status.String())
+				v = IgnoredPrint.Sprint(t.Status.String())
 			case dao.Failed:
-				v = FailedPrint.Sprintf(t.Status.String())
+				v = FailedPrint.Sprint(t.Status.String())
 			case dao.Unreachable:
-				v = UnreachablePrint.Sprintf(t.Status.String())
+				v = UnreachablePrint.Sprint(t.Status.String())
 			}
 
 			data.Rows[i].Columns = append(data.Rows[i].Columns, v)
@@ -333,7 +331,7 @@ func PrintSummaryReport(
 }
 
 func printRecapHeader(h string, filler string) {
-	hh := text.Bold.Sprintf(h)
+	hh := text.Bold.Sprint(h)
 	width, _, _ := term.GetSize(0)
 	headerLength := len(core.Strip(hh))
 	if width > 0 {

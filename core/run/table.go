@@ -33,7 +33,6 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 	// TODO: data, reportData should be pointer?
 	var data dao.TableOutput
 	var reportData dao.ReportData
-	var dataMutex = sync.RWMutex{}
 	data.Headers = append(reportData.Headers, "host")
 	reportData.Headers = append(reportData.Headers, "host")
 	// Append Command names if set
@@ -76,11 +75,11 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 	var err error
 	switch task.Spec.Strategy {
 	case "free":
-		err = run.free(&run.Config, data, reportData, &dataMutex, dryRun)
+		err = run.free(data, reportData, dryRun)
 	case "host_pinned":
-		err = run.hostPinned(&run.Config, data, reportData, &dataMutex, dryRun)
+		err = run.hostPinned(data, reportData, dryRun)
 	default:
-		err = run.linear(&run.Config, data, reportData, &dataMutex, dryRun)
+		err = run.linear(data, reportData, dryRun)
 	}
 
 	reportData.Status = make(map[dao.TaskStatus]int, 5)
@@ -115,10 +114,8 @@ func (run *Run) Table(dryRun bool) (dao.TableOutput, dao.ReportData, error) {
 }
 
 func (run *Run) free(
-	config *dao.Config,
 	data dao.TableOutput,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -197,7 +194,7 @@ func (run *Run) free(
 					}
 				}
 
-				err := run.tableWork(r, r.j, register, data, reportData, dataMutex, dryRun)
+				err := run.tableWork(r, r.j, register, data, reportData, dryRun)
 				<-waitChan
 				if err != nil {
 					errCh <- err
@@ -221,10 +218,8 @@ func (run *Run) free(
 }
 
 func (run *Run) linear(
-	config *dao.Config,
 	data dao.TableOutput,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -317,7 +312,7 @@ func (run *Run) linear(
 				) {
 					defer wg.Done()
 
-					err := run.tableWork(r, 0, register, data, reportData, dataMutex, dryRun)
+					err := run.tableWork(r, 0, register, data, reportData, dryRun)
 					<-waitChan
 					if err != nil {
 						errCh <- err
@@ -358,10 +353,8 @@ func (run *Run) linear(
 }
 
 func (run *Run) hostPinned(
-	config *dao.Config,
 	data dao.TableOutput,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -442,7 +435,7 @@ func (run *Run) hostPinned(
 						}
 					}
 
-					err := run.tableWork(j, 0, register[j.Server.Name], data, reportData, dataMutex, dryRun)
+					err := run.tableWork(j, 0, register[j.Server.Name], data, reportData, dryRun)
 					<-waitChan
 					if err != nil {
 						errCh <- err
@@ -473,7 +466,6 @@ func (run *Run) tableWork(
 	register map[string]string,
 	data dao.TableOutput,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	var wg sync.WaitGroup

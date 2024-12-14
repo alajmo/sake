@@ -231,10 +231,6 @@ func (run *Run) RunTask(
 			return err
 		}
 
-		if err != nil {
-			return err
-		}
-
 		if derr != nil {
 			return derr
 		}
@@ -1097,14 +1093,6 @@ func getAuthMethod(server dao.Server, signers *Signers) []ssh.AuthMethod {
 	}
 
 	return authMethods
-}
-
-func CalcFreeForks(batch int, tasks int, forks uint32) int {
-	tot := batch * tasks
-	if tot < int(forks) {
-		return tot
-	}
-	return int(forks)
 }
 
 func CalcForks(batch int, forks uint32) int {

@@ -86,14 +86,6 @@ func (c *TaskNotFound) Error() string {
 	return fmt.Sprintf("cannot find tasks %s", tasks)
 }
 
-type OutputFormatNotFound struct {
-	Name string
-}
-
-func (c *OutputFormatNotFound) Error() string {
-	return fmt.Sprintf("output option `%s` not found", c.Name)
-}
-
 type TaskMultipleDef struct {
 	Name string
 }

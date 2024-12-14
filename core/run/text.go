@@ -4,10 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/jedib0t/go-pretty/v6/text"
-	"golang.org/x/crypto/ssh"
-	"golang.org/x/exp/slices"
-	"golang.org/x/term"
 	"io"
 	"math"
 	"os"
@@ -16,6 +12,11 @@ import (
 	"sync"
 	"text/template"
 	"time"
+
+	"github.com/jedib0t/go-pretty/v6/text"
+	"golang.org/x/crypto/ssh"
+	"golang.org/x/exp/slices"
+	"golang.org/x/term"
 
 	"github.com/alajmo/sake/core"
 	"github.com/alajmo/sake/core/dao"
@@ -34,7 +35,6 @@ func (run *Run) Text(dryRun bool) (dao.ReportData, error) {
 
 	// TODO: reportData should be pointer?
 	var reportData dao.ReportData
-	var dataMutex = sync.RWMutex{}
 	reportData.Headers = append(reportData.Headers, "server")
 	// Append Command names if set
 	for _, subTask := range task.Tasks {
@@ -59,11 +59,11 @@ func (run *Run) Text(dryRun bool) (dao.ReportData, error) {
 	var err error
 	switch task.Spec.Strategy {
 	case "free":
-		err = run.freeText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
+		err = run.freeText(prefixMaxLen, reportData, dryRun)
 	case "host_pinned":
-		err = run.hostPinnedText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
+		err = run.hostPinnedText(prefixMaxLen, reportData, dryRun)
 	default: // linear
-		err = run.linearText(&run.Config, prefixMaxLen, reportData, &dataMutex, dryRun)
+		err = run.linearText(prefixMaxLen, reportData, dryRun)
 	}
 
 	reportData.Status = make(map[dao.TaskStatus]int, 5)
@@ -98,10 +98,8 @@ func (run *Run) Text(dryRun bool) (dao.ReportData, error) {
 }
 
 func (run *Run) freeText(
-	config *dao.Config,
 	prefixMaxLen int,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -182,7 +180,7 @@ func (run *Run) freeText(
 					}
 				}
 
-				err := run.textWork(r, r.j, register, prefixMaxLen, reportData, dataMutex, dryRun, batch)
+				err := run.textWork(r, r.j, register, prefixMaxLen, reportData, dryRun, batch)
 				<-waitChan
 				if err != nil {
 					errCh <- err
@@ -206,10 +204,8 @@ func (run *Run) freeText(
 }
 
 func (run *Run) linearText(
-	config *dao.Config,
 	prefixMaxLen int,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -315,7 +311,7 @@ func (run *Run) linearText(
 				) {
 					defer wg.Done()
 
-					err := run.textWork(r, 0, register, prefixMaxLen, reportData, dataMutex, dryRun, batch)
+					err := run.textWork(r, 0, register, prefixMaxLen, reportData, dryRun, batch)
 					<-waitChan
 					if err != nil {
 						errCh <- err
@@ -356,10 +352,8 @@ func (run *Run) linearText(
 }
 
 func (run *Run) hostPinnedText(
-	config *dao.Config,
 	prefixMaxLen int,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 ) error {
 	serverLen := len(run.Servers)
@@ -455,7 +449,7 @@ func (run *Run) hostPinnedText(
 						}
 					}
 
-					err := run.textWork(j, 0, register[j.Server.Name], prefixMaxLen, reportData, dataMutex, dryRun, batch)
+					err := run.textWork(j, 0, register[j.Server.Name], prefixMaxLen, reportData, dryRun, batch)
 					<-waitChan
 					if err != nil {
 						errCh <- err
@@ -486,7 +480,6 @@ func (run *Run) textWork(
 	register map[string]string,
 	prefixMaxLen int,
 	reportData dao.ReportData,
-	dataMutex *sync.RWMutex,
 	dryRun bool,
 	batch int,
 ) error {
@@ -741,7 +734,7 @@ func (h HeaderData) Style(s any, args ...string) string {
 		}
 	}
 
-	return colors.Sprintf(v)
+	return colors.Sprint(v)
 }
 
 func PrintHeader(value string, ts dao.Text, padding bool) {
@@ -750,9 +743,9 @@ func PrintHeader(value string, ts dao.Text, padding bool) {
 	headerName := text.Colors{text.Reset, text.Bold}
 	var header string
 	if ts.HeaderFiller != "" {
-		header = fmt.Sprintf("\n%s%s\n", headerName.Sprintf(value), strings.Repeat(ts.HeaderFiller, width-headerLength-1))
+		header = fmt.Sprintf("\n%s%s\n", headerName.Sprint(value), strings.Repeat(ts.HeaderFiller, width-headerLength-1))
 	} else {
-		header = fmt.Sprintf("\n%s\n", headerName.Sprintf(value))
+		header = fmt.Sprintf("\n%s\n", headerName.Sprint(value))
 	}
 
 	if padding {
@@ -828,7 +821,7 @@ func (h PrefixData) Style(s any, args ...string) string {
 		}
 	}
 
-	return colors.Sprintf(v)
+	return colors.Sprint(v)
 }
 
 func getPrefixer(client Client, i int, prefixMaxLen int, ts dao.Text, batch int) (string, error) {
@@ -868,7 +861,7 @@ func getPrefixer(client Client, i int, prefixMaxLen int, ts dao.Text, batch int)
 	}
 
 	if prefixColor != nil {
-		prefix = prefixColor.Sprintf(prefixString)
+		prefix = prefixColor.Sprint(prefixString)
 	} else {
 		prefix = prefixString
 	}

@@ -19,6 +19,7 @@ gofmt:
 
 lint:
 	golangci-lint run ./cmd/... ./core/... ./test/...
+	deadcode .
 
 benchmark:
 	cd test && ./benchmark.sh

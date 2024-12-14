@@ -33,15 +33,15 @@ func PrintTable[T dao.Items](
 	case "table", "table-1":
 		return table1(data, options, headers, footers, padTop, padBottom)
 	case "table-2":
-		return table2(data, options, headers, footers, padTop, padBottom)
+		return table2(data, options, headers, padTop, padBottom)
 	case "table-3":
-		return table3(data, options, headers, footers, padTop, padBottom)
+		return table3(data, options, headers, padTop, padBottom)
 	case "table-4":
-		return table4(data, options, headers, footers, padTop, padBottom)
+		return table4(data, options, headers, padTop, padBottom)
 	case "csv":
-		return printCSV(data, options, headers, footers)
+		return printCSV(data, options, headers)
 	case "json":
-		return printJSON(data, options, headers)
+		return printJSON(data, headers)
 	default:
 		return table1(data, options, headers, footers, padTop, padBottom)
 	}
@@ -141,7 +141,6 @@ func table2[T dao.Items](
 	data []T,
 	options PrintTableOptions,
 	headers []string,
-	footers []string,
 	padTop bool,
 	padBottom bool,
 ) error {
@@ -204,7 +203,6 @@ func table3[T dao.Items](
 	data []T,
 	options PrintTableOptions,
 	headers []string,
-	footers []string,
 	padTop bool,
 	padBottom bool,
 ) error {
@@ -289,7 +287,6 @@ func table4[T dao.Items](
 	data []T,
 	options PrintTableOptions,
 	headers []string,
-	footers []string,
 	padTop bool,
 	padBottom bool,
 ) error {
@@ -332,7 +329,7 @@ server,host
 ip6-1,2001:3984:3989::10
 ip6-2,2001:3984:3989::11
 */
-func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string, footers []string) error {
+func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
 	t := CreateTable(options, headers)
 
 	// Headers
@@ -396,7 +393,7 @@ func printCSV[T dao.Items](data []T, options PrintTableOptions, headers []string
 
 ]
 */
-func printJSON[T dao.Items](data []T, options PrintTableOptions, headers []string) error {
+func printJSON[T dao.Items](data []T, headers []string) error {
 	var out []map[string]any
 	for _, v := range data {
 		m := make(map[string]any)

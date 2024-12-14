@@ -116,7 +116,6 @@ func TestGetTagAssocations(t *testing.T) {
 	test.CheckErr(t, err)
 
 	wanted := Tag{
-		Name:    "t1",
 		Servers: []string{"s1", "s5"},
 	}
 	test.CheckEqualStringArr(t, ss[0].Servers, wanted.Servers)

@@ -100,18 +100,6 @@ func (s *Loader) Stop() {
 	}
 }
 
-func (s *Loader) Disable() {
-	s.disabled = true
-}
-
 func (s *Loader) Enable() {
 	s.disabled = false
-}
-
-func (s *Loader) Message(msg string) {
-	s.spinner.Message(msg)
-}
-
-func (s *Loader) Status() yacspin.SpinnerStatus {
-	return s.spinner.Status()
 }

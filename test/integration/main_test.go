@@ -147,7 +147,7 @@ func Run(t *testing.T, tt TemplateTest) {
 			fmt.Println(string(actual))
 			fmt.Println("--------------------->")
 
-			t.Fatalf("\nfile: %v\ndiff: %v", text.FgBlue.Sprintf(goldenFilePath), diff(expected, actual))
+			t.Fatalf("\nfile: %v\ndiff: %v", text.FgBlue.Sprint(goldenFilePath), diff(expected, actual))
 		}
 
 		if err != nil {

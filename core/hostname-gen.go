@@ -147,19 +147,6 @@ const (
 	Step  = 2
 )
 
-func (s RangeState) String() string {
-	switch s {
-	case Start:
-		return "Start"
-	case End:
-		return "End"
-	case Step:
-		return "Step"
-	}
-
-	return "unknown"
-}
-
 func readRange(input string, i int) (HostRange, int, error) {
 	r := HostRange{
 		Start: "",

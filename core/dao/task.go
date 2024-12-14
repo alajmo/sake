@@ -462,15 +462,6 @@ func (c *Config) GetTasksByIDs(ids []string) ([]Task, error) {
 	return filteredTasks, nil
 }
 
-func (c *Config) GetTaskNames() []string {
-	taskNames := []string{}
-	for _, task := range c.Tasks {
-		taskNames = append(taskNames, task.Name)
-	}
-
-	return taskNames
-}
-
 func (c *Config) GetTaskIDAndDesc() []string {
 	taskNames := []string{}
 	for _, task := range c.Tasks {
