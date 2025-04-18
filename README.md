@@ -32,13 +32,17 @@ Interested in managing your git repositories in a similar way? Check out [mani](
 
 ## Features
 
-- auto-completion of tasks, servers and tags
+- Auto-completion of tasks, servers and tags
 - SSH into servers or docker containers `sake ssh <server>`
-- list servers/tasks via `sake list servers|tasks`
-- present task output in a compact table format `sake run <task> --output table`
-- open task/server in your preferred editor `sake edit task <task>`
-- import other `sake.yaml` configs
-- and [many more!](docs/recipes.md)
+- List servers/tasks via `sake list servers|tasks`
+- Present task output in a compact table format `sake run <task> --output table`
+- Open task/server in your preferred editor `sake edit task <task>`
+- Import other `sake.yaml` configs
+- [Many more!](docs/recipes.md)
+
+## Sponsors
+
+Mani is an MIT-licensed open source project with ongoing development. If you'd like to support their efforts, check out [Tabify](https://chromewebstore.google.com/detail/tabify/bokfkclamoepkmhjncgkdldmhfpgfdmo) - a Chrome extension that enhances your browsing experience with powerful window and tab management, focus-improving site blocking, and numerous features to optimize your browser workflow.
 
 ## Table of Contents
 
