@@ -26,9 +26,9 @@
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in `sake.yaml` file and then run the tasks on the servers.
 
-Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
-
 ![demo](res/output.gif)
+
+Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Features
 
