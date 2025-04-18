@@ -119,7 +119,7 @@ Sometimes you want to ignore remote hosts which are unreachable, for instance if
    list-1 | 172.24.2.222 | test | 22   | dial tcp 172.24.2.222:22: connect: no route to host
   ```
 
-- `ignore-unreachable` set to false
+- `ignore-unreachable` set to true
   ```bash
   $ sake run unreachable --ignore-unreachable=true
 

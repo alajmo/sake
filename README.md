@@ -26,9 +26,11 @@
 
 `sake` is a command runner for local and remote hosts. You define servers and tasks in `sake.yaml` file and then run the tasks on the servers.
 
-This readme is also accessible on [sakecli.com](https://sakecli.com/).
+Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
-`sake` has tons of features:
+![demo](res/output.gif)
+
+## Features
 
 - auto-completion of tasks, servers and tags
 - SSH into servers or docker containers `sake ssh <server>`
@@ -37,10 +39,6 @@ This readme is also accessible on [sakecli.com](https://sakecli.com/).
 - open task/server in your preferred editor `sake edit task <task>`
 - import other `sake.yaml` configs
 - and [many more!](docs/recipes.md)
-
-![demo](res/output.gif)
-
-Interested in managing your git repositories in a similar way? Check out [mani](https://github.com/alajmo/mani)!
 
 ## Table of Contents
 

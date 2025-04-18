@@ -1,4 +1,4 @@
-# Config Reference
+# Config
 
 The sake.yaml config is based on the following concepts:
 
