@@ -376,12 +376,12 @@ func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags
 			return []Server{}, err
 		}
 		task.Target = *target
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, task.Target.Invert)
 		if err != nil {
 			return []Server{}, err
 		}
 	} else {
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, task.Target.Invert)
 		if err != nil {
 			return []Server{}, err
 		}
