@@ -20,7 +20,7 @@ func ParseSSHConfig(path string) (map[string](Endpoint), error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	endpoints, err := ParseReader(f, path)
 	if err != nil {
@@ -336,7 +336,7 @@ func parseFileInternal(path string) (*hostinfoMap, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open config: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	return parseInternal(f, path)
 }
 

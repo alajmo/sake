@@ -38,11 +38,7 @@ func CheckEqN(t *testing.T, found int, wanted int) {
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func CheckEqualStringArr(t *testing.T, found []string, wanted []string) {
-	equal := true
-
-	if len(found) != len(wanted) {
-		equal = false
-	}
+	equal := len(found) == len(wanted)
 	for i, v := range found {
 		if v != wanted[i] {
 			equal = false

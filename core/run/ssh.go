@@ -184,7 +184,7 @@ func (c *SSHClient) Wait(i int) error {
 	}
 
 	err := c.Sessions[i].sess.Wait()
-	c.Sessions[i].sess.Close()
+	_ = c.Sessions[i].sess.Close()
 	c.Sessions[i].running = false
 	c.Sessions[i].sessOpened = false
 
@@ -194,7 +194,7 @@ func (c *SSHClient) Wait(i int) error {
 // Close closes the underlying SSH connection and session.
 func (c *SSHClient) Close(i int) error {
 	if c.Sessions[i].sessOpened {
-		c.Sessions[i].sess.Close()
+		_ = c.Sessions[i].sess.Close()
 		c.Sessions[i].sessOpened = false
 	}
 	if !c.connOpened {
@@ -339,7 +339,7 @@ func AddKnownHost(host string, key ssh.PublicKey, knownFile string) (err error) 
 		return err
 	}
 
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	line := Line(host, key)
 	_, err = f.WriteString(line + "\n")

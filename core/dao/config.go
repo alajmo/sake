@@ -556,7 +556,7 @@ tasks:
 		return []Server{}, err
 	}
 
-	f.Close()
+	_ = f.Close()
 
 	fmt.Println("\nInitialized sake in", configDir)
 	fmt.Println("- Created sake.yaml")

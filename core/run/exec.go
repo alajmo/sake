@@ -461,7 +461,7 @@ func (run *Run) CleanupClients() {
 	for _, c := range clients {
 		if remote, ok := c.(*SSHClient); ok {
 			for i := range c.(*SSHClient).Sessions {
-				remote.Close(i)
+				_ = remote.Close(i)
 			}
 		}
 	}
