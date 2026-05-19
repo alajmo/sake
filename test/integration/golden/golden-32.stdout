@@ -174,7 +174,7 @@ TASKS
                     |        |               |         | failed: false   
                     |        |               |         | stdout:         
                     |        |               |         | stderr: error 2 
- 2001:3984:3989::10 | foo    | status: ok    | error 2 | status: ok      
+ fd00:dead:beef::10 | foo    | status: ok    | error 2 | status: ok      
                     |        | rc: 0         |         | rc: 0           
                     |        | failed: false |         | failed: false   
                     |        | stdout: foo   |         | stdout: foo     
@@ -201,7 +201,7 @@ TASKS
  172.24.2.7              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.8              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.9              ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
+ fd00:dead:beef::10      ok=4   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
  Total                   ok=64  unreachable=0  ignored=0  failed=0  skipped=0 
 

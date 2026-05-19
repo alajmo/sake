@@ -1,6 +1,4 @@
 ---
-version: '3.9'
-
 networks:
   sake:
     name: sake
@@ -99,6 +97,7 @@ services:
       - '230:22'
     networks:
       sake:
+        ipv4_address: 172.24.2.12
         ipv6_address: fd00:dead:beef::10
 
   server-10: # Only accesible via bastion-1

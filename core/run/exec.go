@@ -648,7 +648,7 @@ func ParseServers(
 				errConnects = append(errConnects, *errConnect)
 				continue
 			} else {
-				*(*servers)[i].PubFile = pubFile
+				(*servers)[i].PubFile = &pubFile
 			}
 		}
 

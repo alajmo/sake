@@ -30,6 +30,10 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 		args = append(args, fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile))
 	}
 
+	if server.IdentityFile != nil && *server.IdentityFile != "" {
+		args = append(args, fmt.Sprintf("-i %s", *server.IdentityFile))
+	}
+
 	// TODO:
 	if len(server.Bastions) > 0 {
 		jumphosts := []string{}

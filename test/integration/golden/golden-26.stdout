@@ -84,9 +84,9 @@ TASKS
                     | S_HOST 172.24.2.9                  
                     | S_USER test                        
                     | S_PORT 22                          
- 2001:3984:3989::10 | # SERVER                           
+ fd00:dead:beef::10 | # SERVER                           
                     | S_TAGS remote,demo,reachable       
-                    | S_HOST 2001:3984:3989::10          
+                    | S_HOST fd00:dead:beef::10          
                     | S_USER test                        
                     | S_PORT 22                          
                                                                               
@@ -105,7 +105,7 @@ TASKS
  172.24.2.7              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.8              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
  172.24.2.9              ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
- 2001:3984:3989::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
+ fd00:dead:beef::10      ok=1   unreachable=0  ignored=0  failed=0  skipped=0 
 ------------------------------------------------------------------------------
  Total                   ok=16  unreachable=0  ignored=0  failed=0  skipped=0 
 
