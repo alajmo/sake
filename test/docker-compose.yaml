@@ -11,8 +11,8 @@ networks:
         - subnet: 172.24.2.0/24
           gateway: 172.24.2.1
 
-        - subnet: 2001:3984:3989::/64
-          gateway: 2001:3984:3989::1
+        - subnet: fd00:dead:beef::/64
+          gateway: fd00:dead:beef::1
 
 services:
   server-1:
@@ -99,7 +99,7 @@ services:
       - '230:22'
     networks:
       sake:
-        ipv6_address: 2001:3984:3989::10
+        ipv6_address: fd00:dead:beef::10
 
   server-10: # Only accesible via bastion-1
     container_name: 'server-10'
