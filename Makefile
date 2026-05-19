@@ -32,9 +32,9 @@ test:
 	go test -v ./core/...
 
 	# Integration tests
-	cd ./test && docker-compose up -d
+	cd ./test && docker compose up -d
 	go test -v ./test/integration/... -count=5 -clean
-	cd ./test && docker-compose down
+	cd ./test && docker compose down
 
 unit-test:
 	go test -v ./core/...
@@ -46,10 +46,10 @@ update-golden-files:
 	go test ./test/integration/... -update
 
 mock-ssh:
-	cd ./test && docker-compose up
+	cd ./test && docker compose up
 
 mock-performance-ssh:
-	cd ./test && docker-compose -f docker-compose-performance.yaml up
+	cd ./test && docker compose -f docker-compose-performance.yaml up
 
 build:
 	CGO_ENABLED=0 go build \
