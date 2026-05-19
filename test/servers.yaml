@@ -111,7 +111,7 @@ servers:
 
   server-9:
     desc: server-9
-    host: 2001:3984:3989::10
+    host: fd00:dead:beef::10
     user: test
     password: test
     tags: [remote, demo, reachable]
