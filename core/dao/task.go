@@ -364,24 +364,30 @@ func ParseTaskEnv(cmdEnv []string, userEnv []string, parentEnv []string, configE
 func (c *Config) GetTaskServers(task *Task, runFlags *core.RunFlags, setRunFlags *core.SetRunFlags) ([]Server, error) {
 	var servers []Server
 	var err error
-	// If any runtime target flags are used, disregard config specified task targets
-	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All || setRunFlags.Invert {
+	// If any runtime selector flags are used, disregard config specified task targets.
+	// --invert is a modifier, not a selector, so it does not trigger this on its own.
+	if len(runFlags.Servers) > 0 || len(runFlags.Tags) > 0 || runFlags.Regex != "" || setRunFlags.All {
 		servers, err = c.FilterServers(runFlags.All, runFlags.Servers, runFlags.Tags, runFlags.Regex, runFlags.Invert)
 		if err != nil {
 			return []Server{}, err
 		}
-	} else if runFlags.Target != "" {
-		target, err := c.GetTarget(runFlags.Target)
-		if err != nil {
-			return []Server{}, err
-		}
-		task.Target = *target
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
-		if err != nil {
-			return []Server{}, err
-		}
 	} else {
-		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, runFlags.Invert)
+		// A target named on the CLI overrides the task's config target
+		if runFlags.Target != "" {
+			target, err := c.GetTarget(runFlags.Target)
+			if err != nil {
+				return []Server{}, err
+			}
+			task.Target = *target
+		}
+
+		// Use the target's configured invert, but let an explicit --invert flag override it
+		invert := task.Target.Invert
+		if setRunFlags.Invert {
+			invert = runFlags.Invert
+		}
+
+		servers, err = c.FilterServers(task.Target.All, task.Target.Servers, task.Target.Tags, task.Target.Regex, invert)
 		if err != nil {
 			return []Server{}, err
 		}
