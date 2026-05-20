@@ -388,16 +388,25 @@ func serialize(k ssh.PublicKey) string {
 
 // Process all ENVs into a string of form
 // Example output:
-// export FOO="bar"; export BAR="baz";
+// export FOO='bar'; export BAR='baz';
 func AsExport(env []string) string {
 	exports := ``
 
 	for _, v := range env {
-		kv := strings.Split(v, "=")
-		exports += `export ` + kv[0] + `="` + kv[1] + `";`
+		kv := strings.SplitN(v, "=", 2)
+		if len(kv) != 2 {
+			continue
+		}
+		exports += `export ` + kv[0] + `=` + shellQuote(kv[1]) + `;`
 	}
 
 	return exports
+}
+
+// shellQuote wraps a value in single quotes for safe use in a POSIX shell,
+// escaping any embedded single quotes as '\''.
+func shellQuote(s string) string {
+	return `'` + strings.ReplaceAll(s, `'`, `'\''`) + `'`
 }
 
 func GetSSHAgentSigners() ([]ssh.Signer, error) {

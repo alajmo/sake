@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -422,40 +421,6 @@ func (run *Run) SetClients(
 
 func (run *Run) CleanupClients() {
 	clients := run.RemoteClients
-	var wg sync.WaitGroup
-
-	trap := make(chan os.Signal, 1)
-	signal.Notify(trap, os.Interrupt)
-	go func() {
-		for {
-			sig, ok := <-trap
-			if !ok {
-				return
-			}
-			for _, c := range clients {
-				switch c := c.(type) {
-				case *SSHClient:
-					for i := range c.Sessions {
-						err := c.Signal(i, sig)
-						if err != nil {
-							fmt.Fprintf(os.Stderr, "%v", err)
-						}
-					}
-				case *LocalhostClient:
-					for i := range c.Sessions {
-						err := c.Signal(i, sig)
-						if err != nil {
-							fmt.Fprintf(os.Stderr, "%v", err)
-						}
-					}
-				}
-			}
-		}
-	}()
-	wg.Wait()
-
-	signal.Stop(trap)
-	close(trap)
 
 	// Close remote connections
 	for _, c := range clients {
