@@ -17,7 +17,7 @@ func checkEqHost(t *testing.T, hostname string, defaultUser string, defaultPort 
 		t.Fatalf(`Wanted: %q, Found: %q`, wantedUser, foundUser)
 	}
 	if foundPort != wantedPort {
-		t.Fatalf(`Wanted: %q, Found: %q`, wantedPort, foundPort)
+		t.Fatalf(`Wanted: %d, Found: %d`, wantedPort, foundPort)
 	}
 }
 

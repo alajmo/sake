@@ -45,7 +45,7 @@ func (tt TemplateTest) GoldenOutput(output []byte) []byte {
 func clearGolden(file string) {
 	// Guard against accidentally deleting outside directory
 	if strings.Contains(file, "golden") {
-		os.RemoveAll(file)
+		_ = os.RemoveAll(file)
 	}
 }
 
@@ -53,7 +53,7 @@ func clearTmp() {
 	files, _ := os.ReadDir(".")
 	for _, f := range files {
 		filepath := path.Join(tmpDir, f.Name())
-		os.Remove(filepath)
+		_ = os.Remove(filepath)
 	}
 }
 

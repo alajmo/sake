@@ -47,7 +47,7 @@ func (c *LocalhostClient) Run(i int, env []string, workDir string, shell string,
 
 	var cmdString string
 	if workDir != "" {
-		cmdString = fmt.Sprintf("cd %s; %s", workDir, cmdStr)
+		cmdString = fmt.Sprintf("cd %s && %s", workDir, cmdStr)
 	} else {
 		cmdString = cmdStr
 	}

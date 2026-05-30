@@ -153,7 +153,7 @@ func (c *SSHClient) Run(i int, env []string, workDir string, shell string, cmdSt
 
 	var cmdString string
 	if workDir != "" {
-		cmdString = fmt.Sprintf("cd %s; %s", workDir, exportedEnv)
+		cmdString = fmt.Sprintf("cd %s && %s", workDir, exportedEnv)
 	} else {
 		cmdString = exportedEnv
 	}
@@ -184,7 +184,7 @@ func (c *SSHClient) Wait(i int) error {
 	}
 
 	err := c.Sessions[i].sess.Wait()
-	c.Sessions[i].sess.Close()
+	_ = c.Sessions[i].sess.Close()
 	c.Sessions[i].running = false
 	c.Sessions[i].sessOpened = false
 
@@ -194,7 +194,7 @@ func (c *SSHClient) Wait(i int) error {
 // Close closes the underlying SSH connection and session.
 func (c *SSHClient) Close(i int) error {
 	if c.Sessions[i].sessOpened {
-		c.Sessions[i].sess.Close()
+		_ = c.Sessions[i].sess.Close()
 		c.Sessions[i].sessOpened = false
 	}
 	if !c.connOpened {
@@ -339,7 +339,7 @@ func AddKnownHost(host string, key ssh.PublicKey, knownFile string) (err error) 
 		return err
 	}
 
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	line := Line(host, key)
 	_, err = f.WriteString(line + "\n")
@@ -388,16 +388,25 @@ func serialize(k ssh.PublicKey) string {
 
 // Process all ENVs into a string of form
 // Example output:
-// export FOO="bar"; export BAR="baz";
+// export FOO='bar'; export BAR='baz';
 func AsExport(env []string) string {
 	exports := ``
 
 	for _, v := range env {
-		kv := strings.Split(v, "=")
-		exports += `export ` + kv[0] + `="` + kv[1] + `";`
+		kv := strings.SplitN(v, "=", 2)
+		if len(kv) != 2 {
+			continue
+		}
+		exports += `export ` + kv[0] + `=` + shellQuote(kv[1]) + `;`
 	}
 
 	return exports
+}
+
+// shellQuote wraps a value in single quotes for safe use in a POSIX shell,
+// escaping any embedded single quotes as '\''.
+func shellQuote(s string) string {
+	return `'` + strings.ReplaceAll(s, `'`, `'\''`) + `'`
 }
 
 func GetSSHAgentSigners() ([]ssh.Signer, error) {

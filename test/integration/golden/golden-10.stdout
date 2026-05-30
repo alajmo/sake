@@ -176,7 +176,7 @@ tags: remote, demo, reachable
 name: server-9
 desc: server-9
 user: test
-host: 2001:3984:3989::10
+host: fd00:dead:beef::10
 port: 22
 tags: remote, demo, reachable
 

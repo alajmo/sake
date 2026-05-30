@@ -39,7 +39,7 @@ TASKS
                     | Process exited with status 1 
  172.24.2.9         |                              
                     | Process exited with status 1 
- 2001:3984:3989::10 |                              
+ fd00:dead:beef::10 |                              
                     | Process exited with status 1 
                                                                               
  localhost               ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
@@ -57,7 +57,7 @@ TASKS
  172.24.2.7              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
  172.24.2.8              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
  172.24.2.9              ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
- 2001:3984:3989::10      ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
+ fd00:dead:beef::10      ok=0  unreachable=0  ignored=0  failed=1   skipped=0 
 ------------------------------------------------------------------------------
  Total                   ok=0  unreachable=0  ignored=0  failed=16  skipped=0 
 

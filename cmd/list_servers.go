@@ -88,11 +88,7 @@ func listServers(config *dao.Config, args []string, listFlags *core.ListFlags, s
 	theme, err := config.GetTheme(listFlags.Theme)
 	core.CheckIfError(err)
 
-	allServers := false
-	if len(serverArgs) == 0 &&
-		len(serverFlags.Tags) == 0 {
-		allServers = true
-	}
+	allServers := len(serverArgs) == 0 && len(serverFlags.Tags) == 0
 
 	err = config.ParseInventory(userArgs)
 	core.CheckIfError(err)

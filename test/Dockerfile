@@ -16,7 +16,7 @@ USER root
 
 RUN usermod -aG sudo test
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN echo 'MaxStartups 100' >> /etc/ssh/sshd_config
+RUN echo 'MaxStartups 100:30:100' >> /etc/ssh/sshd_config
 
 RUN service ssh start
 

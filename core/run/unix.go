@@ -21,13 +21,16 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 	}
 
 	sshConnStr := fmt.Sprintf("%s@%s", server.User, server.Host)
-	portStr := fmt.Sprintf("-p %d", server.Port)
 
-	args := []string{"ssh", "-t", sshConnStr, portStr}
+	args := []string{"ssh", "-t", sshConnStr, "-p", fmt.Sprintf("%d", server.Port)}
 	if disableVerifyHost {
-		args = append(args, "-o StrictHostKeyChecking=no")
+		args = append(args, "-o", "StrictHostKeyChecking=no")
 	} else {
-		args = append(args, fmt.Sprintf("-o UserKnownHostsFile=%s", knownHostFile))
+		args = append(args, "-o", fmt.Sprintf("UserKnownHostsFile=%s", knownHostFile))
+	}
+
+	if server.IdentityFile != nil && *server.IdentityFile != "" {
+		args = append(args, "-i", *server.IdentityFile)
 	}
 
 	// TODO:
@@ -37,7 +40,7 @@ func SSHToServer(server dao.Server, disableVerifyHost bool, knownHostFile string
 			jumphosts = append(jumphosts, fmt.Sprintf("%s@%s:%d", bastion.User, bastion.Host, bastion.Port))
 		}
 
-		args = append(args, fmt.Sprintf("-J %s", strings.Join(jumphosts, ",")))
+		args = append(args, "-J", strings.Join(jumphosts, ","))
 	}
 
 	err = unix.Exec(sshBin, args, os.Environ())
