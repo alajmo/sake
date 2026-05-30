@@ -428,7 +428,19 @@ func (c *ConfigYAML) loadResources(cr *ConfigResources) {
 			cr.ConfigErrors = append(cr.ConfigErrors, configError)
 		} else {
 			servers, serverErrors := c.ParseServersYAML()
-			cr.Servers = append(cr.Servers, servers...)
+			// Only add servers that don't already exist (avoid duplicates from imports)
+			for _, server := range servers {
+				exists := false
+				for _, existing := range cr.Servers {
+					if existing.Name == server.Name {
+						exists = true
+						break
+					}
+				}
+				if !exists {
+					cr.Servers = append(cr.Servers, server)
+				}
+			}
 			cr.ServerErrors = append(cr.ServerErrors, serverErrors...)
 		}
 	}

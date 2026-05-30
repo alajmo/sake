@@ -1,0 +1,37 @@
+package components
+
+import (
+	"github.com/alajmo/sake/core/tui/misc"
+	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
+)
+
+func CreateButton(label string) *tview.Button {
+	button := tview.NewButton(label)
+	SetInactiveButtonStyle(button)
+	return button
+}
+
+func SetActiveButtonStyle(button *tview.Button) {
+	button.
+		SetStyle(tcell.StyleDefault.
+			Foreground(misc.STYLE_BUTTON_ACTIVE.Fg).
+			Background(misc.STYLE_BUTTON_ACTIVE.Bg).
+			Attributes(misc.STYLE_BUTTON_ACTIVE.Attr)).
+		SetActivatedStyle(tcell.StyleDefault.
+			Foreground(misc.STYLE_BUTTON_ACTIVE.Fg).
+			Background(misc.STYLE_BUTTON_ACTIVE.Bg).
+			Attributes(misc.STYLE_BUTTON_ACTIVE.Attr))
+}
+
+func SetInactiveButtonStyle(button *tview.Button) {
+	button.
+		SetStyle(tcell.StyleDefault.
+			Foreground(misc.STYLE_BUTTON.Fg).
+			Background(misc.STYLE_BUTTON.Bg).
+			Attributes(misc.STYLE_BUTTON.Attr)).
+		SetActivatedStyle(tcell.StyleDefault.
+			Foreground(misc.STYLE_BUTTON.Fg).
+			Background(misc.STYLE_BUTTON.Bg).
+			Attributes(misc.STYLE_BUTTON.Attr))
+}
