@@ -36,10 +36,10 @@ test:
 	go test -v ./test/integration/... -count=5 -clean
 	cd ./test && docker compose down
 
-unit-test:
+test-unit:
 	go test -v ./core/...
 
-integration-test:
+test-integration:
 	go test -v ./test/integration/... -clean
 
 update-golden-files:
@@ -74,4 +74,4 @@ release:
 clean:
 	$(RM) -r dist target
 
-.PHONY: tidy gofmt lint benchmark benchmark-save test unit-test integration-test update-golden-files mock-ssh build build-all build-and-link gen-man release clean
+.PHONY: tidy gofmt lint benchmark benchmark-save test test-unit test-integration update-golden-files mock-ssh build build-all build-and-link gen-man release clean

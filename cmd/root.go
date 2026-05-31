@@ -74,6 +74,7 @@ func init() {
 		execCmd(&config, &configErr),
 		sshCmd(&config, &configErr),
 		editCmd(&config, &configErr),
+		tuiCmd(&config, &configErr),
 		checkCmd(&configErr),
 		completionCmd(),
 		genCmd(),

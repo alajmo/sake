@@ -321,11 +321,13 @@ func runTask(
 			core.CheckIfError(err)
 		}
 	} else {
+		err := config.ParseInventory(userArgs)
+		core.CheckIfError(err)
+
+		// If many tasks are provided:
+		//
 		for _, taskID := range taskIDs {
 			task, err := config.GetTask(taskID)
-			core.CheckIfError(err)
-
-			err = config.ParseInventory(userArgs)
 			core.CheckIfError(err)
 
 			servers, err := config.GetTaskServers(task, runFlags, setRunFlags)

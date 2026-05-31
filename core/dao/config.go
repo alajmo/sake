@@ -564,6 +564,8 @@ tasks:
 	return servers, nil
 }
 
+// ParseInventory processes server configurations and evaluates any inventory scripts
+// to generate the final list of server configurations.
 func (c *Config) ParseInventory(userArgs []string) error {
 	var servers []Server
 	var shell = DEFAULT_SHELL
