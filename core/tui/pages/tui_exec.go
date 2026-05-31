@@ -3,6 +3,8 @@ package pages
 import (
 	"fmt"
 	"io"
+	"sync/atomic"
+	"unicode/utf8"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -21,6 +23,7 @@ type TExecPage struct {
 	commandArea *tview.TextArea
 	outputView  *components.TOutput
 	spec        *views.TSpec
+	running     atomic.Bool
 }
 
 func CreateExecPage(
@@ -142,6 +145,10 @@ func CreateExecPage(
 	page.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
 		case tcell.KeyCtrlR:
+			// Ignore the keypress entirely while a run is in flight.
+			if e.running.Load() {
+				return nil
+			}
 			e.execCommand()
 			return nil
 		case tcell.KeyCtrlO:
@@ -240,6 +247,12 @@ func (e *TExecPage) execCommand() {
 		return
 	}
 
+	// Re-entrancy guard: ignore overlapping runs (CAS fails if one is already
+	// in flight). Released when the run goroutine finishes.
+	if !e.running.CompareAndSwap(false, true) {
+		return
+	}
+
 	// Clear output if option is set
 	if e.spec.ClearBeforeRun {
 		e.outputView.Clear()
@@ -248,9 +261,14 @@ func (e *TExecPage) execCommand() {
 	// Get writer for output
 	writer := e.outputView.GetWriter()
 
+	// Snapshot the spec on the event loop so the options modal toggling its
+	// fields mid-run cannot race with the run goroutine reading them.
+	specSnapshot := *e.spec
+
 	// Run command
 	go func() {
-		e.runCommand(command, selectedServers, writer)
+		defer e.running.Store(false)
+		e.runCommand(command, selectedServers, writer, specSnapshot)
 		misc.App.QueueUpdateDraw(func() {})
 	}()
 }
@@ -323,9 +341,8 @@ func (e *TExecPage) describeServer() {
 	components.OpenTextModal("describe-modal", description, fullServer.Name)
 }
 
-func (e *TExecPage) runCommand(command string, servers []dao.Server, writer io.Writer) {
+func (e *TExecPage) runCommand(command string, servers []dao.Server, writer io.Writer, spec views.TSpec) {
 	config := misc.Config
-	spec := e.spec
 
 	// Create a task for the command with spec options
 	task := &dao.Task{
@@ -456,9 +473,11 @@ func (e *TExecPage) runCommand(command string, servers []dao.Server, writer io.W
 // writeTableOutput formats table data for TUI display
 func (e *TExecPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 	// Calculate column widths
+	// Widths are measured in runes to match fmt's %-*s padding (also rune-based);
+	// using len() (bytes) would over-count multi-byte text and misalign columns.
 	colWidths := make([]int, len(data.Headers))
 	for i, header := range data.Headers {
-		colWidths[i] = len(header)
+		colWidths[i] = utf8.RuneCountInString(header)
 	}
 	for _, row := range data.Rows {
 		for i, col := range row.Columns {
@@ -466,8 +485,8 @@ func (e *TExecPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 				// Handle multi-line output - use first line for width calc
 				lines := splitLinesExec(col)
 				for _, line := range lines {
-					if len(line) > colWidths[i] {
-						colWidths[i] = len(line)
+					if w := utf8.RuneCountInString(line); w > colWidths[i] {
+						colWidths[i] = w
 					}
 				}
 			}
@@ -514,9 +533,14 @@ func (e *TExecPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 				if lineIdx < len(rowLines[i]) {
 					cellContent = rowLines[i][lineIdx]
 				}
-				// Truncate if too long
-				if len(cellContent) > colWidths[i] {
-					cellContent = cellContent[:colWidths[i]-3] + "..."
+				// Truncate if too long (rune-aware so we never cut mid-rune)
+				if utf8.RuneCountInString(cellContent) > colWidths[i] {
+					r := []rune(cellContent)
+					if colWidths[i] > 3 {
+						cellContent = string(r[:colWidths[i]-3]) + "..."
+					} else {
+						cellContent = string(r[:colWidths[i]])
+					}
 				}
 				fmt.Fprintf(writer, "%-*s  ", colWidths[i], cellContent)
 			}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 
 	"github.com/rivo/tview"
@@ -270,7 +271,16 @@ func (s *TServer) getServerTreeHierarchy() []components.TNode {
 	// Track seen servers to prevent duplicates
 	seen := make(map[string]bool)
 
-	for groupName, servers := range groups {
+	// Iterate groups in sorted key order; ranging the map directly reshuffles
+	// the tree on every filter/redraw. "" (flat servers) sorts first.
+	groupNames := make([]string, 0, len(groups))
+	for groupName := range groups {
+		groupNames = append(groupNames, groupName)
+	}
+	sort.Strings(groupNames)
+
+	for _, groupName := range groupNames {
+		servers := groups[groupName]
 		if groupName == "" {
 			// Flat servers (no grouping)
 			for _, server := range servers {
@@ -386,10 +396,18 @@ func (s *TServer) groupServersByCommonPrefix() map[string][]dao.Server {
 		}
 	}
 
-	// Use the grouping that has more meaningful groups
+	// Use the grouping that has more meaningful groups. Iterate the group maps
+	// in sorted key order so demoted single-server groups land in `ungrouped`
+	// deterministically (ranging the map directly reshuffles the flat section).
 	if ipMeaningful > 0 && ipMeaningful >= hostnameMeaningful {
 		// Use IP grouping
-		for prefix, servers := range ipGroups {
+		prefixes := make([]string, 0, len(ipGroups))
+		for prefix := range ipGroups {
+			prefixes = append(prefixes, prefix)
+		}
+		sort.Strings(prefixes)
+		for _, prefix := range prefixes {
+			servers := ipGroups[prefix]
 			if len(servers) > 1 {
 				result[prefix+".*"] = servers
 			} else {
@@ -398,7 +416,13 @@ func (s *TServer) groupServersByCommonPrefix() map[string][]dao.Server {
 		}
 	} else if hostnameMeaningful > 0 {
 		// Use hostname grouping
-		for domain, servers := range hostnameGroups {
+		domains := make([]string, 0, len(hostnameGroups))
+		for domain := range hostnameGroups {
+			domains = append(domains, domain)
+		}
+		sort.Strings(domains)
+		for _, domain := range domains {
+			servers := hostnameGroups[domain]
 			if len(servers) > 1 {
 				result["*."+domain] = servers
 			} else {
@@ -469,11 +493,16 @@ func (s *TServer) filterServers() {
 	if len(serverTags) > 0 {
 		var filtered []dao.Server
 		for _, server := range s.Servers {
+			// Match on the first selected tag the server carries, then move to
+			// the next server. A plain break would only exit the inner loop, so
+			// a server with multiple selected tags would be appended once per
+			// match -> duplicate rows and duplicated execution targets.
+		matchTags:
 			for _, tag := range serverTags {
 				for _, serverTag := range server.Tags {
 					if serverTag == tag {
 						filtered = append(filtered, server)
-						break
+						break matchTags
 					}
 				}
 			}

@@ -2,6 +2,7 @@ package misc
 
 import (
 	"strings"
+	"unicode/utf8"
 
 	"github.com/rivo/tview"
 )
@@ -27,7 +28,7 @@ func GetModalSize(content string, minWidth, minHeight, maxWidth, maxHeight int) 
 
 	width := minWidth
 	for _, line := range lines {
-		lineLen := len(line) + 4
+		lineLen := utf8.RuneCountInString(line) + 4
 		if lineLen > width {
 			width = lineLen
 		}

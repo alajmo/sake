@@ -2,9 +2,14 @@ package tui
 
 import (
 	"log"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
+
+// reloadDebounce collapses the burst of fsnotify Write events that a single
+// file save typically emits into one reload.
+const reloadDebounce = 100 * time.Millisecond
 
 func WatchFiles(app *App, paths ...string) {
 	watcher, err := fsnotify.NewWatcher()
@@ -14,6 +19,7 @@ func WatchFiles(app *App, paths ...string) {
 
 	go func() {
 		defer watcher.Close()
+		var debounce *time.Timer
 		for {
 			select {
 			case event, ok := <-watcher.Events:
@@ -21,7 +27,13 @@ func WatchFiles(app *App, paths ...string) {
 					return
 				}
 				if event.Has(fsnotify.Write) {
-					app.Reload()
+					// Reset the timer on every write so rapid bursts collapse
+					// into a single Reload once writes settle. Reload itself
+					// marshals onto the event loop via QueueUpdateDraw.
+					if debounce != nil {
+						debounce.Stop()
+					}
+					debounce = time.AfterFunc(reloadDebounce, app.Reload)
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {

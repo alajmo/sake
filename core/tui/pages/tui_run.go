@@ -3,6 +3,8 @@ package pages
 import (
 	"fmt"
 	"io"
+	"sync/atomic"
+	"unicode/utf8"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -21,6 +23,7 @@ type TRunPage struct {
 	serverData *views.TServer
 	outputView *components.TOutput
 	spec       *views.TSpec
+	running    atomic.Bool
 }
 
 func CreateRunPage(
@@ -95,6 +98,10 @@ func CreateRunPage(
 			misc.RunLastFocus = &r.focusable[0].Primitive
 			return nil
 		case tcell.KeyCtrlR:
+			// Ignore the keypress entirely while a run is in flight.
+			if r.running.Load() {
+				return nil
+			}
 			r.focusable = r.switchBeforeRun(pages)
 			misc.App.SetFocus(r.focusable[0].Primitive)
 			misc.RunLastFocus = &r.focusable[0].Primitive
@@ -328,6 +335,12 @@ func (r *TRunPage) runTasks() {
 		return
 	}
 
+	// Re-entrancy guard: ignore overlapping runs (CAS fails if one is already
+	// in flight). Released when the run goroutine finishes.
+	if !r.running.CompareAndSwap(false, true) {
+		return
+	}
+
 	// Clear output if option is set
 	if r.spec.ClearBeforeRun {
 		r.outputView.Clear()
@@ -336,18 +349,22 @@ func (r *TRunPage) runTasks() {
 	// Get writer for output
 	writer := r.outputView.GetWriter()
 
+	// Snapshot the spec on the event loop so the options modal toggling its
+	// fields mid-run cannot race with the run goroutine reading them.
+	specSnapshot := *r.spec
+
 	// Run each task
 	go func() {
+		defer r.running.Store(false)
 		for _, task := range selectedTasks {
-			r.runSingleTask(&task, selectedServers, writer)
+			r.runSingleTask(&task, selectedServers, writer, specSnapshot)
 		}
 		misc.App.QueueUpdateDraw(func() {})
 	}()
 }
 
-func (r *TRunPage) runSingleTask(task *dao.Task, servers []dao.Server, writer io.Writer) {
+func (r *TRunPage) runSingleTask(task *dao.Task, servers []dao.Server, writer io.Writer, spec views.TSpec) {
 	config := misc.Config
-	spec := r.spec
 
 	// Create run flags with spec options
 	runFlags := &core.RunFlags{
@@ -465,9 +482,11 @@ func (r *TRunPage) runSingleTask(task *dao.Task, servers []dao.Server, writer io
 // writeTableOutput formats table data for TUI display
 func (r *TRunPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 	// Calculate column widths
+	// Widths are measured in runes to match fmt's %-*s padding (also rune-based);
+	// using len() (bytes) would over-count multi-byte text and misalign columns.
 	colWidths := make([]int, len(data.Headers))
 	for i, header := range data.Headers {
-		colWidths[i] = len(header)
+		colWidths[i] = utf8.RuneCountInString(header)
 	}
 	for _, row := range data.Rows {
 		for i, col := range row.Columns {
@@ -475,8 +494,8 @@ func (r *TRunPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 				// Handle multi-line output - use first line for width calc
 				lines := splitLines(col)
 				for _, line := range lines {
-					if len(line) > colWidths[i] {
-						colWidths[i] = len(line)
+					if w := utf8.RuneCountInString(line); w > colWidths[i] {
+						colWidths[i] = w
 					}
 				}
 			}
@@ -523,9 +542,14 @@ func (r *TRunPage) writeTableOutput(writer io.Writer, data dao.TableOutput) {
 				if lineIdx < len(rowLines[i]) {
 					cellContent = rowLines[i][lineIdx]
 				}
-				// Truncate if too long
-				if len(cellContent) > colWidths[i] {
-					cellContent = cellContent[:colWidths[i]-3] + "..."
+				// Truncate if too long (rune-aware so we never cut mid-rune)
+				if utf8.RuneCountInString(cellContent) > colWidths[i] {
+					r := []rune(cellContent)
+					if colWidths[i] > 3 {
+						cellContent = string(r[:colWidths[i]-3]) + "..."
+					} else {
+						cellContent = string(r[:colWidths[i]])
+					}
 				}
 				fmt.Fprintf(writer, "%-*s  ", colWidths[i], cellContent)
 			}

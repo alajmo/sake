@@ -11,28 +11,36 @@ type TItem struct {
 }
 
 func FocusNext(elements []*TItem) *tview.Primitive {
+	if len(elements) == 0 {
+		return nil
+	}
+
 	currentFocus := App.GetFocus()
 	nextIndex := -1
-	var nextFocusItem TItem
 	for i, element := range elements {
 		if element.Primitive == currentFocus {
 			nextIndex = (i + 1) % len(elements)
-			nextFocusItem = *elements[nextIndex]
 		}
 		element.Box.SetBorderColor(STYLE_BORDER.Fg)
 	}
 
-	// In-case no nextIndex is found, use the previous page as base to find nextFocusItem
+	// Current focus isn't among these elements (e.g. right after a page switch):
+	// fall back to the previously focused pane as the anchor.
 	if nextIndex < 0 {
 		for i, element := range elements {
 			if element.Primitive == PreviousPane {
 				nextIndex = (i + 1) % len(elements)
-				nextFocusItem = *elements[nextIndex]
 			}
 		}
 	}
 
-	// Set border and focus
+	// Neither anchor was found; default to the first element so Tab keeps
+	// working and we never dereference a nil Box.
+	if nextIndex < 0 {
+		nextIndex = 0
+	}
+
+	nextFocusItem := elements[nextIndex]
 	nextFocusItem.Box.SetBorderColor(STYLE_BORDER_FOCUS.Fg)
 	App.SetFocus(nextFocusItem.Primitive)
 
@@ -40,26 +48,36 @@ func FocusNext(elements []*TItem) *tview.Primitive {
 }
 
 func FocusPrevious(elements []*TItem) *tview.Primitive {
+	if len(elements) == 0 {
+		return nil
+	}
+
 	currentFocus := App.GetFocus()
-	var prevIndex int
-	var nextFocusItem TItem
+	prevIndex := -1
 	for i, element := range elements {
 		if element.Primitive == currentFocus {
 			prevIndex = (i - 1 + len(elements)) % len(elements)
-			nextFocusItem = *elements[prevIndex]
 		}
 		element.Box.SetBorderColor(STYLE_BORDER.Fg)
 	}
 
-	// In-case no prevIndex is found, use the previous page as base to find nextFocusItem
-	for i, element := range elements {
-		if element.Primitive == PreviousPane {
-			prevIndex = (i - 1 + len(elements)) % len(elements)
-			nextFocusItem = *elements[prevIndex]
+	// Only fall back to the previous pane when current focus wasn't found,
+	// otherwise this would override the correct result.
+	if prevIndex < 0 {
+		for i, element := range elements {
+			if element.Primitive == PreviousPane {
+				prevIndex = (i - 1 + len(elements)) % len(elements)
+			}
 		}
 	}
 
-	// Set border and focus
+	// Neither anchor was found; default to the first element so Shift-Tab keeps
+	// working and we never dereference a nil Box.
+	if prevIndex < 0 {
+		prevIndex = 0
+	}
+
+	nextFocusItem := elements[prevIndex]
 	nextFocusItem.Box.SetBorderColor(STYLE_BORDER_FOCUS.Fg)
 	App.SetFocus(nextFocusItem.Primitive)
 

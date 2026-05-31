@@ -2,6 +2,7 @@ package components
 
 import (
 	"strings"
+	"unicode/utf8"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -167,7 +168,7 @@ func getTextModalSize(text string) (int, int) {
 
 	width := 40
 	for _, line := range lines {
-		lineLen := len(line) + 6
+		lineLen := utf8.RuneCountInString(line) + 6
 		if lineLen > width {
 			width = lineLen
 		}
